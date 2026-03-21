@@ -2,7 +2,8 @@
 // config/db.php - Database connection configuration (PostgreSQL via PDO)
 
 // Database URL - Use environment variables in production
-$DATABASE_URL = getenv('DATABASE_URL') ?: 'postgresql://postgres:password@localhost:5432/cabomultibus_db';
+$env_url = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? getenv('DATABASE_URL');
+$DATABASE_URL = $env_url ?: 'postgresql://postgres:password@localhost:5432/cabomultibus_db';
 
 // Parse DATABASE_URL
 $db_parts = parse_url($DATABASE_URL);
@@ -25,7 +26,7 @@ try {
     // Set timezone to UTC+8 (WITA)
     $conn->exec("SET timezone = 'Asia/Makassar'");
 } catch (PDOException $e) {
-    die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> ' . (empty(getenv('DATABASE_URL')) ? 'URL KOSONG' : 'URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)'));
+    die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> ' . (empty($env_url) ? 'URL KOSONG' : 'URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)'));
 }
 
 // Set timezone for PHP
