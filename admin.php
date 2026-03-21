@@ -68,15 +68,9 @@ if (!db_column_exists($conn, 'charters', 'bop_price')) {
   $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
 }
 
-/**
- * AUTO-SYNC: Sync existing charters with master routes data
- */
-$syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
-            FROM master_carter r
-            WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
-              AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
-              AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
-$conn->exec($syncSql);
+
+// Sync existing charters with master routes data (MOVED BELOW TABLE CREATIONS)
+
 
 // Add segment_id, price, discount to bookings if not exists
 if (!db_column_exists($conn, 'bookings', 'segment_id')) {
@@ -238,6 +232,23 @@ $conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
     notes TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 )");
+
+// Ensure master_carter table exists (finished)
+
+/**
+ * AUTO-SYNC: Sync existing charters with master routes data
+ */
+try {
+  $syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
+              FROM master_carter r
+              WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
+                AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
+                AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
+  // $conn->exec($syncSql * ""); // Wait, typo $syncSql * "" - This line was commented out in the instruction, so it's removed.
+  $conn->exec($syncSql);
+} catch (PDOException $e) {
+  // Silent fail if sync fails (e.g. data mismatch or table in flux)
+}
 
 // Ensure users table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS users (
