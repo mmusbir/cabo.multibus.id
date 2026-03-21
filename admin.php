@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 // IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
 
 // Error reporting - disable in production
+/* 
 if (getenv('APP_ENV') === 'production') {
   ini_set('display_errors', 0);
   ini_set('display_startup_errors', 0);
@@ -15,6 +16,10 @@ if (getenv('APP_ENV') === 'production') {
   ini_set('display_startup_errors', 1);
   error_reporting(E_ALL);
 }
+*/
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (session_status() === PHP_SESSION_NONE) {
   // Secure session settings
