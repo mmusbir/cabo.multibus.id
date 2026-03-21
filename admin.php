@@ -1537,7 +1537,10 @@ include 'includes/units_logic.php';
       try {
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
         const js = await res.json();
-        if (!js.success) { if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Error loading data</div>'; return; }
+        if (!js.success) { 
+          if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px; color:red;">Error: ' + (js.error || 'Unknown error') + '</div>'; 
+          return; 
+        }
         if (tbody) tbody.innerHTML = js.rows;
         if (pagination) pagination.innerHTML = js.pagination;
         if (info) info.textContent = (js.total !== undefined ? ('Total: ' + js.total) : '');
