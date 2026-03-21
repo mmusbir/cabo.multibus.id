@@ -5,11 +5,5 @@
     { "src": "admin/ajax.php", "use": "vercel-php@0.6.2" },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "assets/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/admin/ajax.php(.*)", "dest": "/admin/ajax.php$1" },
-    { "src": "/admin.php(.*)", "dest": "/admin.php$1" },
-    { "src": "/api.php(.*)", "dest": "/api.php$1" },
-    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
