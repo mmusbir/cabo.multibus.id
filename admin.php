@@ -78,6 +78,10 @@ if (!db_column_exists($conn, 'bookings', 'segment_id')) {
   $conn->exec("ALTER TABLE bookings ADD COLUMN price NUMERIC(15,2) DEFAULT 0");
   $conn->exec("ALTER TABLE bookings ADD COLUMN discount NUMERIC(15,2) DEFAULT 0");
 }
+if (!db_column_exists($conn, 'segments', 'origin')) {
+  $conn->exec("ALTER TABLE segments ADD COLUMN origin VARCHAR(255)");
+  $conn->exec("ALTER TABLE segments ADD COLUMN destination VARCHAR(255)");
+}
 
 // Ensure drivers table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS drivers (
@@ -217,8 +221,16 @@ $conn->exec("CREATE TABLE IF NOT EXISTS luggages (
 $conn->exec("CREATE TABLE IF NOT EXISTS routes (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    origin VARCHAR(255),
+    destination VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW()
 )");
+
+// Add columns if they don't exist
+if (!db_column_exists($conn, 'routes', 'origin')) {
+  $conn->exec("ALTER TABLE routes ADD COLUMN origin VARCHAR(255)");
+  $conn->exec("ALTER TABLE routes ADD COLUMN destination VARCHAR(255)");
+}
 
 // Ensure master_carter table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
@@ -354,7 +366,7 @@ $edit_segment = null;
 if (isset($_GET['edit_segment'])) {
   $id = intval($_GET['edit_segment']);
   if ($id > 0) {
-    $stmt = $conn->prepare("SELECT id,route_id,rute,harga FROM segments WHERE id=? LIMIT 1");
+    $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,harga FROM segments WHERE id=? LIMIT 1");
     $stmt->execute([$id]);
     $edit_segment = $stmt->fetch();
   }
@@ -466,30 +478,26 @@ if (isset($_POST['save_route'])) {
         $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes]);
       }
     }
-  } else {
+      } else {
+    if ($origin && $destination) {
+      $name = "$origin - $destination";
+    }
     if ($name) {
       if ($route_id > 0) {
-        // Fetch old route name first for cascading update
         $stmtOld = $conn->prepare("SELECT name FROM routes WHERE id=? LIMIT 1");
         $stmtOld->execute([$route_id]);
-        $oldRoute = $stmtOld->fetch();
-        $oldName = $oldRoute ? $oldRoute['name'] : '';
-
-        // Update the route name
-        $stmt = $conn->prepare("UPDATE routes SET name=? WHERE id=?");
-        $stmt->execute([$name, $route_id]);
-
-        // Cascading update: update bookings.rute and schedules.rute if name changed
+        $oldName = ($r = $stmtOld->fetch()) ? $r['name'] : '';
+        
+        $stmt = $conn->prepare("UPDATE routes SET name=?, origin=?, destination=? WHERE id=?");
+        $stmt->execute([$name, $origin, $destination, $route_id]);
+        
         if ($oldName && $oldName !== $name) {
-          $stmtB = $conn->prepare("UPDATE bookings SET rute=? WHERE rute=?");
-          $stmtB->execute([$name, $oldName]);
-
-          $stmtS = $conn->prepare("UPDATE schedules SET rute=? WHERE rute=?");
-          $stmtS->execute([$name, $oldName]);
+          $conn->prepare("UPDATE bookings SET rute=? WHERE rute=?")->execute([$name, $oldName]);
+          $conn->prepare("UPDATE schedules SET rute=? WHERE rute=?")->execute([$name, $oldName]);
         }
       } else {
-        $stmt = $conn->prepare("INSERT INTO routes(name) VALUES(?)");
-        $stmt->execute([$name]);
+        $stmt = $conn->prepare("INSERT INTO routes(name, origin, destination) VALUES(?,?,?)");
+        $stmt->execute([$name, $origin, $destination]);
       }
     }
   }
@@ -761,16 +769,18 @@ if (isset($_GET['delete_driver'])) {
 if (isset($_POST['save_segment'])) {
   $id = isset($_POST['segment_id']) ? intval($_POST['segment_id']) : 0;
   $route_id = isset($_POST['segment_route_id']) ? intval($_POST['segment_route_id']) : 0;
-  $rute = trim($_POST['segment_rute'] ?? '');
+  $origin = trim($_POST['segment_origin'] ?? '');
+  $destination = trim($_POST['segment_destination'] ?? '');
   $harga = floatval($_POST['segment_harga'] ?? 0);
+  $rute = "$origin - $destination";
 
-  if ($rute) {
+  if ($origin && $destination) {
     if ($id > 0) {
-      $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, harga=? WHERE id=?");
-      $stmt->execute([$route_id, $rute, $harga, $id]);
+      $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, origin=?, destination=?, harga=? WHERE id=?");
+      $stmt->execute([$route_id, $rute, $origin, $destination, $harga, $id]);
     } else {
-      $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, harga) VALUES (?,?,?)");
-      $stmt->execute([$route_id, $rute, $harga]);
+      $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, origin, destination, harga) VALUES (?,?,?,?,?)");
+      $stmt->execute([$route_id, $rute, $origin, $destination, $harga]);
     }
   }
   header('Location: admin.php#segments');

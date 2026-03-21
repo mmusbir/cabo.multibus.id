@@ -6,13 +6,15 @@
     if (isset($_GET['edit_segment'])) {
         $id = intval($_GET['edit_segment']);
         if ($id > 0) {
-            $stmt = $conn->prepare("SELECT id,route_id,rute,harga FROM segments WHERE id=? LIMIT 1");
+            $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,harga FROM segments WHERE id=? LIMIT 1");
             $stmt->execute([$id]);
             $edit_segment = $stmt->fetch(PDO::FETCH_ASSOC);
         }
     }
     $segment_route_id = $edit_segment['route_id'] ?? 0;
     $segment_rute = $edit_segment['rute'] ?? '';
+    $segment_origin = $edit_segment['origin'] ?? '';
+    $segment_destination = $edit_segment['destination'] ?? '';
     $segment_harga = $edit_segment['harga'] ?? '';
     $segment_id = $edit_segment['id'] ?? 0;
 
@@ -47,11 +49,16 @@
                     </select>
                 </div>
 
-                <!-- NAMA SEGMENT -->
+                <!-- NAMA SEGMENT (2 Inputs) -->
                 <div class="input-group">
-                    <span class="input-group-icon">🗺️</span>
-                    <input name="segment_rute" class="modern-input" placeholder="Nama Segment (cth: PRE - MKS)" required
-                        value="<?php echo htmlspecialchars($segment_rute); ?>">
+                    <label style="font-size:11px;font-weight:700">Asal Segment</label>
+                    <input name="segment_origin" class="modern-input" placeholder="Kota Asal" required
+                        value="<?php echo htmlspecialchars($segment_origin); ?>">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:11px;font-weight:700">Tujuan Segment</label>
+                    <input name="segment_destination" class="modern-input" placeholder="Kota Tujuan" required
+                        value="<?php echo htmlspecialchars($segment_destination); ?>">
                 </div>
 
                 <div class="input-group">

@@ -13,9 +13,11 @@
   $route_notes = '';
 
   if ($edit_route) {
-    $route_form_id = $edit_route['id'];
+    $route_id = $edit_route['id'];
     $route_type = 'reguler';
     $route_form_name = $edit_route['name'];
+    $route_origin = $edit_route['origin'] ?? '';
+    $route_destination = $edit_route['destination'] ?? '';
   } elseif ($edit_carter) {
     $route_form_id = $edit_carter['id'];
     $route_type = 'carter';
@@ -48,29 +50,25 @@
       } ?>
       <input type="hidden" name="route_type" id="hidden_route_type" value="<?php echo $route_type; ?>">
 
-      <!-- REGULER FORM -->
-      <div id="form-reguler" class="view-filter-grid"
-        style="box-shadow:none;padding:0;background:transparent;backdrop-filter:none;border:none;margin:0;justify-content:flex-start;display:<?php echo $route_type === 'reguler' ? 'flex' : 'none'; ?>">
-        <div class="input-group" style="flex:1">
-          <span class="input-group-icon">🛣️</span>
-          <input name="route_name" class="modern-input" placeholder="Nama Rute (cth: Makassar - Palopo)"
-            value="<?php echo htmlspecialchars($route_form_name); ?>" style="width:100%">
-        </div>
-      </div>
 
-      <!-- CARTER FORM -->
-      <div id="form-carter" class="modern-form-grid"
-        style="display:<?php echo $route_type === 'carter' ? 'grid' : 'none'; ?>; margin: 0 auto;">
-        <div class="input-group">
-          <label style="font-size:11px;font-weight:700">Asal</label>
-          <input name="origin" class="modern-input" placeholder="Kota Asal"
-            value="<?php echo htmlspecialchars($route_origin); ?>">
-        </div>
-        <div class="input-group">
-          <label style="font-size:11px;font-weight:700">Tujuan</label>
-          <input name="destination" class="modern-input" placeholder="Kota Tujuan"
-            value="<?php echo htmlspecialchars($route_destination); ?>">
-        </div>
+
+
+      <!-- REGULER & CARTER FORM GRID -->
+      <div id="form-shared" class="modern-form-grid" style="margin: 0 auto; display: grid;">
+          <div class="input-group">
+            <label style="font-size:11px;font-weight:700">Keberangkatan (Dari)</label>
+            <input name="origin" class="modern-input" placeholder="Kota Asal"
+              value="<?php echo htmlspecialchars($route_origin); ?>" required>
+          </div>
+          <div class="input-group">
+            <label style="font-size:11px;font-weight:700">Tujuan (Ke)</label>
+            <input name="destination" class="modern-input" placeholder="Kota Tujuan"
+              value="<?php echo htmlspecialchars($route_destination); ?>" required>
+          </div>
+
+          <!-- CARTER ONLY FIELDS -->
+          <div id="carter-fields" style="display:contents">
+
 
         <div class="input-group">
           <label style="font-size:11px;font-weight:700">Jenis Layanan</label>
@@ -104,6 +102,7 @@
           <textarea name="notes" class="modern-input" style="height:60px"
             placeholder="Keterangan rute..."><?php echo htmlspecialchars($route_notes); ?></textarea>
         </div>
+          </div> <!-- /carter-fields -->
       </div>
 
       <div style="margin-top:12px">
@@ -163,9 +162,13 @@
       const hiddenType = document.getElementById('hidden_route_type');
       if (hiddenType) hiddenType.value = type;
 
-      // Show/Hide Forms
-      document.getElementById('form-reguler').style.display = (type === 'reguler' ? 'flex' : 'none');
-      document.getElementById('form-carter').style.display = (type === 'carter' ? 'grid' : 'none');
+      // Show/Hide Carter specific fields
+      const carterFields = document.getElementById('carter-fields');
+      if (type === 'carter') {
+          carterFields.style.display = 'contents';
+      } else {
+          carterFields.style.display = 'none';
+      }
 
       // Reload List
       loadRoutes(1, type);
