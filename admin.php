@@ -447,8 +447,57 @@ function updateSetting($conn, $key, $value)
   }
 }
 
-/********** AJAX HANDLERS (protected) **********/
-/********** REDUNDANT AJAX HANDLERS REMOVED (Handled by admin/ajax.php) **********/
+/********** AJAX HANDLERS (consolidated into admin.php to share sessions on Vercel) **********/
+if (isset($_GET['action'])) {
+  if (empty($_SESSION['admin']) || !$_SESSION['admin']) {
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'unauthorized']);
+    exit;
+  }
+  
+  $action = $_GET['action'];
+  $ajax_dir = __DIR__ . '/admin/ajax/';
+  
+  switch ($action) {
+    case 'routesPage': include $ajax_dir . 'routes.php'; break;
+    case 'bookingsPage': include $ajax_dir . 'bookings.php'; break;
+    case 'customersPage': include $ajax_dir . 'customers.php'; break;
+    case 'chartersPage': include $ajax_dir . 'charters.php'; break;
+    case 'schedulesPage': include $ajax_dir . 'schedules_page.php'; break;
+    case 'usersPage': include $ajax_dir . 'users.php'; break;
+    case 'cancellationsPage': include $ajax_dir . 'cancellations.php'; break;
+    case 'luggagePage': include $ajax_dir . 'luggage_page.php'; break;
+    case 'reportsPage': include $ajax_dir . 'reports.php'; break;
+    case 'luggageServicesPage': include $ajax_dir . 'luggage_services_page.php'; break;
+    case 'luggageServiceCRUD': include $ajax_dir . 'luggage_service_crud.php'; break;
+    case 'getSchedules': include $ajax_dir . 'schedules.php'; break;
+    case 'getPassengers': include $ajax_dir . 'passengers.php'; break;
+    case 'assignDriver': include $ajax_dir . 'assign_driver.php'; break;
+    case 'getAvailableUnits': include $ajax_dir . 'get_available_units.php'; break;
+    case 'getScheduleSeats': include $ajax_dir . 'get_schedule_seats.php'; break;
+    case 'exportReportCsv': include $ajax_dir . 'export_report_csv.php'; break;
+    case 'changePassword': include $ajax_dir . 'change_password.php'; break;
+    case 'delete_charter':
+    case 'get_charter':
+    case 'update_charter':
+    case 'toggle_bop':
+    case 'get_units':
+    case 'get_charter_routes':
+    case 'get_drivers':
+      include $ajax_dir . 'charter_crud.php';
+      break;
+    case 'markLuggagePaid':
+    case 'cancelLuggage':
+    case 'inputLuggage':
+      include $ajax_dir . 'luggage_actions.php';
+      break;
+    default:
+      header('Content-Type: application/json');
+      echo json_encode(['success' => false, 'error' => 'unknown_action_consolidated']);
+      exit;
+  }
+  exit; // Important: stop admin.php from rendering HTML
+}
 
 /********** NON-AJAX ACTIONS (CRUD, IMPORT, CANCEL) **********/
 
@@ -1454,7 +1503,7 @@ include 'includes/units_logic.php';
           formData.append('action', 'changePassword');
 
           try {
-            const res = await fetch('admin/ajax.php?action=changePassword', {
+            const res = await fetch('admin.php?action=changePassword', {
               method: 'POST',
               body: formData
             });
@@ -1523,7 +1572,7 @@ include 'includes/units_logic.php';
     async function ajaxListLoad(target, params) {
       const spinnerWrap = document.getElementById(target + '_spinner_wrap'); if (spinnerWrap) spinnerWrap.style.display = 'flex';
       const tbody = document.getElementById(target + '_tbody'); const pagination = document.getElementById(target + '_pagination'); const info = document.getElementById(target + '_info');
-      const url = new URL('admin/ajax.php', window.location.origin);
+      const url = new URL('admin.php', window.location.origin);
       url.searchParams.set('action', target + 'Page');
 
       if (params) {
@@ -1764,7 +1813,7 @@ include 'includes/units_logic.php';
             formData.append('id', id);
 
             try {
-              const res = await fetch('admin/ajax.php?action=' + action, {
+              const res = await fetch('admin.php?action=' + action, {
                 method: 'POST',
                 body: formData
               });
@@ -2214,7 +2263,7 @@ include 'includes/units_logic.php';
           if (unitSelect) {
             unitSelect.innerHTML = '<option value="">Memuat...</option>';
             try {
-              const res = await fetch(`admin/ajax.php?action=getAvailableUnits&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}`);
+              const res = await fetch(`admin.php?action=getAvailableUnits&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}`);
               const js = await res.json();
               if (js.success) {
                 unitSelect.innerHTML = '';
@@ -2238,7 +2287,7 @@ include 'includes/units_logic.php';
             if (!seatSelect) return;
             seatSelect.innerHTML = '<option value="">Memuat kursi...</option>';
             try {
-              const res = await fetch(`admin/ajax.php?action=getScheduleSeats&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}&unit=${curUnit}`);
+              const res = await fetch(`admin.php?action=getScheduleSeats&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}&unit=${curUnit}`);
               const js = await res.json();
               if (js.success) {
                 seatSelect.innerHTML = '<option value="">Pilih Kursi</option>';
@@ -2446,7 +2495,7 @@ Harga: ${price}`;
           const routeSelect = document.getElementById('edit_charter_route_id');
           routeSelect.innerHTML = '<option value="">Loading...</option>';
           try {
-            const res = await fetch('admin/ajax.php?action=get_charter_routes');
+            const res = await fetch('admin.php?action=get_charter_routes');
             const js = await res.json();
             if (js.success && js.routes) {
               routeSelect.innerHTML = '<option value="">-- Master Rute Carter --</option>';
@@ -2482,7 +2531,7 @@ Harga: ${price}`;
           const unitSelect = document.getElementById('edit_charter_unit');
           unitSelect.innerHTML = '<option value="">Loading...</option>';
           try {
-            const res = await fetch('admin/ajax.php?action=get_units');
+            const res = await fetch('admin.php?action=get_units');
             const js = await res.json();
             if (js.success && js.units) {
               unitSelect.innerHTML = '<option value="">-- Pilih Unit --</option>';
@@ -2499,7 +2548,7 @@ Harga: ${price}`;
           const driverSelect = document.getElementById('edit_charter_driver');
           driverSelect.innerHTML = '<option value="">Loading...</option>';
           try {
-            const res = await fetch('admin/ajax.php?action=get_drivers');
+            const res = await fetch('admin.php?action=get_drivers');
             const js = await res.json();
             if (js.success && js.drivers) {
               driverSelect.innerHTML = '<option value="">-- Pilih Driver --</option>';
@@ -2525,7 +2574,7 @@ Harga: ${price}`;
           const name = this.dataset.name || 'Carter ini';
 
           if (confirm(`Hapus carter "${name}"?\n\nData yang dihapus tidak dapat dikembalikan.`)) {
-            fetch(`admin/ajax.php?action=delete_charter&id=${id}`)
+            fetch(`admin.php?action=delete_charter&id=${id}`)
               .then(res => res.json())
               .then(js => {
                 if (js.success) {
@@ -2547,7 +2596,7 @@ Harga: ${price}`;
           const id = this.dataset.id;
 
           if (confirm('Ubah status BOP menjadi Done?')) {
-            fetch(`admin/ajax.php?action=toggle_bop&id=${id}`)
+            fetch(`admin.php?action=toggle_bop&id=${id}`)
               .then(res => res.json())
               .then(js => {
                 if (js.success) {
@@ -2583,7 +2632,7 @@ Harga: ${price}`;
         e.preventDefault();
         const formData = new FormData(this);
         try {
-          const res = await fetch('admin/ajax.php?action=update_charter', {
+          const res = await fetch('admin.php?action=update_charter', {
             method: 'POST',
             body: formData
           });
@@ -2667,7 +2716,7 @@ Harga: ${price}`;
         formData.append('unit', unit);
         formData.append('driver_id', driverId);
 
-        const res = await fetch('admin/ajax.php?action=assignDriver', {
+        const res = await fetch('admin.php?action=assignDriver', {
           method: 'POST',
           body: formData
         });

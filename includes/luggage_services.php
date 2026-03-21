@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadLuggageServices() {
         lsTbody.innerHTML = '<div class="small" style="grid-column:1/-1;text-align:center">Memuat data...</div>';
-        fetch('admin/ajax.php?action=luggageServicesPage')
+        fetch('admin.php?action=luggageServicesPage')
             .then(r => r.json())
             .then(js => {
                 if (js.success) {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         fd.append('subAction', 'delete');
                         fd.append('id', id);
                         
-                        fetch('admin/ajax.php?action=luggageServiceCRUD', {
+                        fetch('admin.php?action=luggageServiceCRUD', {
                             method: 'POST',
                             body: fd
                         })
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fd.append('name', inputName.value);
         fd.append('price', inputPrice.value);
 
-        fetch('admin/ajax.php?action=luggageServiceCRUD', {
+        fetch('admin.php?action=luggageServiceCRUD', {
             method: 'POST',
             body: fd
         })

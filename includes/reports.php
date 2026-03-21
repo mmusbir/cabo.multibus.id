@@ -190,7 +190,7 @@
 
                 try {
                     const type = document.getElementById('report_type_select').value;
-                    const res = await fetch(`admin/ajax.php?action=reportsPage&start_date=${start}&end_date=${end}&type=${type}`);
+                    const res = await fetch(`admin.php?action=reportsPage&start_date=${start}&end_date=${end}&type=${type}`);
                     const data = await res.json();
 
                     if (data.success) {
@@ -298,7 +298,7 @@
                     return;
                 }
 
-                window.location.href = `admin/ajax.php?action=exportReportCsv&start_date=${start}&end_date=${end}&type=${type}`;
+                window.location.href = `admin.php?action=exportReportCsv&start_date=${start}&end_date=${end}&type=${type}`;
             };
         }
     });
