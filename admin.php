@@ -156,8 +156,14 @@ $conn->exec("CREATE TABLE IF NOT EXISTS schedules (
     seats INT DEFAULT 8,
     unit_id INT,
     layout TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(rute, dow, jam)
 )");
+
+// Try to add unique constraint if missing
+try {
+  @$conn->exec("ALTER TABLE schedules ADD CONSTRAINT unique_schedule_combo UNIQUE (rute, dow, jam)");
+} catch (PDOException $e) { /* ignore */ }
 
 // Ensure units table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS units (
@@ -242,7 +248,8 @@ $conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
     rental_price NUMERIC(15,2) DEFAULT 0,
     bop_price NUMERIC(15,2) DEFAULT 0,
     notes TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(origin, destination, duration)
 )");
 
 // Ensure master_carter table exists (finished)
@@ -571,7 +578,7 @@ if (isset($_POST['save_route'])) {
         $stmt = $conn->prepare("UPDATE master_carter SET name=?, origin=?, destination=?, duration=?, rental_price=?, bop_price=?, notes=? WHERE id=?");
         $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes, $route_id]);
       } else {
-        $stmt = $conn->prepare("INSERT INTO master_carter(name, origin, destination, duration, rental_price, bop_price, notes) VALUES(?,?,?,?,?,?,?)");
+        $stmt = $conn->prepare("INSERT INTO master_carter(name, origin, destination, duration, rental_price, bop_price, notes) VALUES(?,?,?,?,?,?,?) ON CONFLICT (origin, destination, duration) DO NOTHING");
         $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes]);
       }
     }
@@ -630,7 +637,7 @@ if (isset($_POST['save_schedule'])) {
       $stmt = $conn->prepare("UPDATE schedules SET rute=?, dow=?, jam=?, units=?, seats=?, unit_id=? WHERE id=?");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id, $schedule_id]);
     } else {
-      $stmt = $conn->prepare("INSERT INTO schedules (rute,dow,jam,units,seats,unit_id) VALUES (?,?,?,?,?,?) ON CONFLICT DO UPDATE SET units=EXCLUDED.units, seats=EXCLUDED.seats, unit_id=EXCLUDED.unit_id");
+      $stmt = $conn->prepare("INSERT INTO schedules (rute,dow,jam,units,seats,unit_id) VALUES (?,?,?,?,?,?) ON CONFLICT (rute, dow, jam) DO UPDATE SET units=EXCLUDED.units, seats=EXCLUDED.seats, unit_id=EXCLUDED.unit_id");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id]);
     }
   }
