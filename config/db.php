@@ -8,8 +8,8 @@ $DATABASE_URL = getenv('DATABASE_URL') ?: 'postgresql://postgres:password@localh
 $db_parts = parse_url($DATABASE_URL);
 $db_host = $db_parts['host'] ?? 'localhost';
 $db_port = $db_parts['port'] ?? 5432;
-$db_user = $db_parts['user'] ?? 'postgres';
-$db_pass = $db_parts['pass'] ?? '';
+$db_user = urldecode($db_parts['user'] ?? 'postgres');
+$db_pass = urldecode($db_parts['pass'] ?? '');
 $db_name = ltrim($db_parts['path'] ?? '/postgres', '/');
 
 // Build DSN
@@ -25,11 +25,7 @@ try {
     // Set timezone to UTC+8 (WITA)
     $conn->exec("SET timezone = 'Asia/Makassar'");
 } catch (PDOException $e) {
-    // In production, don't expose connection details
-    if (getenv('APP_ENV') === 'production') {
-        die('Database connection failed.');
-    }
-    die('Database connection failed: ' . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> ' . (empty(getenv('DATABASE_URL')) ? 'URL KOSONG' : 'URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)'));
 }
 
 // Set timezone for PHP
