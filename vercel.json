@@ -1,7 +1,16 @@
 {
-  "functions": {
-    "**/*.php": {
-      "runtime": "vercel-php@0.6.2"
+  "builds": [
+    {
+      "src": "api.php",
+      "use": "vercel-php@0.6.2"
+    },
+    {
+      "src": "admin.php",
+      "use": "vercel-php@0.6.2"
+    },
+    {
+      "src": "admin/ajax.php",
+      "use": "vercel-php@0.6.2"
     }
-  }
+  ]
 }
