@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // admin.php — modified for local debug (auto-login) + error reporting
 // IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
 
