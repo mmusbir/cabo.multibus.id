@@ -420,6 +420,42 @@ function formatCustomerId($id, $created_at)
   return 'CST' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
+function buildQueryString($overrides = [])
+{
+  $qs = array_merge($_GET, $overrides);
+  foreach ($qs as $k => $v)
+    if ($v === null)
+      unset($qs[$k]);
+  return http_build_query($qs);
+}
+
+function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2)
+{
+  if ($total <= $per_page)
+    return '';
+  $total_pages = (int) ceil($total / $per_page);
+  $html = '<div style="display:flex;align-items:center;gap:8px;margin-top:8px;" class="pagination-container">';
+  $prev = max(1, $current_page - 1);
+  $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $prev]) . '" data-target="' . $param_prefix . '" data-page="' . $prev . '">Prev</a>';
+  $start = max(1, $current_page - $around);
+  $end = min($total_pages, $current_page + $around);
+  if ($start > 1)
+    $html .= '<span class="small dots">...</span>';
+  for ($p = $start; $p <= $end; $p++) {
+    if ($p == $current_page)
+      $html .= '<span class="badge active">' . $p . '</span>';
+    else
+      $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $p]) . '" data-target="' . $param_prefix . '" data-page="' . $p . '">' . $p . '</a>';
+  }
+  if ($end < $total_pages)
+    $html .= '<span class="small dots">...</span>';
+  $next = min($total_pages, $current_page + 1);
+  $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $next]) . '" data-target="' . $param_prefix . '" data-page="' . $next . '">Next</a>';
+  $html .= '<div class="small" style="margin-left:12px">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
+  $html .= '</div>';
+  return $html;
+}
+
 /* Settings helper */
 function getSetting($conn, $key, $default = null)
 {
@@ -448,55 +484,67 @@ function updateSetting($conn, $key, $value)
 }
 
 /********** AJAX HANDLERS (consolidated into admin.php to share sessions on Vercel) **********/
-if (isset($_GET['action'])) {
-  if (empty($_SESSION['admin']) || !$_SESSION['admin']) {
+if (isset($_REQUEST['action'])) {
+  try {
+    if (empty($_SESSION['admin']) || !$_SESSION['admin']) {
+      header('Content-Type: application/json');
+      echo json_encode(['success' => false, 'error' => 'unauthorized']);
+      exit;
+    }
+    
+    $action = $_REQUEST['action'];
+    $ajax_dir = __DIR__ . '/admin/ajax/';
+    
+    switch ($action) {
+      case 'routesPage': include $ajax_dir . 'routes.php'; break;
+      case 'bookingsPage': include $ajax_dir . 'bookings.php'; break;
+      case 'customersPage': include $ajax_dir . 'customers.php'; break;
+      case 'chartersPage': include $ajax_dir . 'charters.php'; break;
+      case 'schedulesPage': include $ajax_dir . 'schedules_page.php'; break;
+      case 'usersPage': include $ajax_dir . 'users.php'; break;
+      case 'cancellationsPage': include $ajax_dir . 'cancellations.php'; break;
+      case 'luggagePage': include $ajax_dir . 'luggage_page.php'; break;
+      case 'reportsPage': include $ajax_dir . 'reports.php'; break;
+      case 'luggageServicesPage': include $ajax_dir . 'luggage_services_page.php'; break;
+      case 'luggageServiceCRUD': include $ajax_dir . 'luggage_service_crud.php'; break;
+      case 'getSchedules': include $ajax_dir . 'schedules.php'; break;
+      case 'getPassengers': include $ajax_dir . 'passengers.php'; break;
+      case 'assignDriver': include $ajax_dir . 'assign_driver.php'; break;
+      case 'getAvailableUnits': include $ajax_dir . 'get_available_units.php'; break;
+      case 'getScheduleSeats': include $ajax_dir . 'get_schedule_seats.php'; break;
+      case 'exportReportCsv': include $ajax_dir . 'export_report_csv.php'; break;
+      case 'changePassword': include $ajax_dir . 'change_password.php'; break;
+      case 'delete_charter':
+      case 'get_charter':
+      case 'update_charter':
+      case 'toggle_bop':
+      case 'get_units':
+      case 'get_charter_routes':
+      case 'get_drivers':
+        include $ajax_dir . 'charter_crud.php';
+        break;
+      case 'markLuggagePaid':
+      case 'cancelLuggage':
+      case 'inputLuggage':
+        include $ajax_dir . 'luggage_actions.php';
+        break;
+      default:
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'unknown_action_consolidated: ' . $action]);
+        exit;
+    }
+    exit;
+  } catch (Error $e) {
+    if (ob_get_length()) ob_end_clean();
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'unauthorized']);
+    echo json_encode(['success' => false, 'error' => 'PHP_ERROR: ' . $e->getMessage()]);
+    exit;
+  } catch (Exception $ex) {
+    if (ob_get_length()) ob_end_clean();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'EXCEPTION: ' . $ex->getMessage()]);
     exit;
   }
-  
-  $action = $_GET['action'];
-  $ajax_dir = __DIR__ . '/admin/ajax/';
-  
-  switch ($action) {
-    case 'routesPage': include $ajax_dir . 'routes.php'; break;
-    case 'bookingsPage': include $ajax_dir . 'bookings.php'; break;
-    case 'customersPage': include $ajax_dir . 'customers.php'; break;
-    case 'chartersPage': include $ajax_dir . 'charters.php'; break;
-    case 'schedulesPage': include $ajax_dir . 'schedules_page.php'; break;
-    case 'usersPage': include $ajax_dir . 'users.php'; break;
-    case 'cancellationsPage': include $ajax_dir . 'cancellations.php'; break;
-    case 'luggagePage': include $ajax_dir . 'luggage_page.php'; break;
-    case 'reportsPage': include $ajax_dir . 'reports.php'; break;
-    case 'luggageServicesPage': include $ajax_dir . 'luggage_services_page.php'; break;
-    case 'luggageServiceCRUD': include $ajax_dir . 'luggage_service_crud.php'; break;
-    case 'getSchedules': include $ajax_dir . 'schedules.php'; break;
-    case 'getPassengers': include $ajax_dir . 'passengers.php'; break;
-    case 'assignDriver': include $ajax_dir . 'assign_driver.php'; break;
-    case 'getAvailableUnits': include $ajax_dir . 'get_available_units.php'; break;
-    case 'getScheduleSeats': include $ajax_dir . 'get_schedule_seats.php'; break;
-    case 'exportReportCsv': include $ajax_dir . 'export_report_csv.php'; break;
-    case 'changePassword': include $ajax_dir . 'change_password.php'; break;
-    case 'delete_charter':
-    case 'get_charter':
-    case 'update_charter':
-    case 'toggle_bop':
-    case 'get_units':
-    case 'get_charter_routes':
-    case 'get_drivers':
-      include $ajax_dir . 'charter_crud.php';
-      break;
-    case 'markLuggagePaid':
-    case 'cancelLuggage':
-    case 'inputLuggage':
-      include $ajax_dir . 'luggage_actions.php';
-      break;
-    default:
-      header('Content-Type: application/json');
-      echo json_encode(['success' => false, 'error' => 'unknown_action_consolidated']);
-      exit;
-  }
-  exit; // Important: stop admin.php from rendering HTML
 }
 
 /********** NON-AJAX ACTIONS (CRUD, IMPORT, CANCEL) **********/
