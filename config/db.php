@@ -26,7 +26,12 @@ try {
     // Set timezone to UTC+8 (WITA)
     $conn->exec("SET timezone = 'Asia/Makassar'");
 } catch (PDOException $e) {
-    die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> ' . (empty($env_url) ? 'URL KOSONG' : 'URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)'));
+    if (empty($env_url)) {
+        $keys_env = array_keys($_ENV);
+        $keys_server = array_keys($_SERVER);
+        die("Database connection failed: " . $e->getMessage() . "<br><br><b>Debug URL KOSONG.</b><br>Kunci \$_ENV yang tersedia: " . implode(', ', $keys_env) . "<br>Kunci \$_SERVER yang tersedia: " . implode(', ', $keys_server));
+    }
+    die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)');
 }
 
 // Set timezone for PHP
