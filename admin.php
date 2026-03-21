@@ -1,0 +1,2680 @@
+<?php
+// admin.php — modified for local debug (auto-login) + error reporting
+// IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
+
+// Error reporting - disable in production
+if (getenv('APP_ENV') === 'production') {
+  ini_set('display_errors', 0);
+  ini_set('display_startup_errors', 0);
+  error_reporting(0);
+} else {
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+}
+
+if (session_status() === PHP_SESSION_NONE) {
+  // Secure session settings
+  ini_set('session.cookie_httponly', 1);
+  if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    ini_set('session.cookie_secure', 1);
+  }
+  session_start();
+}
+
+/* ------------------ AUTO-LOGIN DEBUG REMOVED ------------------ */
+
+// --- Database Connection ---
+require_once 'config/db.php';
+
+// Ensure charters table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS charters (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    departure_time TIME,
+    pickup_point VARCHAR(255),
+    drop_point VARCHAR(255),
+    unit_id INT,
+    driver_name VARCHAR(100),
+    price NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Add columns if they don't exist (for existing tables)
+if (!db_column_exists($conn, 'charters', 'departure_time')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN departure_time TIME");
+}
+if (!db_column_exists($conn, 'charters', 'company_name')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN company_name VARCHAR(255)");
+}
+if (!db_column_exists($conn, 'charters', 'bop_status')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN bop_status VARCHAR(20) DEFAULT 'pending'");
+}
+if (!db_column_exists($conn, 'charters', 'layanan')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN layanan VARCHAR(255) DEFAULT 'Regular'");
+}
+if (!db_column_exists($conn, 'charters', 'bop_price')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
+}
+
+/**
+ * AUTO-SYNC: Sync existing charters with master routes data
+ */
+$syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
+            FROM master_carter r
+            WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
+              AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
+              AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
+$conn->exec($syncSql);
+
+// Add segment_id, price, discount to bookings if not exists
+if (!db_column_exists($conn, 'bookings', 'segment_id')) {
+  $conn->exec("ALTER TABLE bookings ADD COLUMN segment_id INT");
+  $conn->exec("ALTER TABLE bookings ADD COLUMN price NUMERIC(15,2) DEFAULT 0");
+  $conn->exec("ALTER TABLE bookings ADD COLUMN discount NUMERIC(15,2) DEFAULT 0");
+}
+
+// Ensure drivers table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS drivers (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    phone VARCHAR(50),
+    unit_id INT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure segments table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS segments (
+    id SERIAL PRIMARY KEY,
+    route_id INT DEFAULT 0,
+    rute VARCHAR(100) NOT NULL,
+    harga NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+// Add route_id column if it doesn't exist
+if (!db_column_exists($conn, 'segments', 'route_id')) {
+  $conn->exec("ALTER TABLE segments ADD COLUMN route_id INT DEFAULT 0");
+}
+
+// Ensure trip_assignments table exists (links Trip -> Driver)
+$conn->exec("CREATE TABLE IF NOT EXISTS trip_assignments (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100),
+    tanggal DATE,
+    jam TIME,
+    unit INT,
+    driver_id INT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE (rute, tanggal, jam, unit)
+)");
+
+// Ensure bookings table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS bookings (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100) NOT NULL,
+    tanggal DATE NOT NULL,
+    jam TIME NOT NULL,
+    unit INT DEFAULT 1,
+    seat VARCHAR(20) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    pickup_point VARCHAR(255),
+    pembayaran VARCHAR(50) DEFAULT 'Belum Lunas',
+    status VARCHAR(20) DEFAULT 'active',
+    segment_id INT DEFAULT 0,
+    price NUMERIC(15,2) DEFAULT 0,
+    discount NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure customers table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL UNIQUE,
+    address TEXT,
+    pickup_point VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure schedules table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS schedules (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100) NOT NULL,
+    dow INT NOT NULL,
+    jam TIME NOT NULL,
+    units INT DEFAULT 1,
+    seats INT DEFAULT 8,
+    unit_id INT,
+    layout TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure units table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS units (
+    id SERIAL PRIMARY KEY,
+    nopol VARCHAR(50) NOT NULL UNIQUE,
+    merek VARCHAR(100),
+    type VARCHAR(100),
+    category VARCHAR(100) DEFAULT 'Big Bus',
+    tahun INT DEFAULT 0,
+    kapasitas INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'Aktif',
+    layout TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure settings table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS settings (
+    key VARCHAR(100) PRIMARY KEY,
+    value TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure cancellations table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS cancellations (
+    id SERIAL PRIMARY KEY,
+    booking_id INT NOT NULL,
+    admin_user VARCHAR(100),
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure luggage_services table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS luggage_services (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price NUMERIC(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure luggages table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS luggages (
+    id SERIAL PRIMARY KEY,
+    sender_name VARCHAR(255) NOT NULL,
+    sender_phone VARCHAR(50) NOT NULL,
+    sender_address TEXT,
+    receiver_name VARCHAR(255) NOT NULL,
+    receiver_phone VARCHAR(50) NOT NULL,
+    receiver_address TEXT,
+    service_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    notes TEXT,
+    price NUMERIC(15,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    payment_status VARCHAR(20) DEFAULT 'Belum Lunas',
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// SERIAL handles auto-increment in PostgreSQL, no ALTER needed
+
+// Ensure routes table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS routes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure master_carter table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    origin VARCHAR(255),
+    destination VARCHAR(255),
+    duration VARCHAR(50),
+    rental_price NUMERIC(15,2) DEFAULT 0,
+    bop_price NUMERIC(15,2) DEFAULT 0,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure users table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    fullname VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+// Create default admin if users table is empty
+$userCheck = $conn->query("SELECT id FROM users LIMIT 1");
+if ($userCheck->rowCount() === 0) {
+    $default_hash = password_hash('admin', PASSWORD_BCRYPT);
+    $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
+}
+
+/********** AUTH HANDLER **********/
+if (isset($_POST['login'])) {
+  $username = $_POST['username'] ?? '';
+  $password = $_POST['password'] ?? '';
+  if ($username && $password) {
+    try {
+      $stmt = $conn->prepare("SELECT id, password_hash FROM users WHERE username=? LIMIT 1");
+      $stmt->execute([$username]);
+      $res = $stmt->fetch();
+      if ($res && password_verify($password, $res['password_hash'])) {
+        $_SESSION['admin'] = true;
+        $_SESSION['admin_user'] = $username;
+        header('Location: admin.php');
+        exit;
+      } else {
+        $login_error = 'Login gagal — cek username/password';
+      }
+    } catch (PDOException $e) {
+      $login_error = 'Kesalahan query database: ' . htmlspecialchars($e->getMessage());
+    }
+  } else {
+    $login_error = 'Masukkan username & password';
+  }
+}
+if (isset($_GET['logout'])) {
+  session_destroy();
+  // Add after_logout flag to prevent immediate auto-login
+  header('Location: admin.php?after_logout=1');
+  exit;
+}
+
+/********** EDIT-FETCH HANDLERS **********/
+$edit_route = null;
+if (isset($_GET['edit_route'])) {
+  $id = intval($_GET['edit_route']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM routes WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_route = $stmt->fetch();
+  }
+}
+$edit_carter = null;
+if (isset($_GET['edit_carter'])) {
+  $id = intval($_GET['edit_carter']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_carter = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_schedule'])) {
+  $id = intval($_GET['edit_schedule']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,rute,dow,jam,units,unit_id FROM schedules WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_schedule = $stmt->fetch();
+    if ($edit_schedule && isset($edit_schedule['jam']))
+      $edit_schedule['jam'] = substr($edit_schedule['jam'], 0, 5);
+  }
+}
+if (isset($_GET['edit_customer'])) {
+  $id = intval($_GET['edit_customer']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,name,phone,pickup_point,address FROM customers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_customer = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_user'])) {
+  $id = intval($_GET['edit_user']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,username,fullname FROM users WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_user = $stmt->fetch();
+  }
+}
+$edit_driver = null;
+if (isset($_GET['edit_driver'])) {
+  $id = intval($_GET['edit_driver']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,nama,phone,unit_id FROM drivers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_driver = $stmt->fetch();
+  }
+}
+$edit_segment = null;
+if (isset($_GET['edit_segment'])) {
+  $id = intval($_GET['edit_segment']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,route_id,rute,harga FROM segments WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_segment = $stmt->fetch();
+  }
+}
+
+// Fetch All Segments for Dropdowns
+$globalSegments = [];
+$resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
+while ($rs = $resSeg->fetch()) {
+  $globalSegments[] = $rs;
+}
+
+/********** HELPERS **********/
+function validDate($d)
+{
+  return preg_match('/^\d{4}-\d{2}-\d{2}$/', $d);
+}
+function validTime($t)
+{
+  return preg_match('/^\d{2}:\d{2}$/', $t);
+}
+
+function formatTimeWithLabel($timeStr)
+{
+  if (!$timeStr || $timeStr === '00:00:00' || $timeStr === '-')
+    return '-';
+  $time = strtotime($timeStr);
+  $hour = (int) date('H', $time);
+  $ampm = date('h:i A', $time);
+
+  $label = 'Malam';
+  if ($hour >= 5 && $hour < 11)
+    $label = 'Pagi';
+  elseif ($hour >= 11 && $hour < 15)
+    $label = 'Siang';
+  elseif ($hour >= 15 && $hour < 19)
+    $label = 'Sore';
+
+  return $ampm . ' (' . $label . ')';
+}
+
+function formatBookingId($id, $created_at)
+{
+  $year = date('y', strtotime($created_at)); // 2 digits year
+  return '#CBP' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+function formatCustomerId($id, $created_at)
+{
+  $year = date('y', strtotime($created_at));
+  return 'CST' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+/* Settings helper */
+function getSetting($conn, $key, $default = null)
+{
+  if (!$conn)
+    return $default;
+  try {
+    $stmt = $conn->prepare("SELECT value FROM settings WHERE key=? LIMIT 1");
+    $stmt->execute([$key]);
+    $row = $stmt->fetch();
+    return $row ? $row['value'] : $default;
+  } catch (PDOException $e) {
+    return $default;
+  }
+}
+
+function updateSetting($conn, $key, $value)
+{
+  if (!$conn)
+    return false;
+  try {
+    $stmt = $conn->prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value");
+    return $stmt->execute([$key, $value]);
+  } catch (PDOException $e) {
+    return false;
+  }
+}
+
+/********** AJAX HANDLERS (protected) **********/
+/********** REDUNDANT AJAX HANDLERS REMOVED (Handled by admin/ajax.php) **********/
+
+/********** NON-AJAX ACTIONS (CRUD, IMPORT, CANCEL) **********/
+
+/* ROUTES */
+if (isset($_POST['save_route'])) {
+  $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
+  $type = isset($_POST['route_type']) && $_POST['route_type'] === 'carter' ? 'carter' : 'reguler';
+
+  $name = trim($_POST['route_name'] ?? '');
+  $origin = trim($_POST['origin'] ?? '');
+  $destination = trim($_POST['destination'] ?? '');
+  $duration = trim($_POST['duration'] ?? '');
+  $rental = floatval($_POST['rental_price'] ?? 0);
+  $bop = floatval($_POST['bop_price'] ?? 0);
+  $notes = trim($_POST['notes'] ?? '');
+
+  if ($type === 'carter') {
+    if ($origin && $destination) {
+      $name = "$origin - $destination";
+    }
+    if ($name) {
+      if ($route_id > 0) {
+        $stmt = $conn->prepare("UPDATE master_carter SET name=?, origin=?, destination=?, duration=?, rental_price=?, bop_price=?, notes=? WHERE id=?");
+        $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes, $route_id]);
+      } else {
+        $stmt = $conn->prepare("INSERT INTO master_carter(name, origin, destination, duration, rental_price, bop_price, notes) VALUES(?,?,?,?,?,?,?)");
+        $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes]);
+      }
+    }
+  } else {
+    if ($name) {
+      if ($route_id > 0) {
+        // Fetch old route name first for cascading update
+        $stmtOld = $conn->prepare("SELECT name FROM routes WHERE id=? LIMIT 1");
+        $stmtOld->execute([$route_id]);
+        $oldRoute = $stmtOld->fetch();
+        $oldName = $oldRoute ? $oldRoute['name'] : '';
+
+        // Update the route name
+        $stmt = $conn->prepare("UPDATE routes SET name=? WHERE id=?");
+        $stmt->execute([$name, $route_id]);
+
+        // Cascading update: update bookings.rute and schedules.rute if name changed
+        if ($oldName && $oldName !== $name) {
+          $stmtB = $conn->prepare("UPDATE bookings SET rute=? WHERE rute=?");
+          $stmtB->execute([$name, $oldName]);
+
+          $stmtS = $conn->prepare("UPDATE schedules SET rute=? WHERE rute=?");
+          $stmtS->execute([$name, $oldName]);
+        }
+      } else {
+        $stmt = $conn->prepare("INSERT INTO routes(name) VALUES(?)");
+        $stmt->execute([$name]);
+      }
+    }
+  }
+  header('Location: admin.php#routes');
+  exit;
+}
+if (isset($_GET['delete_route'])) {
+  $id = intval($_GET['delete_route']);
+  $stmt = $conn->prepare("DELETE FROM routes WHERE id=?");
+  $stmt->execute([$id]);
+  header('Location: admin.php#routes');
+  exit;
+}
+if (isset($_GET['delete_carter'])) {
+  $id = intval($_GET['delete_carter']);
+  $stmt = $conn->prepare("DELETE FROM master_carter WHERE id=?");
+  $stmt->execute([$id]);
+  header('Location: admin.php#routes');
+  exit;
+}
+
+/* SCHEDULES */
+if (isset($_POST['save_schedule'])) {
+  $schedule_id = isset($_POST['schedule_id']) ? intval($_POST['schedule_id']) : 0;
+  $rute = trim($_POST['sch_rute'] ?? '');
+  $dow = intval($_POST['sch_dow'] ?? 0);
+  $jam = $_POST['sch_jam'] ?? '';
+  $units = intval($_POST['sch_units'] ?? 1);
+  $seats = intval($_POST['sch_seats'] ?? 8);
+  $unit_id = isset($_POST['sch_unit_id']) && $_POST['sch_unit_id'] !== '' ? intval($_POST['sch_unit_id']) : null;
+  if ($rute && $jam) {
+    if ($schedule_id > 0) {
+      $stmt = $conn->prepare("UPDATE schedules SET rute=?, dow=?, jam=?, units=?, seats=?, unit_id=? WHERE id=?");
+      $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id, $schedule_id]);
+    } else {
+      $stmt = $conn->prepare("INSERT INTO schedules (rute,dow,jam,units,seats,unit_id) VALUES (?,?,?,?,?,?) ON CONFLICT DO UPDATE SET units=EXCLUDED.units, seats=EXCLUDED.seats, unit_id=EXCLUDED.unit_id");
+      $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id]);
+    }
+  }
+  header('Location: admin.php');
+  exit;
+}
+if (isset($_GET['delete_schedule'])) {
+  $id = intval($_GET['delete_schedule']);
+  $stmt = $conn->prepare("DELETE FROM schedules WHERE id=?");
+  $stmt->execute([$id]);
+  header('Location: admin.php');
+  exit;
+}
+
+/* BOOKINGS cancel (server) — supports AJAX (returns JSON) */
+if (isset($_POST['save_booking_edit'])) {
+  $id = intval($_POST['booking_id']);
+  $seat = trim($_POST['seat']);
+  $unit = intval($_POST['unit'] ?? 1);
+  $pickup = trim($_POST['pickup_point']);
+  $pembayaran = isset($_POST['edit_pembayaran']) ? trim($_POST['edit_pembayaran']) : '';
+  $segment_id = intval($_POST['segment_id'] ?? 0);
+  $price = floatval($_POST['price'] ?? 0);
+  $discount = floatval($_POST['discount'] ?? 0);
+
+  if ($pembayaran === '') {
+    $pembayaran = 'Belum Lunas';
+  }
+
+  if ($id > 0) {
+    $stmt = $conn->prepare("UPDATE bookings SET seat=?, unit=?, pickup_point=?, pembayaran=?, segment_id=?, price=?, discount=? WHERE id=?");
+    $stmt->execute([$seat, $unit, $pickup, $pembayaran, $segment_id, $price, $discount, $id]);
+  }
+  header('Location: admin.php');
+  exit;
+}
+if (isset($_GET['cancel_booking'])) {
+  $id = intval($_GET['cancel_booking']);
+  $reason = trim($_GET['reason'] ?? '');
+  $admin_user = $_SESSION['admin_user'] ?? 'unknown';
+  $result = ['success' => false];
+  if ($id > 0) {
+    $stmt = $conn->prepare("UPDATE bookings SET status='canceled' WHERE id=? AND status!='canceled'");
+    $stmt->execute([$id]);
+    $affected = $stmt->rowCount();
+    if ($affected > 0) {
+      $stmt2 = $conn->prepare("INSERT INTO cancellations (booking_id, admin_user, reason) VALUES (?,?,?)");
+      $stmt2->execute([$id, $admin_user, $reason]);
+      $result['success'] = true;
+    } else {
+      $result['error'] = 'nothing_changed';
+    }
+  } else {
+    $result['error'] = 'invalid_id';
+  }
+  $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+  if ($isAjax || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+    header('Content-Type: application/json');
+    echo json_encode($result);
+    exit;
+  }
+  header('Location: admin.php');
+  exit;
+}
+
+/* BOOKINGS mark paid (server) — supports AJAX (returns JSON) */
+if (isset($_GET['mark_paid'])) {
+  $id = intval($_GET['mark_paid']);
+  $result = ['success' => false];
+  if ($id > 0) {
+    $stmt = $conn->prepare("UPDATE bookings SET pembayaran='Lunas' WHERE id=?");
+    $stmt->execute([$id]);
+    $affected = $stmt->rowCount();
+    if ($affected > 0) {
+      $result['success'] = true;
+    } else {
+      $result['error'] = 'nothing_changed';
+    }
+  } else {
+    $result['error'] = 'invalid_id';
+  }
+  $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+  if ($isAjax || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+    header('Content-Type: application/json');
+    echo json_encode($result);
+    exit;
+  }
+  header('Location: admin.php');
+  exit;
+}
+
+/* USERS create/update */
+if (isset($_POST['add_user'])) {
+  $username = trim($_POST['username'] ?? '');
+  $password = $_POST['password'] ?? '';
+  $fullname = trim($_POST['fullname'] ?? '');
+  if ($username && $password) {
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+    $stmt = $conn->prepare("INSERT INTO users(username,password_hash,fullname) VALUES(?,?,?) ON CONFLICT (username) DO UPDATE SET password_hash=EXCLUDED.password_hash, fullname=EXCLUDED.fullname");
+    $stmt->execute([$username, $hash, $fullname]);
+  }
+  header('Location: admin.php');
+  exit;
+}
+if (isset($_GET['delete_user'])) {
+  $id = intval($_GET['delete_user']);
+  $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
+  $stmt->execute([$id]);
+  header('Location: admin.php');
+  exit;
+}
+
+/* SETTINGS save */
+if (isset($_POST['save_settings'])) {
+  $enable_claude = isset($_POST['enable_claude_haiku_4_5']) ? '1' : '0';
+  updateSetting($conn, 'enable_claude_haiku_4_5', $enable_claude);
+  $_SESSION['settings_saved'] = true;
+  header('Location: admin.php#settings');
+  exit;
+}
+
+/* CUSTOMERS save/delete/import */
+if (isset($_POST['save_customer'])) {
+  $cid = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
+  $name = trim($_POST['cust_name'] ?? '');
+  $name = strtoupper($name); // Force Uppercase
+
+  $phone = trim($_POST['cust_phone'] ?? '');
+  $phone = preg_replace('/\D/', '', $phone); // Remove non-digits
+  if (substr($phone, 0, 2) === '62')
+    $phone = '0' . substr($phone, 2);
+  if (substr($phone, 0, 1) === '8')
+    $phone = '0' . $phone;
+  if (strlen($phone) > 13)
+    $phone = substr($phone, 0, 13);
+
+  $pickup = trim($_POST['cust_pickup'] ?? '');
+  $address = trim($_POST['cust_address'] ?? '');
+  if ($name && $phone) {
+    // Check duplicate phone
+    $stmtC = $conn->prepare("SELECT id, name FROM customers WHERE phone=? LIMIT 1");
+    $stmtC->execute([$phone]);
+    $existing = $stmtC->fetch();
+
+    if ($existing) {
+      if ($cid > 0 && $existing['id'] != $cid) {
+        $_SESSION['import_msg'] = "Gagal: No HP $phone sudah terdaftar atas nama " . $existing['name'];
+        header('Location: admin.php#customers');
+        exit;
+      }
+      if ($cid == 0) {
+        $_SESSION['import_msg'] = "Gagal: No HP $phone sudah terdaftar atas nama " . $existing['name'];
+        header('Location: admin.php#customers');
+        exit;
+      }
+    }
+
+    if ($cid > 0) {
+      $stmt = $conn->prepare("UPDATE customers SET name=?, phone=?, pickup_point=?, address=? WHERE id=?");
+      $stmt->execute([$name, $phone, $pickup, $address, $cid]);
+    } else {
+      $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
+      $stmt->execute([$name, $phone, $address, $pickup]);
+    }
+  }
+  header('Location: admin.php');
+  exit;
+}
+
+if (isset($_POST['export_customers'])) {
+  header('Content-Type: text/csv; charset=utf-8');
+  header('Content-Disposition: attachment; filename=customers_' . date('Y-m-d_H-i') . '.csv');
+  $output = fopen('php://output', 'w');
+
+  // CSV Header
+  fputcsv($output, ['ID', 'Nama', 'No HP', 'Alamat', 'Pickup Point', 'Created At']);
+
+  // Data
+  $stmt = $conn->prepare("SELECT id, name, phone, address, pickup_point, created_at FROM customers ORDER BY name ASC");
+  $stmt->execute();
+  while ($row = $stmt->fetch()) {
+    fputcsv($output, [
+      formatCustomerId($row['id'], $row['created_at']),
+      $row['name'],
+      $row['phone'],
+      $row['address'],
+      $row['pickup_point'],
+      $row['created_at']
+    ]);
+  }
+  fclose($output);
+  exit;
+}
+
+if (isset($_GET['delete_customer'])) {
+  $id = intval($_GET['delete_customer']);
+  $stmt = $conn->prepare("DELETE FROM customers WHERE id=?");
+  $stmt->execute([$id]);
+  header('Location: admin.php');
+  exit;
+}
+
+/* DRIVERS save/delete */
+if (isset($_POST['save_driver'])) {
+  $id = isset($_POST['driver_id']) ? intval($_POST['driver_id']) : 0;
+  $nama = trim($_POST['driver_nama'] ?? '');
+  $phone = trim($_POST['driver_phone'] ?? '');
+  $unit_id = intval($_POST['driver_unit_id'] ?? 0);
+
+  if ($nama && $phone && $unit_id > 0) {
+    if ($id > 0) {
+      $stmt = $conn->prepare("UPDATE drivers SET nama=?, phone=?, unit_id=? WHERE id=?");
+      $stmt->execute([$nama, $phone, $unit_id, $id]);
+    } else {
+      $stmt = $conn->prepare("INSERT INTO drivers (nama, phone, unit_id) VALUES (?,?,?)");
+      $stmt->execute([$nama, $phone, $unit_id]);
+    }
+  }
+  header('Location: admin.php#drivers');
+  exit;
+}
+if (isset($_GET['delete_driver'])) {
+  $id = intval($_GET['delete_driver']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("DELETE FROM drivers WHERE id=?");
+    $stmt->execute([$id]);
+  }
+  header('Location: admin.php#drivers');
+  exit;
+}
+
+/* SEGMENTS save/delete */
+if (isset($_POST['save_segment'])) {
+  $id = isset($_POST['segment_id']) ? intval($_POST['segment_id']) : 0;
+  $route_id = isset($_POST['segment_route_id']) ? intval($_POST['segment_route_id']) : 0;
+  $rute = trim($_POST['segment_rute'] ?? '');
+  $harga = floatval($_POST['segment_harga'] ?? 0);
+
+  if ($rute) {
+    if ($id > 0) {
+      $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, harga=? WHERE id=?");
+      $stmt->execute([$route_id, $rute, $harga, $id]);
+    } else {
+      $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, harga) VALUES (?,?,?)");
+      $stmt->execute([$route_id, $rute, $harga]);
+    }
+  }
+  header('Location: admin.php#segments');
+  exit;
+}
+if (isset($_GET['delete_segment'])) {
+  $id = intval($_GET['delete_segment']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("DELETE FROM segments WHERE id=?");
+    $stmt->execute([$id]);
+  }
+  header('Location: admin.php#segments');
+  exit;
+}
+if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
+  $fileKey = isset($_FILES['csv_file']) ? 'csv_file' : 'csv';
+  if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+    $_SESSION['import_msg'] = 'Upload gagal';
+    header('Location: admin.php');
+    exit;
+  }
+  $tmp = $_FILES[$fileKey]['tmp_name'];
+  $f = fopen($tmp, 'r');
+  if (!$f) {
+    $_SESSION['import_msg'] = 'Tidak dapat buka file';
+    header('Location: admin.php');
+    exit;
+  }
+  $header = fgetcsv($f);
+  if (!$header) {
+    $_SESSION['import_msg'] = 'CSV kosong';
+    fclose($f);
+    header('Location: admin.php');
+    exit;
+  }
+  $hmap = array_map(function ($v) {
+    return strtolower(trim($v));
+  }, $header);
+  $colIndex = ['name' => -1, 'phone' => -1, 'pickup_point' => -1, 'address' => -1];
+  foreach ($hmap as $i => $h) {
+    if (in_array($h, ['name', 'nama']))
+      $colIndex['name'] = $i;
+    if (in_array($h, ['phone', 'no.hp', 'no_hp', 'no hp', 'hp', 'telp', 'telephone']))
+      $colIndex['phone'] = $i;
+    if (in_array($h, ['pickup_point', 'pickup', 'titik jemput', 'titik_jemput']))
+      $colIndex['pickup_point'] = $i;
+    if (in_array($h, ['address', 'alamat']))
+      $colIndex['address'] = $i;
+  }
+  if ($colIndex['name'] == -1 || $colIndex['phone'] == -1) {
+    $_SESSION['import_msg'] = 'Header CSV minimal name & phone';
+    fclose($f);
+    header('Location: admin.php');
+    exit;
+  }
+  $ok = 0;
+  $err = 0;
+  $conn->beginTransaction();
+  while (($row = fgetcsv($f)) !== false) {
+    $name = trim($row[$colIndex['name']] ?? '');
+    $phone = trim($row[$colIndex['phone']] ?? '');
+    $pickup = trim($row[$colIndex['pickup_point']] ?? '');
+    $address = trim($row[$colIndex['address']] ?? '');
+    if (!$name || !$phone) {
+      $err++;
+      continue;
+    }
+    $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
+    try {
+      if ($stmt->execute([$name, $phone, $address, $pickup])) {
+        $ok++;
+      } else {
+        $err++;
+      }
+    } catch (PDOException $e) {
+      $err++;
+    }
+  }
+  $conn->commit();
+  fclose($f);
+  $_SESSION['import_msg'] = "Import selesai — berhasil: $ok, error: $err";
+  header('Location: admin.php');
+  exit;
+}
+
+/********** DATA FOR RENDER **********/
+$routes = [];
+$res = $conn->query("SELECT id,name FROM routes ORDER BY id");
+while ($r = $res->fetch())
+  $routes[] = $r;
+$import_msg = $_SESSION['import_msg'] ?? '';
+unset($_SESSION['import_msg']);
+$booking_msg = $_SESSION['booking_msg'] ?? '';
+unset($_SESSION['booking_msg']);
+$settings_saved = $_SESSION['settings_saved'] ?? false;
+unset($_SESSION['settings_saved']);
+$cancellations = [];
+if (db_table_exists($conn, 'cancellations')) {
+  $res = $conn->query("SELECT id,booking_id,admin_user,reason,created_at FROM cancellations ORDER BY created_at DESC LIMIT 200");
+  while ($r = $res->fetch())
+    $cancellations[] = $r;
+}
+
+/* Load feature flags */
+$enable_claude_haiku_4_5 = getSetting($conn, 'enable_claude_haiku_4_5', '0');
+
+/* UNITS LOGIC */
+include 'includes/units_logic.php';
+
+/********** RENDER HTML **********/
+?>
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Admin Panel — Hiace Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css?v=10">
+  <link rel="stylesheet" href="assets/css/navbar.css?v=10">
+  <style>
+    /* iOS Safari Auto-Zoom Prevention */
+    @media (max-width: 768px) {
+      input,
+      input[type="text"],
+      input[type="tel"],
+      input[type="number"],
+      input[type="email"],
+      input[type="search"],
+      select,
+      textarea,
+      .ss-search input,
+      .ss-single-selected,
+      .ss-multi-selected {
+        font-size: 16px !important;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <?php include 'includes/navbar.php'; ?>
+
+  <div class="container">
+
+    <?php if (empty($_SESSION['admin']) || $_SESSION['admin'] !== true): ?>
+      <!-- LOGIN FORM (shown when not authenticated) -->
+      <div
+        style="max-width:400px;margin:80px auto;padding:30px;background:#fff;border-radius:10px;box-shadow:0 6px 22px rgba(2,6,23,0.1);border:1px solid rgba(15,23,42,0.03)">
+        <h2 style="text-align:center;margin:20px 0 10px">Admin Panel</h2>
+
+        <?php if (isset($login_error)): ?>
+          <div
+            style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:8px;margin-bottom:16px;font-size:14px">
+            ⚠️
+            <?php echo htmlspecialchars($login_error); ?>
+          </div>
+        <?php endif; ?>
+
+        <form method="post" style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <label for="login_username"
+              style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:#111827">Username</label>
+            <input type="text" id="login_username" name="username" placeholder="Masukkan username" required
+              style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px">
+          </div>
+          <div>
+            <label for="login_password"
+              style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:#111827">Password</label>
+            <input type="password" id="login_password" name="password" placeholder="Masukkan password" required
+              style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px">
+          </div>
+          <button name="login" type="submit"
+            style="background:linear-gradient(90deg,#0d6efd,#0b5ed7);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;margin-top:8px">Login</button>
+        </form>
+
+        <div style="text-align:center;margin-top:16px;font-size:12px;color:#6c757d">
+          📝 Hubungi administrator untuk membuat akun
+        </div>
+      </div>
+      <?php exit; endif; ?>
+
+    <div class="layout">
+      <div class="left">
+
+        <!-- BOOKINGS -->
+        <!-- BOOKINGS -->
+        <?php include 'includes/bookings.php'; ?>
+
+        <!-- CUSTOMERS -->
+        <?php include 'includes/customers.php'; ?>
+
+        <!-- ROUTES -->
+        <?php include 'includes/routes.php'; ?>
+
+        <!-- SCHEDULES -->
+        <?php include 'includes/schedules.php'; ?>
+
+        <!-- DRIVERS -->
+        <?php include 'includes/drivers.php'; ?>
+
+        <!-- SEGMENTS -->
+        <?php include 'includes/segments.php'; ?>
+
+        <!-- USERS -->
+        <?php include 'includes/users.php'; ?>
+
+        <!-- UNITS -->
+        <?php include 'includes/units.php'; ?>
+
+        <!-- VIEW DETAIL -->
+        <!-- VIEW DETAIL -->
+        <?php include 'includes/view.php'; ?>
+
+        <!-- CANCELLATIONS -->
+        <?php include 'includes/cancellations.php'; ?>
+
+        <!-- REPORTS -->
+        <?php include 'includes/reports.php'; ?>
+
+        <!-- LUGGAGE SERVICES -->
+        <?php include 'includes/luggage_services.php'; ?>
+
+      </div>
+
+      <!-- RIGHT column -->
+      <div class="right">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Navbar for Mobile -->
+  <!-- Bottom Navbar for Mobile moved to includes/navbar.php -->
+  <!-- Modal for Edit Booking (Seat & Pickup) -->
+  <div class="bottom-more-modal" id="editBookingModal"
+    style="display:none;z-index:10002;align-items:center;justify-content:center;">
+    <div class="modal-popup-content" style="max-width:400px;width:92%;display:block;text-align:left;padding:24px;">
+      <h3 class="modal-popup-title" style="text-align:center;margin-bottom:20px;">Edit Penumpang</h3>
+
+      <form method="post" id="editBookingForm" novalidate>
+        <div id="editBookingErrorMsg" style="display:none; background:#fee2e2; color:#ef4444; padding:10px; border-radius:8px; margin-bottom:16px; font-size:13px; font-weight:500; border: 1px solid #f87171;"></div>
+        <input type="hidden" name="save_booking_edit" value="1">
+        <input type="hidden" id="edit_booking_id" name="booking_id" value="">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div>
+            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Unit</label>
+            <select id="edit_unit" name="unit" class="form-control" required
+              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;appearance:none;">
+              <option value="1">Unit 1</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Nomor
+              Kursi</label>
+            <select id="edit_seat" name="seat" class="form-control" required
+              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;appearance:none;">
+              <option value="">Pilih Kursi</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Titik
+            Jemput</label>
+          <input type="text" id="edit_pickup" name="pickup_point" class="form-control" placeholder="Lokasi jemput"
+            style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;">
+        </div>
+
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Status
+            Pembayaran</label>
+          <div style="display:flex;gap:10px;background:#f1f5f9;padding:4px;border-radius:12px;">
+            <label
+              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
+              class="pay-radio-label">
+              <input type="radio" name="edit_pembayaran" value="Belum Lunas" style="display:none" required> Belum Lunas
+            </label>
+            <label
+              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
+              class="pay-radio-label">
+              <input type="radio" name="edit_pembayaran" value="Lunas" style="display:none" required> Lunas
+            </label>
+            <label
+              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
+              class="pay-radio-label">
+              <input type="radio" name="edit_pembayaran" value="Redbus" style="display:none" required> RedBus
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Segment
+            Rute</label>
+          <select id="edit_segment_id" name="segment_id" class="form-control"
+            style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#f8fafc;appearance:none;">
+            <option value="0">-- Default Rute --</option>
+            <?php foreach ($globalSegments as $gs): ?>
+              <option value="<?= $gs['id'] ?>" data-price="<?= $gs['harga'] ?>">
+                <?= htmlspecialchars($gs['rute']) ?> (Rp <?= number_format($gs['harga'], 0, ',', '.') ?>)
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+          <div>
+            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Harga
+              (Rp)</label>
+            <input type="number" id="edit_price_display" class="form-control" disabled
+              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f1f5f9;color:#94a3b8">
+            <input type="hidden" id="edit_price" name="price">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Diskon
+              (Rp)</label>
+            <input type="number" id="edit_discount" name="discount" class="form-control" placeholder="0"
+              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;">
+          </div>
+        </div>
+
+        <div class="modal-popup-btn-group">
+          <button type="submit" class="btn-bright modal-popup-btn">Simpan Perubahan</button>
+          <button type="button" id="closeEditBookingModal" class="modal-popup-btn"
+            style="background:#f1f5f9;color:#64748b;">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Edit Charter -->
+  <div class="bottom-more-modal" id="editCharterModal" style="display:none;z-index:10002;align-items:center;">
+    <div class="bottom-more-content"
+      style="max-width:480px;width:92%;padding:16px;max-height:90vh;overflow-y:auto;border-radius:12px;transform:none;display:block;">
+      <form id="editCharterForm">
+        <input type="hidden" id="edit_charter_id" name="id" value="">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Nama</label>
+            <input type="text" id="edit_charter_name" name="name" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+          <div>
+            <label
+              style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Perusahaan</label>
+            <input type="text" id="edit_charter_company" name="company_name" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">No. HP</label>
+            <input type="text" id="edit_charter_phone" name="phone" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Harga
+              (Rp)</label>
+            <input type="number" id="edit_charter_price" name="price" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px" min="0"
+              step="1">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Tgl
+              Mulai</label>
+            <input type="date" id="edit_charter_start" name="start_date" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Tgl
+              Selesai</label>
+            <input type="date" id="edit_charter_end" name="end_date" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Jam</label>
+            <input type="time" id="edit_charter_time" name="departure_time" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+        </div>
+
+        <div style="margin-bottom:8px">
+          <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Pilih Rute
+            (Auto-fill)</label>
+          <select id="edit_charter_route_id" class="form-control"
+            style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+            <option value="">-- Master Rute Carter --</option>
+          </select>
+          <input type="hidden" id="edit_charter_pickup" name="pickup_point">
+          <input type="hidden" id="edit_charter_drop" name="drop_point">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Unit</label>
+            <select id="edit_charter_unit" name="unit_id" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+              <option value="">-- Unit --</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Driver</label>
+            <select id="edit_charter_driver" name="driver_name" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+              <option value="">-- Pilih Driver --</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Jenis
+              Layanan</label>
+            <input type="text" id="edit_charter_layanan" name="layanan" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Bop
+              (Nominal)</label>
+            <input type="number" id="edit_charter_bop_val" name="bop_price" class="form-control"
+              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button type="submit" class="btn-bright" style="flex:2;padding:10px;font-size:14px">Simpan Perubahan</button>
+          <button type="button" id="closeEditCharterModal" class="inline-small"
+            style="flex:1;padding:10px;font-size:14px;background:#f1f5f9;color:#64748b;border:none">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Copy All Passengers -->
+  <div class="bottom-more-modal" id="copyAllModal" style="display:none;z-index:10001;">
+    <div class="bottom-more-content" style="max-width:500px;width:90%;padding:20px;">
+      <h3 style="margin:0 0 15px 0;text-align:center;">Detail Penumpang Terisi</h3>
+      <div id="copyAllList" style="max-height:400px;overflow-y:auto;margin-bottom:15px;"></div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button id="copyAllFromModal" class="btn-bright" style="flex:1;">Copy Semua</button>
+        <button id="closeCopyAllModal" class="inline-small" style="flex:1;">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Custom Alert -->
+  <div class="bottom-more-modal" id="globalAlertModal"
+    style="display:none;z-index:10010;align-items:center;justify-content:center;">
+    <div class="modal-popup-content" style="max-width:380px;width:90%;">
+      <div style="margin-bottom:20px;display:flex;justify-content:center;">
+        <div id="alertIconContainer"
+          style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fef3c7;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+            stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        </div>
+      </div>
+      <div id="alertTitle" class="modal-popup-title">Pemberitahuan</div>
+      <div id="alertMessage" class="modal-popup-message"></div>
+      <button type="button" id="closeAlertBtn" class="btn-bright modal-popup-btn">Mengerti</button>
+    </div>
+  </div>
+
+  <!-- Modal for Custom Confirm -->
+  <div class="bottom-more-modal" id="globalConfirmModal"
+    style="display:none;z-index:10010;align-items:center;justify-content:center;">
+    <div class="modal-popup-content" style="max-width:400px;width:90%;">
+      <div style="margin-bottom:20px;display:flex;justify-content:center;">
+        <div id="confirmIconWrapper"
+          style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <div id="confirmIconContainer"></div>
+        </div>
+      </div>
+      <div id="confirmTitle" class="modal-popup-title">Konfirmasi</div>
+      <div id="confirmMessage" class="modal-popup-message"></div>
+      <div class="modal-popup-btn-group">
+        <button type="button" id="okConfirmBtn" class="btn-bright modal-popup-btn">Ya, Lanjutkan</button>
+        <button type="button" id="cancelConfirmBtn" class="modal-popup-btn"
+          style="background:#f1f5f9;color:#64748b;">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Change Password -->
+  <div class="bottom-more-modal" id="changePasswordModal"
+    style="display:none;z-index:10010;align-items:center;justify-content:center;">
+    <div class="modal-popup-content" style="max-width:400px;width:90%;display:block;text-align:left;">
+      <h3 class="modal-popup-title" style="text-align:center;margin-bottom:24px;">Ganti Password</h3>
+      <form id="changePasswordForm">
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Password
+            Lama</label>
+          <input type="password" name="old_password" required class="form-control"
+            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Password
+            Baru</label>
+          <input type="password" name="new_password" required class="form-control"
+            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+        </div>
+        <div style="margin-bottom:24px">
+          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Konfirmasi
+            Password Baru</label>
+          <input type="password" name="confirm_password" required class="form-control"
+            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+        </div>
+        <div class="modal-popup-btn-group">
+          <button type="submit" class="btn-bright modal-popup-btn">Update Password</button>
+          <button type="button" id="closeChangePasswordModal" class="modal-popup-btn"
+            style="background:#f1f5f9;color:#64748b;">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <style>
+    /* Fixed Modal Popup Styles */
+    .modal-popup-content {
+      background: #ffffff;
+      padding: 32px 24px;
+      border-radius: 28px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-popup-title {
+      font-weight: 800;
+      font-size: 22px;
+      color: #1e293b;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .modal-popup-message {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+
+    .modal-popup-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .modal-popup-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 18px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 899px) {
+      .modal-popup-content {
+        padding: 32px 20px;
+        border-radius: 24px;
+      }
+
+      .modal-popup-title {
+        font-size: 20px;
+      }
+    }
+  </style>
+  <script>
+    // --- Custom Modal Utilities ---
+    window.customAlert = function (message, title = 'Pemberitahuan') {
+      const modal = document.getElementById('globalAlertModal');
+      document.getElementById('alertTitle').textContent = title;
+      document.getElementById('alertMessage').textContent = message;
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+      return new Promise(resolve => {
+        document.getElementById('closeAlertBtn').onclick = () => {
+          modal.classList.remove('show');
+          setTimeout(() => { modal.style.display = 'none'; }, 300);
+          resolve();
+        };
+      });
+    };
+
+    window.customConfirm = function (message, onConfirm, title = 'Konfirmasi', type = 'danger') {
+      const modal = document.getElementById('globalConfirmModal');
+      const iconWrapper = document.getElementById('confirmIconWrapper');
+      const iconContainer = document.getElementById('confirmIconContainer');
+      const okBtn = document.getElementById('okConfirmBtn');
+
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+
+      // Reset & Set Icon + Button Style
+      if (type === 'danger') {
+        iconWrapper.style.backgroundColor = '#fef2f2';
+        iconContainer.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+        okBtn.style.background = '#ef4444';
+        okBtn.style.borderColor = '#ef4444';
+        okBtn.textContent = 'Ya, Lanjutkan';
+      } else if (type === 'success') {
+        iconWrapper.style.backgroundColor = '#f0fdf4';
+        iconContainer.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`;
+        okBtn.style.background = '#22c55e';
+        okBtn.style.borderColor = '#22c55e';
+        okBtn.textContent = 'Ya, Selesai';
+      }
+
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+
+      okBtn.onclick = () => {
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+        if (onConfirm) onConfirm();
+      };
+      document.getElementById('cancelConfirmBtn').onclick = () => {
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+    };
+
+    // --- Profile & Password Logic ---
+    document.addEventListener('DOMContentLoaded', function () {
+      const btnOpenPass = document.getElementById('btnOpenChangePassword');
+      const passModal = document.getElementById('changePasswordModal');
+      const closePass = document.getElementById('closeChangePasswordModal');
+      const passForm = document.getElementById('changePasswordForm');
+
+      if (btnOpenPass) {
+        btnOpenPass.onclick = () => {
+          passModal.style.display = 'flex';
+          setTimeout(() => passModal.classList.add('show'), 10);
+        };
+      }
+      if (closePass) {
+        closePass.onclick = () => {
+          passModal.classList.remove('show');
+          setTimeout(() => { passModal.style.display = 'none'; }, 300);
+        };
+      }
+
+      if (passForm) {
+        passForm.onsubmit = async (e) => {
+          e.preventDefault();
+          const formData = new FormData(passForm);
+          formData.append('action', 'changePassword');
+
+          try {
+            const res = await fetch('admin/ajax.php?action=changePassword', {
+              method: 'POST',
+              body: formData
+            });
+            const js = await res.json();
+            if (js.success) {
+              await customAlert(js.message || 'Password berhasil diubah');
+              passModal.classList.remove('show');
+              setTimeout(() => { passModal.style.display = 'none'; }, 300);
+              passForm.reset();
+            } else {
+              customAlert(js.error || 'Gagal mengubah password');
+            }
+          } catch (err) {
+            customAlert('Kesalahan koneksi saat mengubah password');
+          }
+        };
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Show only active section and load data
+      function showSection(id) {
+        document.querySelectorAll('.card').forEach(function (card) {
+          card.style.display = 'none';
+        });
+        var active = document.getElementById(id);
+        if (active) active.style.display = '';
+        // Highlight top nav
+        document.querySelectorAll('.nav a').forEach(function (a) {
+          a.classList.remove('active');
+          if (a.getAttribute('data-target') === id) a.classList.add('active');
+        });
+        // Highlight bottom nav
+        document.querySelectorAll('.bottom-nav .nav-btn').forEach(function (btn) {
+          btn.classList.remove('active');
+        });
+        if (id === 'bookings') document.getElementById('navBookings')?.classList.add('active');
+        else if (id === 'view') document.getElementById('navView')?.classList.add('active');
+        // Auto-load data for each section
+        if (id === 'bookings') ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+        if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
+        if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
+        if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
+        if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10) });
+        if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 25 });
+        if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
+      }
+      function updateSectionFromHash() {
+        var hash = window.location.hash.replace('#', '');
+        if (hash) showSection(hash);
+        else showSection('bookings');
+      }
+      window.addEventListener('hashchange', updateSectionFromHash);
+      updateSectionFromHash();
+      // Top nav click
+      document.querySelectorAll('.nav a[data-target]').forEach(function (a) {
+        a.onclick = function (e) {
+          e.preventDefault();
+          showSection(a.getAttribute('data-target'));
+          window.location.hash = '#' + a.getAttribute('data-target');
+        };
+      });
+      // More menu (desktop) moved to includes/navbar.php
+    });
+    // AJAX list loader
+    async function ajaxListLoad(target, params) {
+      const spinnerWrap = document.getElementById(target + '_spinner_wrap'); if (spinnerWrap) spinnerWrap.style.display = 'flex';
+      const tbody = document.getElementById(target + '_tbody'); const pagination = document.getElementById(target + '_pagination'); const info = document.getElementById(target + '_info');
+      const url = new URL('admin/ajax.php', window.location.origin);
+      url.searchParams.set('action', target + 'Page');
+
+      if (params) {
+        for (const key in params) {
+          if (params[key] !== undefined && params[key] !== null) {
+            url.searchParams.set(key, params[key]);
+          }
+        }
+      }
+
+      try {
+        const res = await fetch(url.toString(), { credentials: 'same-origin' });
+        const js = await res.json();
+        if (!js.success) { if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Error loading data</div>'; return; }
+        if (tbody) tbody.innerHTML = js.rows;
+        if (pagination) pagination.innerHTML = js.pagination;
+        if (info) info.textContent = (js.total !== undefined ? ('Total: ' + js.total) : '');
+        if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
+        if (target === 'luggage') { attachLuggageHandlers(); }
+      } catch (e) { if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Kesalahan koneksi</div>'; }
+      finally { if (spinnerWrap) spinnerWrap.style.display = 'none'; }
+    }
+    // Search handlers
+    let searchDebounceTimer = null;
+    // Helper: determine which booking target to search
+    function getActiveBookingTarget() {
+      var historyBtn = document.getElementById('btn-view-history');
+      if (historyBtn && historyBtn.classList.contains('active')) {
+        return window._currentHistoryView || 'bookingsHistory';
+      }
+      var carterBtn = document.getElementById('btn-view-carter');
+      if (carterBtn && carterBtn.classList.contains('active')) {
+        return 'charters';
+      }
+      var bagasiBtn = document.getElementById('btn-view-bagasi');
+      if (bagasiBtn && bagasiBtn.classList.contains('active')) {
+        return 'luggage';
+      }
+      return 'bookings';
+    }
+    if (document.getElementById('searchBtn')) {
+      document.getElementById('searchBtn').onclick = function () {
+        const search = document.getElementById('search_name_input').value;
+        const target = getActiveBookingTarget();
+        ajaxListLoad(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search });
+      };
+    }
+    // Auto-search on typing with debounce
+    if (document.getElementById('search_name_input')) {
+      document.getElementById('search_name_input').addEventListener('input', function () {
+        clearTimeout(searchDebounceTimer);
+        const search = this.value;
+        searchDebounceTimer = setTimeout(function () {
+          const target = getActiveBookingTarget();
+          ajaxListLoad(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search });
+        }, 300);
+      });
+    }
+    if (document.getElementById('searchCustomerBtn')) {
+      // Auto-search (debounce)
+      document.getElementById('search_customer_name_input').addEventListener('input', function () {
+        clearTimeout(searchDebounceTimer);
+        const search = this.value;
+        searchDebounceTimer = setTimeout(function () {
+          ajaxListLoad('customers', {
+            page: 1,
+            per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10),
+            search: search
+          });
+        }, 300);
+      });
+      document.getElementById('searchCustomerBtn').onclick = function () {
+        const search = document.getElementById('search_customer_name_input').value;
+        ajaxListLoad('customers', {
+          page: 1,
+          per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10),
+          search: search
+        });
+      };
+    }
+    if (document.getElementById('customers_per_page')) {
+      document.getElementById('customers_per_page').onchange = function () {
+        ajaxListLoad('customers', {
+          page: 1,
+          per_page: parseInt(this.value, 10),
+          search: document.getElementById('search_customer_name_input')?.value || ''
+        });
+      };
+    }
+    if (document.getElementById('bookings_per_page')) {
+      document.getElementById('bookings_per_page').onchange = function () {
+        const target = getActiveBookingTarget();
+        ajaxListLoad(target, {
+          page: 1,
+          per_page: parseInt(this.value, 10),
+          search: document.getElementById('search_name_input')?.value || ''
+        });
+      };
+    }
+    if (document.getElementById('routes_per_page')) {
+      document.getElementById('routes_per_page').onchange = function () {
+        ajaxListLoad('routes', {
+          page: 1,
+          per_page: parseInt(this.value, 10),
+          search: document.getElementById('search_route_input')?.value || '',
+          type: window.currentRouteType || 'reguler'
+        });
+      };
+    }
+    if (document.getElementById('schedules_per_page')) {
+      document.getElementById('schedules_per_page').onchange = function () {
+        ajaxListLoad('schedules', {
+          page: 1,
+          per_page: parseInt(this.value, 10)
+        });
+      };
+    }
+    if (document.getElementById('users_per_page')) {
+      document.getElementById('users_per_page').onchange = function () {
+        ajaxListLoad('users', {
+          page: 1,
+          per_page: parseInt(this.value, 10)
+        });
+      };
+    }
+    if (document.getElementById('cancellations_per_page')) {
+      document.getElementById('cancellations_per_page').onchange = function () {
+        ajaxListLoad('cancellations', {
+          page: 1,
+          per_page: parseInt(this.value, 10),
+          search: document.getElementById('search_cancellations_input')?.value || ''
+        });
+      };
+    }
+    if (document.getElementById('searchRouteBtn')) {
+      document.getElementById('searchRouteBtn').onclick = function () {
+        const search = document.getElementById('search_route_input').value;
+        ajaxListLoad('routes', {
+          page: 1,
+          per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10),
+          search: search,
+          type: window.currentRouteType || 'reguler'
+        });
+      };
+    }
+    // Live Search for Routes
+    if (document.getElementById('search_route_input')) {
+      document.getElementById('search_route_input').addEventListener('input', function () {
+        clearTimeout(searchDebounceTimer);
+        const search = this.value;
+        searchDebounceTimer = setTimeout(function () {
+          ajaxListLoad('routes', {
+            page: 1,
+            per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10),
+            search: search,
+            type: window.currentRouteType || 'reguler'
+          });
+        }, 300);
+      });
+      document.getElementById('search_route_input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          clearTimeout(searchDebounceTimer);
+          const search = this.value;
+          ajaxListLoad('routes', {
+            page: 1,
+            per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10),
+            search: search,
+            type: window.currentRouteType || 'reguler'
+          });
+        }
+      });
+    }
+    if (document.getElementById('searchScheduleRouteBtn')) {
+      document.getElementById('searchScheduleRouteBtn').onclick = function () {
+        const search = document.getElementById('search_schedule_route_input').value;
+        ajaxListLoad('schedules', {
+          page: 1,
+          per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10),
+          search: search
+        });
+      };
+    }
+    // Pagination click handlers for all tables
+    function attachPaginationHandlers() {
+      document.querySelectorAll('.pagination-container .ajax-page').forEach(function (a) {
+        a.onclick = function (e) {
+          e.preventDefault();
+          const target = a.getAttribute('data-target');
+          const page = parseInt(a.getAttribute('data-page'), 10) || 1;
+          let params = { page: page };
+          if (target === 'bookings') {
+            params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
+            params.search = document.getElementById('search_name_input')?.value || '';
+          } else if (target === 'customers') {
+            params.per_page = parseInt(document.getElementById('customers_per_page')?.value || '25', 10);
+            params.search = document.getElementById('search_customer_name_input')?.value || '';
+          } else if (target === 'routes') {
+            params.per_page = parseInt(document.getElementById('routes_per_page')?.value || '25', 10);
+            params.type = window.currentRouteType || 'reguler';
+            params.search = document.getElementById('search_route_input')?.value || '';
+          } else if (target === 'schedules') {
+            params.per_page = parseInt(document.getElementById('schedules_per_page')?.value || '25', 10);
+          } else if (target === 'users') {
+            params.per_page = parseInt(document.getElementById('users_per_page')?.value || '25', 10);
+          } else if (target === 'cancellations') {
+            params.per_page = parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10);
+            params.search = document.getElementById('search_cancellations_input')?.value || '';
+          } else if (target === 'bookingsHistory' || target === 'chartersHistory') {
+            params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
+            params.search = document.getElementById('search_name_input')?.value || '';
+          } else if (target === 'luggage') {
+            params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
+            params.search = document.getElementById('search_name_input')?.value || '';
+          }
+          ajaxListLoad(target, params);
+        };
+      });
+    }
+
+    /* ---------------- LUGGAGE HANDLERS ---------------- */
+    function attachLuggageHandlers() {
+      document.querySelectorAll('.luggage-action').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const action = this.getAttribute('data-action');
+          const id = this.getAttribute('data-id');
+          const title = this.getAttribute('title');
+
+          const isDanger = (action === 'cancelLuggage');
+          const confirmType = isDanger ? 'danger' : 'success';
+          const confirmBtnText = isDanger ? 'Ya, Batalkan' : 'Ya, Lanjutkan';
+
+          customConfirm('Lanjutkan proses "' + title + '"?', async () => {
+            const formData = new FormData();
+            formData.append('id', id);
+
+            try {
+              const res = await fetch('admin/ajax.php?action=' + action, {
+                method: 'POST',
+                body: formData
+              });
+
+              const text = await res.text();
+              console.log('Luggage Action Raw Response:', text);
+              
+              if (!text || text.trim() === '') {
+                customAlert('Server memberikan respon kosong! Cek logs server.', 'Error Server');
+                return;
+              }
+
+              let js;
+              try {
+                js = JSON.parse(text);
+              } catch (parseErr) {
+                console.error('Server output parsing error:', text);
+                const firstLines = text.substring(0, 300).replace(/<[^>]*>/g, '');
+                customAlert('Gagal memproses respon server. Respon mentah: ' + (firstLines || '[KOSONG]'), 'Error JSON');
+                return;
+              }
+
+              if (js.success) {
+                await customAlert(js.message || 'Berhasil!', 'Sukses');
+                ajaxListLoad('luggage', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+              } else {
+                customAlert(js.error || 'Terjadi kesalahan sistem', 'Gagal');
+              }
+            } catch (e) {
+              console.error('Luggage Action Error:', e);
+              customAlert('Kesalahan koneksi atau data: ' + e.message, 'Network Error');
+            }
+          }, 'Konfirmasi ' + title, confirmType);
+        }
+      });
+    }
+    // Re-attach pagination handlers after each AJAX load
+    const origAjaxListLoad = ajaxListLoad;
+    ajaxListLoad = async function (target, params) {
+      await origAjaxListLoad(target, params);
+      attachPaginationHandlers();
+    };
+    // Initial attach for first load
+    attachPaginationHandlers();
+    if (document.getElementById('searchCancellationsBtn')) {
+      document.getElementById('searchCancellationsBtn').onclick = function () {
+        const search = document.getElementById('search_cancellations_input').value;
+        ajaxListLoad('cancellations', { page: 1, per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10), search: search });
+      };
+    }
+    // Users search handler
+    if (document.getElementById('searchUserBtn')) {
+      document.getElementById('search_user_input')?.addEventListener('input', function () {
+        clearTimeout(searchDebounceTimer);
+        const search = this.value;
+        searchDebounceTimer = setTimeout(function () {
+          ajaxListLoad('users', {
+            page: 1,
+            per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10),
+            search: search
+          });
+        }, 300);
+      });
+      document.getElementById('searchUserBtn').onclick = function () {
+        const search = document.getElementById('search_user_input').value;
+        ajaxListLoad('users', {
+          page: 1,
+          per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10),
+          search: search
+        });
+      };
+    }
+    // Fungsi untuk refresh jam berdasarkan rute dan tanggal (auto-load)
+    async function refreshJamOptions() {
+      const rute = document.getElementById('view_rute').value;
+      const tanggal = document.getElementById('view_tanggal').value;
+      const jamSelect = document.getElementById('view_jam');
+      jamSelect.innerHTML = '<option value="">Loading...</option>';
+      if (!rute || !tanggal) {
+        jamSelect.innerHTML = '<option value="">-- pilih jam --</option>';
+        return;
+      }
+      try {
+        const url = new URL('admin/ajax.php', window.location.origin);
+        url.searchParams.set('action', 'getSchedules');
+        url.searchParams.set('rute', rute);
+        url.searchParams.set('tanggal', tanggal);
+        const res = await fetch(url.toString(), { credentials: 'same-origin' });
+        const js = await res.json();
+        if (js.success && js.schedules && js.schedules.length) {
+          jamSelect.innerHTML = '<option value="">-- pilih jam --</option>';
+          let maxUnits = 1;
+          js.schedules.forEach(sch => {
+            jamSelect.innerHTML += `<option value="${sch.jam}">${sch.jam}</option>`;
+            if (sch.units > maxUnits) maxUnits = sch.units;
+          });
+          const unitSelect = document.getElementById('view_unit');
+          unitSelect.innerHTML = '';
+          for (let i = 1; i <= maxUnits; i++) {
+            unitSelect.innerHTML += `<option value="${i}">Unit ${i}</option>`;
+          }
+        } else {
+          jamSelect.innerHTML = '<option value="">Tidak ada jam</option>';
+          const unitSelect = document.getElementById('view_unit');
+          unitSelect.innerHTML = '<option value="1">Unit 1</option>';
+        }
+      } catch (e) {
+        jamSelect.innerHTML = '<option value="">Gagal load jam</option>';
+      }
+    }
+    // Auto-refresh jam ketika rute atau tanggal berubah
+    if (document.getElementById('view_rute')) {
+      document.getElementById('view_rute').onchange = refreshJamOptions;
+    }
+    if (document.getElementById('view_tanggal')) {
+      document.getElementById('view_tanggal').onchange = refreshJamOptions;
+    }
+    // Fungsi tombol Lihat untuk menampilkan list penumpang
+    if (document.getElementById('btnLoadPassengers')) {
+      document.getElementById('btnLoadPassengers').onclick = async function () {
+        const rute = document.getElementById('view_rute').value;
+        const tanggal = document.getElementById('view_tanggal').value;
+        const jam = document.getElementById('view_jam').value;
+        const unit = document.getElementById('view_unit').value;
+        const spinner = document.getElementById('passenger_spinner_wrap');
+        const list = document.getElementById('passengerList');
+        if (spinner) spinner.style.display = 'flex';
+        list.innerHTML = '<div class="small">Memuat data...</div>';
+        if (!rute || !tanggal || !jam || !unit) {
+          list.innerHTML = '<div class="small">Lengkapi rute, tanggal, jam, dan unit.</div>';
+          if (spinner) spinner.style.display = 'none';
+          return;
+        }
+        try {
+          const url = new URL('admin/ajax.php', window.location.origin);
+          url.searchParams.set('action', 'getPassengers');
+          url.searchParams.set('rute', rute);
+          url.searchParams.set('tanggal', tanggal);
+          url.searchParams.set('jam', jam);
+          url.searchParams.set('unit', unit);
+          const res = await fetch(url.toString(), { credentials: 'same-origin' });
+          const js = await res.json();
+          if (js.success && js.html) {
+            list.innerHTML = js.html;
+          } else {
+            list.innerHTML = '<div class="small">Tidak ada data penumpang.</div>';
+          }
+        } catch (e) {
+          list.innerHTML = '<div class="small">Gagal memuat data penumpang.</div>';
+        } finally {
+          if (spinner) spinner.style.display = 'none';
+        }
+      };
+    }
+    // Optimalkan handler copy agar hanya menyalin detail penumpang yang relevan
+    function attachCopyHandlers() {
+      function fallbackCopy(text) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+          document.execCommand('copy');
+          customAlert('Semua detail penumpang berhasil disalin!');
+        } catch (e) {
+          customAlert('Gagal menyalin ke clipboard.');
+        }
+        document.body.removeChild(temp);
+      }
+      if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
+        document.querySelectorAll('#copyAllBtn, .copy-single').forEach(btn => {
+          btn.onclick = function () {
+            // Fallback manual
+            if (this.id === 'copyAllBtn') {
+              const list = document.getElementById('passengerList');
+              const occupied = [];
+              list.querySelectorAll('.seat-block').forEach(block => {
+                const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+                if (name) {
+                  const seat = block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '';
+                  const phone = block.querySelector('.sb-val.phone')?.innerText.trim() || '';
+                  const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
+                  const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
+                  const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
+                  occupied.push({ seat, name, phone, pickup, gmaps, pay });
+                }
+              });
+              // Get departure info
+              const rute = document.getElementById('view_rute')?.value || '';
+              const tanggalRaw = document.getElementById('view_tanggal')?.value || '';
+              const jam = document.getElementById('view_jam')?.value || '';
+              // Format date
+              let tanggalFormatted = tanggalRaw;
+              if (tanggalRaw) {
+                const d = new Date(tanggalRaw);
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                tanggalFormatted = months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0') + ', ' + d.getFullYear();
+              }
+              const jamFormatted = jam ? jam.replace(':', '.') : '';
+              const totalPenumpang = occupied.length;
+
+              // Get Driver Name
+              const driverInfo = document.getElementById('departureInfoCard');
+              const driverName = driverInfo ? (driverInfo.getAttribute('data-driver-name') || '-') : '-';
+
+              // Build header
+              let text = `📢 Info Pemberangkatan\nTanggal & Jam : ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
+              occupied.forEach(s => {
+                text += `▪ Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
+              });
+
+              // ADD SUMMARY TO COPY (Fallback)
+              const summaryDiv = document.getElementById('passengerSummary');
+              if (summaryDiv) {
+                const paid = parseInt(summaryDiv.getAttribute('data-paid') || '0');
+                const unpaid = parseInt(summaryDiv.getAttribute('data-unpaid') || '0');
+                text += `Ringkasan Pembayaran\n`;
+                text += `Sudah Lunas: Rp ${paid.toLocaleString('id-ID')}\n`;
+                text += `Belum Lunas: Rp ${unpaid.toLocaleString('id-ID')}\n`;
+                text += `Total Estimasi: Rp ${(paid + unpaid).toLocaleString('id-ID')}\n`;
+              }
+
+              fallbackCopy(text);
+            } else {
+              const block = btn.closest('.seat-block');
+              if (block) {
+                const seat = block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '';
+                const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+                const phone = block.querySelector('.sb-val.phone')?.innerText.trim() || '';
+                const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
+                const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
+                const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
+                const text = `▪ Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
+                fallbackCopy(text);
+              }
+            }
+          };
+        });
+        return;
+      }
+      if (document.getElementById('copyAllBtn')) {
+        document.getElementById('copyAllBtn').onclick = function () {
+          const list = document.getElementById('passengerList');
+          const occupied = [];
+          list.querySelectorAll('.seat-block').forEach(block => {
+            const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+            if (name) {
+              const seat = block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '';
+              const phone = block.querySelector('.sb-val.phone')?.innerText.trim() || '';
+              const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
+              const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
+              const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
+              occupied.push({ seat, name, phone, pickup, gmaps, pay });
+            }
+          });
+          if (occupied.length === 0) {
+            customAlert('Tidak ada kursi terisi.');
+            return;
+          }
+          // Get departure info
+          const rute = document.getElementById('view_rute')?.value || '';
+          const tanggalRaw = document.getElementById('view_tanggal')?.value || '';
+          const jam = document.getElementById('view_jam')?.value || '';
+          // Format date
+          let tanggalFormatted = tanggalRaw;
+          if (tanggalRaw) {
+            const d = new Date(tanggalRaw);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            tanggalFormatted = months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0') + ', ' + d.getFullYear();
+          }
+          const jamFormatted = jam ? jam.replace(':', '.') : '';
+          const totalPenumpang = occupied.length;
+
+          // Get Driver Name
+          const driverInfo = document.getElementById('departureInfoCard');
+          const driverName = driverInfo ? (driverInfo.getAttribute('data-driver-name') || '-') : '-';
+
+          // Build header
+          let text = `📢Info Pemberangkatan\nTanggal & Jam : ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
+          occupied.forEach(s => {
+            text += `▪ Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
+          });
+
+          // ADD SUMMARY TO COPY
+          const summaryDiv = document.getElementById('passengerSummary');
+          if (summaryDiv) {
+            const paid = parseInt(summaryDiv.getAttribute('data-paid') || '0');
+            const unpaid = parseInt(summaryDiv.getAttribute('data-unpaid') || '0');
+            text += `Ringkasan Pembayaran\n`;
+            text += `Sudah Lunas: Rp ${paid.toLocaleString('id-ID')}\n`;
+            text += `Belum Lunas: Rp ${unpaid.toLocaleString('id-ID')}\n`;
+            text += `Total Estimasi: Rp ${(paid + unpaid).toLocaleString('id-ID')}\n`;
+          }
+
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(text).then(() => {
+              customAlert('Semua detail penumpang berhasil disalin!');
+            }).catch(() => fallbackCopy(text));
+          } else {
+            fallbackCopy(text);
+          }
+        };
+      }
+      document.querySelectorAll('.copy-single').forEach(btn => {
+        btn.onclick = function (e) {
+          const block = btn.closest('.seat-block');
+          if (block) {
+            const seat = block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '';
+            const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+            const phone = block.querySelector('.sb-val.phone')?.innerText.trim() || '';
+            const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
+            const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
+            const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
+            const text = `▪ Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
+            navigator.clipboard.writeText(text).then(() => {
+              customAlert('Detail kursi berhasil disalin!');
+            }, () => {
+              fallbackCopy(text);
+            });
+          }
+        };
+      });
+    }
+    // Panggil attachCopyHandlers setiap kali list penumpang diupdate
+    const origBtnLoadPassengers = document.getElementById('btnLoadPassengers')?.onclick;
+    document.getElementById('btnLoadPassengers').onclick = async function () {
+      if (origBtnLoadPassengers) await origBtnLoadPassengers.call(this);
+      attachCopyHandlers();
+      attachCancelHandlers();
+      attachSeatLayoutMarkPaidHandlers();
+    };
+    attachCopyHandlers();
+    attachCancelHandlers();
+    attachSeatLayoutMarkPaidHandlers();
+    // Close modal when clicking outside
+    document.getElementById('copyAllModal').onclick = function (e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+        setTimeout(() => { this.style.display = 'none'; }, 300);
+      }
+    }
+    function attachCancelHandlers() {
+      document.querySelectorAll('.cancel-btn').forEach(btn => {
+        btn.onclick = function () {
+          customConfirm('Batalkan penumpang ini?', () => {
+            const id = this.getAttribute('data-id');
+            fetch('admin.php?cancel_booking=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
+              if (js.success) {
+                customAlert('Penumpang dibatalkan.').then(() => {
+                  document.getElementById('btnLoadPassengers').click();
+                });
+              } else {
+                customAlert('Gagal membatalkan: ' + (js.error || 'unknown'));
+              }
+            }).catch(e => customAlert('Error: ' + e));
+          }, 'Konfirmasi Pembatalan', 'danger');
+        };
+      });
+    }
+    function attachTableCancelHandlers() {
+      document.querySelectorAll('.cancel-link').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const id = this.getAttribute('data-id');
+          const name = this.getAttribute('data-name') || '-';
+          const phone = this.getAttribute('data-phone') || '-';
+          const seat = this.getAttribute('data-seat') || '-';
+          const tanggal = this.getAttribute('data-tanggal') || '-';
+          const jam = this.getAttribute('data-jam') || '-';
+
+          const confirmMsg = `Batalkan booking ini?\n\n📅 Tanggal: ${tanggal} ${jam}\n👤 Nama: ${name}\n📱 No. HP: ${phone}\n💺 Kursi: ${seat}`;
+
+          customConfirm(confirmMsg, () => {
+            fetch('admin.php?cancel_booking=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
+              if (js.success) {
+                customAlert('Booking dibatalkan.').then(() => {
+                  ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+                });
+              } else {
+                customAlert('Gagal membatalkan: ' + (js.error || 'unknown'));
+              }
+            }).catch(e => customAlert('Error: ' + e));
+          }, 'Konfirmasi Pembatalan', 'danger');
+        };
+      });
+    }
+    function attachTableMarkPaidHandlers() {
+      document.querySelectorAll('.mark-paid').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          customConfirm('Mark as Lunas?', () => {
+            const id = this.getAttribute('data-id');
+            fetch('admin.php?mark_paid=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
+              if (js.success) {
+                customAlert('Status pembayaran diubah ke Lunas.').then(() => {
+                  ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+                });
+              } else {
+                customAlert('Gagal mengubah status: ' + (js.error || 'unknown'));
+              }
+            }).catch(e => customAlert('Error: ' + e));
+          }, 'Pembayaran Penumpang', 'success');
+        };
+      });
+    }
+    function attachSeatLayoutMarkPaidHandlers() {
+      document.querySelectorAll('.mark-paid-seat').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          customConfirm('Mark as Lunas?', () => {
+            const id = this.getAttribute('data-id');
+            fetch('admin.php?mark_paid=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
+              if (js.success) {
+                customAlert('Status pembayaran diubah ke Lunas.').then(() => {
+                  document.getElementById('btnLoadPassengers').click();
+                });
+              } else {
+                customAlert('Gagal mengubah status: ' + (js.error || 'unknown'));
+              }
+            }).catch(e => customAlert('Error: ' + e));
+          }, 'Pembayaran Penumpang', 'success');
+        };
+      });
+    }
+    function attachEditBookingHandlers() {
+      document.querySelectorAll('.edit-booking-btn').forEach(btn => {
+        btn.onclick = async function (e) {
+          e.preventDefault();
+          const id = this.getAttribute('data-id');
+          const unit = this.getAttribute('data-unit') || '1';
+          const rute = this.getAttribute('data-rute');
+          const tanggal = this.getAttribute('data-tanggal');
+          const jam = this.getAttribute('data-jam');
+          const seat = this.getAttribute('data-seat');
+          const pickup = this.getAttribute('data-pickup');
+          const segmentId = this.getAttribute('data-segment-id') || '0';
+          const price = this.getAttribute('data-price') || '0';
+          const discount = this.getAttribute('data-discount') || '0';
+          const pembayaran = this.closest('.admin-card-compact') ? this.closest('.admin-card-compact').querySelector('.status-tag')?.textContent.trim() : 'Belum Lunas';
+
+          document.getElementById('edit_booking_id').value = id;
+          document.getElementById('edit_seat').value = seat;
+          document.getElementById('edit_pickup').value = pickup;
+
+          // Fetch Available Units from Schedule
+          const unitSelect = document.getElementById('edit_unit');
+          if (unitSelect) {
+            unitSelect.innerHTML = '<option value="">Memuat...</option>';
+            try {
+              const res = await fetch(`admin/ajax.php?action=getAvailableUnits&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}`);
+              const js = await res.json();
+              if (js.success) {
+                unitSelect.innerHTML = '';
+                const maxUnits = js.units || 1;
+                for (let i = 1; i <= maxUnits; i++) {
+                  const opt = document.createElement('option');
+                  opt.value = i;
+                  opt.textContent = 'Unit ' + i;
+                  if (String(i) === String(unit)) opt.selected = true;
+                  unitSelect.appendChild(opt);
+                }
+              }
+            } catch (err) {
+              unitSelect.innerHTML = `<option value="${unit}">Unit ${unit}</option>`;
+            }
+          }
+
+          // Fetch Available & Occupied Seats
+          async function updateSeats(curUnit, curSeat) {
+            const seatSelect = document.getElementById('edit_seat');
+            if (!seatSelect) return;
+            seatSelect.innerHTML = '<option value="">Memuat kursi...</option>';
+            try {
+              const res = await fetch(`admin/ajax.php?action=getScheduleSeats&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}&unit=${curUnit}`);
+              const js = await res.json();
+              if (js.success) {
+                seatSelect.innerHTML = '<option value="">Pilih Kursi</option>';
+                const occupied = js.occupied || [];
+                const layout = js.layout || [];
+
+                // Flat list of seat labels from layout
+                let seats = [];
+                layout.forEach(row => {
+                  row.forEach(cell => {
+                    if (cell && cell.type === 'seat' && cell.label) {
+                      seats.push(cell.label);
+                    }
+                  });
+                });
+
+                if (seats.length === 0) {
+                  // Fallback to 1-8 if layout missing
+                  for (let i = 1; i <= 8; i++) seats.push(String(i));
+                }
+
+                seats.forEach(s => {
+                  const isTaken = occupied.includes(String(s));
+                  const isCurrent = String(s) === String(curSeat);
+                  if (!isTaken || isCurrent) {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = 'Kursi ' + s + (isCurrent ? ' (Sekarang)' : '');
+                    if (isCurrent) opt.selected = true;
+                    seatSelect.appendChild(opt);
+                  }
+                });
+              }
+            } catch (err) {
+              seatSelect.innerHTML = `<option value="${curSeat}">${curSeat}</option>`;
+            }
+          }
+
+          if (unitSelect) {
+            unitSelect.onchange = function () {
+              updateSeats(this.value, seat);
+            };
+          }
+          updateSeats(unit, seat);
+
+          // Handle Segment
+          const segSelect = document.getElementById('edit_segment_id');
+          if (segSelect) {
+            segSelect.value = segmentId;
+            // Trigger display update
+            if (document.getElementById('edit_price')) document.getElementById('edit_price').value = price;
+            if (document.getElementById('edit_price_display')) document.getElementById('edit_price_display').value = price;
+          }
+
+          // Handle Discount
+          if (document.getElementById('edit_discount')) document.getElementById('edit_discount').value = discount;
+
+          // Handle Payment Radio UI
+          const radios = document.getElementsByName('edit_pembayaran');
+          radios.forEach(r => {
+            const label = r.parentElement;
+            if (r.value.toLowerCase() === (pembayaran || '').toLowerCase()) {
+              r.checked = true;
+              label.style.background = '#fff';
+              label.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+              label.style.color = '#0f172a';
+            } else {
+              label.style.background = 'transparent';
+              label.style.boxShadow = 'none';
+              label.style.color = '#64748b';
+            }
+          });
+
+          // Radio click events for UI
+          radios.forEach(r => {
+            r.parentElement.onclick = function () {
+              radios.forEach(rad => {
+                rad.parentElement.style.background = 'transparent';
+                rad.parentElement.style.boxShadow = 'none';
+                rad.parentElement.style.color = '#64748b';
+              });
+              this.style.background = '#fff';
+              this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+              this.style.color = '#0f172a';
+              this.querySelector('input').checked = true;
+            };
+          });
+
+          const modal = document.getElementById('editBookingModal');
+          modal.style.display = 'flex';
+          setTimeout(() => modal.classList.add('show'), 10);
+        };
+      });
+    }
+    if (document.getElementById('closeEditBookingModal')) {
+      document.getElementById('closeEditBookingModal').onclick = function () {
+        const modal = document.getElementById('editBookingModal');
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+    }
+    if (document.getElementById('editBookingModal')) {
+      document.getElementById('editBookingModal').onclick = function (e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+          setTimeout(() => { this.style.display = 'none'; }, 300);
+        }
+      };
+    };
+
+    // Auto-update price when segment changes in Edit Booking
+    if (document.getElementById('edit_segment_id')) {
+      document.getElementById('edit_segment_id').addEventListener('change', function () {
+        const option = this.options[this.selectedIndex];
+        const price = option.getAttribute('data-price') || '0';
+        if (document.getElementById('edit_price')) document.getElementById('edit_price').value = price;
+        if (document.getElementById('edit_price_display')) document.getElementById('edit_price_display').value = price;
+      });
+    }
+    // ========== CHARTER HANDLERS ==========
+    function attachCharterHandlers() {
+      // Copy Charter
+      document.querySelectorAll('.copy-charter-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const card = this.closest('.charter-card');
+          if (!card) return;
+
+          const name = card.dataset.name || '-';
+          const company = card.dataset.company || '-';
+          const phone = card.dataset.phone || '-';
+          const start = card.dataset.start || '-';
+          const end = card.dataset.end || '-';
+          const deptime = card.dataset.deptime || '-';
+          const pickup = card.dataset.pickup || '-';
+          const drop = card.dataset.drop || '-';
+          const vehicle = card.dataset.vehicle || '-';
+          const driver = card.dataset.driver || '-';
+          const priceValue = parseInt(card.dataset.price || 0);
+          const price = 'Rp ' + priceValue.toLocaleString('id-ID');
+          const duration = card.dataset.duration || '-';
+          const deptimeFormatted = card.dataset.deptimeFormatted || '-';
+          const layanan = card.dataset.layanan || 'Regular';
+
+          // BOP is NOT included in copy as per user request
+
+          // Format dates
+          const startFormatted = start ? new Date(start).toLocaleDateString('id-ID') : '-';
+          const endFormatted = end ? new Date(end).toLocaleDateString('id-ID') : '-';
+
+          const durationText = (layanan.toUpperCase() === 'DROP OFF') ? '' : ` (${duration} hari)`;
+          const text = `Detail Carter
+Nama: ${name}
+Perusahaan: ${company}
+Tanggal: ${startFormatted} - ${endFormatted}${durationText}
+Jam: ${deptimeFormatted}
+Layanan: ${layanan}
+Jemput: ${pickup}
+Tujuan: ${drop}
+Kendaraan: ${vehicle}
+Driver: ${driver}
+Harga: ${price}`;
+
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(text).then(() => {
+              alert('Detail carter berhasil disalin!');
+            }).catch(() => {
+              fallbackCopyCharter(text);
+            });
+          } else {
+            fallbackCopyCharter(text);
+          }
+        };
+      });
+
+      // Edit Charter
+      document.querySelectorAll('.edit-charter-btn').forEach(btn => {
+        btn.onclick = async function (e) {
+          e.preventDefault();
+          const card = this.closest('.charter-card');
+          if (!card) return;
+
+          // Populate form from data attributes
+          document.getElementById('edit_charter_id').value = card.dataset.id || '';
+          document.getElementById('edit_charter_name').value = card.dataset.name || '';
+          document.getElementById('edit_charter_company').value = card.dataset.company || '';
+          document.getElementById('edit_charter_phone').value = card.dataset.phone || '';
+          document.getElementById('edit_charter_start').value = card.dataset.start || '';
+          document.getElementById('edit_charter_end').value = card.dataset.end || '';
+          document.getElementById('edit_charter_time').value = card.dataset.deptime || '';
+          document.getElementById('edit_charter_pickup').value = card.dataset.pickup || '';
+          document.getElementById('edit_charter_drop').value = card.dataset.drop || '';
+          // driver assignment is now handled via the population loop below
+          document.getElementById('edit_charter_price').value = card.dataset.price || '';
+          document.getElementById('edit_charter_layanan').value = card.dataset.layanan || '';
+          document.getElementById('edit_charter_bop_val').value = card.dataset.bop_price || '';
+
+          // Keep current pickup/drop for finding matching route
+          const currentPickup = card.dataset.pickup || '';
+          const currentDrop = card.dataset.drop || '';
+          document.getElementById('edit_charter_pickup').value = currentPickup;
+          document.getElementById('edit_charter_drop').value = currentDrop;
+
+          // Load Charter Routes dropdown
+          const routeSelect = document.getElementById('edit_charter_route_id');
+          routeSelect.innerHTML = '<option value="">Loading...</option>';
+          try {
+            const res = await fetch('admin/ajax.php?action=get_charter_routes');
+            const js = await res.json();
+            if (js.success && js.routes) {
+              routeSelect.innerHTML = '<option value="">-- Master Rute Carter --</option>';
+              js.routes.forEach(r => {
+                // Try to find if this route matches the current charter's origin/destination
+                const isMatch = (r.origin === currentPickup && r.destination === currentDrop);
+                routeSelect.innerHTML += `<option value="${r.id}" 
+                  data-origin="${r.origin}" 
+                  data-dest="${r.destination}" 
+                  data-layanan="${r.duration}" 
+                  data-price="${r.rental_price}" 
+                  data-bop="${r.bop_price}" 
+                  ${isMatch ? 'selected' : ''}>${r.name}</option>`;
+              });
+            }
+          } catch (err) {
+            routeSelect.innerHTML = '<option value="">Error loading</option>';
+          }
+
+          // Handle route selection change
+          routeSelect.onchange = function () {
+            const opt = this.options[this.selectedIndex];
+            if (opt && opt.value) {
+              document.getElementById('edit_charter_pickup').value = opt.getAttribute('data-origin') || '';
+              document.getElementById('edit_charter_drop').value = opt.getAttribute('data-dest') || '';
+              document.getElementById('edit_charter_price').value = opt.getAttribute('data-price') || '0';
+              document.getElementById('edit_charter_layanan').value = opt.getAttribute('data-layanan') || 'Regular';
+              document.getElementById('edit_charter_bop_val').value = opt.getAttribute('data-bop') || '0';
+            }
+          };
+
+          // Load units dropdown
+          const unitSelect = document.getElementById('edit_charter_unit');
+          unitSelect.innerHTML = '<option value="">Loading...</option>';
+          try {
+            const res = await fetch('admin/ajax.php?action=get_units');
+            const js = await res.json();
+            if (js.success && js.units) {
+              unitSelect.innerHTML = '<option value="">-- Pilih Unit --</option>';
+              js.units.forEach(u => {
+                const selected = String(u.id) === String(card.dataset.unit) ? 'selected' : '';
+                unitSelect.innerHTML += `<option value="${u.id}" ${selected}>${u.nopol} ${u.merek || ''}</option>`;
+              });
+            }
+          } catch (err) {
+            unitSelect.innerHTML = '<option value="">Error loading</option>';
+          }
+
+          // Load drivers dropdown
+          const driverSelect = document.getElementById('edit_charter_driver');
+          driverSelect.innerHTML = '<option value="">Loading...</option>';
+          try {
+            const res = await fetch('admin/ajax.php?action=get_drivers');
+            const js = await res.json();
+            if (js.success && js.drivers) {
+              driverSelect.innerHTML = '<option value="">-- Pilih Driver --</option>';
+              js.drivers.forEach(d => {
+                const selected = (d.nama === card.dataset.driver) ? 'selected' : '';
+                driverSelect.innerHTML += `<option value="${d.nama}" ${selected}>${d.nama}</option>`;
+              });
+            }
+          } catch (err) {
+            driverSelect.innerHTML = '<option value="">Error loading</option>';
+          }
+
+          document.getElementById('editCharterModal').style.display = 'flex';
+          setTimeout(() => document.getElementById('editCharterModal').classList.add('show'), 10);
+        };
+      });
+
+      // Delete Charter
+      document.querySelectorAll('.delete-charter-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const id = this.dataset.id;
+          const name = this.dataset.name || 'Carter ini';
+
+          if (confirm(`Hapus carter "${name}"?\n\nData yang dihapus tidak dapat dikembalikan.`)) {
+            fetch(`admin/ajax.php?action=delete_charter&id=${id}`)
+              .then(res => res.json())
+              .then(js => {
+                if (js.success) {
+                  alert('Carter berhasil dihapus.');
+                  ajaxListLoad('charters', { page: 1 });
+                } else {
+                  alert('Gagal menghapus: ' + (js.error || 'unknown'));
+                }
+              })
+              .catch(err => alert('Error: ' + err));
+          }
+        };
+      });
+
+      // BOP Done
+      document.querySelectorAll('.bop-done-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const id = this.dataset.id;
+
+          if (confirm('Ubah status BOP menjadi Done?')) {
+            fetch(`admin/ajax.php?action=toggle_bop&id=${id}`)
+              .then(res => res.json())
+              .then(js => {
+                if (js.success) {
+                  alert('Status BOP diubah ke Done.');
+                  ajaxListLoad('charters', { page: 1 });
+                } else {
+                  alert('Gagal mengubah status: ' + (js.error || 'unknown'));
+                }
+              })
+              .catch(err => alert('Error: ' + err));
+          }
+        };
+      });
+    }
+
+    function fallbackCopyCharter(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        alert('Detail carter berhasil disalin!');
+      } catch (e) {
+        alert('Gagal menyalin ke clipboard.');
+      }
+      document.body.removeChild(temp);
+    }
+
+    // Edit Charter Form Submit
+    if (document.getElementById('editCharterForm')) {
+      document.getElementById('editCharterForm').onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        try {
+          const res = await fetch('admin/ajax.php?action=update_charter', {
+            method: 'POST',
+            body: formData
+          });
+          const js = await res.json();
+          if (js.success) {
+            alert('Carter berhasil diupdate.');
+            const modal = document.getElementById('editCharterModal');
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            ajaxListLoad('charters', { page: 1 });
+          } else {
+            alert('Gagal update: ' + (js.error || 'unknown'));
+          }
+        } catch (err) {
+          alert('Error: ' + err);
+        }
+      };
+    }
+
+    // Close Edit Charter Modal
+    if (document.getElementById('closeEditCharterModal')) {
+      document.getElementById('closeEditCharterModal').onclick = function () {
+        const modal = document.getElementById('editCharterModal');
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+    }
+    if (document.getElementById('editCharterModal')) {
+      document.getElementById('editCharterModal').onclick = function (e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+          setTimeout(() => { this.style.display = 'none'; }, 300);
+        }
+      };
+    }
+
+    // Re-attach charter handlers after AJAX load
+    const origAjaxListLoad2 = ajaxListLoad;
+    ajaxListLoad = async function (target, params) {
+      await origAjaxListLoad2(target, params);
+      if (target === 'charters') {
+        attachCharterHandlers();
+      }
+    };
+
+    // Initial attach
+    attachCharterHandlers();
+    // Edit Booking Form Validation
+    if (document.getElementById('editBookingForm')) {
+      document.getElementById('editBookingForm').onsubmit = function (e) {
+        let missing = [];
+        if (!document.getElementById('edit_unit').value) missing.push('Unit');
+        if (!document.getElementById('edit_seat').value) missing.push('Nomor Kursi');
+        
+        let payRadios = document.getElementsByName('edit_pembayaran');
+        let paySelected = false;
+        for (let r of payRadios) { if (r.checked) paySelected = true; }
+        if (!paySelected) missing.push('Status Pembayaran');
+
+        let msgDiv = document.getElementById('editBookingErrorMsg');
+        if (missing.length > 0) {
+          e.preventDefault();
+          msgDiv.innerHTML = 'Mohon lengkapi field berikut: ' + missing.join(', ');
+          msgDiv.style.display = 'block';
+        } else {
+          msgDiv.style.display = 'none';
+        }
+      };
+    }
+
+    // Save Driver Assignment
+    window.saveDriverAssignment = async function (rute, tanggal, jam, unit) {
+      const driverId = document.getElementById('driverSelect').value;
+      const driverName = document.getElementById('driverSelect').options[document.getElementById('driverSelect').selectedIndex].text;
+
+      try {
+        const formData = new FormData();
+        formData.append('rute', rute);
+        formData.append('tanggal', tanggal);
+        formData.append('jam', jam);
+        formData.append('unit', unit);
+        formData.append('driver_id', driverId);
+
+        const res = await fetch('admin/ajax.php?action=assignDriver', {
+          method: 'POST',
+          body: formData
+        });
+        const js = await res.json();
+
+        if (js.success) {
+          // Update UI
+          document.getElementById('driverNameText').textContent = js.driver_name;
+          document.getElementById('departureInfoCard').setAttribute('data-driver-name', js.driver_name);
+
+          // Toggleba ck to view mode
+          document.getElementById('driverEdit').style.display = 'none';
+          document.getElementById('driverDisplay').style.display = 'inline';
+
+          // Show toast/alert
+          // alert('Driver berhasil diupdate!');
+        } else {
+          alert('Gagal update driver: ' + (js.error || 'unknown'));
+        }
+      } catch (e) {
+        alert('Error: ' + e);
+      }
+
+    };
+  </script>
+  <style>
+    @media (max-width: 899px) {
+      #passengerList {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+      }
+
+      .seat-block {
+        width: 100% !important;
+        margin-bottom: 12px !important;
+        display: block !important;
+      }
+    }
+
+    /* Responsive styles moved to includes/navbar.php */
+  </style>
