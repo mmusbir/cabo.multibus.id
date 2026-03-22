@@ -4464,3 +4464,51 @@ body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link:hover {
         display: none !important;
     }
 }
+
+body.admin-bootstrap-page .kinetic-command-mode-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 3.2rem;
+    padding: 0.72rem 1rem;
+    border-radius: 0.95rem;
+    background: #111319;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-command-mode-chip .material-symbols-outlined {
+    color: #f97316;
+    font-size: 1rem;
+}
+
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .kinetic-command-mode-chip {
+        width: 100%;
+        justify-content: center;
+        min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-actions {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
+        min-width: 0;
+        flex: 1 1 0;
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .nav-label {
+        font-size: 0.55rem;
+        letter-spacing: 0.08em;
+    }
+}

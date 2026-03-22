@@ -25,11 +25,9 @@
   </div>
 
   <div class="kinetic-command-toolbar">
-    <div class="kinetic-command-tabs toggle-container grid-cols-3 w-full max-w-400" id="admin-mode-toggle-container">
-      <div class="toggle-slider"></div>
-      <button type="button" class="toggle-btn active" id="btn-view-reguler" onclick="switchAdminView('bookings')">Reguler</button>
-      <button type="button" class="toggle-btn" id="btn-view-carter" onclick="switchAdminView('charters')">Carter</button>
-      <button type="button" class="toggle-btn" id="btn-view-bagasi" onclick="switchAdminView('luggage')">Bagasi</button>
+    <div class="kinetic-command-mode-chip" id="bookingModeChip">
+      <span class="material-symbols-outlined">dashboard_customize</span>
+      <span id="bookingModeChipLabel">Reguler</span>
     </div>
 
     <div class="kinetic-command-toolbar-actions">
@@ -175,6 +173,8 @@
       if (metricContext) metricContext.textContent = meta.context;
       if (metricTotal) metricTotal.textContent = total.toLocaleString('id-ID');
       if (metricLabel) metricLabel.textContent = meta.totalLabel;
+      const modeChipLabel = document.getElementById('bookingModeChipLabel');
+      if (modeChipLabel) modeChipLabel.textContent = meta.label;
       if (summaryHeadline) summaryHeadline.textContent = meta.headline;
       if (summaryTag) summaryTag.textContent = meta.tag;
       if (summaryMeta) summaryMeta.textContent = 'Total ' + total.toLocaleString('id-ID') + ' data';
@@ -345,17 +345,6 @@
 
     function switchAdminView(mode) {
       window.bookingDashboardState.active = mode;
-
-      document.getElementById('btn-view-reguler').classList.toggle('active', mode === 'bookings');
-      document.getElementById('btn-view-carter').classList.toggle('active', mode === 'charters');
-      document.getElementById('btn-view-bagasi').classList.toggle('active', mode === 'luggage');
-
-      const container = document.getElementById('admin-mode-toggle-container');
-      if (container) {
-        container.classList.remove('mode-charters', 'mode-luggage');
-        if (mode === 'charters') container.classList.add('mode-charters');
-        else if (mode === 'luggage') container.classList.add('mode-luggage');
-      }
 
       document.getElementById('bookings_tbody').style.display = 'none';
       document.getElementById('bookings_pagination').style.display = 'none';

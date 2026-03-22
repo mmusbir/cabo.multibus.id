@@ -1299,17 +1299,8 @@ if (!isset($_REQUEST['action'])):
     let searchDebounceTimer = null;
     // Helper: determine which booking target to search
     function getActiveBookingTarget() {
-      var historyBtn = document.getElementById('btn-view-history');
-      if (historyBtn && historyBtn.classList.contains('active')) {
-        return window._currentHistoryView || 'bookingsHistory';
-      }
-      var carterBtn = document.getElementById('btn-view-carter');
-      if (carterBtn && carterBtn.classList.contains('active')) {
-        return 'charters';
-      }
-      var bagasiBtn = document.getElementById('btn-view-bagasi');
-      if (bagasiBtn && bagasiBtn.classList.contains('active')) {
-        return 'luggage';
+      if (window.bookingDashboardState && window.bookingDashboardState.active) {
+        return window.bookingDashboardState.active;
       }
       return 'bookings';
     }
