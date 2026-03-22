@@ -95,27 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(1100px at 20% 20%, rgba(124, 58, 237, 0.18), transparent 45%),
-                        radial-gradient(900px at 80% 10%, rgba(6, 182, 212, 0.16), transparent 40%),
-                        radial-gradient(1100px at 30% 80%, rgba(34, 197, 94, 0.14), transparent 45%),
-                        #0f172a;
+            background: #fb923c;
             overflow: hidden;
         }
 
         body::before, body::after {
-            content: '';
-            position: fixed;
-            width: 520px;
-            height: 520px;
-            filter: blur(120px);
-            opacity: 0.45;
-            z-index: 0;
-            pointer-events: none;
-            border-radius: 50%;
-            mix-blend-mode: screen;
+            content: none;
         }
-        body::before { background: #8b5cf6; top: -120px; left: -80px; }
-        body::after { background: #22c55e; bottom: -140px; right: -100px; }
 
         .login-card {
             position: relative;
@@ -187,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(14, 165, 233, 0.95));
+            background: #c2410c;
             border: none;
             color: white;
             border-radius: 12px;
@@ -195,10 +181,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 700;
             margin-top: 12px;
             letter-spacing: 0.01em;
-            box-shadow: 0 16px 30px rgba(79, 70, 229, 0.35);
+            box-shadow: 0 16px 30px rgba(124, 45, 18, 0.3);
             transition: transform 0.15s ease, box-shadow 0.2s ease;
         }
-        button:hover { transform: translateY(-1px); box-shadow: 0 20px 36px rgba(59, 130, 246, 0.38); }
+        button:hover { transform: translateY(-1px); box-shadow: 0 20px 36px rgba(124, 45, 18, 0.35); }
         button:active { transform: translateY(0); }
     </style>
 </head>
