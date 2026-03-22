@@ -1477,15 +1477,32 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex: 0 0 auto;
+      width: auto !important;
+      height: auto !important;
+      padding: 0;
+      margin: 0;
+      background: transparent !important;
+      border: 0;
+      box-shadow: none !important;
       color: #7c2d12;
       cursor: pointer;
       transition: transform 0.15s ease, color 0.2s ease;
       line-height: 1;
+      align-self: center;
     }
 
     .refresh-icon-action:hover {
       transform: translateY(-1px);
       color: #9a3412;
+    }
+
+    .refresh-icon-action svg {
+      display: block;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      pointer-events: none;
     }
 
     .payment-badge svg {
@@ -1546,7 +1563,7 @@
       }
 
       .refresh-icon-action {
-        margin-top: 2px;
+        margin-top: 0;
         flex-shrink: 0;
       }
 
@@ -1609,7 +1626,7 @@
       }
 
       .refresh-icon-action {
-        margin-top: 1px;
+        margin-top: 0;
       }
 
       .payment-selector-modern {
