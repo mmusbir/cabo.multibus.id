@@ -9,9 +9,9 @@
 
   <div class="kinetic-command-toolbar">
     <div class="kinetic-command-toolbar-actions">
-      <a href="index.php" class="kinetic-command-add-btn">
-        <span class="material-symbols-outlined">add</span>
-        <span>Tambah Booking</span>
+      <a href="index.php" id="bookingPrimaryAction" class="kinetic-command-add-btn">
+        <span id="bookingPrimaryActionIcon" class="material-symbols-outlined">add</span>
+        <span id="bookingPrimaryActionText">Tambah Booking</span>
       </a>
 
       <div class="search-bar-modern admin-bs-search kinetic-command-search">
@@ -116,6 +116,9 @@
           pageSubtitle: 'Kelola semua order carter dengan tampilan list editorial yang fokus pada customer, rute, jadwal, dan status operasional.',
           searchPlaceholder: 'Cari ID carter, customer, driver, atau rute...',
           mobileTitle: 'Data Carter',
+          primaryActionHref: 'admin_charter_create.php',
+          primaryActionText: 'Tambah Carter',
+          primaryActionIcon: 'add_circle',
         };
       }
       if (mode === 'luggage') {
@@ -133,6 +136,9 @@
           pageSubtitle: 'Kelola pengiriman bagasi, status pembayaran, dan tindak lanjut operasional dari satu halaman.',
           searchPlaceholder: 'Cari pengirim, tujuan, nomor bagasi, atau penerima...',
           mobileTitle: 'Data Bagasi',
+          primaryActionHref: 'index.php',
+          primaryActionText: 'Tambah Booking',
+          primaryActionIcon: 'add',
         };
       }
       return {
@@ -149,6 +155,9 @@
         pageSubtitle: 'Real-time schedule monitoring and dispatch control untuk operasional keberangkatan, carter, dan bagasi.',
         searchPlaceholder: 'Cari rute, driver, penumpang, atau jam...',
         mobileTitle: 'Jadwal Mendatang',
+        primaryActionHref: 'index.php',
+        primaryActionText: 'Tambah Booking',
+        primaryActionIcon: 'add',
       };
     }
 
@@ -168,6 +177,9 @@
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
       const bookingsSection = document.getElementById('bookings');
       const charterFilterRow = document.getElementById('charterFilterRow');
+      const primaryAction = document.getElementById('bookingPrimaryAction');
+      const primaryActionText = document.getElementById('bookingPrimaryActionText');
+      const primaryActionIcon = document.getElementById('bookingPrimaryActionIcon');
 
       if (metricMode) metricMode.textContent = meta.label;
       if (metricContext) metricContext.textContent = meta.context;
@@ -181,6 +193,9 @@
       if (pageTitle) pageTitle.textContent = meta.pageTitle;
       if (pageSubtitle) pageSubtitle.textContent = meta.pageSubtitle;
       if (searchInput) searchInput.placeholder = meta.searchPlaceholder;
+      if (primaryAction) primaryAction.href = meta.primaryActionHref || 'index.php';
+      if (primaryActionText) primaryActionText.textContent = meta.primaryActionText || 'Tambah Booking';
+      if (primaryActionIcon) primaryActionIcon.textContent = meta.primaryActionIcon || 'add';
       if (mobileListTitle) {
         mobileListTitle.innerHTML = '<span class="material-symbols-outlined">event_note</span>' + meta.mobileTitle;
       }
@@ -394,7 +409,13 @@
           document.getElementById('search_name_input')?.focus();
         });
       }
-      switchAdminView('bookings');
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialMode = urlParams.get('booking_mode');
+      if (initialMode === 'charters' || initialMode === 'luggage' || initialMode === 'bookings') {
+        switchAdminView(initialMode);
+      } else {
+        switchAdminView('bookings');
+      }
     });
   </script>
 </section>
