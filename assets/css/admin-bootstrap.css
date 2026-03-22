@@ -6318,3 +6318,269 @@ body.admin-bootstrap-page .booking-detail-context-helper,
 body.admin-bootstrap-page [id$="_info"] {
     display: none !important;
 }
+
+/* Unified settings form UX */
+body.admin-bootstrap-page #customers.card,
+body.admin-bootstrap-page #schedules.card,
+body.admin-bootstrap-page #cancellations.card,
+body.admin-bootstrap-page #routes.card,
+body.admin-bootstrap-page #segments.card,
+body.admin-bootstrap-page #luggage_services.card,
+body.admin-bootstrap-page #units.card,
+body.admin-bootstrap-page #drivers.card,
+body.admin-bootstrap-page #users.card {
+    padding: 1.05rem;
+    border-radius: 1.15rem;
+}
+
+body.admin-bootstrap-page #customers .modern-form-card,
+body.admin-bootstrap-page #schedules .modern-form-card,
+body.admin-bootstrap-page #cancellations .modern-form-card,
+body.admin-bootstrap-page #routes .modern-form-card,
+body.admin-bootstrap-page #segments .modern-form-card,
+body.admin-bootstrap-page #luggage_services .modern-form-card,
+body.admin-bootstrap-page #units .modern-form-card,
+body.admin-bootstrap-page #drivers .modern-form-card,
+body.admin-bootstrap-page #users .modern-form-card {
+    padding: 1rem 1.05rem;
+    border-radius: 1rem;
+    background: #15181f;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page #customers .modern-form-card > .d-flex,
+body.admin-bootstrap-page #schedules .modern-form-card > .d-flex,
+body.admin-bootstrap-page #routes .modern-form-card > .d-flex,
+body.admin-bootstrap-page #segments .modern-form-card > .d-flex,
+body.admin-bootstrap-page #luggage_services .modern-form-card > .d-flex,
+body.admin-bootstrap-page #drivers .modern-form-card > .d-flex,
+body.admin-bootstrap-page #users .modern-form-card > .d-flex {
+    margin-bottom: 0.9rem !important;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(88, 66, 55, 0.14);
+}
+
+body.admin-bootstrap-page #customers .admin-bs-chip,
+body.admin-bootstrap-page #schedules .admin-bs-chip,
+body.admin-bootstrap-page #routes .admin-bs-chip,
+body.admin-bootstrap-page #segments .admin-bs-chip,
+body.admin-bootstrap-page #luggage_services .admin-bs-chip,
+body.admin-bootstrap-page #drivers .admin-bs-chip,
+body.admin-bootstrap-page #users .admin-bs-chip {
+    background: rgba(249, 115, 22, 0.12);
+    color: #ffb690;
+    border: 1px solid rgba(249, 115, 22, 0.16);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-form-grid,
+body.admin-bootstrap-page #schedules .admin-bs-form-grid,
+body.admin-bootstrap-page #routes .admin-bs-form-grid,
+body.admin-bootstrap-page #segments .admin-bs-form-grid,
+body.admin-bootstrap-page #luggage_services .admin-bs-form-grid,
+body.admin-bootstrap-page #drivers .admin-bs-form-grid,
+body.admin-bootstrap-page #users .admin-bs-form-grid {
+    gap: 0.9rem;
+    align-items: start;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #schedules .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #routes .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #segments .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #luggage_services .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #drivers .admin-bs-form-grid .input-group,
+body.admin-bootstrap-page #users .admin-bs-form-grid .input-group {
+    gap: 0.38rem;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-input-label,
+body.admin-bootstrap-page #schedules .admin-bs-input-label,
+body.admin-bootstrap-page #routes .admin-bs-input-label,
+body.admin-bootstrap-page #segments .admin-bs-input-label,
+body.admin-bootstrap-page #luggage_services .admin-bs-input-label,
+body.admin-bootstrap-page #drivers .admin-bs-input-label,
+body.admin-bootstrap-page #users .admin-bs-input-label {
+    margin-bottom: 0.35rem;
+    color: #94a3b8;
+    font-size: 0.64rem;
+    letter-spacing: 0.11em;
+}
+
+body.admin-bootstrap-page #customers .modern-input,
+body.admin-bootstrap-page #customers .modern-select,
+body.admin-bootstrap-page #schedules .modern-input,
+body.admin-bootstrap-page #schedules .modern-select,
+body.admin-bootstrap-page #routes .modern-input,
+body.admin-bootstrap-page #routes .modern-select,
+body.admin-bootstrap-page #segments .modern-input,
+body.admin-bootstrap-page #segments .modern-select,
+body.admin-bootstrap-page #luggage_services .modern-input,
+body.admin-bootstrap-page #luggage_services .modern-select,
+body.admin-bootstrap-page #drivers .modern-input,
+body.admin-bootstrap-page #drivers .modern-select,
+body.admin-bootstrap-page #users .modern-input,
+body.admin-bootstrap-page #users .modern-select {
+    min-height: 2.95rem;
+    padding: 0.72rem 0.9rem;
+    border-radius: 0.85rem;
+    background: #111319;
+    border-color: rgba(88, 66, 55, 0.18);
+    color: #e2e8f0;
+}
+
+body.admin-bootstrap-page #customers .modern-input::placeholder,
+body.admin-bootstrap-page #schedules .modern-input::placeholder,
+body.admin-bootstrap-page #routes .modern-input::placeholder,
+body.admin-bootstrap-page #segments .modern-input::placeholder,
+body.admin-bootstrap-page #luggage_services .modern-input::placeholder,
+body.admin-bootstrap-page #drivers .modern-input::placeholder,
+body.admin-bootstrap-page #users .modern-input::placeholder {
+    color: #64748b;
+}
+
+body.admin-bootstrap-page #customers .modern-input:focus,
+body.admin-bootstrap-page #customers .modern-select:focus,
+body.admin-bootstrap-page #schedules .modern-input:focus,
+body.admin-bootstrap-page #schedules .modern-select:focus,
+body.admin-bootstrap-page #routes .modern-input:focus,
+body.admin-bootstrap-page #routes .modern-select:focus,
+body.admin-bootstrap-page #segments .modern-input:focus,
+body.admin-bootstrap-page #segments .modern-select:focus,
+body.admin-bootstrap-page #luggage_services .modern-input:focus,
+body.admin-bootstrap-page #luggage_services .modern-select:focus,
+body.admin-bootstrap-page #drivers .modern-input:focus,
+body.admin-bootstrap-page #drivers .modern-select:focus,
+body.admin-bootstrap-page #users .modern-input:focus,
+body.admin-bootstrap-page #users .modern-select:focus {
+    border-color: rgba(249, 115, 22, 0.4);
+    box-shadow: 0 0 0 0.18rem rgba(249, 115, 22, 0.12);
+}
+
+body.admin-bootstrap-page #routes .admin-textarea-sm,
+body.admin-bootstrap-page #customers .admin-textarea-sm,
+body.admin-bootstrap-page #segments .admin-textarea-sm,
+body.admin-bootstrap-page #luggage_services .admin-textarea-sm,
+body.admin-bootstrap-page #drivers .admin-textarea-sm,
+body.admin-bootstrap-page #users .admin-textarea-sm {
+    min-height: 6.25rem;
+    resize: vertical;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-actions,
+body.admin-bootstrap-page #schedules .admin-bs-actions,
+body.admin-bootstrap-page #routes .admin-bs-actions,
+body.admin-bootstrap-page #segments .admin-bs-actions,
+body.admin-bootstrap-page #luggage_services .admin-bs-actions,
+body.admin-bootstrap-page #drivers .admin-bs-actions,
+body.admin-bootstrap-page #users .admin-bs-actions {
+    justify-content: flex-start;
+    gap: 0.6rem;
+    margin-top: 0.1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(88, 66, 55, 0.14);
+}
+
+body.admin-bootstrap-page #customers .btn-modern,
+body.admin-bootstrap-page #schedules .btn-modern,
+body.admin-bootstrap-page #routes .btn-modern,
+body.admin-bootstrap-page #segments .btn-modern,
+body.admin-bootstrap-page #luggage_services .btn-modern,
+body.admin-bootstrap-page #drivers .btn-modern,
+body.admin-bootstrap-page #users .btn-modern {
+    min-height: 2.8rem;
+    padding: 0.72rem 1rem;
+    border-radius: 0.82rem;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-toolbar,
+body.admin-bootstrap-page #customers .admin-bs-meta,
+body.admin-bootstrap-page #schedules .admin-bs-toolbar,
+body.admin-bootstrap-page #schedules .admin-bs-meta,
+body.admin-bootstrap-page #routes .admin-bs-toolbar,
+body.admin-bootstrap-page #routes .admin-bs-meta,
+body.admin-bootstrap-page #segments .admin-bs-toolbar,
+body.admin-bootstrap-page #segments .admin-bs-meta,
+body.admin-bootstrap-page #luggage_services .admin-bs-toolbar,
+body.admin-bootstrap-page #luggage_services .admin-bs-meta,
+body.admin-bootstrap-page #drivers .admin-bs-toolbar,
+body.admin-bootstrap-page #drivers .admin-bs-meta,
+body.admin-bootstrap-page #users .admin-bs-toolbar,
+body.admin-bootstrap-page #users .admin-bs-meta {
+    padding: 0.8rem 0.95rem;
+    border-radius: 0.95rem;
+    background: #15181f;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    margin-top: 0.95rem;
+    margin-bottom: 0.65rem;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-search,
+body.admin-bootstrap-page #schedules .admin-bs-search,
+body.admin-bootstrap-page #routes .admin-bs-search,
+body.admin-bootstrap-page #segments .admin-bs-search,
+body.admin-bootstrap-page #drivers .admin-bs-search,
+body.admin-bootstrap-page #users .admin-bs-search {
+    max-width: 520px;
+}
+
+body.admin-bootstrap-page #customers .admin-section-header,
+body.admin-bootstrap-page #schedules .admin-section-header,
+body.admin-bootstrap-page #cancellations .admin-section-header,
+body.admin-bootstrap-page #routes .admin-section-header,
+body.admin-bootstrap-page #segments .admin-section-header,
+body.admin-bootstrap-page #luggage_services .admin-section-header,
+body.admin-bootstrap-page #units .admin-section-header,
+body.admin-bootstrap-page #drivers .admin-section-header,
+body.admin-bootstrap-page #users .admin-section-header {
+    margin-bottom: 0.9rem;
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page #customers .admin-bs-col-6,
+    body.admin-bootstrap-page #schedules .admin-bs-col-6,
+    body.admin-bootstrap-page #routes .admin-bs-col-6,
+    body.admin-bootstrap-page #segments .admin-bs-col-6,
+    body.admin-bootstrap-page #luggage_services .admin-bs-col-6,
+    body.admin-bootstrap-page #drivers .admin-bs-col-6,
+    body.admin-bootstrap-page #users .admin-bs-col-6 {
+        grid-column: 1 / -1;
+    }
+
+    body.admin-bootstrap-page #customers .admin-bs-toolbar,
+    body.admin-bootstrap-page #customers .admin-bs-meta,
+    body.admin-bootstrap-page #schedules .admin-bs-toolbar,
+    body.admin-bootstrap-page #schedules .admin-bs-meta,
+    body.admin-bootstrap-page #routes .admin-bs-toolbar,
+    body.admin-bootstrap-page #routes .admin-bs-meta,
+    body.admin-bootstrap-page #segments .admin-bs-toolbar,
+    body.admin-bootstrap-page #segments .admin-bs-meta,
+    body.admin-bootstrap-page #luggage_services .admin-bs-toolbar,
+    body.admin-bootstrap-page #luggage_services .admin-bs-meta,
+    body.admin-bootstrap-page #drivers .admin-bs-toolbar,
+    body.admin-bootstrap-page #drivers .admin-bs-meta,
+    body.admin-bootstrap-page #users .admin-bs-toolbar,
+    body.admin-bootstrap-page #users .admin-bs-meta {
+        padding: 0.7rem 0.8rem;
+    }
+
+    body.admin-bootstrap-page #customers .admin-bs-actions .btn,
+    body.admin-bootstrap-page #customers .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #schedules .admin-bs-actions .btn,
+    body.admin-bootstrap-page #schedules .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #routes .admin-bs-actions .btn,
+    body.admin-bootstrap-page #routes .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #segments .admin-bs-actions .btn,
+    body.admin-bootstrap-page #segments .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #luggage_services .admin-bs-actions .btn,
+    body.admin-bootstrap-page #luggage_services .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #drivers .admin-bs-actions .btn,
+    body.admin-bootstrap-page #drivers .admin-bs-actions .btn-modern,
+    body.admin-bootstrap-page #users .admin-bs-actions .btn,
+    body.admin-bootstrap-page #users .admin-bs-actions .btn-modern {
+        width: 100%;
+    }
+}
