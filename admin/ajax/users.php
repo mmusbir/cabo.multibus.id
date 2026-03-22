@@ -30,7 +30,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
 if (empty($rows)) {
-    echo '<div class="small" style="grid-column:1/-1;text-align:center;padding:20px;opacity:0.6;">Data user tidak ditemukan</div>';
+    echo '<div class="small admin-grid-message admin-grid-message-muted">Data user tidak ditemukan</div>';
 } else {
     foreach ($rows as $u) {
         echo '<div class="admin-card-compact">';

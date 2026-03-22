@@ -64,14 +64,14 @@
           <span>Pilih File CSV...</span>
         </label>
       </div>
-      <button name="import_customers" class="btn btn-outline-secondary btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
+      <button name="import_customers" class="btn btn-outline-secondary btn-modern secondary admin-toolbar-btn">
         Import CSV
       </button>
-      <div class="small muted" style="margin-left:8px"><?php echo htmlspecialchars($import_msg ?? ''); ?></div>
+      <div class="small muted admin-inline-note"><?php echo htmlspecialchars($import_msg ?? ''); ?></div>
     </form>
 
     <form method="post" class="ms-lg-auto">
-      <button name="export_customers" class="btn btn-outline-secondary btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
+      <button name="export_customers" class="btn btn-outline-secondary btn-modern secondary admin-toolbar-btn">
         Export CSV
       </button>
     </form>
@@ -107,9 +107,9 @@
     <div class="ajax-spinner"></div>
   </div>
 
-  <div id="customers_tbody" class="booking-cards-grid admin-bs-card-grid" style="margin-top:12px;min-height:100px">
-    <div class="small" style="grid-column:1/-1;text-align:center">Loading...</div>
+  <div id="customers_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
+    <div class="small admin-grid-message">Loading...</div>
   </div>
   <div class="table-wrapper" style="display:none"></div>
-  <div id="customers_pagination" style="margin-top:8px"></div>
+  <div id="customers_pagination" class="admin-pagination-host"></div>
 </section>

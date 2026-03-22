@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    <div class="modern-form-card admin-bs-panel" style="margin-bottom:24px;">
+    <div class="modern-form-card admin-bs-panel admin-panel-gap">
         <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <span class="admin-bs-chip">Master</span>
             <span id="ls-form-title">Tambah Layanan Baru</span>
@@ -29,12 +29,12 @@
         </form>
     </div>
 
-    <div class="admin-bs-meta" style="margin-bottom:12px;">
+    <div class="admin-bs-meta admin-meta-gap">
         <div class="small" id="ls_info">Memuat layanan...</div>
     </div>
 
-    <div id="ls_tbody" class="booking-cards-grid admin-bs-card-grid" style="min-height:100px">
-        <div class="small" style="grid-column:1/-1;text-align:center">Memuat data...</div>
+    <div id="ls_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid-min">
+        <div class="small admin-grid-message">Memuat data...</div>
     </div>
 </section>
 
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const formTitle = document.getElementById('ls-form-title');
 
     function loadLuggageServices() {
-        lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Memuat data...</div>';
+        lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Memuat data...</div>';
         fetch('admin.php?action=luggageServicesPage')
             .then((r) => r.json())
             .then((js) => {
@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     lsInfo.textContent = 'Total: ' + js.total + ' layanan';
                     attachActionListeners();
                 } else {
-                    lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Gagal memuat data.</div>';
+                    lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Gagal memuat data.</div>';
                 }
             })
             .catch((e) => {
                 console.error(e);
-                lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Kesalahan koneksi.</div>';
+                lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Kesalahan koneksi.</div>';
             });
     }
 

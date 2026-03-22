@@ -35,7 +35,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
 if (empty($rows)) {
-    echo '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Data bagasi tidak ditemukan</div>';
+    echo '<div class="small admin-empty-state admin-grid-message">Data bagasi tidak ditemukan</div>';
 } else {
     foreach ($rows as $l) {
         $status = $l['status'];

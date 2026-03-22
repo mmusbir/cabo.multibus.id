@@ -39,12 +39,12 @@
   </div>
 
   <!-- CARD GRID -->
-  <div id="cancellations_tbody" class="booking-cards-grid admin-bs-card-grid" style="margin-top:12px;min-height:100px">
-    <div class="small" style="grid-column:1/-1;text-align:center">Loading...</div>
+  <div id="cancellations_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
+    <div class="small admin-grid-message">Loading...</div>
   </div>
 
   <div class="table-wrapper" style="display:none">
     <!-- Hidden legacy table wrapper for backwards compatibility -->
   </div>
-  <div id="cancellations_pagination" style="margin-top:8px"></div>
+  <div id="cancellations_pagination" class="admin-pagination-host"></div>
 </section>

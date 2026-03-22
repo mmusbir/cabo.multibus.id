@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid" id="units_grid" style="margin-top:12px;">
+    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="units_grid">
         <?php foreach ($units as $u): ?>
             <div class="admin-card-compact">
                 <div class="acc-header">
@@ -118,10 +118,10 @@
                     <button class="acc-btn edit-layout-btn" data-id="<?= $u['id'] ?>"
                         data-nopol="<?= htmlspecialchars($u['nopol']) ?>"
                         data-kapasitas="<?= htmlspecialchars($u['kapasitas']) ?>">Layout</button>
-                    <form method="post" style="display:inline"
+                    <form method="post" class="admin-inline-form"
                         onsubmit="event.preventDefault(); customConfirm('Hapus unit ini?', () => this.submit(), 'Hapus Unit', 'danger');">
                         <input type="hidden" name="unit_id" value="<?= $u['id'] ?>">
-                        <button type="submit" name="delete_unit" class="acc-btn danger" style="width:100%">Hapus</button>
+                        <button type="submit" name="delete_unit" class="acc-btn danger w-100">Hapus</button>
                     </form>
                 </div>
             </div>

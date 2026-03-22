@@ -55,7 +55,7 @@ try {
 
     ob_start();
     if (empty($rows)) {
-        echo '<div class="small" style="grid-column:1/-1;text-align:center;padding:20px;opacity:0.6;">Data tidak ditemukan</div>';
+        echo '<div class="small admin-grid-message admin-grid-message-muted">Data tidak ditemukan</div>';
     } else {
         foreach ($rows as $r) {
             echo '<div class="admin-card-compact">';
@@ -66,7 +66,7 @@ try {
             
             // Show Origin/Destination if exist
             if (!empty($r['origin']) || !empty($r['destination'])) {
-                echo ' <div class="acc-row" style="font-size:11px; color:#64748b; margin-top:-4px; margin-bottom:4px; padding:0 12px;">';
+                echo ' <div class="acc-row admin-row-muted">';
                 echo '   <span>' . htmlspecialchars($r['origin'] ?? '') . '</span> → <span>' . htmlspecialchars($r['destination'] ?? '') . '</span>';
                 echo ' </div>';
             }

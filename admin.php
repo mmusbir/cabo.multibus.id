@@ -95,7 +95,7 @@ function render_pagination_ajax($total, $per_page, $current_page, $param_prefix,
   if ($total <= $per_page)
     return '';
   $total_pages = (int) ceil($total / $per_page);
-  $html = '<div style="display:flex;align-items:center;gap:8px;margin-top:8px;" class="pagination-container">';
+  $html = '<div class="pagination-container">';
   $prev = max(1, $current_page - 1);
   $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $prev]) . '" data-target="' . $param_prefix . '" data-page="' . $prev . '">Prev</a>';
   $start = max(1, $current_page - $around);
@@ -112,7 +112,7 @@ function render_pagination_ajax($total, $per_page, $current_page, $param_prefix,
     $html .= '<span class="small dots">...</span>';
   $next = min($total_pages, $current_page + 1);
   $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $next]) . '" data-target="' . $param_prefix . '" data-page="' . $next . '">Next</a>';
-  $html .= '<div class="small" style="margin-left:12px">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
+  $html .= '<div class="small pagination-summary">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
   $html .= '</div>';
   return $html;
 }
@@ -1275,7 +1275,7 @@ if (!isset($_REQUEST['action'])):
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
         const js = await res.json();
         if (!js.success) { 
-          if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px; color:red;">Error: ' + (js.error || 'Unknown error') + '</div>'; 
+          if (tbody) tbody.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Unknown error') + '</div>'; 
           return; 
         }
         if (tbody) tbody.innerHTML = js.rows;
@@ -1283,7 +1283,7 @@ if (!isset($_REQUEST['action'])):
         if (info) info.textContent = (js.total !== undefined ? ('Total: ' + js.total) : '');
         if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
         if (target === 'luggage') { attachLuggageHandlers(); }
-      } catch (e) { if (tbody) tbody.innerHTML = '<div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Kesalahan koneksi</div>'; }
+      } catch (e) { if (tbody) tbody.innerHTML = '<div class="small admin-grid-message">Kesalahan koneksi</div>'; }
       finally { if (spinnerWrap) spinnerWrap.style.display = 'none'; }
     }
     // Search handlers

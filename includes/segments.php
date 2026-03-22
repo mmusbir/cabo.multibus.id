@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid" id="segments_grid" style="margin-top:12px;">
+    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="segments_grid">
         <?php
         $segments = [];
         $res = $conn->query("SELECT s.*, r.name as parent_route FROM segments s LEFT JOIN routes r ON s.route_id = r.id ORDER BY r.name, s.rute");
@@ -108,7 +108,7 @@
         }
         foreach ($segments as $s):
             $harga_formatted = 'Rp ' . number_format($s['harga'], 0, ',', '.');
-            $parent = $s['parent_route'] ?: '<span style="color:var(--neu-danger)">Belum ada rute</span>';
+            $parent = $s['parent_route'] ?: '<span class="admin-text-danger">Belum ada rute</span>';
             ?>
             <div class="admin-card-compact">
                 <div class="acc-header">
@@ -122,13 +122,13 @@
                 <div class="acc-body">
                     <div class="acc-row">
                         <div class="acc-label">Rute</div>
-                        <div class="acc-val" style="font-size:12px">
+                        <div class="acc-val admin-value-sm">
                             <?= $parent ?>
                         </div>
                     </div>
                     <div class="acc-row">
                         <div class="acc-label">Harga</div>
-                        <div class="acc-val" style="color:var(--neu-success);font-weight:600">
+                        <div class="acc-val admin-value-success">
                             <?= $harga_formatted ?>
                         </div>
                     </div>

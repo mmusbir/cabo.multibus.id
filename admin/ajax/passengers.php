@@ -286,7 +286,7 @@ ob_start();
             </div>
           <?php endif; ?>
 
-          <span class="sb-val pay" style="display:none;"><?php echo h($p['pembayaran'] ?? ''); ?></span>
+          <span class="sb-val pay admin-hidden-value"><?php echo h($p['pembayaran'] ?? ''); ?></span>
         </div>
       <?php else: ?>
         <div class="seat-body empty-state">

@@ -32,7 +32,7 @@ ob_start();
 $days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
 if (empty($rows)) {
-    echo '<div class="small" style="grid-column:1/-1;text-align:center;padding:20px;opacity:0.6;">Jadwal tidak ditemukan</div>';
+    echo '<div class="small admin-grid-message admin-grid-message-muted">Jadwal tidak ditemukan</div>';
 } else {
     foreach ($rows as $s) {
         $nopol = $s['nopol'] ?? '-';

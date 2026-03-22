@@ -63,7 +63,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
 if (empty($rows)) {
-    echo '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Booking tidak ditemukan</div>';
+    echo '<div class="small admin-empty-state admin-grid-message">Booking tidak ditemukan</div>';
 } else {
     foreach ($rows as $b) {
         $fmtId = formatBookingId($b['id'], $b['created_at']);

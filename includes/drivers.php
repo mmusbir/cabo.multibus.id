@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid" id="drivers_grid" style="margin-top:12px;">
+    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="drivers_grid">
         <?php
         $drivers = [];
         $res = $conn->query("SELECT d.*, u.nopol, u.merek FROM drivers d LEFT JOIN units u ON d.unit_id = u.id ORDER BY d.nama");

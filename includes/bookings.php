@@ -47,21 +47,21 @@
   <!-- Cards container replaces table -->
   <div id="bookings_tbody" class="booking-cards-grid admin-bs-card-grid">
     <!-- Cards injected via AJAX -->
-    <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading...</div>
+    <div class="small admin-grid-message">Loading...</div>
   </div>
-  <div id="bookings_pagination" style="margin-top:8px"></div>
+  <div id="bookings_pagination" class="admin-pagination-host"></div>
 
   <!-- CHARTERS CONTAINER -->
   <div id="charters_tbody" class="booking-cards-grid admin-bs-card-grid" style="display:none">
-    <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading Charters...</div>
+    <div class="small admin-grid-message">Loading Charters...</div>
   </div>
-  <div id="charters_pagination" style="margin-top:8px;display:none"></div>
+  <div id="charters_pagination" class="admin-pagination-host" style="display:none"></div>
 
   <!-- LUGGAGE CONTAINER -->
   <div id="luggage_tbody" class="booking-cards-grid admin-bs-card-grid" style="display:none">
-    <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading Luggage...</div>
+    <div class="small admin-grid-message">Loading Luggage...</div>
   </div>
-  <div id="luggage_pagination" style="margin-top:8px;display:none"></div>
+  <div id="luggage_pagination" class="admin-pagination-host" style="display:none"></div>
 
   <script>
     function switchAdminView(mode) {

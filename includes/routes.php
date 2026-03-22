@@ -99,7 +99,7 @@
           </div>
           <div class="input-group admin-bs-col-12">
             <label class="admin-bs-input-label">Catatan</label>
-            <textarea name="notes" class="modern-input form-control" style="height:60px"
+            <textarea name="notes" class="modern-input form-control admin-textarea-sm"
               placeholder="Keterangan rute..."><?php echo htmlspecialchars($route_notes); ?></textarea>
           </div>
         </div>
@@ -145,13 +145,13 @@
     <div class="ajax-spinner"></div>
   </div>
 
-  <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid" style="margin-top:12px;min-height:100px">
-    <div class="small" style="grid-column:1/-1;text-align:center">Loading...</div>
+  <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
+    <div class="small admin-grid-message">Loading...</div>
   </div>
   <div class="table-wrapper" style="display:none">
     <!-- Hidden legacy table wrapper just in case scripts need it, but we use div above. -->
   </div>
-  <div id="routes_pagination" style="margin-top:8px"></div>
+  <div id="routes_pagination" class="admin-pagination-host"></div>
 
   <script>
     function switchRouteTab(type) {

@@ -13,7 +13,7 @@ while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
 
 ob_start();
 if (empty($services)) {
-    echo '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Belum ada layanan bagasi.</div>';
+    echo '<div class="small admin-empty-state admin-grid-message">Belum ada layanan bagasi.</div>';
 } else {
     foreach ($services as $s) {
         echo '<div class="admin-card-compact">';

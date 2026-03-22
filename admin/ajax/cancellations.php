@@ -30,7 +30,7 @@ $stmt->execute($params ?? []);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($rows)) {
-    echo '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Belum ada log pembatalan</div>';
+    echo '<div class="small admin-empty-state admin-grid-message">Belum ada log pembatalan</div>';
 } else {
     foreach ($rows as $c) {
         $fmtId = formatBookingId($c['booking_id'], $c['booking_created_at']);
