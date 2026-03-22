@@ -4294,3 +4294,173 @@ body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body
         gap: 0.45rem;
     }
 }
+
+/* --- Desktop Sidebar Navigation --- */
+body.admin-bootstrap-page .kinetic-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 290px;
+    display: none;
+    flex-direction: column;
+    background: #111319;
+    border-right: 1px solid rgba(88, 66, 55, 0.18);
+    box-shadow: 18px 0 32px rgba(12, 14, 20, 0.2);
+    z-index: 1030;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 1.35rem 1.4rem 1rem;
+    color: #f97316;
+    text-decoration: none;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0 1rem 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary,
+body.admin-bootstrap-page .kinetic-sidebar-links,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary {
+    margin-bottom: 1.2rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a,
+body.admin-bootstrap-page .kinetic-sidebar-links a,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.82rem 0.9rem;
+    border-radius: 0.95rem;
+    color: rgba(224, 192, 177, 0.72);
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-links a,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a:hover,
+body.admin-bootstrap-page .kinetic-sidebar-links a:hover,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a:hover,
+body.admin-bootstrap-page .kinetic-sidebar-primary a.active,
+body.admin-bootstrap-page .kinetic-sidebar-links a.active,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a.active {
+    background: #1e1f26;
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section {
+    margin-bottom: 1.15rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-title {
+    padding: 0 0.95rem 0.5rem;
+    color: #7c8798;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-footer {
+    border-top: 1px solid rgba(88, 66, 55, 0.18);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-action-link {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.55rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.9rem;
+    background: #f97316;
+    color: #341100;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-action-link:hover {
+    background: #fb923c;
+    color: #341100;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link {
+    color: #fda4af;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link:hover {
+    color: #fecaca;
+}
+
+@media (min-width: 992px) {
+    body.admin-bootstrap-page .kinetic-sidebar {
+        display: flex;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-topbar,
+    body.admin-bootstrap-page .kinetic-bottom-nav {
+        display: none !important;
+    }
+
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        max-width: none;
+        margin-top: 0;
+        margin-left: 290px;
+        margin-bottom: 2rem;
+        padding: 1.35rem 1.5rem 1.5rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .kinetic-sidebar {
+        display: none !important;
+    }
+}

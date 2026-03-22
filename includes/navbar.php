@@ -4,30 +4,87 @@
   $userInitial = strtoupper(substr((string) $userLabel, 0, 1));
   if ($auth):
 ?>
-  <div class="topbar kinetic-topbar navbar navbar-expand-lg sticky-top">
-    <div class="topbar-inner container-fluid kinetic-topbar-inner">
-      <div class="kinetic-topbar-brand-wrap">
-        <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
-          <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-          <span class="kinetic-brand-text">KINETIC COMMAND</span>
-        </a>
-      </div>
+  <aside class="kinetic-sidebar d-none d-lg-flex">
+    <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
+      <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+      <span class="kinetic-brand-text">KINETIC COMMAND</span>
+    </a>
 
-      <nav class="nav kinetic-primary-nav d-none d-lg-flex" id="siteNav">
-        <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard">Dashboard</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking">Booking</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter">Carter</a>
-        <a href="#reports" data-target="reports" data-nav-key="reports">Laporan</a>
+    <div class="kinetic-sidebar-scroll">
+      <nav class="kinetic-sidebar-primary">
+        <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
+        <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
       </nav>
 
+      <div class="kinetic-sidebar-section">
+        <div class="kinetic-sidebar-section-title">Operasional</div>
+        <div class="kinetic-sidebar-links">
+          <a href="#view" data-target="view"><span class="material-symbols-outlined">visibility</span>Manifest View</a>
+          <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
+          <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
+          <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">cancel</span>Cancellations</a>
+        </div>
+      </div>
+
+      <div class="kinetic-sidebar-section">
+        <div class="kinetic-sidebar-section-title">Data Master</div>
+        <div class="kinetic-sidebar-links">
+          <a href="#routes" data-target="routes"><span class="material-symbols-outlined">route</span>Rute</a>
+          <a href="#segments" data-target="segments"><span class="material-symbols-outlined">conversion_path</span>Segment</a>
+          <a href="#luggage_services" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span>Layanan Bagasi</a>
+        </div>
+      </div>
+
+      <div class="kinetic-sidebar-section">
+        <div class="kinetic-sidebar-section-title">Armada &amp; SDM</div>
+        <div class="kinetic-sidebar-links">
+          <a href="#units" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span>Unit Kendaraan</a>
+          <a href="#drivers" data-target="drivers"><span class="material-symbols-outlined">badge</span>Data Driver</a>
+          <a href="#users" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span>Users</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="kinetic-sidebar-footer">
+      <div class="kinetic-sidebar-profile">
+        <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
+        <div>
+          <div class="kinetic-profile-name"><?php echo htmlspecialchars($userLabel); ?></div>
+          <div class="kinetic-profile-role">Admin Panel</div>
+        </div>
+      </div>
+      <div class="kinetic-sidebar-actions">
+        <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <a href="index.php" class="kinetic-sidebar-action-link">
+          <span class="material-symbols-outlined">add_circle</span>
+          Booking Area
+        </a>
+      </div>
+      <div class="kinetic-sidebar-links kinetic-sidebar-links-footer">
+        <a href="javascript:void(0)" data-open-change-password><span class="material-symbols-outlined">lock</span>Ganti Password</a>
+        <a href="logout.php" class="logout-link"><span class="material-symbols-outlined">logout</span>Logout</a>
+      </div>
+    </div>
+  </aside>
+
+  <div class="topbar kinetic-topbar kinetic-mobile-topbar d-lg-none">
+    <div class="topbar-inner container-fluid kinetic-topbar-inner">
+      <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
+        <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+        <span class="kinetic-brand-text">KINETIC COMMAND</span>
+      </a>
+
       <div class="topbar-right kinetic-topbar-right d-flex align-items-center">
-        <button class="kinetic-icon-btn" id="adminSearchFocusBtn" type="button" aria-label="Fokus pencarian">
+        <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
           <span class="material-symbols-outlined">search</span>
         </button>
         <button class="kinetic-icon-btn" id="moreMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu admin">
           <span class="material-symbols-outlined">apps</span>
         </button>
-
         <div class="profile-dropdown kinetic-profile-dropdown">
           <button class="profile-btn kinetic-profile-btn" id="profileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil">
             <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
@@ -37,7 +94,7 @@
               <div class="kinetic-profile-name"><?php echo htmlspecialchars($userLabel); ?></div>
               <div class="kinetic-profile-role">Admin Panel</div>
             </div>
-            <a href="javascript:void(0)" id="btnOpenChangePassword">
+            <a href="javascript:void(0)" data-open-change-password>
               <span class="material-symbols-outlined">lock</span>
               Ganti Password
             </a>
@@ -52,27 +109,6 @@
             </a>
           </div>
         </div>
-      </div>
-
-      <div id="moreMenuDropdown" class="kinetic-more-dropdown">
-        <div class="menu-section-header">Operasional</div>
-        <a href="#view" data-target="view"><span class="material-symbols-outlined">visibility</span>Manifest View</a>
-        <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
-        <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
-        <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">cancel</span>Cancellations</a>
-        <a href="#reports" data-target="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
-
-        <div class="menu-section-header">Data Master</div>
-        <a href="#routes" data-target="routes"><span class="material-symbols-outlined">route</span>Rute</a>
-        <a href="#segments" data-target="segments"><span class="material-symbols-outlined">conversion_path</span>Segment</a>
-        <a href="#luggage_services" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span>Layanan Bagasi</a>
-
-        <div class="menu-section-header">Armada &amp; SDM</div>
-        <a href="#units" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span>Unit Kendaraan</a>
-        <a href="#drivers" data-target="drivers"><span class="material-symbols-outlined">badge</span>Data Driver</a>
-
-        <div class="menu-section-header">Sistem</div>
-        <a href="#users" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span>Users</a>
       </div>
     </div>
   </div>
@@ -152,16 +188,13 @@
     }
 
     const moreBtn = document.getElementById('moreMenuBtn');
-    const moreDropdown = document.getElementById('moreMenuDropdown');
     const profileBtn = document.getElementById('profileMenuBtn');
     const profileDropdown = document.getElementById('profileMenuDropdown');
     const bottomMoreModal = document.getElementById('bottomMoreModal');
     const closeMoreModal = document.getElementById('closeMoreModal');
-    const searchFocusBtn = document.getElementById('adminSearchFocusBtn');
 
     function getPrimaryNavKey(target) {
       if (target === 'dashboard') return 'dashboard';
-      if (target === 'view') return 'booking';
       if (target === 'reports') return 'reports';
       if (target === 'bookings') {
         const bookingMode = window.bookingDashboardState && window.bookingDashboardState.active;
@@ -177,17 +210,15 @@
         link.classList.toggle('active', !!primaryKey && link.getAttribute('data-nav-key') === primaryKey);
       });
 
-      document.querySelectorAll('#moreMenuDropdown a[data-target], .bottom-more-content .nav-btn[data-target]').forEach(link => {
+      document.querySelectorAll('.kinetic-sidebar-links a[data-target], .bottom-more-content .nav-btn[data-target]').forEach(link => {
         link.classList.toggle('active', link.getAttribute('data-target') === target);
       });
     }
 
     window.syncAdminNavState = syncAdminNavState;
 
-    function closeDesktopMenus() {
-      if (moreDropdown) moreDropdown.style.display = 'none';
+    function closeProfileMenu() {
       if (profileDropdown) profileDropdown.style.display = 'none';
-      setDropdownState(moreBtn, false);
       setDropdownState(profileBtn, false);
     }
 
@@ -225,24 +256,15 @@
       }
     }
 
-    if (searchFocusBtn) {
-      searchFocusBtn.addEventListener('click', focusActiveSearch);
-    }
+    document.querySelectorAll('[data-focus-admin-search]').forEach(btn => {
+      btn.addEventListener('click', focusActiveSearch);
+    });
 
     if (moreBtn) {
       moreBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (window.matchMedia('(max-width: 991.98px)').matches) {
-          openMobileMore();
-          return;
-        }
-        const isOpen = moreDropdown && moreDropdown.style.display === 'block';
-        closeDesktopMenus();
-        if (moreDropdown && !isOpen) {
-          moreDropdown.style.display = 'block';
-          setDropdownState(moreBtn, true);
-        }
+        openMobileMore();
       });
     }
 
@@ -251,7 +273,7 @@
         e.preventDefault();
         e.stopPropagation();
         const isOpen = profileDropdown.style.display === 'block';
-        closeDesktopMenus();
+        closeProfileMenu();
         if (!isOpen) {
           profileDropdown.style.display = 'block';
           setDropdownState(profileBtn, true);
@@ -260,13 +282,8 @@
     }
 
     document.addEventListener('click', function (e) {
-      if (moreDropdown && !moreDropdown.contains(e.target) && e.target !== moreBtn) {
-        moreDropdown.style.display = 'none';
-        setDropdownState(moreBtn, false);
-      }
       if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileBtn) {
-        profileDropdown.style.display = 'none';
-        setDropdownState(profileBtn, false);
+        closeProfileMenu();
       }
     });
 
@@ -287,7 +304,7 @@
 
     function showTargetSection(target, bookingMode) {
       if (!target) return;
-      closeDesktopMenus();
+      closeProfileMenu();
       if (bottomMoreModal && bottomMoreModal.classList.contains('show')) {
         closeMobileMore();
       }
@@ -308,7 +325,7 @@
       }
     }
 
-    document.querySelectorAll('.kinetic-primary-nav a[data-target], #moreMenuDropdown a[data-target], .bottom-nav .nav-btn[data-target], .bottom-more-content .nav-btn[data-target], .kinetic-topbar-brand[data-target]').forEach(link => {
+    document.querySelectorAll('.kinetic-sidebar a[data-target], .kinetic-topbar-brand[data-target], .bottom-nav .nav-btn[data-target], .bottom-more-content .nav-btn[data-target]').forEach(link => {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const target = this.getAttribute('data-target');
