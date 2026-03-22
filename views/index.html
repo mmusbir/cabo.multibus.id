@@ -1325,8 +1325,8 @@
       --accent-1: #7c3aed;
       --accent-2: #22c55e;
       --accent-3: #06b6d4;
-      --text-primary: #0b1222;
-      --text-muted: #5b6478;
+      --text-primary: #e5e7eb;
+      --text-muted: #cbd5e1;
       --glass-blur: blur(20px);
     }
 
@@ -1433,6 +1433,15 @@
       border-radius: 20px;
     }
 
+    /* Main card is flattened for a cleaner home-screen feel */
+    #main-card {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      backdrop-filter: none;
+    }
+
     .toggle-container {
       display: inline-flex;
       align-items: center;
@@ -1479,6 +1488,7 @@
     .btn-booking-modern {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(14, 165, 233, 0.95));
       box-shadow: 0 14px 28px rgba(79, 70, 229, 0.35);
+      color: #f8fafc;
     }
 
     .btn-booking-modern:hover {
@@ -1510,8 +1520,15 @@
     }
 
     .msg-display {
-      color: #14b8a6;
+      color: #a5f3fc;
       font-weight: 700;
+    }
+
+    .carter-section-title,
+    .input-label,
+    .legend,
+    .small {
+      color: #e2e8f0;
     }
 
     /* Minimal top blur strip */
