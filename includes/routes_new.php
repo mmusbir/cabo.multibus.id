@@ -3,7 +3,7 @@
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Rute</h3>
-      <p class=\"admin-section-subtitle\">Kelola rute reguler untuk perjalanan</p>
+      <p class="admin-section-subtitle">Kelola rute reguler untuk perjalanan</p>
     </div>
   </div>
   <?php
@@ -17,38 +17,16 @@
     }
   }
 
-
-
   $route_form_id = 0;
-  $route_type = 'reguler';
   $route_origin = '';
   $route_destination = '';
-  $route_duration = '';
-  $route_rental = '';
-  $route_bop = '';
-  $route_notes = '';
 
   if ($edit_route) {
     $route_form_id = $edit_route['id'];
-    $route_type = 'reguler';
     $route_origin = $edit_route['origin'] ?? '';
     $route_destination = $edit_route['destination'] ?? '';
-  } elseif ($edit_carter) {
-    $route_form_id = $edit_carter['id'];
-    $route_type = 'carter';
-    $route_origin = $edit_carter['origin'];
-    $route_destination = $edit_carter['destination'];
-    $route_duration = $edit_carter['duration'];
-    $route_rental = $edit_carter['rental_price'];
-    $route_bop = $edit_carter['bop_price'];
-    $route_notes = $edit_carter['notes'];
   }
   ?>
-
-  <div class="route-tab-switch" role="tablist" aria-label="Jenis rute">
-    <button type="button" id="tab-reguler" class="btn toggle-btn active" onclick="switchRouteTab('reguler')">Rute Reguler</button>
-    <button type="button" id="tab-carter" class="btn toggle-btn" onclick="switchRouteTab('carter')">Rute Carter</button>
-  </div>
 
   <div class="modern-form-card admin-bs-panel">
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
@@ -59,7 +37,6 @@
       <?php if ($route_form_id) {
         echo '<input type="hidden" name="route_id" value="' . intval($route_form_id) . '">';
       } ?>
-      <input type="hidden" name="route_type" id="hidden_route_type" value="<?php echo $route_type; ?>">
 
       <div id="form-shared" class="modern-form-grid admin-bs-form-grid">
         <div class="input-group admin-bs-col-6">
@@ -71,37 +48,6 @@
           <label class="admin-bs-input-label">Tujuan (Ke)</label>
           <input name="destination" class="modern-input form-control" placeholder="Kota Tujuan"
             value="<?php echo htmlspecialchars($route_destination); ?>" required>
-        </div>
-
-        <div id="carter-fields" style="display:contents">
-          <div class="input-group admin-bs-col-6">
-            <label class="admin-bs-input-label">Jenis Layanan</label>
-            <select name="duration" class="modern-select form-select">
-              <option value="">-- Pilih Layanan --</option>
-              <?php
-              $durations = ['DROP OFF', 'HALF DAY', 'FULL DAY', '2D1N', '3D2N', '4D3N', '5D4N'];
-              foreach ($durations as $d) {
-                $sel = $route_duration === $d ? 'selected' : '';
-                echo "<option value='$d' $sel>$d</option>";
-              }
-              ?>
-            </select>
-          </div>
-          <div class="input-group admin-bs-col-6">
-            <label class="admin-bs-input-label">Nilai Sewa (Rp)</label>
-            <input name="rental_price" type="number" class="modern-input form-control" placeholder="0"
-              value="<?php echo htmlspecialchars($route_rental); ?>">
-          </div>
-          <div class="input-group admin-bs-col-6">
-            <label class="admin-bs-input-label">Nilai BOP (Rp)</label>
-            <input name="bop_price" type="number" class="modern-input form-control" placeholder="0"
-              value="<?php echo htmlspecialchars($route_bop); ?>">
-          </div>
-          <div class="input-group admin-bs-col-12">
-            <label class="admin-bs-input-label">Catatan</label>
-            <textarea name="notes" class="modern-input form-control" style="height:60px"
-              placeholder="Keterangan rute..."><?php echo htmlspecialchars($route_notes); ?></textarea>
-          </div>
         </div>
       </div>
 
@@ -154,39 +100,19 @@
   <div id="routes_pagination" style="margin-top:8px"></div>
 
   <script>
-    function switchRouteTab(type) {
-      document.querySelectorAll('.toggle-btn').forEach((button) => button.classList.remove('active'));
-      document.getElementById('tab-' + type).classList.add('active');
-
-      const hiddenType = document.getElementById('hidden_route_type');
-      if (hiddenType) hiddenType.value = type;
-
-      const carterFields = document.getElementById('carter-fields');
-      if (carterFields) {
-        carterFields.style.display = type === 'carter' ? 'contents' : 'none';
-      }
-
-      loadRoutes(1, type);
-    }
-
-    function loadRoutes(page, type) {
-      if (type) window.currentRouteType = type;
-      const currentType = window.currentRouteType || 'reguler';
+    function loadRoutes(page) {
       const perPage = parseInt(document.getElementById('routes_per_page')?.value || '25', 10);
       const search = document.getElementById('search_route_input')?.value || '';
 
       ajaxListLoad('routes', {
         page: page || 1,
         per_page: perPage,
-        type: currentType,
         search: search
       });
     }
 
-    window.currentRouteType = '<?php echo $route_type; ?>';
-
     document.addEventListener('DOMContentLoaded', () => {
-      switchRouteTab(window.currentRouteType);
+      loadRoutes(1);
     });
   </script>
 </section>

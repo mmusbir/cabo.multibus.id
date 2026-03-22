@@ -402,6 +402,92 @@ body.admin-bootstrap-page .max-w-400 {
     max-width: 400px;
 }
 
+body.admin-bootstrap-page .admin-list-grid {
+    margin-top: 12px;
+    min-height: 100px;
+}
+
+body.admin-bootstrap-page .admin-list-grid-tight {
+    margin-top: 12px;
+}
+
+body.admin-bootstrap-page .admin-list-grid-min {
+    min-height: 100px;
+}
+
+body.admin-bootstrap-page .admin-grid-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+}
+
+body.admin-bootstrap-page .admin-grid-message-muted {
+    opacity: 0.6;
+}
+
+body.admin-bootstrap-page .admin-grid-message-error {
+    color: var(--neu-danger);
+}
+
+body.admin-bootstrap-page .admin-pagination-host {
+    margin-top: 8px;
+}
+
+body.admin-bootstrap-page .pagination-summary {
+    margin-left: 12px;
+}
+
+body.admin-bootstrap-page .admin-toolbar-btn {
+    min-height: 46px;
+    min-width: auto;
+    padding: 0 20px;
+}
+
+body.admin-bootstrap-page .admin-inline-note {
+    margin-left: 8px;
+}
+
+body.admin-bootstrap-page .admin-textarea-sm {
+    height: 60px;
+}
+
+body.admin-bootstrap-page .admin-value-sm {
+    font-size: 12px;
+}
+
+body.admin-bootstrap-page .admin-value-success {
+    color: var(--neu-success);
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .admin-text-danger {
+    color: var(--neu-danger);
+}
+
+body.admin-bootstrap-page .admin-inline-form {
+    display: inline;
+}
+
+body.admin-bootstrap-page .admin-row-muted {
+    margin-top: -4px;
+    margin-bottom: 4px;
+    padding: 0 12px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+body.admin-bootstrap-page .admin-hidden-value {
+    display: none;
+}
+
+body.admin-bootstrap-page .admin-panel-gap {
+    margin-bottom: 24px;
+}
+
+body.admin-bootstrap-page .admin-meta-gap {
+    margin-bottom: 12px;
+}
+
 @keyframes adminBootstrapSpin {
     to {
         transform: rotate(360deg);

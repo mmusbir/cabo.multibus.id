@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login JWT</title>
+    <title>Booking Seat | CahayaBone</title>
 <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
@@ -126,13 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff;
             letter-spacing: -0.02em;
             font-weight: 700;
-        }
-
-        .login-subtitle {
-            margin: -6px 0 22px;
-            text-align: center;
-            color: rgba(226, 232, 240, 0.8);
-            font-size: 14px;
         }
 
         .error-box {
@@ -210,11 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 font-size: 28px;
             }
 
-            .login-subtitle {
-                margin: -2px 0 18px;
-                font-size: 13px;
-            }
-
             .error-box {
                 padding: 11px;
                 margin-bottom: 16px;
@@ -261,8 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="login-card">
         <h2>Login Panel</h2>
-        <div class="login-subtitle">Liquid Glass Interface</div>
-        
+                
         <?php if ($error_msg): ?>
             <div class="error-box">⚠️ <?php echo htmlspecialchars($error_msg); ?></div>
         <?php endif; ?>
