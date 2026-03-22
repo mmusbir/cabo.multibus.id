@@ -1352,6 +1352,11 @@ body.admin-bootstrap-page .passenger-seat-grid {
 }
 
 body.admin-bootstrap-page .view-seat-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
     margin-bottom: 0;
     border-color: rgba(15, 23, 42, 0.08);
     box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
@@ -1368,26 +1373,91 @@ body.admin-bootstrap-page .view-seat-card .seat-head {
     border-bottom: 1px solid #e2e8f0;
 }
 
+body.admin-bootstrap-page .view-seat-card .seat-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
 body.admin-bootstrap-page .view-seat-card .seat-badge-num {
     background: #ecfdf5;
     color: #047857;
 }
 
+body.admin-bootstrap-page .view-seat-card .seat-pay-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .view-seat-card .seat-pay-badge.paid {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+body.admin-bootstrap-page .view-seat-card .seat-pay-badge.unpaid {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
 body.admin-bootstrap-page .view-seat-card .seat-actions {
+    display: flex;
+    align-items: center;
     gap: 0.45rem;
 }
 
 body.admin-bootstrap-page .view-seat-card .copy-btn,
 body.admin-bootstrap-page .view-seat-card .btn-action-icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.18s ease;
     box-shadow: none;
+}
+
+body.admin-bootstrap-page .view-seat-card .copy-btn:hover,
+body.admin-bootstrap-page .view-seat-card .btn-action-icon:hover {
+    transform: translateY(-1px);
+    border-color: #bfdbfe;
+}
+
+body.admin-bootstrap-page .view-seat-card .btn-action-icon.pay {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+body.admin-bootstrap-page .view-seat-card .btn-action-icon.cancel {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #dc3545;
 }
 
 body.admin-bootstrap-page .view-seat-card .seat-body {
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
     gap: 0.85rem;
 }
 
 body.admin-bootstrap-page .view-seat-card .sb-row {
+    display: flex;
+    align-items: flex-start;
     gap: 0.8rem;
 }
 
@@ -1409,6 +1479,38 @@ body.admin-bootstrap-page .view-seat-card .sb-icon {
 body.admin-bootstrap-page .view-seat-card .sb-icon svg {
     width: 0.95rem;
     height: 0.95rem;
+}
+
+body.admin-bootstrap-page .view-seat-card .sb-content {
+    flex: 1;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .view-seat-card .sb-label {
+    margin-bottom: 0.18rem;
+    color: #94a3b8;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .view-seat-card .sb-val {
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+body.admin-bootstrap-page .view-seat-card .sb-val.name {
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+body.admin-bootstrap-page .view-seat-card .sb-val.phone {
+    font-family: "Courier New", monospace;
+    letter-spacing: -0.02em;
 }
 
 body.admin-bootstrap-page .view-seat-empty {
