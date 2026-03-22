@@ -1,10 +1,10 @@
 <section id="view" class="card">
   <div class="admin-section-header">
     <div>
-      <h3 class="admin-section-title">View Detail Penumpang</h3>
-      <p class="admin-section-subtitle">Cek manifest keberangkatan, salin detail penumpang, dan kelola driver dalam satu panel.</p>
+      <h3 class="admin-section-title">Detail Booking List</h3>
+      <p class="admin-section-subtitle">Lihat semua penumpang pada jadwal terpilih, salin manifest, dan kelola driver dalam satu panel.</p>
     </div>
-    <span class="admin-bs-chip">Trip Monitor</span>
+    <span class="admin-bs-chip">Booking Detail</span>
   </div>
 
   <div class="admin-bs-panel view-filter-panel p-3 p-lg-4">
@@ -92,7 +92,7 @@
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.3-4.3"></path>
             </svg>
-            <span>Lihat Data</span>
+            <span>Lihat Booking</span>
           </button>
           <button type="button" id="copyAllBtn" class="btn btn-modern secondary view-action-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -113,7 +113,7 @@
 
   <div id="passengerList" class="view-passenger-list">
     <div class="admin-empty-state view-empty-state">
-      Pilih rute, tanggal, jam, dan unit lalu klik Lihat Data untuk menampilkan manifest.
+      Pilih rute, tanggal, jam, dan unit lalu klik Lihat Booking untuk menampilkan semua penumpang pada jadwal tersebut.
     </div>
   </div>
 </section>

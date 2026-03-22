@@ -1,7 +1,7 @@
 <?php
 /**
  * AJAX Handler: getPassengers
- * Returns passenger list with seat layout for a specific trip
+ * Returns booking list detail for a specific trip schedule
  */
 
 $rute = $_GET['rute'] ?? '';
@@ -21,15 +21,22 @@ function h($value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
-// 1. Get Assigned Driver
+function route_parts(string $route): array
+{
+    if (strpos($route, ' - ') !== false) {
+        $parts = explode(' - ', $route, 2);
+        return [trim($parts[0]), trim($parts[1])];
+    }
+    if (strpos($route, '-') !== false) {
+        $parts = explode('-', $route, 2);
+        return [trim($parts[0]), trim($parts[1])];
+    }
+    return [$route, ''];
+}
+
 $assignedDriverName = '-';
 $assignedDriverId = 0;
-$stmtD = $conn->prepare("
-    SELECT ta.driver_id, d.nama
-    FROM trip_assignments ta
-    JOIN drivers d ON ta.driver_id = d.id
-    WHERE ta.rute=? AND ta.tanggal=? AND ta.jam=? AND ta.unit=?
-");
+$stmtD = $conn->prepare("\n    SELECT ta.driver_id, d.nama\n    FROM trip_assignments ta\n    JOIN drivers d ON ta.driver_id = d.id\n    WHERE ta.rute=? AND ta.tanggal=? AND ta.jam=? AND ta.unit=?\n");
 if ($stmtD) {
     try {
         $stmtD->execute([$rute, $tanggal, $jam, $unit]);
@@ -39,25 +46,17 @@ if ($stmtD) {
             $assignedDriverId = intval($resD['driver_id']);
         }
     } catch (PDOException $e) {
-        // Handle silently or log if needed.
+        // Keep UI resilient.
     }
 }
 
-// 2. Get All Drivers (for dropdown)
 $allDrivers = [];
 $resAllD = $conn->query("SELECT id, nama FROM drivers ORDER BY nama ASC");
 while ($rd = $resAllD->fetch()) {
     $allDrivers[] = $rd;
 }
 
-// 3. Get Bookings
-$stmt = $conn->prepare("
-  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, c.address AS gmaps
-  FROM bookings b
-  LEFT JOIN customers c ON b.phone = c.phone
-  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'
-  ORDER BY CAST(b.seat AS INTEGER)
-");
+$stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
 if (!$stmt) {
     echo json_encode(['success' => false, 'error' => 'db_error']);
     exit;
@@ -70,18 +69,12 @@ try {
     exit;
 }
 
-$seats = [];
-for ($i = 1; $i <= 8; $i++) {
-    $seats[(string) $i] = null;
-}
-
 $totalPaid = 0;
 $countPaid = 0;
 $totalUnpaid = 0;
 $countUnpaid = 0;
 
 foreach ($rows as $r) {
-    $seat = trim((string) $r['seat']);
     $priceValue = floatval($r['price'] ?? 0);
     $discountValue = floatval($r['discount'] ?? 0);
     $finalValue = max(0, $priceValue - $discountValue);
@@ -93,28 +86,19 @@ foreach ($rows as $r) {
         $totalUnpaid += $finalValue;
         $countUnpaid++;
     }
-
-    if ($seat === '') {
-        continue;
-    }
-
-    if (is_numeric($seat) && intval($seat) >= 1 && intval($seat) <= 8) {
-        $seats[(string) intval($seat)] = $r;
-    } else {
-        $seats[$seat] = $r;
-    }
 }
 
 $tglIndo = date('d M Y', strtotime($tanggal));
 $jamIndo = substr($jam, 0, 5);
 $totalPax = count($rows);
+[$routeOrigin, $routeDestination] = route_parts($rute);
 
 ob_start();
 ?>
 <div id="departureInfoCard" class="info-card view-trip-card admin-bs-panel" data-driver-name="<?php echo h($assignedDriverName); ?>">
   <div class="view-trip-head">
     <div>
-      <div class="view-trip-kicker">Manifest</div>
+      <div class="view-trip-kicker">Booking Manifest</div>
       <div class="view-trip-title">Info Pemberangkatan</div>
     </div>
     <div class="view-trip-badge">Unit <?php echo intval($unit); ?></div>
@@ -181,123 +165,111 @@ ob_start();
   </div>
 </div>
 
-<div class="passenger-seat-grid">
-  <?php foreach ($seats as $num => $p): ?>
-    <div class="seat-block view-seat-card" data-seat="<?php echo h($num); ?>">
-      <div class="seat-head">
-        <div class="seat-title-group">
-          <div class="seat-badge-num">Kursi <?php echo h($num); ?></div>
-          <?php if ($p !== null): ?>
-            <?php $payStatus = $p['pembayaran'] ?? 'Belum Lunas'; ?>
-            <?php $payClass = ($payStatus === 'Lunas') ? 'paid' : 'unpaid'; ?>
-            <div class="seat-pay-badge <?php echo $payClass; ?>"><?php echo h($payStatus); ?></div>
-          <?php endif; ?>
-        </div>
-
-        <div class="seat-actions">
-          <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($num); ?>" title="Copy Detail">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
-          <?php if ($p !== null && ($p['pembayaran'] ?? '') !== 'Lunas'): ?>
-            <button type="button" class="mark-paid-seat btn-action-icon pay" data-id="<?php echo h($p['id']); ?>" title="Mark Lunas">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
-            </button>
-          <?php endif; ?>
-          <?php if ($p !== null): ?>
-            <button type="button" class="cancel-btn btn-action-icon cancel" data-id="<?php echo h($p['id']); ?>" title="Batalkan">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="m15 9-6 6"></path>
-                <path d="m9 9 6 6"></path>
-              </svg>
-            </button>
-          <?php endif; ?>
-        </div>
-      </div>
-
-      <?php if ($p !== null): ?>
-        <div class="seat-body">
-          <div class="sb-row">
-            <div class="sb-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21a8 8 0 0 0-16 0"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            <div class="sb-content">
-              <div class="sb-label">Nama</div>
-              <div class="sb-val name"><?php echo h($p['name'] ?? '-'); ?></div>
-            </div>
-          </div>
-
-          <div class="sb-row">
-            <div class="sb-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.46-1.29a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z"></path>
-              </svg>
-            </div>
-            <div class="sb-content">
-              <div class="sb-label">No. HP</div>
-              <div class="sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
-            </div>
-          </div>
-
-          <?php if (!empty($p['pickup_point'])): ?>
-            <div class="sb-row">
-              <div class="sb-icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-              </div>
-              <div class="sb-content">
-                <div class="sb-label">Titik Jemput</div>
-                <div class="sb-val pickup"><?php echo h($p['pickup_point']); ?></div>
-              </div>
-            </div>
-          <?php endif; ?>
-
-          <?php if (!empty($p['gmaps'])): ?>
-            <div class="sb-row">
-              <div class="sb-icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
-                  <line x1="9" x2="9" y1="3" y2="18"></line>
-                  <line x1="15" x2="15" y1="6" y2="21"></line>
-                </svg>
-              </div>
-              <div class="sb-content">
-                <div class="sb-label">Google Maps</div>
-                <div class="sb-val gmaps"><?php echo h($p['gmaps']); ?></div>
-              </div>
-            </div>
-          <?php endif; ?>
-
-          <span class="sb-val pay admin-hidden-value"><?php echo h($p['pembayaran'] ?? ''); ?></span>
-        </div>
-      <?php else: ?>
-        <div class="seat-body empty-state">
-          <div class="view-seat-empty">
-            <div class="view-seat-empty-title">Kursi kosong</div>
-            <div class="view-seat-empty-text">Belum ada penumpang pada kursi ini.</div>
-          </div>
-        </div>
-      <?php endif; ?>
+<div class="view-booking-list-shell">
+  <div class="view-booking-list-head">
+    <div>
+      <div class="view-booking-kicker">Logistics Overview</div>
+      <h4 class="view-booking-title">Data Booking</h4>
     </div>
-  <?php endforeach; ?>
+    <button type="button" class="view-booking-cta" onclick="document.getElementById('search_name_input')?.focus();">
+      <span class="material-symbols-outlined">add</span>
+      Tambah Booking
+    </button>
+  </div>
+
+  <div class="view-booking-chip-row no-scrollbar">
+    <span class="view-booking-chip active">Semua (<?php echo $totalPax; ?>)</span>
+    <span class="view-booking-chip">Pending (<?php echo $countUnpaid; ?>)</span>
+    <span class="view-booking-chip">Confirmed (<?php echo $countPaid; ?>)</span>
+    <span class="view-booking-chip">Rute <?php echo h($routeOrigin); ?></span>
+    <?php if ($routeDestination !== ''): ?>
+      <span class="view-booking-chip">Tujuan <?php echo h($routeDestination); ?></span>
+    <?php endif; ?>
+  </div>
+
+  <div class="booking-detail-grid">
+    <?php if (empty($rows)): ?>
+      <div class="admin-empty-state view-empty-state">Belum ada penumpang untuk jadwal ini.</div>
+    <?php else: ?>
+      <?php foreach ($rows as $idx => $p): ?>
+        <?php
+          $payStatus = trim((string) ($p['pembayaran'] ?? 'Belum Lunas')) ?: 'Belum Lunas';
+          $isPaid = $payStatus === 'Lunas';
+          $statusLabel = $isPaid ? 'CONFIRMED' : 'PENDING';
+          $statusTone = $isPaid ? 'confirmed' : 'pending';
+          $lineTone = $isPaid ? 'emerald' : 'amber';
+          if (in_array($payStatus, ['Redbus', 'Traveloka'], true)) {
+              $statusLabel = 'ON-TRIP';
+              $statusTone = 'ontrip';
+              $lineTone = 'blue';
+          }
+          $pickupText = trim((string) ($p['pickup_point'] ?? ''));
+          if ($pickupText === '') {
+              $pickupText = $routeOrigin !== '' ? $routeOrigin : 'Pickup belum diisi';
+          }
+          $bookingCode = formatBookingId($p['id'], $p['created_at'] ?? $tanggal . ' 00:00:00');
+          $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : 'END USER';
+          $priceValue = max(0, floatval($p['price'] ?? 0) - floatval($p['discount'] ?? 0));
+        ?>
+        <div class="seat-block view-seat-card booking-detail-card tone-<?php echo h($lineTone); ?>" data-seat="<?php echo h($p['seat'] ?? ''); ?>">
+          <div class="booking-detail-line"></div>
+          <div class="booking-detail-main">
+            <div class="booking-detail-copy">
+              <div class="booking-detail-meta-row">
+                <span class="booking-detail-code mono-font"><?php echo h($bookingCode); ?></span>
+                <span class="booking-detail-status tone-<?php echo h($statusTone); ?>">
+                  <span class="booking-detail-dot"></span>
+                  <?php echo h($statusLabel); ?>
+                </span>
+              </div>
+              <div class="seat-badge-num">Kursi <?php echo h($p['seat'] ?? '-'); ?></div>
+              <h3 class="booking-detail-name sb-val name"><?php echo h($p['name'] ?? '-'); ?></h3>
+              <div class="booking-detail-route">
+                <span class="material-symbols-outlined">location_on</span>
+                <span class="font-medium"><?php echo h($pickupText); ?></span>
+                <?php if ($routeDestination !== ''): ?>
+                  <span class="material-symbols-outlined booking-detail-arrow">arrow_forward</span>
+                  <span class="font-medium"><?php echo h($routeDestination); ?></span>
+                <?php else: ?>
+                  <span class="material-symbols-outlined booking-detail-arrow">arrow_forward</span>
+                  <span class="font-medium"><?php echo h($rute); ?></span>
+                <?php endif; ?>
+              </div>
+              <div class="booking-detail-hidden sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
+              <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
+              <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
+              <div class="booking-detail-hidden sb-val pay"><?php echo h($payStatus); ?></div>
+            </div>
+
+            <div class="booking-detail-side">
+              <div class="booking-detail-side-block">
+                <span class="booking-detail-side-label">Departure Time</span>
+                <span class="booking-detail-side-value mono-font"><?php echo h($tglIndo . ' ' . $jamIndo); ?></span>
+              </div>
+              <div class="booking-detail-side-block">
+                <span class="booking-detail-side-label">Pembayaran</span>
+                <span class="booking-detail-side-value">Rp <?php echo number_format($priceValue, 0, ',', '.'); ?></span>
+              </div>
+              <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
+              <div class="seat-actions booking-detail-actions">
+                <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
+                  <span class="material-symbols-outlined">content_copy</span>
+                </button>
+                <?php if (!$isPaid): ?>
+                  <button type="button" class="mark-paid-seat btn-action-icon pay" data-id="<?php echo h($p['id']); ?>" title="Mark Lunas">
+                    <span class="material-symbols-outlined">task_alt</span>
+                  </button>
+                <?php endif; ?>
+                <button type="button" class="cancel-btn btn-action-icon cancel" data-id="<?php echo h($p['id']); ?>" title="Batalkan">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
 </div>
 
 <div id="passengerSummary" class="summary-footer admin-bs-panel" data-paid="<?php echo $totalPaid; ?>" data-unpaid="<?php echo $totalUnpaid; ?>">
