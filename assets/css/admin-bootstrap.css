@@ -1,6 +1,447 @@
 body.admin-bootstrap-page {
+    --neu-primary: #0d6efd;
+    --neu-success: #16a34a;
+    --neu-danger: #dc2626;
     background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
     color: #0f172a;
+}
+
+/* Legacy compatibility after retiring admin.css */
+body.admin-bootstrap-page .small {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: #64748b;
+    font-weight: 500;
+}
+
+body.admin-bootstrap-page .muted {
+    color: #94a3b8;
+}
+
+body.admin-bootstrap-page .layout,
+body.admin-bootstrap-page .admin-bootstrap-grid {
+    display: flex;
+    justify-content: center;
+}
+
+body.admin-bootstrap-page .left,
+body.admin-bootstrap-page .admin-main-column {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .right,
+body.admin-bootstrap-page .admin-side-column {
+    width: 360px;
+    flex: 0 0 360px;
+    display: none;
+}
+
+body.admin-bootstrap-page .right .card,
+body.admin-bootstrap-page .admin-side-column .card {
+    position: sticky;
+    top: 96px;
+}
+
+body.admin-bootstrap-page .toggle-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    width: fit-content;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.admin-bootstrap-page .toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(33.333% - 4px);
+    height: calc(100% - 4px);
+    border-radius: 999px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+body.admin-bootstrap-page .toggle-container.mode-charters .toggle-slider {
+    transform: translateX(100%);
+}
+
+body.admin-bootstrap-page .toggle-container.mode-luggage .toggle-slider {
+    transform: translateX(200%);
+}
+
+body.admin-bootstrap-page .toggle-btn {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.45rem 1rem;
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+body.admin-bootstrap-page .toggle-btn:not(.active) {
+    color: #475569;
+    opacity: 0.78;
+}
+
+body.admin-bootstrap-page .toggle-btn.active {
+    color: #fff;
+}
+
+body.admin-bootstrap-page .btn-report-generate {
+    background: #0f172a !important;
+    color: #fff !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+}
+
+body.admin-bootstrap-page .btn-report-generate:hover {
+    background: #1e293b !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.16) !important;
+}
+
+body.admin-bootstrap-page .btn-report-generate:active {
+    transform: translateY(0) !important;
+}
+
+body.admin-bootstrap-page .btn-bright {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 46px;
+    padding: 0.8rem 1.25rem;
+    border: none;
+    border-radius: 0.95rem;
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0.85rem 1.5rem rgba(21, 128, 61, 0.18);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+body.admin-bootstrap-page .btn-bright:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 1rem 1.75rem rgba(21, 128, 61, 0.22);
+    filter: brightness(1.03);
+}
+
+body.admin-bootstrap-page .btn-bright:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.16);
+}
+
+body.admin-bootstrap-page .table-wrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 0.85rem;
+    padding: 0.85rem;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 1.15rem;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    -webkit-overflow-scrolling: touch;
+}
+
+body.admin-bootstrap-page .table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+body.admin-bootstrap-page .table-wrapper::-webkit-scrollbar-track {
+    background: rgba(226, 232, 240, 0.7);
+    border-radius: 999px;
+}
+
+body.admin-bootstrap-page .table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.9);
+    border-radius: 999px;
+}
+
+body.admin-bootstrap-page .pagination-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .pagination-container .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.4rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #d6dde8;
+    border-radius: 999px;
+    background: #fff;
+    color: #475569;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 0.4rem 0.9rem rgba(15, 23, 42, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+body.admin-bootstrap-page .pagination-container .badge:hover {
+    transform: translateY(-1px);
+    border-color: rgba(13, 110, 253, 0.3);
+    color: #0d6efd;
+    box-shadow: 0 0.7rem 1.25rem rgba(13, 110, 253, 0.12);
+}
+
+body.admin-bootstrap-page .pagination-container .badge.active {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 0.8rem 1.4rem rgba(13, 110, 253, 0.18);
+}
+
+body.admin-bootstrap-page .pagination-container .dots {
+    color: #94a3b8;
+}
+
+body.admin-bootstrap-page .spinner-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 0;
+}
+
+body.admin-bootstrap-page .ajax-spinner {
+    display: block;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    border: 3px solid rgba(148, 163, 184, 0.22);
+    border-top-color: #0d6efd;
+    animation: adminBootstrapSpin 0.8s linear infinite;
+}
+
+body.admin-bootstrap-page .booking-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .bc-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: #fef3c7;
+    color: #b45309;
+}
+
+body.admin-bootstrap-page .bc-status.booked {
+    background: #dcfce7;
+    color: #166534;
+}
+
+body.admin-bootstrap-page .bc-status.canceled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+body.admin-bootstrap-page .acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.1rem;
+    border-bottom: 1px solid #eef2f7;
+}
+
+body.admin-bootstrap-page .acc-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+}
+
+body.admin-bootstrap-page .acc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .acc-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .acc-label {
+    min-width: 5.5rem;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+body.admin-bootstrap-page .acc-val {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #334155;
+    word-break: break-word;
+}
+
+body.admin-bootstrap-page .acc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+    padding-top: 0.95rem;
+    border-top: 1px solid #eef2f7;
+}
+
+body.admin-bootstrap-page .modern-form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+body.admin-bootstrap-page .file-upload-wrapper {
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+}
+
+body.admin-bootstrap-page .file-upload-wrapper input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+body.admin-bootstrap-page .file-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 46px;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: 1rem;
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+body.admin-bootstrap-page .file-upload-wrapper:hover .file-upload-btn {
+    border-color: rgba(13, 110, 253, 0.45);
+    background: #eff6ff;
+    color: #0d6efd;
+}
+
+body.admin-bootstrap-page .search-input-modern {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    padding: 0.7rem 0.25rem 0.7rem 1rem;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    outline: none;
+    box-shadow: none !important;
+}
+
+body.admin-bootstrap-page .search-input-modern::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+body.admin-bootstrap-page .import-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.admin-bootstrap-page .w-full {
+    width: 100%;
+}
+
+body.admin-bootstrap-page .max-w-400 {
+    max-width: 400px;
+}
+
+@keyframes adminBootstrapSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 899px) {
+    body.admin-bootstrap-page .layout,
+    body.admin-bootstrap-page .admin-bootstrap-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    body.admin-bootstrap-page .left,
+    body.admin-bootstrap-page .admin-main-column {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body.admin-bootstrap-page .table-wrapper {
+        padding: 0.75rem;
+    }
+
+    body.admin-bootstrap-page .acc-row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    body.admin-bootstrap-page .acc-label {
+        min-width: 0;
+    }
+
+    body.admin-bootstrap-page .import-row {
+        align-items: stretch;
+    }
+
+    body.admin-bootstrap-page .file-upload-wrapper,
+    body.admin-bootstrap-page .file-upload-btn {
+        width: 100%;
+    }
 }
 
 body.admin-bootstrap-page a {
