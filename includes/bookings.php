@@ -4,15 +4,6 @@
     <div>
       <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
       <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
-          </div>
-    <div class="kinetic-command-metrics">
-      <div class="kinetic-metric-card kinetic-metric-secondary">
-        <span class="kinetic-metric-label">Total Data</span>
-        <div class="kinetic-metric-value-row">
-          <strong id="bookingMetricTotal">0</strong>
-          <span id="bookingMetricLabel">Bookings</span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -410,4 +401,3 @@
     });
   </script>
 </section>
-
