@@ -4805,6 +4805,25 @@ body.admin-bootstrap-page .booking-detail-route .booking-detail-arrow {
     color: #f97316;
 }
 
+body.admin-bootstrap-page .booking-detail-segment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #a5b4c7;
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+body.admin-bootstrap-page .booking-detail-segment .material-symbols-outlined {
+    font-size: 0.9rem;
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .booking-detail-segment strong {
+    color: #e2e8f0;
+    font-weight: 700;
+}
+
 body.admin-bootstrap-page .booking-detail-hidden {
     display: none;
 }

@@ -59,7 +59,7 @@ try {
         $allDrivers[] = $rd;
     }
 
-    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
+    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps,\n         s.rute AS segment_route, s.origin AS segment_origin, s.destination AS segment_destination\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  LEFT JOIN segments s ON b.segment_id = s.id\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
     if (!$stmt) {
         echo json_encode(['success' => false, 'error' => 'db_error']);
         exit;
@@ -200,6 +200,16 @@ try {
           if ($pickupText === '') {
               $pickupText = $routeOrigin !== '' ? $routeOrigin : 'Pickup belum diisi';
           }
+          $segmentOrigin = trim((string) ($p['segment_origin'] ?? ''));
+          $segmentDestination = trim((string) ($p['segment_destination'] ?? ''));
+          $segmentRoute = trim((string) ($p['segment_route'] ?? ''));
+          if ($segmentOrigin !== '' && $segmentDestination !== '') {
+              $segmentLabel = $segmentOrigin . ' - ' . $segmentDestination;
+          } elseif ($segmentRoute !== '') {
+              $segmentLabel = $segmentRoute;
+          } else {
+              $segmentLabel = '';
+          }
           $bookingCode = formatBookingId($p['id'], $p['created_at'] ?? $tanggal . ' 00:00:00');
           $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : 'END USER';
           $priceValue = max(0, floatval($p['price'] ?? 0) - floatval($p['discount'] ?? 0));
@@ -228,6 +238,12 @@ try {
                   <span class="font-medium"><?php echo h($rute); ?></span>
                 <?php endif; ?>
               </div>
+              <?php if ($segmentLabel !== ''): ?>
+                <div class="booking-detail-segment">
+                  <span class="material-symbols-outlined">conversion_path</span>
+                  <span>Segment: <strong><?php echo h($segmentLabel); ?></strong></span>
+                </div>
+              <?php endif; ?>
               <div class="booking-detail-hidden sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
               <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
               <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
