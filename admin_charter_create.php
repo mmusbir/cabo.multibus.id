@@ -27,7 +27,7 @@ function parse_route_text(string $value): array
         return ['', ''];
     }
 
-    foreach (['→', ' - ', ' -- ', ' to ', ' ke '] as $separator) {
+    foreach (['->', ' - ', ' -- ', ' to ', ' ke '] as $separator) {
         if (stripos($value, $separator) !== false) {
             $parts = preg_split('/' . preg_quote($separator, '/') . '/i', $value, 2);
             $from = trim($parts[0] ?? '');
@@ -262,10 +262,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-weight: 800;
     }
 
+    .page-lead {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin: 22px 0 10px;
+    }
+
+    .page-kicker {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(224, 192, 177, 0.6);
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 0.98;
+    }
+
+    .page-note {
+      max-width: 560px;
+      margin: 10px 0 0;
+      color: rgba(224, 192, 177, 0.72);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .page-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(25, 27, 34, 0.9);
+      border: 1px solid rgba(88, 66, 55, 0.18);
+      color: rgba(224, 192, 177, 0.82);
+      font-size: 0.78rem;
+    }
+
+    .page-status strong {
+      color: var(--text);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.86rem;
+    }
+
+    .content-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 22px;
+      align-items: start;
+      margin-top: 24px;
+    }
+
     .content-stack {
       display: grid;
-      gap: 28px;
-      margin-top: 24px;
+      gap: 24px;
     }
 
     .section-head {
@@ -428,6 +486,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-transform: uppercase;
     }
 
+    .route-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .route-preset {
+      border: 1px solid rgba(88, 66, 55, 0.22);
+      background: rgba(12, 14, 20, 0.85);
+      color: rgba(224, 192, 177, 0.8);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    .route-preset:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      color: var(--primary);
+    }
+
     .payment-options {
       display: flex;
       flex-wrap: wrap;
@@ -460,6 +543,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .error-box ul {
       margin: 0;
       padding-left: 18px;
+    }
+
+    .summary-card {
+      position: sticky;
+      top: 96px;
+      display: grid;
+      gap: 18px;
+      background: linear-gradient(180deg, rgba(25, 27, 34, 0.98) 0%, rgba(17, 19, 25, 0.98) 100%);
+      border: 1px solid rgba(88, 66, 55, 0.18);
+      border-radius: 24px;
+      padding: 22px;
+    }
+
+    .summary-kicker {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(224, 192, 177, 0.52);
+    }
+
+    .summary-title {
+      margin: 6px 0 0;
+      font-size: 1.45rem;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .summary-subtle {
+      margin: 8px 0 0;
+      color: rgba(224, 192, 177, 0.68);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    .summary-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(88, 66, 55, 0.14);
+    }
+
+    .summary-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .summary-label {
+      color: rgba(224, 192, 177, 0.55);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      text-align: right;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .summary-value.price {
+      color: var(--primary);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
     }
 
     .actions {
@@ -507,11 +669,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     @media (max-width: 900px) {
+      .page-lead,
+      .content-shell,
       .grid-2,
       .grid-3,
       .helper-grid,
       .bus-type-grid {
         grid-template-columns: 1fr;
+      }
+
+      .page-lead {
+        flex-direction: column;
+        align-items: start;
       }
 
       .col-span-2 {
@@ -528,6 +697,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       .page-shell {
         padding-inline: 18px;
+      }
+
+      .summary-card {
+        position: static;
       }
     }
   </style>
@@ -547,6 +720,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </header>
 
   <main class="page-shell">
+    <section class="page-lead">
+      <div>
+        <div class="page-kicker">Fleet Operations</div>
+        <h1 class="page-title">Tambah Carter</h1>
+        <p class="page-note">Kita buat alur input carter lebih cepat: isi penyewa, pilih rute, atur unit, lalu simpan tanpa keluar dari ritme operasional.</p>
+      </div>
+      <div class="page-status">
+        <span class="material-symbols-outlined" style="color: var(--primary);">directions_bus</span>
+        <div>
+          <div class="page-kicker" style="margin:0 0 4px;">Mode Aktif</div>
+          <strong>Carter Management</strong>
+        </div>
+      </div>
+    </section>
+
     <?php if ($errors): ?>
       <div class="error-box">
         <ul>
@@ -557,6 +745,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     <?php endif; ?>
 
+    <div class="content-shell">
     <form method="post" class="content-stack" novalidate>
       <section>
         <div class="section-head">
@@ -591,6 +780,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="material-symbols-outlined field-icon">route</span>
               <input id="route_text" name="route_text" class="input with-icon" list="charter-route-list" type="text" placeholder="Jakarta - Yogyakarta (PP)" value="<?php echo h($form['route_text']); ?>" required>
             </div>
+            <?php if ($charterRoutes): ?>
+              <div class="route-presets">
+                <?php foreach (array_slice($charterRoutes, 0, 4) as $route): ?>
+                  <?php
+                    $presetRoute = trim(($route['origin'] ?? '') . ' - ' . ($route['destination'] ?? ''));
+                    $presetDuration = trim((string) ($route['duration'] ?? ''));
+                    $presetPrice = (string) ($route['rental_price'] ?? '');
+                  ?>
+                  <button
+                    type="button"
+                    class="route-preset"
+                    data-route-preset="<?php echo h($presetRoute); ?>"
+                    data-route-duration="<?php echo h($presetDuration); ?>"
+                    data-route-price="<?php echo h($presetPrice); ?>">
+                    <?php echo h($presetRoute); ?>
+                  </button>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
             <datalist id="charter-route-list">
               <?php foreach ($charterRoutes as $route): ?>
                 <option
@@ -697,15 +905,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="admin.php?booking_mode=charters#bookings" class="btn btn-secondary">Batalkan</a>
       </div>
     </form>
+    <aside class="summary-card">
+      <div>
+        <p class="summary-kicker">Live Summary</p>
+        <h2 class="summary-title">Preview Carter</h2>
+        <p class="summary-subtle">Ringkasan ini ikut berubah saat form diisi, jadi kita bisa cek cepat sebelum simpan.</p>
+      </div>
+
+      <div class="summary-stack">
+        <div class="summary-row">
+          <span class="summary-label">Penyewa</span>
+          <span class="summary-value" id="summaryName"><?php echo h($form['name'] ?: 'Belum diisi'); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Rute</span>
+          <span class="summary-value" id="summaryRoute"><?php echo h($form['route_text'] ?: 'Belum diisi'); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Jadwal</span>
+          <span class="summary-value" id="summarySchedule"><?php echo h(($form['start_date'] ?: '-') . ' • ' . ($form['departure_time'] ?: '-')); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Durasi</span>
+          <span class="summary-value" id="summaryDuration"><?php echo h(($form['duration_days'] ?: '0') . ' Hari'); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Armada</span>
+          <span class="summary-value" id="summaryBusType"><?php echo h($form['bus_type'] ?: '-'); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Unit / Driver</span>
+          <span class="summary-value" id="summaryOps"><?php echo h(($form['unit_id'] ?: '-') . ' • ' . ($form['driver_name'] ?: 'TBD')); ?></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Harga</span>
+          <span class="summary-value price" id="summaryPrice"><?php echo h($form['price'] !== '' ? 'Rp ' . $form['price'] : 'Rp 0'); ?></span>
+        </div>
+      </div>
+    </aside>
+    </div>
   </main>
 
   <script>
+    function formatToRupiah(value) {
+      const digits = String(value || '').replace(/\D/g, '');
+      if (!digits) return '';
+      return new Intl.NumberFormat('id-ID').format(Number(digits));
+    }
+
+    function getSelectedUnitLabel() {
+      const unitSelect = document.getElementById('unit_id');
+      if (!unitSelect) return '-';
+      const option = unitSelect.options[unitSelect.selectedIndex];
+      return option && option.value ? option.textContent.trim() : '-';
+    }
+
+    function syncSummary() {
+      const name = document.getElementById('name')?.value.trim() || 'Belum diisi';
+      const route = document.getElementById('route_text')?.value.trim() || 'Belum diisi';
+      const startDate = document.getElementById('start_date')?.value || '-';
+      const departureTime = document.getElementById('departure_time')?.value || '-';
+      const duration = document.getElementById('duration_days')?.value || '0';
+      const busType = document.getElementById('bus_type')?.value || '-';
+      const driver = document.getElementById('driver_name')?.value || 'TBD';
+      const unit = getSelectedUnitLabel();
+      const priceRaw = document.getElementById('price')?.value || '';
+      const price = formatToRupiah(priceRaw);
+
+      document.getElementById('summaryName').textContent = name;
+      document.getElementById('summaryRoute').textContent = route;
+      document.getElementById('summarySchedule').textContent = startDate + ' • ' + departureTime;
+      document.getElementById('summaryDuration').textContent = duration + ' Hari';
+      document.getElementById('summaryBusType').textContent = busType;
+      document.getElementById('summaryOps').textContent = unit + ' • ' + driver;
+      document.getElementById('summaryPrice').textContent = 'Rp ' + (price || '0');
+    }
+
     document.querySelectorAll('[data-counter-step]').forEach(function (button) {
       button.addEventListener('click', function () {
         const input = document.getElementById('duration_days');
         const current = parseInt(input.value || '1', 10);
         const next = Math.max(1, current + parseInt(button.getAttribute('data-counter-step'), 10));
         input.value = next;
+        syncSummary();
       });
     });
 
@@ -716,27 +998,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           item.classList.remove('active');
         });
         button.classList.add('active');
+        syncSummary();
       });
     });
 
     const routeInput = document.getElementById('route_text');
     const durationInput = document.getElementById('duration_days');
     const priceInput = document.getElementById('price');
+    const downPaymentInput = document.getElementById('down_payment');
     const routeOptions = Array.from(document.querySelectorAll('#charter-route-list option'));
+
+    document.querySelectorAll('[data-route-preset]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        routeInput.value = button.getAttribute('data-route-preset') || '';
+        if (button.getAttribute('data-route-duration')) {
+          durationInput.value = button.getAttribute('data-route-duration');
+        }
+        if (button.getAttribute('data-route-price')) {
+          priceInput.value = formatToRupiah(button.getAttribute('data-route-price'));
+        }
+        syncSummary();
+      });
+    });
 
     routeInput.addEventListener('change', function () {
       const selected = routeOptions.find(function (option) {
         return option.value.trim().toLowerCase() === routeInput.value.trim().toLowerCase();
       });
 
-      if (!selected) return;
-      if (selected.dataset.duration && !durationInput.value) {
-        durationInput.value = selected.dataset.duration;
+      if (selected) {
+        if (selected.dataset.duration) {
+          durationInput.value = selected.dataset.duration;
+        }
+        if (selected.dataset.price) {
+          priceInput.value = formatToRupiah(selected.dataset.price);
+        }
       }
-      if (selected.dataset.price && !priceInput.value) {
-        priceInput.value = Number(selected.dataset.price).toLocaleString('id-ID');
+      syncSummary();
+    });
+
+    ['name', 'start_date', 'departure_time', 'duration_days', 'unit_id', 'driver_name', 'route_text'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', syncSummary);
+      el.addEventListener('change', syncSummary);
+    });
+
+    priceInput.addEventListener('input', function () {
+      const caretAtEnd = priceInput.selectionStart === priceInput.value.length;
+      priceInput.value = formatToRupiah(priceInput.value);
+      if (caretAtEnd) {
+        priceInput.setSelectionRange(priceInput.value.length, priceInput.value.length);
+      }
+      syncSummary();
+    });
+
+    downPaymentInput.addEventListener('input', function () {
+      const caretAtEnd = downPaymentInput.selectionStart === downPaymentInput.value.length;
+      downPaymentInput.value = formatToRupiah(downPaymentInput.value);
+      if (caretAtEnd) {
+        downPaymentInput.setSelectionRange(downPaymentInput.value.length, downPaymentInput.value.length);
       }
     });
+
+    syncSummary();
   </script>
 </body>
 </html>
+
