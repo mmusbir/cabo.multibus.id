@@ -4,6 +4,8 @@
  * Returns schedule times for a route on a given date
  */
 
+global $conn;
+
 $rute = $_GET['rute'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 

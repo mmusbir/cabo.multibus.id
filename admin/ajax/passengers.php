@@ -4,6 +4,8 @@
  * Returns booking list detail for a specific trip schedule
  */
 
+global $conn;
+
 $rute = $_GET['rute'] ?? '';
 $tanggal = $_GET['tanggal'] ?? '';
 $jam = $_GET['jam'] ?? '';
