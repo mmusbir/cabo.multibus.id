@@ -2,9 +2,7 @@
   <div class="booking-detail-page-shell">
     <div class="booking-detail-page-head">
       <div class="booking-detail-page-copy">
-        <span class="booking-detail-page-kicker">Logistics Overview</span>
         <h3 class="booking-detail-page-title">Detail Booking</h3>
-        <p class="booking-detail-page-subtitle">Semua penumpang pada jadwal terpilih tampil di satu halaman, lengkap dengan status pembayaran, driver, dan aksi cepat.</p>
       </div>
 
       <div class="booking-detail-page-actions">

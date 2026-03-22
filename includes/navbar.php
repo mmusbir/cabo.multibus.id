@@ -43,25 +43,28 @@
     <span class="material-symbols-outlined">left_panel_close</span>
   </button>
 
-  <div class="kinetic-desktop-account d-none d-lg-flex">
-    <div class="profile-dropdown kinetic-profile-dropdown">
-      <button class="profile-btn kinetic-profile-btn" id="desktopProfileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil desktop">
-        <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
-      </button>
-      <div class="profile-menu kinetic-profile-menu" id="desktopProfileMenuDropdown">
-        <div class="kinetic-profile-meta">
-          <div class="kinetic-profile-name"><?php echo htmlspecialchars($userLabel); ?></div>
-          <div class="kinetic-profile-role">Admin Panel</div>
+  <div class="kinetic-desktop-navbar d-none d-lg-flex">
+    <div class="kinetic-desktop-navbar-inner">
+      <div class="kinetic-desktop-navbar-spacer"></div>
+      <div class="profile-dropdown kinetic-profile-dropdown">
+        <button class="profile-btn kinetic-profile-btn" id="desktopProfileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil desktop">
+          <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
+        </button>
+        <div class="profile-menu kinetic-profile-menu" id="desktopProfileMenuDropdown">
+          <div class="kinetic-profile-meta">
+            <div class="kinetic-profile-name"><?php echo htmlspecialchars($userLabel); ?></div>
+            <div class="kinetic-profile-role">Admin Panel</div>
+          </div>
+          <a href="javascript:void(0)" data-open-change-password>
+            <span class="material-symbols-outlined">lock</span>
+            Ganti Password
+          </a>
+          <div class="menu-divider"></div>
+          <a href="logout.php" class="logout-link">
+            <span class="material-symbols-outlined">logout</span>
+            Logout
+          </a>
         </div>
-        <a href="javascript:void(0)" data-open-change-password>
-          <span class="material-symbols-outlined">lock</span>
-          Ganti Password
-        </a>
-        <div class="menu-divider"></div>
-        <a href="logout.php" class="logout-link">
-          <span class="material-symbols-outlined">logout</span>
-          Logout
-        </a>
       </div>
     </div>
   </div>

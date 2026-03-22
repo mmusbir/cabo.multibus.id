@@ -6280,3 +6280,68 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .material-sym
         grid-template-columns: 1fr;
     }
 }
+
+/* Desktop navbar constraint + minimal admin copy */
+@media (min-width: 992px) {
+    body.admin-bootstrap-page .kinetic-desktop-navbar {
+        position: fixed;
+        top: 0.9rem;
+        left: 17.25rem;
+        right: 1rem;
+        z-index: 1034;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    body.admin-bootstrap-page .kinetic-desktop-navbar-inner {
+        width: min(1540px, calc(100vw - 19.5rem));
+        min-height: 3.5rem;
+        padding: 0.4rem 0.55rem;
+        border-radius: 1rem;
+        background: rgba(21, 24, 31, 0.92);
+        border: 1px solid rgba(88, 66, 55, 0.18);
+        box-shadow: 0 16px 34px rgba(12, 14, 20, 0.22);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        pointer-events: auto;
+    }
+
+    body.admin-bootstrap-page .kinetic-desktop-navbar-spacer {
+        flex: 1 1 auto;
+    }
+
+    body.admin-bootstrap-page .kinetic-desktop-navbar .kinetic-profile-btn {
+        background: #191b22;
+        border-color: rgba(88, 66, 55, 0.18);
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .kinetic-desktop-navbar {
+        left: 4.25rem;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .kinetic-desktop-navbar-inner {
+        width: min(1680px, calc(100vw - 6rem));
+    }
+
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        margin-top: 5.3rem !important;
+    }
+}
+
+body.admin-bootstrap-page .admin-section-subtitle,
+body.admin-bootstrap-page .kinetic-command-kicker,
+body.admin-bootstrap-page .kinetic-command-subtitle,
+body.admin-bootstrap-page .kinetic-summary-text,
+body.admin-bootstrap-page .kinetic-trip-subtitle,
+body.admin-bootstrap-page .kinetic-dash-kicker,
+body.admin-bootstrap-page .view-booking-kicker,
+body.admin-bootstrap-page .view-trip-kicker,
+body.admin-bootstrap-page .booking-detail-page-kicker,
+body.admin-bootstrap-page .booking-detail-page-subtitle,
+body.admin-bootstrap-page .booking-detail-context-helper,
+body.admin-bootstrap-page [id$="_info"] {
+    display: none !important;
+}
