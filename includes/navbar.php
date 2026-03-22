@@ -7,15 +7,15 @@
   <div class="topbar kinetic-topbar navbar navbar-expand-lg sticky-top">
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
       <div class="kinetic-topbar-brand-wrap">
-        <a href="#bookings" class="kinetic-topbar-brand" data-target="bookings" data-booking-mode="bookings" data-nav-key="dashboard">
+        <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
           <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
           <span class="kinetic-brand-text">KINETIC COMMAND</span>
         </a>
       </div>
 
       <nav class="nav kinetic-primary-nav d-none d-lg-flex" id="siteNav">
-        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="dashboard">Dashboard</a>
-        <a href="#view" data-target="view" data-nav-key="booking">Booking</a>
+        <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard">Dashboard</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking">Booking</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter">Carter</a>
         <a href="#reports" data-target="reports" data-nav-key="reports">Laporan</a>
       </nav>
@@ -56,6 +56,7 @@
 
       <div id="moreMenuDropdown" class="kinetic-more-dropdown">
         <div class="menu-section-header">Operasional</div>
+        <a href="#view" data-target="view"><span class="material-symbols-outlined">visibility</span>Manifest View</a>
         <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
         <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
         <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">cancel</span>Cancellations</a>
@@ -89,11 +90,11 @@
 
 <?php if ($auth): ?>
   <nav class="bottom-nav kinetic-bottom-nav" id="bottomNav">
-    <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="bookings" data-nav-key="dashboard" id="navDashboard">
+    <a href="#dashboard" class="nav-btn" data-target="dashboard" data-nav-key="dashboard" id="navDashboard">
       <span class="material-symbols-outlined">dashboard</span>
       <span class="nav-label">Dashboard</span>
     </a>
-    <a href="#view" class="nav-btn" data-target="view" data-nav-key="booking" id="navBooking">
+    <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking" id="navBooking">
       <span class="material-symbols-outlined">confirmation_number</span>
       <span class="nav-label">Booking</span>
     </a>
@@ -113,6 +114,7 @@
 
       <div class="menu-section-header">Operasional</div>
       <div class="menu-grid">
+        <a href="#view" class="nav-btn" data-target="view"><span class="material-symbols-outlined">visibility</span><span class="nav-label">Manifest</span></a>
         <a href="#customers" class="nav-btn" data-target="customers"><span class="material-symbols-outlined">groups</span><span class="nav-label">Customers</span></a>
         <a href="#schedules" class="nav-btn" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span><span class="nav-label">Jadwal</span></a>
         <a href="#cancellations" class="nav-btn" data-target="cancellations"><span class="material-symbols-outlined">cancel</span><span class="nav-label">Cancel</span></a>
@@ -158,12 +160,13 @@
     const searchFocusBtn = document.getElementById('adminSearchFocusBtn');
 
     function getPrimaryNavKey(target) {
+      if (target === 'dashboard') return 'dashboard';
       if (target === 'view') return 'booking';
       if (target === 'reports') return 'reports';
       if (target === 'bookings') {
         const bookingMode = window.bookingDashboardState && window.bookingDashboardState.active;
         if (bookingMode === 'charters') return 'charter';
-        return 'dashboard';
+        return 'booking';
       }
       return '';
     }
@@ -315,13 +318,13 @@
     });
 
     window.addEventListener('hashchange', function () {
-      const hash = window.location.hash.replace('#', '') || 'bookings';
+      const hash = window.location.hash.replace('#', '') || 'dashboard';
       setTimeout(function () {
         syncAdminNavState(hash);
       }, 0);
     });
 
-    const initialTarget = window.location.hash.replace('#', '') || 'bookings';
+    const initialTarget = window.location.hash.replace('#', '') || 'dashboard';
     syncAdminNavState(initialTarget);
   });
 </script>
