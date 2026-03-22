@@ -551,8 +551,7 @@ while ($rs = $resSeg->fetch()) {
 // (Include sisa dari admin.php.backup untuk handlers non-AJAX)
 // Baca dari admin.php.backup dari baris 550 ke akhir untuk mencakup semua POST handlers
 
-?>
-  $rental = floatval($_POST['rental_price'] ?? 0);
+$rental = floatval($_POST['rental_price'] ?? 0);
   $bop = floatval($_POST['bop_price'] ?? 0);
   $notes = trim($_POST['notes'] ?? '');
 
