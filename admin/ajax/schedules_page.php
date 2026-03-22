@@ -29,29 +29,32 @@ $stmt->execute($params ?? []);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
-$no = $offset + 1;
 $days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-foreach ($rows as $s) {
-    $nopol = $s['nopol'] ?? '-';
-    $kapasitas = $s['kapasitas'] ?? '-';
+if (empty($rows)) {
+    echo '<div class="small" style="grid-column:1/-1;text-align:center;padding:20px;opacity:0.6;">Jadwal tidak ditemukan</div>';
+} else {
+    foreach ($rows as $s) {
+        $nopol = $s['nopol'] ?? '-';
+        $kapasitas = $s['kapasitas'] ?? '-';
 
-    echo '<div class="admin-card-compact">';
-    echo '  <div class="acc-header">';
-    echo '    <div class="acc-title">' . htmlspecialchars($s['rute']) . '</div>';
-    echo '    <div class="acc-id">#' . intval($s['id']) . '</div>';
-    echo '  </div>';
-    echo '  <div class="acc-body">';
-    echo '    <div class="acc-row"><div class="acc-label">📅</div><div class="acc-val">' . $days[intval($s['dow'])] . ' — ' . substr($s['jam'], 0, 5) . '</div></div>';
-    echo '    <div class="acc-row"><div class="acc-label">🚐</div><div class="acc-val">' . intval($s['units']) . ' Unit (' . htmlspecialchars($kapasitas) . ' kursi)</div></div>';
-    echo '    <div class="acc-row"><div class="acc-label">🆔</div><div class="acc-val">' . htmlspecialchars($nopol) . '</div></div>';
-    echo '  </div>';
-    echo '  <div class="acc-actions">';
-    echo '    <button class="acc-btn view-schedule-layout" data-id="' . intval($s['id']) . '" data-rute="' . htmlspecialchars($s['rute']) . '">Layout</button>';
-    echo '    <a class="acc-btn" href="admin.php?edit_schedule=' . intval($s['id']) . '#schedules">Edit</a>';
-    echo '    <a class="acc-btn danger" href="admin.php?delete_schedule=' . intval($s['id']) . '#schedules" onclick="event.preventDefault(); customConfirm(\'Hapus jadwal ini?\', () => { window.location.href = this.href; }, \'Hapus Jadwal\', \'danger\')">Hapus</a>';
-    echo '  </div>';
-    echo '</div>';
+        echo '<div class="admin-card-compact">';
+        echo '  <div class="acc-header">';
+        echo '    <div class="acc-title">' . htmlspecialchars($s['rute']) . '</div>';
+        echo '    <div class="acc-id">#' . intval($s['id']) . '</div>';
+        echo '  </div>';
+        echo '  <div class="acc-body">';
+        echo '    <div class="acc-row"><div class="acc-label">Jadwal</div><div class="acc-val">' . $days[intval($s['dow'])] . ' - ' . substr($s['jam'], 0, 5) . '</div></div>';
+        echo '    <div class="acc-row"><div class="acc-label">Armada</div><div class="acc-val">' . intval($s['units']) . ' Unit (' . htmlspecialchars($kapasitas) . ' kursi)</div></div>';
+        echo '    <div class="acc-row"><div class="acc-label">Kendaraan</div><div class="acc-val">' . htmlspecialchars($nopol) . '</div></div>';
+        echo '  </div>';
+        echo '  <div class="acc-actions">';
+        echo '    <button class="acc-btn view-schedule-layout" data-id="' . intval($s['id']) . '" data-rute="' . htmlspecialchars($s['rute']) . '">Layout</button>';
+        echo '    <a class="acc-btn" href="admin.php?edit_schedule=' . intval($s['id']) . '#schedules">Edit</a>';
+        echo '    <a class="acc-btn danger" href="admin.php?delete_schedule=' . intval($s['id']) . '#schedules" onclick="event.preventDefault(); customConfirm(\'Hapus jadwal ini?\', () => { window.location.href = this.href; }, \'Hapus Jadwal\', \'danger\')">Hapus</a>';
+        echo '  </div>';
+        echo '</div>';
+    }
 }
 $rows_html = ob_get_clean();
 $pag_html = render_pagination_ajax($total, $per_page, $page, 'schedules');

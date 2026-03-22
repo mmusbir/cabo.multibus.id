@@ -401,14 +401,14 @@ if (isset($_POST['save_schedule'])) {
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id]);
     }
   }
-  header('Location: admin.php');
+  header('Location: admin.php#schedules');
   exit;
 }
 if (isset($_GET['delete_schedule'])) {
   $id = intval($_GET['delete_schedule']);
   $stmt = $conn->prepare("DELETE FROM schedules WHERE id=?");
   $stmt->execute([$id]);
-  header('Location: admin.php');
+  header('Location: admin.php#schedules');
   exit;
 }
 
@@ -491,22 +491,32 @@ if (isset($_GET['mark_paid'])) {
 
 /* USERS create/update */
 if (isset($_POST['add_user'])) {
+  $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
   $username = trim($_POST['username'] ?? '');
   $password = $_POST['password'] ?? '';
   $fullname = trim($_POST['fullname'] ?? '');
-  if ($username && $password) {
+  if ($user_id > 0 && $username) {
+    if ($password !== '') {
+      $hash = password_hash($password, PASSWORD_BCRYPT);
+      $stmt = $conn->prepare("UPDATE users SET username=?, password_hash=?, fullname=? WHERE id=?");
+      $stmt->execute([$username, $hash, $fullname, $user_id]);
+    } else {
+      $stmt = $conn->prepare("UPDATE users SET username=?, fullname=? WHERE id=?");
+      $stmt->execute([$username, $fullname, $user_id]);
+    }
+  } elseif ($username && $password) {
     $hash = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $conn->prepare("INSERT INTO users(username,password_hash,fullname) VALUES(?,?,?) ON CONFLICT (username) DO UPDATE SET password_hash=EXCLUDED.password_hash, fullname=EXCLUDED.fullname");
+    $stmt = $conn->prepare("INSERT INTO users(username,password_hash,fullname) VALUES(?,?,?)");
     $stmt->execute([$username, $hash, $fullname]);
   }
-  header('Location: admin.php');
+  header('Location: admin.php#users');
   exit;
 }
 if (isset($_GET['delete_user'])) {
   $id = intval($_GET['delete_user']);
   $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
   $stmt->execute([$id]);
-  header('Location: admin.php');
+  header('Location: admin.php#users');
   exit;
 }
 

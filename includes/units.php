@@ -1,6 +1,11 @@
 <!-- UNITS -->
 <section id="units" class="card">
-    <h3>Manajemen Unit Kendaraan</h3>
+    <div class="admin-section-header">
+        <div>
+            <h3 class="admin-section-title">Manajemen Unit Kendaraan</h3>
+            <p class="admin-section-subtitle">Kelola data armada, kapasitas kursi, status kendaraan, dan akses layout.</p>
+        </div>
+    </div>
     <?php
     $unit_nopol = $edit_unit['nopol'] ?? '';
     $unit_merek = $edit_unit['merek'] ?? '';
@@ -11,82 +16,69 @@
     $unit_status = $edit_unit['status'] ?? 'Aktif';
     $unit_id = $edit_unit['id'] ?? 0;
     ?>
-    <!-- FORM MODERNE -->
-    <div class="modern-form-card">
-        <div
-            style="margin-bottom:16px;font-weight:700;color:var(--neu-text-dark);font-size:15px;display:flex;align-items:center;gap:8px;">
-            <span style="background:#dcfce7;color:#15803d;padding:4px 8px;border-radius:6px;font-size:12px">PLUS</span>
+
+    <div class="modern-form-card admin-bs-panel">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="admin-bs-chip">Form</span>
             <?php echo $unit_id > 0 ? 'Edit Unit Kendaraan' : 'Tambah Unit Kendaraan'; ?>
         </div>
         <form method="post">
             <?php if ($unit_id > 0)
                 echo '<input type="hidden" name="unit_id" value="' . intval($unit_id) . '">'; ?>
 
-            <div class="modern-form-grid">
-                <!-- NOPOL -->
-                <div class="input-group">
-                    <span class="input-group-icon">🚌</span>
-                    <input name="nopol" class="modern-input" placeholder="Nama Kendaraan" required
+            <div class="modern-form-grid admin-bs-form-grid">
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Nama Kendaraan / Nopol</label>
+                    <input name="nopol" class="modern-input form-control" placeholder="Nama Kendaraan" required
                         value="<?php echo htmlspecialchars($unit_nopol); ?>">
                 </div>
-
-                <!-- MEREK -->
-                <div class="input-group">
-                    <span class="input-group-icon">🚐</span>
-                    <input name="merek" class="modern-input" placeholder="Merek (cth: Toyota)" required
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Merek</label>
+                    <input name="merek" class="modern-input form-control" placeholder="Contoh: Toyota" required
                         value="<?php echo htmlspecialchars($unit_merek); ?>">
                 </div>
-
-                <!-- TYPE -->
-                <div class="input-group">
-                    <span class="input-group-icon">📄</span>
-                    <input name="type" class="modern-input" placeholder="Type (cth: Hiace)" required
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Type</label>
+                    <input name="type" class="modern-input form-control" placeholder="Contoh: Hiace" required
                         value="<?php echo htmlspecialchars($unit_type); ?>">
                 </div>
 
                 <input type="hidden" name="category" value="Minibus">
 
-                <!-- TAHUN -->
-                <div class="input-group">
-                    <span class="input-group-icon">📅</span>
-                    <input name="tahun" type="number" class="modern-input" placeholder="Tahun" required
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Tahun</label>
+                    <input name="tahun" type="number" class="modern-input form-control" placeholder="Tahun" required
                         value="<?php echo htmlspecialchars($unit_tahun); ?>">
                 </div>
-
-                <!-- KAPASITAS -->
-                <div class="input-group">
-                    <span class="input-group-icon">💺</span>
-                    <input name="kapasitas" type="number" class="modern-input" placeholder="Kapasitas Kursi" required
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Kapasitas Kursi</label>
+                    <input name="kapasitas" type="number" class="modern-input form-control" placeholder="Kapasitas Kursi" required
                         value="<?php echo htmlspecialchars($unit_kapasitas); ?>">
                 </div>
-
-                <!-- STATUS -->
-                <div class="input-group">
-                    <span class="input-group-icon">🔋</span>
-                    <select name="status" class="modern-select" required>
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Status</label>
+                    <select name="status" class="modern-select form-select" required>
                         <option value="Aktif" <?php echo $unit_status === 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
-                        <option value="Nonaktif" <?php echo $unit_status === 'Nonaktif' ? 'selected' : ''; ?>>Nonaktif
-                        </option>
+                        <option value="Nonaktif" <?php echo $unit_status === 'Nonaktif' ? 'selected' : ''; ?>>Nonaktif</option>
                     </select>
                 </div>
 
-                <!-- ACTIONS -->
-                <div style="display:flex;gap:8px;grid-column:1/-1;justify-content:flex-end;margin-top:8px">
+                <div class="admin-bs-actions admin-bs-col-12">
                     <?php if ($unit_id > 0) {
-                        echo '<a href="admin.php#units" class="btn-modern secondary" style="text-align:center">Batal</a>';
+                        echo '<a href="admin.php#units" class="btn btn-outline-secondary btn-modern secondary">Batal</a>';
                     } ?>
-                    <button name="<?php echo $unit_id > 0 ? 'update_unit' : 'save_unit'; ?>" class="btn-modern">
-                        💾 <?php echo $unit_id > 0 ? 'Update Unit' : 'Simpan Unit'; ?>
+                    <button name="<?php echo $unit_id > 0 ? 'update_unit' : 'save_unit'; ?>" class="btn btn-primary btn-modern">
+                        <?php echo $unit_id > 0 ? 'Update Unit' : 'Simpan Unit'; ?>
                     </button>
                 </div>
             </div>
         </form>
     </div>
-    <!-- SEARCH BAR -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;margin-bottom:12px">
-        <div class="search-bar-modern">
+
+    <div class="admin-bs-toolbar">
+        <div class="search-bar-modern admin-bs-search">
             <input type="text" id="filter_unit_input" class="search-input-modern" placeholder="Cari unit atau nopol...">
-            <button type="button" class="search-btn-icon">
+            <button type="button" class="search-btn-icon" aria-label="Cari unit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -96,7 +88,7 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid" id="units_grid" style="margin-top:12px;">
+    <div class="booking-cards-grid admin-bs-card-grid" id="units_grid" style="margin-top:12px;">
         <?php foreach ($units as $u): ?>
             <div class="admin-card-compact">
                 <div class="acc-header">
@@ -136,7 +128,6 @@
         <?php endforeach; ?>
     </div>
 </section>
-
 <!-- Popup Layout Edit -->
 <div class="popup-bg" id="popup-bg">
     <div class="popup-content" id="popup-content">
@@ -410,7 +401,7 @@
 
                     if (cell.type === 'driver') {
                         cellDiv.classList.add('driver');
-                        cellDiv.innerHTML = '🚗 Driver';
+                        cellDiv.textContent = 'Driver';
                     } else if (cell.type === 'empty') {
                         cellDiv.classList.add('clickable');
                         cellDiv.textContent = '+';
@@ -421,7 +412,7 @@
                         cellDiv.onclick = () => removeItem(rowIdx, colIdx);
                     } else if (cell.type === 'bagasi-custom') {
                         cellDiv.classList.add('bagasi-custom');
-                        cellDiv.textContent = '📦 Bagasi';
+                        cellDiv.textContent = 'Bagasi';
                         cellDiv.onclick = () => removeItem(rowIdx, colIdx);
                     }
 
