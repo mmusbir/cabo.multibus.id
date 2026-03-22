@@ -4296,18 +4296,31 @@ body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body
 }
 
 /* --- Desktop Sidebar Navigation --- */
+body.admin-bootstrap-page {
+    --admin-sidebar-width: 264px;
+}
+
 body.admin-bootstrap-page .kinetic-sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 290px;
+    width: var(--admin-sidebar-width);
     display: none;
     flex-direction: column;
     background: #111319;
     border-right: 1px solid rgba(88, 66, 55, 0.18);
     box-shadow: 18px 0 32px rgba(12, 14, 20, 0.2);
     z-index: 1030;
+    transition: transform 0.28s ease, opacity 0.28s ease, visibility 0.28s ease;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-right: 1rem;
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-brand {
@@ -4317,6 +4330,36 @@ body.admin-bootstrap-page .kinetic-sidebar-brand {
     padding: 1.35rem 1.4rem 1rem;
     color: #f97316;
     text-decoration: none;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-toggle,
+body.admin-bootstrap-page .kinetic-sidebar-reveal {
+    width: 2.7rem;
+    height: 2.7rem;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    border-radius: 0.9rem;
+    background: #191b22;
+    color: #e2e2eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-toggle:hover,
+body.admin-bootstrap-page .kinetic-sidebar-reveal:hover {
+    background: #1e1f26;
+    color: #f97316;
+    border-color: rgba(249, 115, 22, 0.28);
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-reveal {
+    position: fixed;
+    top: 1.15rem;
+    left: 1.15rem;
+    z-index: 1035;
+    display: none;
+    box-shadow: 0 14px 30px rgba(12, 14, 20, 0.35);
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-scroll {
@@ -4441,6 +4484,10 @@ body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link:hover {
 }
 
 @media (min-width: 992px) {
+    body.admin-bootstrap-page {
+        font-size: 15px;
+    }
+
     body.admin-bootstrap-page .kinetic-sidebar {
         display: flex;
     }
@@ -4451,11 +4498,38 @@ body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link:hover {
     }
 
     body.admin-bootstrap-page .admin-bootstrap-container {
+        width: min(1680px, calc(100vw - var(--admin-sidebar-width) - 2rem));
         max-width: none;
         margin-top: 0;
-        margin-left: 290px;
+        margin-left: calc(var(--admin-sidebar-width) + 1rem);
+        margin-right: auto;
         margin-bottom: 2rem;
-        padding: 1.35rem 1.5rem 1.5rem;
+        padding: 1rem 1.25rem 1.25rem;
+        transition: margin-left 0.28s ease, width 0.28s ease, padding 0.28s ease;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .kinetic-sidebar {
+        transform: translateX(calc(-100% - 1.25rem));
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .kinetic-sidebar-reveal {
+        display: inline-flex !important;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .admin-bootstrap-container {
+        width: min(1720px, calc(100vw - 2rem));
+        margin-left: 0.75rem;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-title,
+    body.admin-bootstrap-page .kinetic-dash-title,
+    body.admin-bootstrap-page .view-booking-title {
+        font-size: clamp(1.75rem, 2.1vw, 2.3rem);
     }
 }
 
@@ -4866,4 +4940,664 @@ body.admin-bootstrap-page .admin-grid-message-muted,
 body.admin-bootstrap-page .admin-grid-message-error {
     background: #191b22 !important;
     border-color: rgba(88, 66, 55, 0.18) !important;
+}
+
+body.admin-bootstrap-page .booking-detail-page {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+body.admin-bootstrap-page .booking-detail-page-shell {
+    display: grid;
+    gap: 1.35rem;
+}
+
+body.admin-bootstrap-page .booking-detail-page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+
+body.admin-bootstrap-page .booking-detail-page-kicker,
+body.admin-bootstrap-page .booking-detail-filter-label {
+    display: inline-block;
+    color: #f97316;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-page-title {
+    margin: 0.3rem 0 0;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: clamp(1.85rem, 2.3vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+body.admin-bootstrap-page .booking-detail-page-subtitle {
+    margin: 0.7rem 0 0;
+    max-width: 54rem;
+    color: #9aa4b5;
+    font-size: 0.96rem;
+}
+
+body.admin-bootstrap-page .booking-detail-page-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.8rem 1.15rem;
+    border-radius: 0.9rem;
+    background: #f97316;
+    color: #341100;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 16px 28px rgba(249, 115, 22, 0.18);
+}
+
+body.admin-bootstrap-page .booking-detail-page-cta:hover {
+    background: #fb923c;
+    color: #341100;
+}
+
+body.admin-bootstrap-page .booking-detail-page-chips {
+    display: flex;
+    gap: 0.7rem;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+}
+
+body.admin-bootstrap-page .booking-detail-static-chip {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0.72rem 1rem;
+    border-radius: 999px;
+    background: #282a30;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    color: #c5cfdd;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .booking-detail-static-chip.active,
+body.admin-bootstrap-page .booking-detail-static-chip:hover {
+    background: #f97316;
+    border-color: #f97316;
+    color: #341100;
+}
+
+body.admin-bootstrap-page .booking-detail-page-panel {
+    padding: 1.15rem;
+    border-radius: 1rem;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-field {
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-label {
+    margin-bottom: 0.5rem;
+    color: #9aa4b5;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.95rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-btn.primary {
+    background: #f97316;
+    color: #341100;
+    border-color: #f97316;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-btn.secondary {
+    background: #282a30;
+    color: #d7dde7;
+}
+
+body.admin-bootstrap-page .booking-detail-page-list {
+    gap: 1.15rem;
+}
+
+body.admin-bootstrap-page .kinetic-command-bookings[data-active-mode="charters"] .kinetic-command-summary-bar {
+    background: #191b22;
+    border-color: rgba(88, 66, 55, 0.18);
+}
+
+body.admin-bootstrap-page .charter-command-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+body.admin-bootstrap-page .charter-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    background: #191b22;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    color: #c5cfdd;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .charter-filter-chip.active,
+body.admin-bootstrap-page .charter-filter-chip:hover {
+    background: #f97316;
+    border-color: #f97316;
+    color: #341100;
+}
+
+body.admin-bootstrap-page #charters_tbody.kinetic-command-list {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+body.admin-bootstrap-page .charter-command-card {
+    position: relative;
+    display: flex;
+    min-height: 100%;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    background: #191b22;
+    border: 1px solid rgba(88, 66, 55, 0.12);
+    transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+}
+
+body.admin-bootstrap-page .charter-command-card:hover {
+    transform: translateY(-2px);
+    background: #1e1f26;
+    border-color: rgba(249, 115, 22, 0.22);
+}
+
+body.admin-bootstrap-page .charter-command-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+body.admin-bootstrap-page .charter-command-card.tone-primary::before {
+    background: #f97316;
+}
+
+body.admin-bootstrap-page .charter-command-card.tone-danger::before {
+    background: #ffb4ab;
+}
+
+body.admin-bootstrap-page .charter-command-card.is-wide {
+    grid-column: span 8;
+}
+
+body.admin-bootstrap-page .charter-command-card.is-side {
+    grid-column: span 4;
+}
+
+body.admin-bootstrap-page .charter-command-card.is-compact {
+    grid-column: span 5;
+}
+
+body.admin-bootstrap-page .charter-command-card.is-detail {
+    grid-column: span 7;
+}
+
+body.admin-bootstrap-page .charter-command-card-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.35rem 1.4rem 1.35rem 1.6rem;
+}
+
+body.admin-bootstrap-page .charter-command-top,
+body.admin-bootstrap-page .charter-command-footer,
+body.admin-bootstrap-page .charter-command-badges,
+body.admin-bootstrap-page .charter-command-actions,
+body.admin-bootstrap-page .charter-command-route-wide,
+body.admin-bootstrap-page .charter-command-inline-row,
+body.admin-bootstrap-page .charter-command-detail-grid,
+body.admin-bootstrap-page .charter-command-route-inline {
+    display: flex;
+    align-items: center;
+}
+
+body.admin-bootstrap-page .charter-command-top,
+body.admin-bootstrap-page .charter-command-footer {
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-command-top-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+body.admin-bootstrap-page .charter-command-code {
+    color: #ffb690;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+body.admin-bootstrap-page .charter-command-badges {
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .charter-command-badge,
+body.admin-bootstrap-page .charter-command-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.24rem 0.6rem;
+    border-radius: 0.45rem;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .charter-command-badge.source,
+body.admin-bootstrap-page .charter-command-pill {
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.22);
+    color: #ffb690;
+}
+
+body.admin-bootstrap-page .charter-command-age {
+    color: #7c8798;
+    font-size: 0.72rem;
+}
+
+body.admin-bootstrap-page .charter-command-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 0.65rem;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .charter-command-state.confirmed {
+    background: rgba(209, 250, 229, 0.1);
+    color: #d1fae5;
+}
+
+body.admin-bootstrap-page .charter-command-state.pending {
+    background: rgba(255, 180, 171, 0.12);
+    color: #ffb4ab;
+}
+
+body.admin-bootstrap-page .charter-state-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+body.admin-bootstrap-page .charter-command-main {
+    display: grid;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-command-name {
+    margin: 0;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+body.admin-bootstrap-page .charter-command-company,
+body.admin-bootstrap-page .charter-command-caption,
+body.admin-bootstrap-page .charter-command-note,
+body.admin-bootstrap-page .charter-command-meta-end {
+    color: #9aa4b5;
+    font-size: 0.84rem;
+}
+
+body.admin-bootstrap-page .charter-command-route-wide {
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .charter-command-route-wide .material-symbols-outlined,
+body.admin-bootstrap-page .charter-command-route-inline .material-symbols-outlined,
+body.admin-bootstrap-page .charter-command-date-split .material-symbols-outlined {
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .charter-command-route-stop,
+body.admin-bootstrap-page .charter-command-schedule-box,
+body.admin-bootstrap-page .charter-command-side-stack,
+body.admin-bootstrap-page .charter-command-date-split,
+body.admin-bootstrap-page .charter-command-detail-grid {
+    border-radius: 0.95rem;
+    background: rgba(40, 42, 48, 0.7);
+    padding: 0.95rem 1rem;
+}
+
+body.admin-bootstrap-page .charter-command-route-stop {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 12rem;
+}
+
+body.admin-bootstrap-page .charter-command-label {
+    color: #7c8798;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .charter-command-route-stop strong,
+body.admin-bootstrap-page .charter-command-schedule-box strong,
+body.admin-bootstrap-page .charter-command-inline-row strong,
+body.admin-bootstrap-page .charter-command-detail-grid strong,
+body.admin-bootstrap-page .charter-command-date-split strong {
+    color: #f8fafc;
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .charter-command-schedule-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 11rem;
+}
+
+body.admin-bootstrap-page .charter-command-schedule-box em {
+    color: #d4dbe6;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+body.admin-bootstrap-page .charter-command-side-stack {
+    display: grid;
+    gap: 0.8rem;
+}
+
+body.admin-bootstrap-page .charter-command-inline-row {
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-command-inline-row span:first-child {
+    color: #8f99aa;
+    font-size: 0.8rem;
+}
+
+body.admin-bootstrap-page .charter-arrow {
+    color: #f97316;
+    padding: 0 0.2rem;
+}
+
+body.admin-bootstrap-page .charter-command-date-split {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+}
+
+body.admin-bootstrap-page .charter-command-date-split > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+body.admin-bootstrap-page .charter-command-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-command-route-inline {
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+body.admin-bootstrap-page .charter-command-route-inline strong {
+    font-size: 0.88rem;
+}
+
+body.admin-bootstrap-page .charter-command-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .charter-command-actions {
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .charter-command-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.7rem;
+    padding: 0.7rem 0.95rem;
+    border-radius: 0.85rem;
+    border: 1px solid rgba(167, 139, 125, 0.18);
+    background: transparent;
+    color: #d7dde7;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .charter-command-action:hover {
+    color: #ffffff;
+    border-color: rgba(148, 163, 184, 0.3);
+    background: rgba(148, 163, 184, 0.08);
+}
+
+body.admin-bootstrap-page .charter-command-action.success {
+    color: #d1fae5;
+    border-color: rgba(52, 211, 153, 0.22);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+body.admin-bootstrap-page .charter-command-action.danger {
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.24);
+    background: rgba(248, 113, 113, 0.08);
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .booking-detail-page-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.admin-bootstrap-page .booking-detail-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.admin-bootstrap-page #charters_tbody.kinetic-command-list {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    body.admin-bootstrap-page .charter-command-card.is-wide,
+    body.admin-bootstrap-page .charter-command-card.is-side,
+    body.admin-bootstrap-page .charter-command-card.is-compact,
+    body.admin-bootstrap-page .charter-command-card.is-detail {
+        grid-column: span 1;
+    }
+
+    body.admin-bootstrap-page .charter-command-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .booking-detail-page-panel {
+        padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .booking-detail-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.admin-bootstrap-page .booking-detail-filter-actions {
+        flex-direction: column;
+    }
+
+    body.admin-bootstrap-page .booking-detail-filter-btn,
+    body.admin-bootstrap-page .booking-detail-page-cta {
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .charter-command-card-body {
+        padding: 1.05rem 1rem 1.05rem 1.2rem;
+    }
+
+    body.admin-bootstrap-page .charter-command-top,
+    body.admin-bootstrap-page .charter-command-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.admin-bootstrap-page .charter-command-route-wide,
+    body.admin-bootstrap-page .charter-command-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.admin-bootstrap-page .charter-command-route-stop,
+    body.admin-bootstrap-page .charter-command-schedule-box {
+        min-width: 0;
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .charter-command-inline-row,
+    body.admin-bootstrap-page .charter-command-date-split {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.admin-bootstrap-page .charter-command-action {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    body.admin-bootstrap-page {
+        --admin-desktop-width: 1920px;
+        --admin-desktop-height: 1080px;
+        font-size: 14px;
+    }
+
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        width: min(calc(var(--admin-desktop-width) - var(--admin-sidebar-width) - 3rem), calc(100vw - var(--admin-sidebar-width) - 2rem));
+        min-height: calc(min(100vh, var(--admin-desktop-height)) - 1.5rem);
+        padding: 0.9rem 1.1rem 1rem;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .admin-bootstrap-container {
+        width: min(calc(var(--admin-desktop-width) - 2rem), calc(100vw - 1.5rem));
+    }
+
+    body.admin-bootstrap-page .admin-bootstrap-grid,
+    body.admin-bootstrap-page .booking-detail-page-shell,
+    body.admin-bootstrap-page .kinetic-dash-shell {
+        gap: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-header,
+    body.admin-bootstrap-page .kinetic-command-toolbar,
+    body.admin-bootstrap-page .kinetic-command-summary-bar,
+    body.admin-bootstrap-page .view-booking-list-head,
+    body.admin-bootstrap-page .booking-detail-page-head {
+        margin-bottom: 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-title,
+    body.admin-bootstrap-page .kinetic-dash-title,
+    body.admin-bootstrap-page .view-booking-title,
+    body.admin-bootstrap-page .booking-detail-page-title {
+        font-size: clamp(1.65rem, 1.8vw, 2.15rem);
+    }
+
+    body.admin-bootstrap-page .kinetic-command-subtitle,
+    body.admin-bootstrap-page .booking-detail-page-subtitle {
+        font-size: 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-metric-card,
+    body.admin-bootstrap-page .booking-detail-page-panel,
+    body.admin-bootstrap-page .kinetic-dash-panel,
+    body.admin-bootstrap-page .kinetic-insight-card,
+    body.admin-bootstrap-page .kinetic-stat-card {
+        padding: 0.95rem 1rem;
+    }
 }

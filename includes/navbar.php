@@ -5,15 +5,21 @@
   if ($auth):
 ?>
   <aside class="kinetic-sidebar d-none d-lg-flex">
-    <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
-      <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-      <span class="kinetic-brand-text">KINETIC COMMAND</span>
-    </a>
+    <div class="kinetic-sidebar-head">
+      <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
+        <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+        <span class="kinetic-brand-text">KINETIC COMMAND</span>
+      </a>
+      <button class="kinetic-sidebar-toggle" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
+        <span class="material-symbols-outlined">left_panel_close</span>
+      </button>
+    </div>
 
     <div class="kinetic-sidebar-scroll">
       <nav class="kinetic-sidebar-primary">
         <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
+        <a href="index.php"><span class="material-symbols-outlined">add_circle</span>Booking Area</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="luggage" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
         <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
@@ -55,21 +61,16 @@
           <div class="kinetic-profile-role">Admin Panel</div>
         </div>
       </div>
-      <div class="kinetic-sidebar-actions">
-        <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
-          <span class="material-symbols-outlined">search</span>
-        </button>
-        <a href="index.php" class="kinetic-sidebar-action-link">
-          <span class="material-symbols-outlined">add_circle</span>
-          Booking Area
-        </a>
-      </div>
       <div class="kinetic-sidebar-links kinetic-sidebar-links-footer">
         <a href="javascript:void(0)" data-open-change-password><span class="material-symbols-outlined">lock</span>Ganti Password</a>
         <a href="logout.php" class="logout-link"><span class="material-symbols-outlined">logout</span>Logout</a>
       </div>
     </div>
   </aside>
+
+  <button class="kinetic-sidebar-reveal d-none d-lg-inline-flex" id="desktopSidebarReveal" type="button" aria-label="Tampilkan sidebar">
+    <span class="material-symbols-outlined">menu_open</span>
+  </button>
 
   <div class="topbar kinetic-topbar kinetic-mobile-topbar d-lg-none">
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
@@ -195,10 +196,39 @@
     const profileDropdown = document.getElementById('profileMenuDropdown');
     const bottomMoreModal = document.getElementById('bottomMoreModal');
     const closeMoreModal = document.getElementById('closeMoreModal');
+    const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
+    const desktopSidebarReveal = document.getElementById('desktopSidebarReveal');
+    const sidebarStorageKey = 'adminSidebarHidden';
+
+    function syncDesktopSidebarButton() {
+      const isHidden = document.body.classList.contains('sidebar-hidden');
+      const icon = desktopSidebarToggle ? desktopSidebarToggle.querySelector('.material-symbols-outlined') : null;
+      if (desktopSidebarToggle) {
+        desktopSidebarToggle.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+        desktopSidebarToggle.setAttribute('aria-label', isHidden ? 'Tampilkan sidebar' : 'Sembunyikan sidebar');
+      }
+      if (icon) {
+        icon.textContent = isHidden ? 'left_panel_open' : 'left_panel_close';
+      }
+      if (desktopSidebarReveal) {
+        desktopSidebarReveal.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
+      }
+    }
+
+    function setDesktopSidebarHidden(isHidden) {
+      document.body.classList.toggle('sidebar-hidden', !!isHidden);
+      try {
+        window.localStorage.setItem(sidebarStorageKey, isHidden ? '1' : '0');
+      } catch (err) {
+        // Ignore storage issues in private mode.
+      }
+      syncDesktopSidebarButton();
+    }
 
     function getPrimaryNavKey(target) {
       if (target === 'dashboard') return 'dashboard';
       if (target === 'reports') return 'reports';
+      if (target === 'booking-detail') return 'booking';
       if (target === 'bookings') {
         const bookingMode = window.bookingDashboardState && window.bookingDashboardState.active;
         if (bookingMode === 'charters') return 'charter';
@@ -263,6 +293,18 @@
     document.querySelectorAll('[data-focus-admin-search]').forEach(btn => {
       btn.addEventListener('click', focusActiveSearch);
     });
+
+    if (desktopSidebarToggle) {
+      desktopSidebarToggle.addEventListener('click', function () {
+        setDesktopSidebarHidden(!document.body.classList.contains('sidebar-hidden'));
+      });
+    }
+
+    if (desktopSidebarReveal) {
+      desktopSidebarReveal.addEventListener('click', function () {
+        setDesktopSidebarHidden(false);
+      });
+    }
 
     if (moreBtn) {
       moreBtn.addEventListener('click', function (e) {
@@ -346,6 +388,14 @@
     });
 
     const initialTarget = window.location.hash.replace('#', '') || 'dashboard';
+    try {
+      if (window.matchMedia('(min-width: 992px)').matches && window.localStorage.getItem(sidebarStorageKey) === '1') {
+        document.body.classList.add('sidebar-hidden');
+      }
+    } catch (err) {
+      // Ignore unavailable storage.
+    }
+    syncDesktopSidebarButton();
     syncAdminNavState(initialTarget);
   });
 </script>

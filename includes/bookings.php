@@ -1,10 +1,10 @@
 <!-- BOOKINGS -->
-<section id="bookings" class="card kinetic-command-bookings">
+<section id="bookings" class="card kinetic-command-bookings" data-active-mode="bookings">
   <div class="kinetic-command-header">
     <div>
-      <div class="kinetic-command-kicker">Kinetic Command</div>
-      <h3 class="kinetic-command-title">Data Keberangkatan</h3>
-      <p class="kinetic-command-subtitle">Real-time schedule monitoring and dispatch control untuk booking reguler, carter, dan bagasi.</p>
+      <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
+      <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
+      <p class="kinetic-command-subtitle" id="bookingPageSubtitle">Real-time schedule monitoring and dispatch control untuk booking reguler, carter, dan bagasi.</p>
     </div>
     <div class="kinetic-command-metrics">
       <div class="kinetic-metric-card kinetic-metric-primary">
@@ -76,7 +76,7 @@
   </div>
 
   <div class="kinetic-mobile-list-head">
-    <h4 class="kinetic-mobile-list-title">
+    <h4 class="kinetic-mobile-list-title" id="bookingMobileListTitle">
       <span class="material-symbols-outlined">event_note</span>
       Jadwal Mendatang
     </h4>
@@ -88,6 +88,12 @@
         <span class="material-symbols-outlined">refresh</span>
       </button>
     </div>
+  </div>
+
+  <div id="charterFilterRow" class="charter-command-filters no-scrollbar" style="display:none">
+    <button type="button" class="charter-filter-chip active">Semua</button>
+    <button type="button" class="charter-filter-chip">Pending</button>
+    <button type="button" class="charter-filter-chip">Confirmed</button>
   </div>
 
   <div id="bookings_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -125,11 +131,16 @@
           label: 'Carter',
           totalLabel: 'Charters',
           state: 'loading',
-          badge: 'LOADING',
-          headline: 'Manifest Carter',
-          info: 'Pantau charter aktif, unit, driver, dan BOP dari satu list desktop.',
-          tag: 'Fleet Charter',
-          context: 'Ready',
+          badge: 'ACTIVE',
+          headline: 'Data Carter',
+          info: 'Pantau data carter, status konfirmasi, customer, dan armada pada satu command canvas.',
+          tag: 'Fleet Operations',
+          context: 'Queue',
+          pageKicker: 'Fleet Operations',
+          pageTitle: 'Data Carter',
+          pageSubtitle: 'Kelola semua order carter dengan tampilan list editorial yang fokus pada customer, rute, jadwal, dan status operasional.',
+          searchPlaceholder: 'Cari ID carter, customer, driver, atau rute...',
+          mobileTitle: 'Data Carter',
         };
       }
       if (mode === 'luggage') {
@@ -142,6 +153,11 @@
           info: 'Kelola input, pembayaran, dan pembatalan bagasi pada tampilan komando yang sama.',
           tag: 'Cargo Flow',
           context: 'Queue',
+          pageKicker: 'Cargo Command',
+          pageTitle: 'Data Bagasi',
+          pageSubtitle: 'Kelola pengiriman bagasi, status pembayaran, dan tindak lanjut operasional dari satu halaman.',
+          searchPlaceholder: 'Cari pengirim, tujuan, nomor bagasi, atau penerima...',
+          mobileTitle: 'Data Bagasi',
         };
       }
       return {
@@ -153,6 +169,11 @@
         info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail manifest.',
         tag: 'Manifest Queue',
         context: 'Live',
+        pageKicker: 'Kinetic Command',
+        pageTitle: 'Data Keberangkatan',
+        pageSubtitle: 'Real-time schedule monitoring and dispatch control untuk booking reguler, carter, dan bagasi.',
+        searchPlaceholder: 'Cari rute, driver, penumpang, atau jam...',
+        mobileTitle: 'Jadwal Mendatang',
       };
     }
 
@@ -168,6 +189,13 @@
       const summaryTag = document.getElementById('bookingSummaryTag');
       const summaryMeta = document.getElementById('bookingSummaryMeta');
       const info = document.getElementById('bookings_info');
+      const pageKicker = document.getElementById('bookingPageKicker');
+      const pageTitle = document.getElementById('bookingPageTitle');
+      const pageSubtitle = document.getElementById('bookingPageSubtitle');
+      const searchInput = document.getElementById('search_name_input');
+      const mobileListTitle = document.getElementById('bookingMobileListTitle');
+      const bookingsSection = document.getElementById('bookings');
+      const charterFilterRow = document.getElementById('charterFilterRow');
 
       if (metricMode) metricMode.textContent = meta.label;
       if (metricContext) metricContext.textContent = meta.context;
@@ -179,6 +207,15 @@
       if (summaryTag) summaryTag.textContent = meta.tag;
       if (summaryMeta) summaryMeta.textContent = 'Total ' + total.toLocaleString('id-ID') + ' data';
       if (info) info.textContent = meta.info;
+      if (pageKicker) pageKicker.textContent = meta.pageKicker;
+      if (pageTitle) pageTitle.textContent = meta.pageTitle;
+      if (pageSubtitle) pageSubtitle.textContent = meta.pageSubtitle;
+      if (searchInput) searchInput.placeholder = meta.searchPlaceholder;
+      if (mobileListTitle) {
+        mobileListTitle.innerHTML = '<span class="material-symbols-outlined">event_note</span>' + meta.mobileTitle;
+      }
+      if (bookingsSection) bookingsSection.setAttribute('data-active-mode', mode);
+      if (charterFilterRow) charterFilterRow.style.display = mode === 'charters' ? 'flex' : 'none';
       if (summaryStatus) {
         summaryStatus.setAttribute('data-state', meta.state);
         summaryStatus.innerHTML = '<span class="kinetic-status-dot"></span>' + meta.badge;
@@ -289,7 +326,7 @@
           fallbackBookingTripCopy(text);
         }
       } catch (e) {
-        customAlert('Gagal memuat data copy manifest.');
+        customAlert('Gagal memuat data detail booking.');
       }
     };
 
@@ -305,7 +342,7 @@
       const viewUnit = document.getElementById('view_unit');
 
       if (!viewRoute || !viewTanggal || !viewJam || !viewUnit) {
-        customAlert('Panel view belum tersedia.');
+        customAlert('Panel detail booking belum tersedia.');
         return;
       }
 
@@ -327,10 +364,10 @@
       viewUnit.value = unit;
 
       if (typeof window.showSectionById === 'function') {
-        window.showSectionById('view');
+        window.showSectionById('booking-detail');
       }
-      window.location.hash = '#view';
-      document.getElementById('view')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.location.hash = '#booking-detail';
+      document.getElementById('booking-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       document.getElementById('btnLoadPassengers')?.click();
     };
 
@@ -356,20 +393,20 @@
       updateBookingModeMeta(mode);
 
       if (mode === 'charters') {
-        document.getElementById('charters_tbody').style.display = 'flex';
-        document.getElementById('charters_pagination').style.display = 'flex';
+        document.getElementById('charters_tbody').style.display = 'grid';
+        document.getElementById('charters_pagination').style.display = 'block';
         if (document.getElementById('charters_tbody').children.length <= 1) {
           ajaxListLoad('charters', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
         }
       } else if (mode === 'luggage') {
-        document.getElementById('luggage_tbody').style.display = 'flex';
-        document.getElementById('luggage_pagination').style.display = 'flex';
+        document.getElementById('luggage_tbody').style.display = 'grid';
+        document.getElementById('luggage_pagination').style.display = 'block';
         if (document.getElementById('luggage_tbody').children.length <= 1) {
           ajaxListLoad('luggage', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
         }
       } else {
-        document.getElementById('bookings_tbody').style.display = 'flex';
-        document.getElementById('bookings_pagination').style.display = 'flex';
+        document.getElementById('bookings_tbody').style.display = 'grid';
+        document.getElementById('bookings_pagination').style.display = 'block';
       }
 
       if (typeof window.syncAdminNavState === 'function') {
@@ -378,6 +415,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.charter-filter-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.charter-filter-chip').forEach((item) => item.classList.remove('active'));
+          chip.classList.add('active');
+        });
+      });
+
       const refreshBtn = document.getElementById('bookingRefreshBtn');
       const mobileRefreshBtn = document.getElementById('bookingMobileRefresh');
       const mobileSearchBtn = document.getElementById('bookingMobileFocusSearch');

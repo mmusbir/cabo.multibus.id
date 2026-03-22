@@ -98,7 +98,7 @@ ob_start();
 <div id="departureInfoCard" class="info-card view-trip-card admin-bs-panel" data-driver-name="<?php echo h($assignedDriverName); ?>">
   <div class="view-trip-head">
     <div>
-      <div class="view-trip-kicker">Booking Manifest</div>
+      <div class="view-trip-kicker">Booking Detail</div>
       <div class="view-trip-title">Info Pemberangkatan</div>
     </div>
     <div class="view-trip-badge">Unit <?php echo intval($unit); ?></div>

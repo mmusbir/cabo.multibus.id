@@ -788,7 +788,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=11">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=15">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1641,7 +1641,7 @@ if (!isset($_REQUEST['action'])):
         const spinner = document.getElementById('passenger_spinner_wrap');
         const list = document.getElementById('passengerList');
         if (spinner) spinner.style.display = 'flex';
-        list.innerHTML = '<div class="admin-empty-state view-empty-state">Memuat data manifest...</div>';
+        list.innerHTML = '<div class="admin-empty-state view-empty-state">Memuat detail booking...</div>';
         if (!rute || !tanggal || !jam || !unit) {
           list.innerHTML = '<div class="admin-empty-state view-empty-state">Lengkapi rute, tanggal, jam, dan unit terlebih dahulu.</div>';
           if (spinner) spinner.style.display = 'none';

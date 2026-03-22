@@ -5,6 +5,48 @@
 
 global $conn;
 
+function charter_h($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function charter_relative_time(?string $raw): string
+{
+    if (!$raw) {
+        return '-';
+    }
+    try {
+        $created = new DateTime($raw);
+        $now = new DateTime('now');
+        $diff = $created->diff($now);
+        if ($diff->days > 0) {
+            return $diff->days . ' day' . ($diff->days > 1 ? 's' : '') . ' ago';
+        }
+        if ($diff->h > 0) {
+            return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
+        }
+        if ($diff->i > 0) {
+            return $diff->i . ' min ago';
+        }
+        return 'Just now';
+    } catch (Exception $e) {
+        return '-';
+    }
+}
+
+function charter_short_place(?string $value): string
+{
+    $text = trim((string) $value);
+    if ($text === '') {
+        return '-';
+    }
+    if (preg_match('/\(([^)]+)\)/', $text, $matches)) {
+        return trim($matches[1]);
+    }
+    $parts = preg_split('/[,|-]/', $text);
+    return trim($parts[0] ?? $text);
+}
+
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
@@ -45,13 +87,15 @@ ob_start();
 if (empty($rows)) {
     echo '<div class="small admin-empty-state admin-grid-message">Data carter tidak ditemukan</div>';
 } else {
-    foreach ($rows as $r) {
+    foreach ($rows as $index => $r) {
         $priceRaw = floatval($r['price'] ?? 0);
         $price = 'Rp ' . number_format($priceRaw, 0, ',', '.');
         $vehicle = trim(($r['nopol'] ?? '-') . ' ' . ($r['merek'] ?? ''));
-        $tripDate = !empty($r['start_date']) ? strtoupper(date('d M', strtotime($r['start_date']))) : '-';
+        $tripDate = !empty($r['start_date']) ? date('d M Y', strtotime($r['start_date'])) : '-';
+        $tripDateShort = !empty($r['start_date']) ? strtoupper(date('d M', strtotime($r['start_date']))) : '-';
         $tripHour = !empty($r['departure_time']) ? substr($r['departure_time'], 0, 5) : '--:--';
         $depTimeFormatted = formatTimeWithLabel($r['departure_time']);
+        $createdAgo = charter_relative_time($r['created_at'] ?? '');
 
         $startDate = new DateTime($r['start_date']);
         $endDate = new DateTime($r['end_date']);
@@ -59,70 +103,116 @@ if (empty($rows)) {
         $durationDays = $interval->days + 1;
 
         $bopStatus = $r['bop_status'] ?? 'pending';
-        $bopLabel = ($bopStatus === 'done') ? 'READY' : 'LOADING';
-        $stateClass = ($bopStatus === 'done') ? 'ready' : 'loading';
+        $bopLabel = ($bopStatus === 'done') ? 'Confirmed' : 'Pending';
+        $stateClass = ($bopStatus === 'done') ? 'confirmed' : 'pending';
         $layanan = $r['layanan'] ?? 'Regular';
         $routeLine = trim(($r['pickup_point'] ?? '-') . ' - ' . ($r['drop_point'] ?? '-'));
         $driverName = trim($r['driver_name'] ?? '-') !== '' ? $r['driver_name'] : '-';
+        $sourceLabel = !empty($r['company_name']) ? 'ADMIN' : 'END USER';
+        $routeFrom = trim($r['pickup_point'] ?? '-');
+        $routeTo = trim($r['drop_point'] ?? '-');
+        $routeFromShort = charter_short_place($routeFrom);
+        $routeToShort = charter_short_place($routeTo);
+        $cardVariantCycle = $index % 4;
+        $cardVariantClass = match ($cardVariantCycle) {
+            0 => 'is-wide',
+            1 => 'is-side',
+            2 => 'is-compact',
+            default => 'is-detail',
+        };
+        $borderTone = ($bopStatus === 'done') ? 'tone-primary' : 'tone-danger';
 
         $dataAttrs = 'data-id="' . intval($r['id']) . '" ';
-        $dataAttrs .= 'data-name="' . htmlspecialchars($r['name'] ?? '') . '" ';
-        $dataAttrs .= 'data-company="' . htmlspecialchars($r['company_name'] ?? '') . '" ';
-        $dataAttrs .= 'data-phone="' . htmlspecialchars($r['phone'] ?? '') . '" ';
-        $dataAttrs .= 'data-start="' . htmlspecialchars($r['start_date'] ?? '') . '" ';
-        $dataAttrs .= 'data-end="' . htmlspecialchars($r['end_date'] ?? '') . '" ';
-        $dataAttrs .= 'data-deptime="' . htmlspecialchars($r['departure_time'] ? substr($r['departure_time'], 0, 5) : '') . '" ';
-        $dataAttrs .= 'data-deptime-formatted="' . htmlspecialchars($depTimeFormatted) . '" ';
-        $dataAttrs .= 'data-pickup="' . htmlspecialchars($r['pickup_point'] ?? '') . '" ';
-        $dataAttrs .= 'data-drop="' . htmlspecialchars($r['drop_point'] ?? '') . '" ';
-        $dataAttrs .= 'data-unit="' . htmlspecialchars($r['unit_id'] ?? '') . '" ';
-        $dataAttrs .= 'data-driver="' . htmlspecialchars($r['driver_name'] ?? '') . '" ';
+        $dataAttrs .= 'data-name="' . charter_h($r['name'] ?? '') . '" ';
+        $dataAttrs .= 'data-company="' . charter_h($r['company_name'] ?? '') . '" ';
+        $dataAttrs .= 'data-phone="' . charter_h($r['phone'] ?? '') . '" ';
+        $dataAttrs .= 'data-start="' . charter_h($r['start_date'] ?? '') . '" ';
+        $dataAttrs .= 'data-end="' . charter_h($r['end_date'] ?? '') . '" ';
+        $dataAttrs .= 'data-deptime="' . charter_h($r['departure_time'] ? substr($r['departure_time'], 0, 5) : '') . '" ';
+        $dataAttrs .= 'data-deptime-formatted="' . charter_h($depTimeFormatted) . '" ';
+        $dataAttrs .= 'data-pickup="' . charter_h($r['pickup_point'] ?? '') . '" ';
+        $dataAttrs .= 'data-drop="' . charter_h($r['drop_point'] ?? '') . '" ';
+        $dataAttrs .= 'data-unit="' . charter_h($r['unit_id'] ?? '') . '" ';
+        $dataAttrs .= 'data-driver="' . charter_h($r['driver_name'] ?? '') . '" ';
         $dataAttrs .= 'data-price="' . $priceRaw . '" ';
-        $dataAttrs .= 'data-layanan="' . htmlspecialchars($layanan) . '" ';
+        $dataAttrs .= 'data-layanan="' . charter_h($layanan) . '" ';
         $dataAttrs .= 'data-bop_price="' . floatval($r['bop_price'] ?? 0) . '" ';
-        $dataAttrs .= 'data-vehicle="' . htmlspecialchars($vehicle) . '" ';
+        $dataAttrs .= 'data-vehicle="' . charter_h($vehicle) . '" ';
         $dataAttrs .= 'data-duration="' . $durationDays . '" ';
-        $dataAttrs .= 'data-bop="' . htmlspecialchars($bopStatus) . '"';
+        $dataAttrs .= 'data-bop="' . charter_h($bopStatus) . '"';
 
-        echo '<div class="admin-card-compact charter-card kinetic-trip-card" ' . $dataAttrs . '>';
-        echo '  <div class="kinetic-trip-card-inner">';
-        echo '    <div class="kinetic-trip-time">';
-        echo '      <span class="kinetic-trip-date">' . htmlspecialchars($tripDate) . '</span>';
-        echo '      <span class="kinetic-trip-hour">' . htmlspecialchars($tripHour) . '</span>';
-        echo '      <span class="kinetic-trip-zone">WIB</span>';
+        echo '<article class="admin-card-compact charter-command-card ' . $cardVariantClass . ' ' . $borderTone . '" ' . $dataAttrs . '>';
+        echo '  <div class="charter-command-card-body">';
+        echo '    <div class="charter-command-top">';
+        echo '      <div class="charter-command-top-copy">';
+        echo '        <span class="charter-command-code">' . charter_h('CRT-' . date('Ymd', strtotime($r['start_date'])) . '-' . str_pad((string) intval($r['id']), 3, '0', STR_PAD_LEFT)) . '</span>';
+        echo '        <div class="charter-command-badges">';
+        echo '          <span class="charter-command-badge source">' . charter_h($sourceLabel) . '</span>';
+        echo '          <span class="charter-command-age">' . charter_h($createdAgo) . '</span>';
+        echo '        </div>';
+        echo '      </div>';
+        echo '      <div class="charter-command-state ' . $stateClass . '"><span class="charter-state-dot"></span>' . charter_h($bopLabel) . '</div>';
         echo '    </div>';
-        echo '    <div class="kinetic-trip-main">';
-        echo '      <div>';
-        echo '        <div class="kinetic-trip-meta">';
-        echo '          <span class="kinetic-trip-state ' . $stateClass . '"><span class="status-dot"></span>' . htmlspecialchars($bopLabel) . '</span>';
-        echo '          <span class="kinetic-trip-id">CHARTER</span>';
-        echo '        </div>';
-        echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($r['name']) . '</h4>';
-        echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars(!empty($r['company_name']) ? $r['company_name'] : $layanan) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call</span><strong>' . htmlspecialchars($r['phone']) . '</strong></div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">route</span>' . htmlspecialchars($routeLine) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">person</span>Driver: ' . htmlspecialchars($driverName) . '</div>';
-        echo '      </div>';
-        echo '      <div class="kinetic-trip-stat">';
-        echo '        <div class="kinetic-trip-stat-label">Fleet Snapshot</div>';
-        echo '        <div class="kinetic-trip-progress">';
-        echo '          <div class="kinetic-trip-progress-bar"><span class="kinetic-trip-progress-fill" style="width:' . ($bopStatus === 'done' ? '100' : '72') . '%"></span></div>';
-        echo '          <div class="kinetic-trip-progress-value">' . $price . '<span> total</span></div>';
-        echo '        </div>';
-        echo '        <div class="kinetic-trip-note ' . ($bopStatus === 'done' ? '' : 'warning') . '"><span class="material-symbols-outlined">directions_bus</span>' . htmlspecialchars($vehicle) . ' - ' . htmlspecialchars($layanan) . ' / BOP Rp ' . number_format($r['bop_price'] ?? 0, 0, ',', '.') . '</div>';
-        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">schedule</span>' . htmlspecialchars($depTimeFormatted) . ' - ' . $durationDays . ' hari</div>';
-        echo '      </div>';
-        echo '      <div class="kinetic-trip-actions">';
-        if ($bopStatus !== 'done') {
-            echo '        <a href="#" class="kinetic-trip-action success bop-done-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">task_alt</span>BOP</a>';
+
+        echo '    <div class="charter-command-main">';
+        echo '      <div class="charter-command-customer">';
+        echo '        <h4 class="charter-command-name">' . charter_h($r['name']) . '</h4>';
+        if (!empty($r['company_name'])) {
+            echo '        <div class="charter-command-company">' . charter_h($r['company_name']) . '</div>';
+        } else {
+            echo '        <div class="charter-command-company">' . charter_h($layanan) . '</div>';
         }
-        echo '        <a href="#" class="kinetic-trip-action copy-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">content_copy</span>Copy</a>';
-        echo '        <a href="#" class="kinetic-trip-action edit-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">edit_square</span>Edit</a>';
-        echo '        <a href="#" class="kinetic-trip-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . htmlspecialchars($r['name']) . '"><span class="material-symbols-outlined">delete</span>Hapus</a>';
         echo '      </div>';
+
+        if ($cardVariantClass === 'is-wide') {
+            echo '      <div class="charter-command-route-wide">';
+            echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Departure</span><strong>' . charter_h($routeFrom) . '</strong></div>';
+            echo '        <span class="material-symbols-outlined">trending_flat</span>';
+            echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Destination</span><strong>' . charter_h($routeTo) . '</strong></div>';
+            echo '      </div>';
+            echo '      <div class="charter-command-schedule-box">';
+            echo '        <span class="charter-command-label">Date &amp; Time</span>';
+            echo '        <strong>' . charter_h($tripDate) . '</strong>';
+            echo '        <em>' . charter_h($tripHour . ' WIB') . '</em>';
+            echo '      </div>';
+        } elseif ($cardVariantClass === 'is-side') {
+            echo '      <div class="charter-command-side-stack">';
+            echo '        <div class="charter-command-inline-row"><span>Route</span><strong>' . charter_h($routeFromShort) . ' <span class="charter-arrow">→</span> ' . charter_h($routeToShort) . '</strong></div>';
+            echo '        <div class="charter-command-inline-row"><span>Scheduled</span><strong>' . charter_h($tripDate) . '</strong></div>';
+            echo '      </div>';
+        } elseif ($cardVariantClass === 'is-compact') {
+            echo '      <p class="charter-command-caption">' . charter_h($layanan) . ' - ' . charter_h($durationDays) . ' hari</p>';
+            echo '      <div class="charter-command-date-split">';
+            echo '        <div><span class="charter-command-label">Depart</span><strong>' . charter_h($tripDateShort) . '</strong></div>';
+            echo '        <span class="material-symbols-outlined">double_arrow</span>';
+            echo '        <div><span class="charter-command-label">Return</span><strong>' . charter_h(!empty($r['end_date']) ? strtoupper(date('d M', strtotime($r['end_date']))) : '-') . '</strong></div>';
+            echo '      </div>';
+        } else {
+            echo '      <div class="charter-command-detail-grid">';
+            echo '        <div><span class="charter-command-label">Customer</span><strong>' . charter_h($r['name']) . '</strong></div>';
+            echo '        <div><span class="charter-command-label">Route Status</span><div class="charter-command-route-inline"><span class="material-symbols-outlined">local_shipping</span><strong>' . charter_h($routeFromShort) . ' → ' . charter_h($routeToShort) . '</strong></div></div>';
+            echo '      </div>';
+        }
+        echo '    </div>';
+
+        echo '    <div class="charter-command-footer">';
+        echo '      <div class="charter-command-meta">';
+        echo '        <span class="charter-command-pill">' . charter_h($sourceLabel) . '</span>';
+        echo '        <span class="charter-command-note">' . charter_h($driverName) . ' • ' . charter_h($vehicle) . ' • ' . charter_h($price) . '</span>';
+        echo '      </div>';
+        echo '      <div class="charter-command-meta-end">' . charter_h($tripDate . ' • ' . $tripHour) . '</div>';
+        echo '    </div>';
+
+        echo '    <div class="charter-command-actions">';
+        if ($bopStatus !== 'done') {
+            echo '      <a href="#" class="charter-command-action success bop-done-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">task_alt</span>BOP</a>';
+        }
+        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">content_copy</span>Copy</a>';
+        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">edit_square</span>Edit</a>';
+        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><span class="material-symbols-outlined">delete</span>Hapus</a>';
         echo '    </div>';
         echo '  </div>';
-        echo '</div>';
+        echo '</article>';
     }
 }
 $rows_html = ob_get_clean();
