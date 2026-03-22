@@ -4,16 +4,8 @@
     <div>
       <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
       <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
-      <p class="kinetic-command-subtitle" id="bookingPageSubtitle">Real-time schedule monitoring and dispatch control untuk operasional keberangkatan, carter, dan bagasi.</p>
-    </div>
+          </div>
     <div class="kinetic-command-metrics">
-      <div class="kinetic-metric-card kinetic-metric-primary">
-        <span class="kinetic-metric-label">Mode Aktif</span>
-        <div class="kinetic-metric-value-row">
-          <strong id="bookingMetricMode">Reguler</strong>
-          <span id="bookingMetricContext">Live</span>
-        </div>
-      </div>
       <div class="kinetic-metric-card kinetic-metric-secondary">
         <span class="kinetic-metric-label">Total Data</span>
         <div class="kinetic-metric-value-row">
@@ -25,11 +17,6 @@
   </div>
 
   <div class="kinetic-command-toolbar">
-    <div class="kinetic-command-mode-chip" id="bookingModeChip">
-      <span class="material-symbols-outlined">dashboard_customize</span>
-      <span id="bookingModeChipLabel">Reguler</span>
-    </div>
-
     <div class="kinetic-command-toolbar-actions">
       <div class="search-bar-modern admin-bs-search kinetic-command-search">
         <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari rute, driver, penumpang, atau jam...">
