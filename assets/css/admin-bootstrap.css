@@ -4831,3 +4831,39 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.cancel {
         width: auto;
     }
 }
+
+/* Unified admin canvas so every admin page uses the same background base. */
+body.admin-bootstrap-page,
+body.admin-bootstrap-page .admin-bootstrap-container,
+body.admin-bootstrap-page .admin-bootstrap-grid,
+body.admin-bootstrap-page .admin-main-column,
+body.admin-bootstrap-page .layout,
+body.admin-bootstrap-page .left,
+body.admin-bootstrap-page main,
+body.admin-bootstrap-page .topbar,
+body.admin-bootstrap-page .kinetic-topbar,
+body.admin-bootstrap-page .kinetic-mobile-topbar,
+body.admin-bootstrap-page .kinetic-sidebar,
+body.admin-bootstrap-page .kinetic-bottom-nav,
+body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+    background: #111319 !important;
+}
+
+body.admin-bootstrap-page .card,
+body.admin-bootstrap-page .modern-form-card,
+body.admin-bootstrap-page .admin-card-compact,
+body.admin-bootstrap-page .admin-bs-panel,
+body.admin-bootstrap-page .kinetic-dash-panel,
+body.admin-bootstrap-page .kinetic-insight-card,
+body.admin-bootstrap-page .view-booking-list-shell,
+body.admin-bootstrap-page .booking-detail-card,
+body.admin-bootstrap-page .report-summary-card,
+body.admin-bootstrap-page .report-details-wrap,
+body.admin-bootstrap-page .table-wrapper,
+body.admin-bootstrap-page .admin-empty-state,
+body.admin-bootstrap-page .admin-grid-message,
+body.admin-bootstrap-page .admin-grid-message-muted,
+body.admin-bootstrap-page .admin-grid-message-error {
+    background: #191b22 !important;
+    border-color: rgba(88, 66, 55, 0.18) !important;
+}

@@ -22,7 +22,6 @@
       <div class="kinetic-sidebar-section">
         <div class="kinetic-sidebar-section-title">Operasional</div>
         <div class="kinetic-sidebar-links">
-          <a href="#view" data-target="view"><span class="material-symbols-outlined">visibility</span>Manifest View</a>
           <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
           <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
           <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">cancel</span>Cancellations</a>
@@ -155,7 +154,6 @@
 
       <div class="menu-section-header">Operasional</div>
       <div class="menu-grid">
-        <a href="#view" class="nav-btn" data-target="view"><span class="material-symbols-outlined">visibility</span><span class="nav-label">Manifest</span></a>
         <a href="#customers" class="nav-btn" data-target="customers"><span class="material-symbols-outlined">groups</span><span class="nav-label">Customers</span></a>
         <a href="#schedules" class="nav-btn" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span><span class="nav-label">Jadwal</span></a>
         <a href="#cancellations" class="nav-btn" data-target="cancellations"><span class="material-symbols-outlined">cancel</span><span class="nav-label">Cancel</span></a>
