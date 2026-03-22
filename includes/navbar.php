@@ -4,6 +4,10 @@
 ?>
   <div class="topbar navbar navbar-expand-lg sticky-top">
     <div class="topbar-inner container-fluid">
+      <div class="topbar-mobile-title">
+        <span class="topbar-mobile-kicker">Admin</span>
+        <strong>Control Center</strong>
+      </div>
       <nav class="nav d-flex flex-wrap align-items-center" id="siteNav">
         <a href="#bookings" data-target="bookings">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -22,7 +26,7 @@
           <span>View</span>
         </a>
         <div class="nav-more">
-          <button id="moreMenuBtn">
+          <button id="moreMenuBtn" type="button" aria-haspopup="true" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="1"></circle>
@@ -138,7 +142,7 @@
         <a href="index.php" class="inline-small btn-booking">Booking Area</a>
 
         <div class="profile-dropdown">
-          <button class="profile-btn" id="profileMenuBtn">
+          <button class="profile-btn" id="profileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -147,7 +151,7 @@
             <span><?php echo htmlspecialchars($auth['user'] ?? 'Admin'); ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              style="margin-left:4px">
+              class="profile-chevron">
               <path d="m6 9 6 6 6-6" />
             </svg>
           </button>
@@ -175,125 +179,11 @@
           </div>
         </div>
       </div>
-
-      <style>
-        .profile-dropdown {
-          position: relative;
-        }
-
-        .profile-btn {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: rgba(255, 255, 255, 0.8);
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-          color: #334155;
-        }
-
-        .profile-btn:hover {
-          background: #fff;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .profile-menu {
-          position: absolute;
-          top: calc(100% + 8px);
-          right: 0;
-          background: #fff;
-          border-radius: 12px;
-          min-width: 160px;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-          border: 1px solid rgba(0, 0, 0, 0.05);
-          display: none;
-          z-index: 1000;
-          padding: 6px;
-          transform-origin: top right;
-          transition: all 0.2s;
-        }
-
-        .profile-menu a {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 10px 12px;
-          text-decoration: none;
-          color: #475569;
-          font-size: 13px;
-          border-radius: 8px;
-          transition: background 0.2s;
-        }
-
-        .profile-menu a:hover {
-          background: #f1f5f9;
-          color: #0f172a;
-        }
-
-        .profile-menu .menu-divider {
-          height: 1px;
-          background: #f1f5f9;
-          margin: 4px;
-        }
-
-        .logout-link {
-          color: #dc3545 !important;
-        }
-
-        .logout-link:hover {
-          background: #fff1f2 !important;
-        }
-
-        /* Menu Section Headers */
-        .menu-section-header {
-          padding: 12px 14px 6px;
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: #94a3b8;
-          border-top: 1px solid #f1f5f9;
-        }
-
-        .menu-section-header:first-child {
-          border-top: none;
-          padding-top: 8px;
-        }
-
-        #moreMenuDropdown .menu-section-header {
-          padding: 10px 12px 4px;
-        }
-
-        /* Mobile More Modal Adjustments */
-        .bottom-more-content {
-          padding: 16px 16px 32px !important;
-          max-height: 85vh;
-          overflow-y: auto;
-          display: block !important; /* Switch from default grid to block to support section headers */
-        }
-
-        .menu-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-          padding: 8px 0 16px;
-        }
-
-        .bottom-more-content .nav-btn {
-          margin: 0 !important;
-          width: 100%;
-        }
-      </style>
-
     </div>
   </div>
 <?php else: ?>
   <div class="topbar">
-    <div class="topbar-inner" style="justify-content:flex-end;">
+    <div class="topbar-inner topbar-public">
       <a href="index.php" class="inline-small btn-booking">Buat Booking</a>
     </div>
   </div>
@@ -437,7 +327,7 @@
             </svg></div>
           <span class="nav-label">Users</span>
         </a>
-        <button class="nav-btn" id="closeMoreModal" style="color:#dc3545;">
+        <button class="nav-btn nav-btn-close" id="closeMoreModal" type="button">
           <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -461,18 +351,44 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    function setDropdownState(button, isOpen) {
+      if (!button) return;
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    function syncAdminNavState(target) {
+      const selector = '.nav > a[data-target], #moreMenuDropdown a[data-target], .bottom-nav .nav-btn[data-target], .bottom-more-content .nav-btn[data-target]';
+      document.querySelectorAll(selector).forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-target') === target);
+      });
+
+      const desktopMoreBtn = document.getElementById('moreMenuBtn');
+      const mobileMoreBtn = document.getElementById('navMore');
+      const isPrimary = target === 'bookings' || target === 'view';
+      if (desktopMoreBtn) desktopMoreBtn.classList.toggle('active', !isPrimary);
+      if (mobileMoreBtn) mobileMoreBtn.classList.toggle('active', !isPrimary);
+    }
+
+    window.syncAdminNavState = syncAdminNavState;
+
     // Desktop More menu
     const moreBtn = document.getElementById('moreMenuBtn');
     const moreDropdown = document.getElementById('moreMenuDropdown');
     if (moreBtn && moreDropdown) {
       moreBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        moreDropdown.style.display = moreDropdown.style.display === 'block' ? 'none' : 'block';
-        if (profileDropdown) profileDropdown.style.display = 'none';
+        const isOpen = moreDropdown.style.display === 'block';
+        moreDropdown.style.display = isOpen ? 'none' : 'block';
+        setDropdownState(moreBtn, !isOpen);
+        if (profileDropdown) {
+          profileDropdown.style.display = 'none';
+          setDropdownState(profileBtn, false);
+        }
       });
       document.addEventListener('click', function (e) {
         if (!moreDropdown.contains(e.target) && e.target !== moreBtn) {
           moreDropdown.style.display = 'none';
+          setDropdownState(moreBtn, false);
         }
       });
 
@@ -480,6 +396,7 @@
       moreDropdown.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', function () {
           moreDropdown.style.display = 'none';
+          setDropdownState(moreBtn, false);
         });
       });
     }
@@ -490,14 +407,33 @@
     if (profileBtn && profileDropdown) {
       profileBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-        if (moreDropdown) moreDropdown.style.display = 'none';
+        const isOpen = profileDropdown.style.display === 'block';
+        profileDropdown.style.display = isOpen ? 'none' : 'block';
+        setDropdownState(profileBtn, !isOpen);
+        if (moreDropdown) {
+          moreDropdown.style.display = 'none';
+          setDropdownState(moreBtn, false);
+        }
       });
       document.addEventListener('click', function (e) {
         if (!profileDropdown.contains(e.target) && e.target !== profileBtn) {
           profileDropdown.style.display = 'none';
+          setDropdownState(profileBtn, false);
         }
       });
+    }
+
+    function showTargetSection(target) {
+      if (!target) return;
+      const currentHash = window.location.hash.replace('#', '');
+      syncAdminNavState(target);
+      if (currentHash === target) {
+        if (typeof window.showSectionById === 'function') {
+          window.showSectionById(target);
+        }
+        return;
+      }
+      window.location.hash = target;
     }
 
     // Desktop navigation active state
@@ -506,40 +442,16 @@
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const target = this.getAttribute('data-target');
-
-        // Remove active class from all links
-        navLinks.forEach(l => l.classList.remove('active'));
-        // Add active class to clicked link
-        this.classList.add('active');
-
-        // Show/hide sections
-        if (target) {
-          document.querySelectorAll('.card').forEach(card => {
-            const cardId = card.id;
-            if (cardId === target) {
-              card.style.display = 'block';
-            } else if (cardId) {
-              card.style.display = 'none';
-            }
-          });
-
-          // Update URL hash
-          window.location.hash = target;
-        }
+        showTargetSection(target);
       });
     });
 
     // Handle initial load from hash
     const hash = window.location.hash.substring(1);
     if (hash) {
-      const targetLink = document.querySelector(`[data-target="${hash}"]`);
-      if (targetLink) {
-        targetLink.click();
-      }
+      syncAdminNavState(hash);
     } else {
-      // Show bookings by default
-      const bookingsLink = document.querySelector('[data-target="bookings"]');
-      if (bookingsLink) bookingsLink.click();
+      syncAdminNavState('bookings');
     }
 
     // Mobile More Menu
@@ -550,6 +462,7 @@
     if (navMore && bottomMoreModal) {
       navMore.onclick = function () {
         bottomMoreModal.style.display = 'flex';
+        navMore.classList.add('active');
         // Force reflow
         bottomMoreModal.offsetHeight;
         bottomMoreModal.classList.add('show');
@@ -558,6 +471,8 @@
     if (closeMoreModal && bottomMoreModal) {
       closeMoreModal.onclick = function () {
         bottomMoreModal.classList.remove('show');
+        const activeTarget = window.location.hash.replace('#', '') || 'bookings';
+        syncAdminNavState(activeTarget);
         setTimeout(() => {
           if (!bottomMoreModal.classList.contains('show')) {
             bottomMoreModal.style.display = 'none';
@@ -574,6 +489,7 @@
       bottomMoreModal.querySelectorAll('.nav-btn[data-target]').forEach(btn => {
         btn.addEventListener('click', function () {
           bottomMoreModal.style.display = 'none';
+          bottomMoreModal.classList.remove('show');
         });
       });
     }
@@ -584,26 +500,7 @@
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         const target = this.getAttribute('data-target');
-
-        // Remove active from all
-        bottomNavBtns.forEach(b => b.classList.remove('active'));
-        // Add to clicked
-        this.classList.add('active');
-
-        // Show/hide sections
-        if (target) {
-          document.querySelectorAll('.card').forEach(card => {
-            const cardId = card.id;
-            if (cardId === target) {
-              card.style.display = 'block';
-            } else if (cardId) {
-              card.style.display = 'none';
-            }
-          });
-
-          // Update URL hash
-          window.location.hash = target;
-        }
+        showTargetSection(target);
       });
     });
   });

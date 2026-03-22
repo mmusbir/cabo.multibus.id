@@ -787,7 +787,7 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/admin.css?v=10">
   <link rel="stylesheet" href="assets/css/navbar.css?v=10">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=1">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=2">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1327,17 +1327,9 @@ if (!isset($_REQUEST['action'])):
         });
         var active = document.getElementById(id);
         if (active) active.style.display = '';
-        // Highlight top nav
-        document.querySelectorAll('.nav a').forEach(function (a) {
-          a.classList.remove('active');
-          if (a.getAttribute('data-target') === id) a.classList.add('active');
-        });
-        // Highlight bottom nav
-        document.querySelectorAll('.bottom-nav .nav-btn').forEach(function (btn) {
-          btn.classList.remove('active');
-        });
-        if (id === 'bookings') document.getElementById('navBookings')?.classList.add('active');
-        else if (id === 'view') document.getElementById('navView')?.classList.add('active');
+        if (typeof window.syncAdminNavState === 'function') {
+          window.syncAdminNavState(id);
+        }
         // Auto-load data for each section
         if (id === 'bookings') ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
@@ -1348,6 +1340,7 @@ if (!isset($_REQUEST['action'])):
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
       }
+      window.showSectionById = showSection;
       function updateSectionFromHash() {
         var hash = window.location.hash.replace('#', '');
         if (hash) showSection(hash);

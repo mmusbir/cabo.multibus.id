@@ -41,15 +41,64 @@ body.admin-bootstrap-page .topbar {
 }
 
 body.admin-bootstrap-page .topbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     max-width: 1540px;
     padding: 0.85rem 1rem;
     gap: 1rem;
 }
 
+body.admin-bootstrap-page .topbar-public {
+    justify-content: flex-end;
+}
+
+body.admin-bootstrap-page .topbar-mobile-title {
+    display: none;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .topbar-mobile-kicker {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+body.admin-bootstrap-page .topbar-mobile-title strong {
+    color: #0f172a;
+    font-size: 0.95rem;
+    line-height: 1.15;
+}
+
+body.admin-bootstrap-page #siteNav {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+body.admin-bootstrap-page #siteNav::-webkit-scrollbar {
+    display: none;
+}
+
+body.admin-bootstrap-page .nav {
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+}
+
 body.admin-bootstrap-page .nav a,
 body.admin-bootstrap-page .nav-more button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.65rem;
+    padding: 0.55rem 0.95rem;
     border-radius: 999px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 body.admin-bootstrap-page .nav a.active,
@@ -58,10 +107,73 @@ body.admin-bootstrap-page #moreMenuDropdown a.active {
     color: #0d6efd;
 }
 
+body.admin-bootstrap-page .nav-more {
+    position: relative;
+    flex-shrink: 0;
+}
+
+body.admin-bootstrap-page .nav-more button.active {
+    background: #e7f1ff;
+    color: #0d6efd;
+}
+
 body.admin-bootstrap-page #moreMenuDropdown,
 body.admin-bootstrap-page .profile-menu {
     border: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+}
+
+body.admin-bootstrap-page #moreMenuDropdown {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    left: 0;
+    min-width: 280px;
+    max-width: min(360px, 90vw);
+    padding: 0.55rem;
+    background: #fff;
+    border-radius: 1rem;
+    display: none;
+    z-index: 1002;
+}
+
+body.admin-bootstrap-page #moreMenuDropdown a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.72rem 0.85rem;
+    color: #475569;
+    font-size: 0.92rem;
+    font-weight: 500;
+    border-radius: 0.8rem;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.admin-bootstrap-page #moreMenuDropdown a:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page .menu-section-header {
+    padding: 0.9rem 0.9rem 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    border-top: 1px solid #eef2f7;
+}
+
+body.admin-bootstrap-page .menu-section-header:first-child {
+    padding-top: 0.35rem;
+    border-top: 0;
+}
+
+body.admin-bootstrap-page .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 body.admin-bootstrap-page .btn-booking {
@@ -77,9 +189,220 @@ body.admin-bootstrap-page .btn-booking:hover {
 }
 
 body.admin-bootstrap-page .profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     background: #fff;
     border: 1px solid #d6dde8;
     box-shadow: none;
+    min-height: 2.65rem;
+    padding: 0.55rem 0.9rem;
+    color: #334155;
+}
+
+body.admin-bootstrap-page .profile-chevron {
+    flex-shrink: 0;
+}
+
+body.admin-bootstrap-page .profile-dropdown {
+    position: relative;
+}
+
+body.admin-bootstrap-page .profile-menu {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    right: 0;
+    min-width: 220px;
+    padding: 0.45rem;
+    background: #fff;
+    border-radius: 1rem;
+    display: none;
+    z-index: 1002;
+}
+
+body.admin-bootstrap-page .profile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.72rem 0.85rem;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 0.8rem;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.admin-bootstrap-page .profile-menu a:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page .profile-menu .menu-divider {
+    height: 1px;
+    margin: 0.3rem 0.35rem;
+    background: #eef2f7;
+}
+
+body.admin-bootstrap-page .logout-link {
+    color: #dc3545 !important;
+}
+
+body.admin-bootstrap-page .logout-link:hover {
+    background: #fff1f2 !important;
+    color: #b91c1c !important;
+}
+
+body.admin-bootstrap-page .bottom-nav {
+    display: none;
+}
+
+body.admin-bootstrap-page .bottom-nav .nav-btn,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.38rem;
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+body.admin-bootstrap-page .bottom-nav .nav-icon,
+body.admin-bootstrap-page #bottomMoreModal .nav-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.9rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+body.admin-bootstrap-page .bottom-nav .nav-label,
+body.admin-bootstrap-page #bottomMoreModal .nav-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+body.admin-bootstrap-page .bottom-nav .nav-btn.active,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn.active,
+body.admin-bootstrap-page #navMore.active {
+    color: #0d6efd;
+}
+
+body.admin-bootstrap-page .bottom-nav .nav-btn.active .nav-icon,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn.active .nav-icon,
+body.admin-bootstrap-page #navMore.active .nav-icon {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #0d6efd;
+}
+
+body.admin-bootstrap-page #bottomMoreModal {
+    display: none;
+    align-items: flex-end;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(8px);
+}
+
+body.admin-bootstrap-page #bottomMoreModal.show {
+    display: flex;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    padding: 1rem 1rem calc(1.5rem + env(safe-area-inset-bottom));
+    border-radius: 1.6rem 1.6rem 0 0;
+    background: #fff;
+    box-shadow: 0 -1rem 2.5rem rgba(15, 23, 42, 0.18);
+    display: block !important;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.28s ease;
+}
+
+body.admin-bootstrap-page #bottomMoreModal.show .bottom-more-content {
+    transform: translateY(0);
+}
+
+body.admin-bootstrap-page #bottomMoreModal .sheet-handle {
+    width: 3rem;
+    height: 0.35rem;
+    margin: 0 auto 1rem;
+    border-radius: 999px;
+    background: #dbe4f0;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+    padding: 0.45rem 0 1rem;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .menu-section-header {
+    padding: 1rem 0.25rem 0.35rem;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn {
+    width: 100%;
+    min-height: 5.9rem;
+    padding: 0.9rem 0.55rem;
+    margin: 0 !important;
+    border-radius: 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn:hover {
+    background: #fff;
+    border-color: #bfdbfe;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn-close {
+    color: #dc3545;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn-close .nav-icon {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #dc3545;
+}
+
+body.admin-bootstrap-page .fab-booking {
+    display: none;
+    position: fixed;
+    right: 1.15rem;
+    bottom: calc(5.2rem + env(safe-area-inset-bottom));
+    width: 3.6rem;
+    height: 3.6rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #198754;
+    color: #fff;
+    box-shadow: 0 0.9rem 1.8rem rgba(25, 135, 84, 0.25);
+    z-index: 1000;
+}
+
+body.admin-bootstrap-page .fab-booking:hover {
+    background: #157347;
+    color: #fff;
+}
+
+body.admin-bootstrap-page .fab-booking svg {
+    width: 1.45rem;
+    height: 1.45rem;
 }
 
 body.admin-bootstrap-page .card,
@@ -1160,11 +1483,12 @@ body.admin-bootstrap-page .sum-total {
     }
 
     body.admin-bootstrap-page .topbar-inner {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
     }
 
     body.admin-bootstrap-page .nav {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 }
 
@@ -1177,6 +1501,84 @@ body.admin-bootstrap-page .sum-total {
 
     body.admin-bootstrap-page .card {
         padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .topbar {
+        min-height: 64px;
+    }
+
+    body.admin-bootstrap-page .topbar-inner {
+        padding: 0.75rem 0.85rem;
+    }
+
+    body.admin-bootstrap-page .topbar-mobile-title {
+        display: grid;
+    }
+
+    body.admin-bootstrap-page #siteNav {
+        display: none !important;
+    }
+
+    body.admin-bootstrap-page .topbar-right {
+        gap: 0.5rem;
+    }
+
+    body.admin-bootstrap-page .btn-booking {
+        display: none;
+    }
+
+    body.admin-bootstrap-page .profile-btn {
+        padding: 0.5rem 0.8rem;
+        min-height: 2.45rem;
+    }
+
+    body.admin-bootstrap-page .profile-btn span {
+        display: inline-block;
+        max-width: 88px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body.admin-bootstrap-page .profile-menu {
+        right: 0;
+        min-width: min(260px, calc(100vw - 1.5rem));
+    }
+
+    body.admin-bootstrap-page .bottom-nav {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0.65rem 0.75rem calc(0.65rem + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.94);
+        border-top: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 -0.75rem 1.75rem rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(14px);
+        z-index: 1000;
+    }
+
+    body.admin-bootstrap-page .bottom-nav .nav-btn {
+        min-height: 3.5rem;
+        padding: 0.35rem 0.2rem;
+        border-radius: 1rem;
+    }
+
+    body.admin-bootstrap-page .fab-booking {
+        display: flex;
+    }
+
+    body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+        width: 100%;
+        border-radius: 1.4rem 1.4rem 0 0;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+    }
+
+    body.admin-bootstrap-page #bottomMoreModal .menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     body.admin-bootstrap-page .admin-bs-col-6,
