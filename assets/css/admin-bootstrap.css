@@ -699,6 +699,183 @@ body.admin-bootstrap-page .layout-message {
     font-size: 0.9rem;
 }
 
+body.admin-bootstrap-page .report-filter-panel {
+    margin-bottom: 1.25rem;
+}
+
+body.admin-bootstrap-page .report-filter-grid {
+    align-items: end;
+}
+
+body.admin-bootstrap-page .report-filter-col {
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .report-filter-col-wide {
+    grid-column: span 12;
+}
+
+body.admin-bootstrap-page .report-filter-actions {
+    margin-top: 0;
+    justify-content: flex-start;
+}
+
+body.admin-bootstrap-page .report-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-width: 160px;
+}
+
+body.admin-bootstrap-page .report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+body.admin-bootstrap-page .report-summary-card {
+    padding: 1.2rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+}
+
+body.admin-bootstrap-page .report-summary-card-reguler {
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+    border-color: #bfdbfe;
+}
+
+body.admin-bootstrap-page .report-summary-card-discount {
+    background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+    border-color: #fecdd3;
+}
+
+body.admin-bootstrap-page .report-summary-card-charter {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+    border-color: #bbf7d0;
+}
+
+body.admin-bootstrap-page .report-summary-card-luggage {
+    background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+    border-color: #fed7aa;
+}
+
+body.admin-bootstrap-page .report-summary-card-total {
+    background: linear-gradient(135deg, #0d6efd 0%, #3b82f6 100%);
+    border-color: rgba(59, 130, 246, 0.45);
+    color: #fff;
+    box-shadow: 0 1.2rem 2.5rem rgba(13, 110, 253, 0.24);
+}
+
+body.admin-bootstrap-page .report-summary-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #475569;
+}
+
+body.admin-bootstrap-page .report-summary-card-reguler .report-summary-label {
+    color: #1d4ed8;
+}
+
+body.admin-bootstrap-page .report-summary-card-discount .report-summary-label {
+    color: #e11d48;
+}
+
+body.admin-bootstrap-page .report-summary-card-charter .report-summary-label {
+    color: #15803d;
+}
+
+body.admin-bootstrap-page .report-summary-card-luggage .report-summary-label {
+    color: #c2410c;
+}
+
+body.admin-bootstrap-page .report-summary-card-total .report-summary-label,
+body.admin-bootstrap-page .report-summary-card-total .report-summary-meta {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+body.admin-bootstrap-page .report-summary-value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page .report-summary-card-total .report-summary-value {
+    color: #fff;
+}
+
+body.admin-bootstrap-page .report-summary-meta {
+    margin-top: 0.35rem;
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+body.admin-bootstrap-page .report-details-panel {
+    overflow: hidden;
+}
+
+body.admin-bootstrap-page .report-details-head {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-weight: 700;
+    color: #334155;
+}
+
+body.admin-bootstrap-page .report-details-table thead th {
+    padding: 0.85rem 1.25rem;
+    background: #f8fafc;
+    border-bottom-width: 1px;
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .report-details-table tbody td {
+    padding: 0.95rem 1.25rem;
+    border-color: #eef2f7;
+    vertical-align: middle;
+}
+
+body.admin-bootstrap-page .report-cell-muted {
+    color: #64748b;
+}
+
+body.admin-bootstrap-page .report-cell-base {
+    color: #475569;
+}
+
+body.admin-bootstrap-page .report-cell-strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .report-cell-discount {
+    text-align: right;
+    color: #e11d48;
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .report-cell-amount {
+    text-align: right;
+    color: #198754;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .report-table-empty {
+    padding: 2rem 1.25rem !important;
+    text-align: center;
+    color: #94a3b8;
+}
+
 @media (max-width: 1199px) {
     body.admin-bootstrap-page .admin-bootstrap-container {
         margin-top: 1rem;
@@ -756,6 +933,33 @@ body.admin-bootstrap-page .layout-message {
         width: 100%;
         max-height: 85vh;
         padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .report-filter-col-wide {
+        grid-column: 1 / -1;
+    }
+
+    body.admin-bootstrap-page .report-filter-actions {
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .report-filter-actions .report-action-btn {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .report-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.admin-bootstrap-page .report-details-head {
+        padding: 0.9rem 1rem;
+    }
+
+    body.admin-bootstrap-page .report-details-table thead th,
+    body.admin-bootstrap-page .report-details-table tbody td {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     body.admin-bootstrap-page .seat-grid {

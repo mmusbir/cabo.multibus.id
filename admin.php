@@ -2250,7 +2250,7 @@ Harga: ${price}`;
 
           if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
             navigator.clipboard.writeText(text).then(() => {
-              alert('Detail carter berhasil disalin!');
+              customAlert('Detail carter berhasil disalin!', 'Berhasil Disalin');
             }).catch(() => {
               fallbackCopyCharter(text);
             });
@@ -2370,19 +2370,26 @@ Harga: ${price}`;
           const id = this.dataset.id;
           const name = this.dataset.name || 'Carter ini';
 
-          if (confirm(`Hapus carter "${name}"?\n\nData yang dihapus tidak dapat dikembalikan.`)) {
-            fetch(`admin.php?action=delete_charter&id=${id}`)
-              .then(res => res.json())
-              .then(js => {
+          customConfirm(
+            `Hapus carter "${name}"?\n\nData yang dihapus tidak dapat dikembalikan.`,
+            async () => {
+              try {
+                const res = await fetch(`admin.php?action=delete_charter&id=${id}`);
+                const js = await res.json();
+
                 if (js.success) {
-                  alert('Carter berhasil dihapus.');
+                  await customAlert('Carter berhasil dihapus.', 'Sukses');
                   ajaxListLoad('charters', { page: 1 });
                 } else {
-                  alert('Gagal menghapus: ' + (js.error || 'unknown'));
+                  customAlert('Gagal menghapus: ' + (js.error || 'unknown'), 'Gagal');
                 }
-              })
-              .catch(err => alert('Error: ' + err));
-          }
+              } catch (err) {
+                customAlert('Error: ' + err, 'Network Error');
+              }
+            },
+            'Hapus Carter',
+            'danger'
+          );
         };
       });
 
@@ -2392,19 +2399,26 @@ Harga: ${price}`;
           e.preventDefault();
           const id = this.dataset.id;
 
-          if (confirm('Ubah status BOP menjadi Done?')) {
-            fetch(`admin.php?action=toggle_bop&id=${id}`)
-              .then(res => res.json())
-              .then(js => {
+          customConfirm(
+            'Ubah status BOP menjadi Done?',
+            async () => {
+              try {
+                const res = await fetch(`admin.php?action=toggle_bop&id=${id}`);
+                const js = await res.json();
+
                 if (js.success) {
-                  alert('Status BOP diubah ke Done.');
+                  await customAlert('Status BOP diubah ke Done.', 'Sukses');
                   ajaxListLoad('charters', { page: 1 });
                 } else {
-                  alert('Gagal mengubah status: ' + (js.error || 'unknown'));
+                  customAlert('Gagal mengubah status: ' + (js.error || 'unknown'), 'Gagal');
                 }
-              })
-              .catch(err => alert('Error: ' + err));
-          }
+              } catch (err) {
+                customAlert('Error: ' + err, 'Network Error');
+              }
+            },
+            'Update Status BOP',
+            'success'
+          );
         };
       });
     }
@@ -2416,9 +2430,9 @@ Harga: ${price}`;
       temp.select();
       try {
         document.execCommand('copy');
-        alert('Detail carter berhasil disalin!');
+        customAlert('Detail carter berhasil disalin!', 'Berhasil Disalin');
       } catch (e) {
-        alert('Gagal menyalin ke clipboard.');
+        customAlert('Gagal menyalin ke clipboard.', 'Gagal');
       }
       document.body.removeChild(temp);
     }
@@ -2435,16 +2449,16 @@ Harga: ${price}`;
           });
           const js = await res.json();
           if (js.success) {
-            alert('Carter berhasil diupdate.');
             const modal = document.getElementById('editCharterModal');
             modal.classList.remove('show');
             setTimeout(() => { modal.style.display = 'none'; }, 300);
+            await customAlert('Carter berhasil diupdate.', 'Sukses');
             ajaxListLoad('charters', { page: 1 });
           } else {
-            alert('Gagal update: ' + (js.error || 'unknown'));
+            customAlert('Gagal update: ' + (js.error || 'unknown'), 'Gagal');
           }
         } catch (err) {
-          alert('Error: ' + err);
+          customAlert('Error: ' + err, 'Network Error');
         }
       };
     }
@@ -2528,13 +2542,11 @@ Harga: ${price}`;
           document.getElementById('driverEdit').style.display = 'none';
           document.getElementById('driverDisplay').style.display = 'inline';
 
-          // Show toast/alert
-          // alert('Driver berhasil diupdate!');
         } else {
-          alert('Gagal update driver: ' + (js.error || 'unknown'));
+          customAlert('Gagal update driver: ' + (js.error || 'unknown'), 'Gagal');
         }
       } catch (e) {
-        alert('Error: ' + e);
+        customAlert('Error: ' + e, 'Network Error');
       }
 
     };
