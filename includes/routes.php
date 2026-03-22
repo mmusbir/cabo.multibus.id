@@ -2,6 +2,34 @@
 <section id="routes" class="card">
   <h3>Rute</h3>
   <?php
+  // ============================================
+  // INITIALIZE EDIT VARIABLES FROM GET PARAMS
+  // ============================================
+  
+  $edit_route = null;
+  if (isset($_GET['edit_route'])) {
+    $id = intval($_GET['edit_route']);
+    if ($id > 0) {
+      $stmt = $conn->prepare("SELECT id, name, origin, destination FROM routes WHERE id=? LIMIT 1");
+      $stmt->execute([$id]);
+      $edit_route = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+  }
+
+  $edit_carter = null;
+  if (isset($_GET['edit_carter'])) {
+    $id = intval($_GET['edit_carter']);
+    if ($id > 0) {
+      $stmt = $conn->prepare("SELECT id, name, origin, destination, duration, rental_price, bop_price, notes FROM master_carter WHERE id=? LIMIT 1");
+      $stmt->execute([$id]);
+      $edit_carter = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+  }
+
+  // ============================================
+  // FORM FIELD INITIALIZATION
+  // ============================================
+  
   $route_form_id = 0;
   $route_type = 'reguler';
   $route_form_name = '';
@@ -13,7 +41,7 @@
   $route_notes = '';
 
   if ($edit_route) {
-    $route_id = $edit_route['id'];
+    $route_form_id = $edit_route['id'];
     $route_type = 'reguler';
     $route_form_name = $edit_route['name'];
     $route_origin = $edit_route['origin'] ?? '';
