@@ -30,10 +30,14 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+require_once 'middleware/auth.php';
+require_once 'config/db.php';
+require_once 'config/auth_config.php';
+
 /* ------------------ AUTO-LOGIN DEBUG REMOVED ------------------ */
 
 // --- Database Connection ---
-require_once 'config/db.php';
+
 
 // Ensure charters table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS charters (
@@ -284,34 +288,9 @@ if ($userCheck->rowCount() === 0) {
     $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
 }
 
-/********** AUTH HANDLER **********/
-if (isset($_POST['login'])) {
-  $username = $_POST['username'] ?? '';
-  $password = $_POST['password'] ?? '';
-  if ($username && $password) {
-    try {
-      $stmt = $conn->prepare("SELECT id, password_hash FROM users WHERE username=? LIMIT 1");
-      $stmt->execute([$username]);
-      $res = $stmt->fetch();
-      if ($res && password_verify($password, $res['password_hash'])) {
-        $_SESSION['admin'] = true;
-        $_SESSION['admin_user'] = $username;
-        header('Location: admin.php');
-        exit;
-      } else {
-        $login_error = 'Login gagal — cek username/password';
-      }
-    } catch (PDOException $e) {
-      $login_error = 'Kesalahan query database: ' . htmlspecialchars($e->getMessage());
-    }
-  } else {
-    $login_error = 'Masukkan username & password';
-  }
-}
+/********** AUTH HANDLER (Legacy removed in favor of JWT) **********/
 if (isset($_GET['logout'])) {
-  session_destroy();
-  // Add after_logout flag to prevent immediate auto-login
-  header('Location: admin.php?after_logout=1');
+  header('Location: logout.php');
   exit;
 }
 
@@ -493,7 +472,9 @@ function updateSetting($conn, $key, $value)
 /********** AJAX HANDLERS (consolidated into admin.php to share sessions on Vercel) **********/
 if (isset($_REQUEST['action'])) {
   try {
-    if (empty($_SESSION['admin']) || !$_SESSION['admin']) {
+    // SECURITY: Use JWT Middleware (Decoded token contains user data)
+    $auth = getAuthenticatedUser();
+    if (!$auth) {
       header('Content-Type: application/json');
       echo json_encode(['success' => false, 'error' => 'unauthorized']);
       exit;
@@ -1036,50 +1017,16 @@ include 'includes/units_logic.php';
   <?php include 'includes/navbar.php'; ?>
 
   <div class="container">
-
-    <?php if (empty($_SESSION['admin']) || $_SESSION['admin'] !== true): ?>
-      <!-- LOGIN FORM (shown when not authenticated) -->
-      <div
-        style="max-width:400px;margin:80px auto;padding:30px;background:#fff;border-radius:10px;box-shadow:0 6px 22px rgba(2,6,23,0.1);border:1px solid rgba(15,23,42,0.03)">
-        <h2 style="text-align:center;margin:20px 0 10px">Admin Panel</h2>
-
-        <?php if (isset($login_error)): ?>
-          <div
-            style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;border-radius:8px;margin-bottom:16px;font-size:14px">
-            ⚠️
-            <?php echo htmlspecialchars($login_error); ?>
-          </div>
-        <?php endif; ?>
-
-        <form method="post" style="display:flex;flex-direction:column;gap:12px">
-          <div>
-            <label for="login_username"
-              style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:#111827">Username</label>
-            <input type="text" id="login_username" name="username" placeholder="Masukkan username" required
-              style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px">
-          </div>
-          <div>
-            <label for="login_password"
-              style="display:block;margin-bottom:6px;font-weight:600;font-size:14px;color:#111827">Password</label>
-            <input type="password" id="login_password" name="password" placeholder="Masukkan password" required
-              style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6eef8;font-size:14px">
-          </div>
-          <button name="login" type="submit"
-            style="background:linear-gradient(90deg,#0d6efd,#0b5ed7);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;margin-top:8px">Login</button>
-        </form>
-
-        <div style="text-align:center;margin-top:16px;font-size:12px;color:#6c757d">
-          📝 Hubungi administrator untuk membuat akun
-        </div>
-      </div>
-      <?php exit; endif; ?>
+    <?php 
+       // SECURITY: This will auto-redirect to login.php if JWT is missing or invalid
+       $auth = requireAdminAuth(); 
+    ?>
 
     <div class="layout">
       <div class="left">
-
-        <!-- BOOKINGS -->
         <!-- BOOKINGS -->
         <?php include 'includes/bookings.php'; ?>
+
 
         <!-- CUSTOMERS -->
         <?php include 'includes/customers.php'; ?>

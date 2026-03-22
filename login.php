@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($username && $password) {
         // 1. Find user by username using PDO (PostgreSQL/MySQL compatible)
-        $stmt = $conn->prepare("SELECT id, username, password FROM users WHERE username = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, username, password_hash FROM users WHERE username = ? LIMIT 1");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
         // 2. Verify password with password_verify()
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['password_hash'])) {
             
             // 3. Issue JWT Token (payload: sub = user ID, iat = issued at, exp = expiration)
             $issuedAt = time();
@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]
             );
 
-            // 6. Redirect to Protected Page
-            header('Location: protected_page.php');
+            // 6. Redirect to Protected Page (Main Admin)
+            header('Location: admin.php');
             exit;
         } else {
             $error_msg = "Username atau Password salah!";

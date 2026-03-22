@@ -1,4 +1,7 @@
-<?php if (!empty($_SESSION['admin']) && $_SESSION['admin'] === true): ?>
+<?php 
+  $auth = getAuthenticatedUser();
+  if ($auth): 
+?>
   <div class="topbar">
     <div class="topbar-inner">
       <nav class="nav" id="siteNav">
@@ -141,7 +144,7 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            <span><?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?></span>
+            <span><?php echo htmlspecialchars($auth['user'] ?? 'Admin'); ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
               style="margin-left:4px">
@@ -158,8 +161,8 @@
               Ganti Password
             </a>
             <div class="menu-divider"></div>
-            <?php if (!empty($_SESSION['admin'])): ?>
-              <a href="admin.php?logout=1" class="logout-link">
+            <?php if ($auth): ?>
+              <a href="logout.php" class="logout-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -297,7 +300,7 @@
 <?php endif; ?>
 
 <!-- Bottom Navbar for Mobile -->
-<?php if (!empty($_SESSION['admin']) && $_SESSION['admin'] === true): ?>
+<?php if ($auth): ?>
   <nav class="bottom-nav" id="bottomNav">
     <a href="#bookings" class="nav-btn" data-target="bookings" id="navBookings">
       <div class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
