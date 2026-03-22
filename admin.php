@@ -635,16 +635,21 @@ if (isset($_POST['save_segment'])) {
   $route_id = isset($_POST['segment_route_id']) ? intval($_POST['segment_route_id']) : 0;
   $origin = trim($_POST['segment_origin'] ?? '');
   $destination = trim($_POST['segment_destination'] ?? '');
+  $pickup_time = trim($_POST['segment_pickup_time'] ?? '');
   $harga = floatval($_POST['segment_harga'] ?? 0);
   $rute = "$origin - $destination";
 
+  if ($pickup_time !== '' && !preg_match('/^\d{2}:\d{2}$/', $pickup_time)) {
+    $pickup_time = '';
+  }
+
   if ($origin && $destination) {
     if ($id > 0) {
-      $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, origin=?, destination=?, harga=? WHERE id=?");
-      $stmt->execute([$route_id, $rute, $origin, $destination, $harga, $id]);
+      $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, origin=?, destination=?, pickup_time=?, harga=? WHERE id=?");
+      $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga, $id]);
     } else {
-      $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, origin, destination, harga) VALUES (?,?,?,?,?)");
-      $stmt->execute([$route_id, $rute, $origin, $destination, $harga]);
+      $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, origin, destination, pickup_time, harga) VALUES (?,?,?,?,?,?)");
+      $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga]);
     }
   }
   header('Location: admin.php#segments');

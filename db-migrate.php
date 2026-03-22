@@ -70,11 +70,15 @@ $conn->exec("CREATE TABLE IF NOT EXISTS segments (
     id SERIAL PRIMARY KEY,
     route_id INT DEFAULT 0,
     rute VARCHAR(100) NOT NULL,
+    pickup_time VARCHAR(5),
     harga NUMERIC(15,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW()
 )");
 if (!db_column_exists($conn, 'segments', 'route_id')) {
   $conn->exec("ALTER TABLE segments ADD COLUMN route_id INT DEFAULT 0");
+}
+if (!db_column_exists($conn, 'segments', 'pickup_time')) {
+  $conn->exec("ALTER TABLE segments ADD COLUMN pickup_time VARCHAR(5)");
 }
 
 // Ensure trip_assignments table exists

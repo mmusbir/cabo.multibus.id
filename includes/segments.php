@@ -6,7 +6,7 @@
     if (isset($_GET['edit_segment'])) {
         $id = intval($_GET['edit_segment']);
         if ($id > 0) {
-            $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,harga FROM segments WHERE id=? LIMIT 1");
+            $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,pickup_time,harga FROM segments WHERE id=? LIMIT 1");
             $stmt->execute([$id]);
             $edit_segment = $stmt->fetch(PDO::FETCH_ASSOC);
         }
@@ -15,6 +15,7 @@
     $segment_rute = $edit_segment['rute'] ?? '';
     $segment_origin = $edit_segment['origin'] ?? '';
     $segment_destination = $edit_segment['destination'] ?? '';
+    $segment_pickup_time = $edit_segment['pickup_time'] ?? '';
     $segment_harga = $edit_segment['harga'] ?? '';
     $segment_id = $edit_segment['id'] ?? 0;
 
@@ -59,6 +60,12 @@
                     <label style="font-size:11px;font-weight:700">Tujuan Segment</label>
                     <input name="segment_destination" class="modern-input" placeholder="Kota Tujuan" required
                         value="<?php echo htmlspecialchars($segment_destination); ?>">
+                </div>
+
+                <div class="input-group">
+                    <label style="font-size:11px;font-weight:700">Jam Pickup Penumpang</label>
+                    <input name="segment_pickup_time" type="time" class="modern-input"
+                        value="<?php echo htmlspecialchars($segment_pickup_time); ?>">
                 </div>
 
                 <div class="input-group">
@@ -127,6 +134,12 @@
                         <div class="acc-label">💰</div>
                         <div class="acc-val" style="color:var(--neu-success);font-weight:600">
                             <?= $harga_formatted ?>
+                        </div>
+                    </div>
+                    <div class="acc-row">
+                        <div class="acc-label">Jam</div>
+                        <div class="acc-val">
+                            <?= !empty($s['pickup_time']) ? htmlspecialchars($s['pickup_time']) : '-' ?>
                         </div>
                     </div>
                 </div>
