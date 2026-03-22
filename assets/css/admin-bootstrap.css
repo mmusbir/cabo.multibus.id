@@ -2969,13 +2969,13 @@ body.admin-bootstrap-page .kinetic-summary-meta {
 body.admin-bootstrap-page .kinetic-command-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 0.8rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-card {
     background: #191b22;
     border: 1px solid rgba(148, 163, 184, 0.12);
-    border-radius: 1.2rem;
+    border-radius: 1rem;
     overflow: hidden;
     height: 100%;
     transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
@@ -2989,14 +2989,14 @@ body.admin-bootstrap-page .kinetic-trip-card:hover {
 
 body.admin-bootstrap-page .kinetic-trip-card-inner {
     display: grid;
-    grid-template-columns: 8rem minmax(0, 1fr);
+    grid-template-columns: 7rem minmax(0, 1fr);
     align-items: stretch;
     height: 100%;
 }
 
 body.admin-bootstrap-page .kinetic-trip-time {
-    min-width: 9rem;
-    padding: 1.35rem 1rem;
+    min-width: 7rem;
+    padding: 1rem 0.8rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -3009,26 +3009,26 @@ body.admin-bootstrap-page .kinetic-trip-time {
 body.admin-bootstrap-page .kinetic-trip-date {
     color: #f97316;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.3rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-hour {
     color: #f8fafc;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 2rem;
+    font-size: 1.65rem;
     line-height: 1;
     font-weight: 800;
 }
 
 body.admin-bootstrap-page .kinetic-trip-zone {
     color: #7c8798;
-    font-size: 0.68rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    margin-top: 0.35rem;
+    margin-top: 0.22rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -3037,8 +3037,8 @@ body.admin-bootstrap-page .kinetic-trip-main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
-    padding: 1.1rem;
+    gap: 0.7rem;
+    padding: 0.9rem 0.95rem;
     align-items: stretch;
 }
 
@@ -3046,18 +3046,18 @@ body.admin-bootstrap-page .kinetic-trip-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.55rem;
-    margin-bottom: 0.65rem;
+    gap: 0.45rem;
+    margin-bottom: 0.45rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-state {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.28rem 0.6rem;
+    padding: 0.24rem 0.48rem;
     border-radius: 0.5rem;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 0.62rem;
+    font-size: 0.56rem;
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -3076,7 +3076,7 @@ body.admin-bootstrap-page .kinetic-trip-state.danger .status-dot { background: #
 
 body.admin-bootstrap-page .kinetic-trip-id {
     color: #7c8798;
-    font-size: 0.62rem;
+    font-size: 0.56rem;
     font-weight: 800;
 }
 
@@ -3084,25 +3084,29 @@ body.admin-bootstrap-page .kinetic-trip-title {
     margin: 0;
     color: #f8fafc;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 1.18rem;
+    font-size: 1rem;
     font-weight: 800;
     line-height: 1.2;
 }
 
 body.admin-bootstrap-page .kinetic-trip-subtitle {
-    margin-top: 0.3rem;
+    margin-top: 0.15rem;
     color: #b6c0ce;
-    font-size: 0.88rem;
+    font-size: 0.76rem;
     font-weight: 600;
 }
 
 body.admin-bootstrap-page .kinetic-trip-line {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.38rem;
     color: #8f99aa;
-    font-size: 0.8rem;
-    margin-top: 0.45rem;
+    font-size: 0.72rem;
+    margin-top: 0.32rem;
+}
+
+body.admin-bootstrap-page .kinetic-trip-line .material-symbols-outlined {
+    font-size: 0.92rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-line strong {
@@ -3114,7 +3118,7 @@ body.admin-bootstrap-page .kinetic-trip-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 0.65rem;
+    gap: 0.45rem;
     margin-top: auto;
 }
 
@@ -3122,18 +3126,22 @@ body.admin-bootstrap-page .kinetic-trip-action {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.72rem 1rem;
-    border-radius: 0.8rem;
+    padding: 0.58rem 0.82rem;
+    border-radius: 0.72rem;
     border: 1px solid rgba(167, 139, 125, 0.18);
     background: transparent;
     color: #c3cad8;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-decoration: none;
     transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-trip-action .material-symbols-outlined {
+    font-size: 0.92rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-action:hover {

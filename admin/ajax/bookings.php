@@ -112,7 +112,7 @@ if (empty($rows)) {
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         echo '        <a href="#" class="kinetic-trip-action" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); copyBookingTripManifest(this);"><span class="material-symbols-outlined">content_copy</span>Copy Data</a>';
-        echo '        <a href="#" class="kinetic-trip-action primary" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); openBookingTripDetail(this);"><span class="material-symbols-outlined">list_alt</span>Detail Booking List</a>';
+        echo '        <a href="#" class="kinetic-trip-action primary" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); openBookingTripDetail(this);"><span class="material-symbols-outlined">list_alt</span>Detail</a>';
         echo '      </div>';
         echo '    </div>';
         echo '  </div>';
