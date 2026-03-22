@@ -215,6 +215,151 @@ body.admin-bootstrap-page .toast {
     box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.2);
 }
 
+body.admin-bootstrap-page .admin-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+body.admin-bootstrap-page .admin-section-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page .admin-section-subtitle {
+    margin: 0.35rem 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+body.admin-bootstrap-page .admin-bs-panel {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+}
+
+body.admin-bootstrap-page .admin-bs-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: #e8f7ee;
+    color: #198754;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+body.admin-bootstrap-page .admin-bs-form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+body.admin-bootstrap-page .admin-bs-form-grid .input-group {
+    position: relative;
+    display: block;
+}
+
+body.admin-bootstrap-page .admin-bs-col-6 {
+    grid-column: span 6;
+}
+
+body.admin-bootstrap-page .admin-bs-col-12 {
+    grid-column: 1 / -1;
+}
+
+body.admin-bootstrap-page .admin-bs-input-label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .admin-bs-form-grid .input-group-icon {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+body.admin-bootstrap-page .admin-bs-form-grid .input-group:hover .input-group-icon {
+    transform: translateY(-50%) scale(1.06);
+}
+
+body.admin-bootstrap-page .admin-bs-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+
+body.admin-bootstrap-page .admin-bs-toolbar,
+body.admin-bootstrap-page .admin-bs-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .admin-bs-toolbar {
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+body.admin-bootstrap-page .admin-bs-search {
+    width: 100%;
+    max-width: 480px;
+}
+
+body.admin-bootstrap-page .route-tab-switch {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+body.admin-bootstrap-page .route-tab-switch .toggle-btn {
+    padding: 0.65rem 1rem;
+    background: #fff;
+    color: #0d6efd;
+    border: 1px solid #b6d4fe;
+    border-radius: 999px;
+    box-shadow: none;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .route-tab-switch .toggle-btn:hover {
+    background: #eff6ff;
+    color: #0b5ed7;
+    transform: none;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .route-tab-switch .toggle-btn.active {
+    background: #0d6efd;
+    color: #fff;
+    border-color: #0d6efd;
+}
+
+body.admin-bootstrap-page .admin-bs-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
 @media (max-width: 1199px) {
     body.admin-bootstrap-page .admin-bootstrap-container {
         margin-top: 1rem;
@@ -238,5 +383,19 @@ body.admin-bootstrap-page .toast {
 
     body.admin-bootstrap-page .card {
         padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .admin-bs-col-6,
+    body.admin-bootstrap-page .admin-bs-col-12 {
+        grid-column: 1 / -1;
+    }
+
+    body.admin-bootstrap-page .admin-bs-actions {
+        justify-content: stretch;
+    }
+
+    body.admin-bootstrap-page .admin-bs-actions .btn,
+    body.admin-bootstrap-page .admin-bs-actions .btn-modern {
+        width: 100%;
     }
 }
