@@ -18,9 +18,16 @@ if (getenv('APP_ENV') === 'production') {
 if (session_status() === PHP_SESSION_NONE) {
     // Secure session settings
     ini_set('session.cookie_httponly', 1);
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    ini_set('session.cookie_path', '/'); // Crucial for AJAX consistency
+    
+    $isHttps = (
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    );
+    if ($isHttps) {
         ini_set('session.cookie_secure', 1);
     }
+    
     session_start();
 }
 

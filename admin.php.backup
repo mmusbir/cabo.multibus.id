@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// admin.php — Router-based ACTION handling (v2.0)
+// admin.php — modified for local debug (auto-login) + error reporting
 // IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
 
 // Error reporting - disable in production
@@ -33,15 +33,12 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once 'middleware/auth.php';
 require_once 'config/db.php';
 require_once 'config/auth_config.php';
-require_once 'Router.php';
 
 // Check Auth immediately BEFORE any HTML output
 $auth = null;
 if (!isset($_REQUEST['action'])) {
   $auth = requireAdminAuth();
 }
-
-// ==================== TABLE SETUP ====================
 
 // Ensure charters table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS charters (
@@ -59,7 +56,7 @@ $conn->exec("CREATE TABLE IF NOT EXISTS charters (
     created_at TIMESTAMP DEFAULT NOW()
 )");
 
-// Add columns if they don't exist
+// Add columns if they don't exist (for existing tables)
 if (!db_column_exists($conn, 'charters', 'departure_time')) {
   $conn->exec("ALTER TABLE charters ADD COLUMN departure_time TIME");
 }
@@ -75,6 +72,10 @@ if (!db_column_exists($conn, 'charters', 'layanan')) {
 if (!db_column_exists($conn, 'charters', 'bop_price')) {
   $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
 }
+
+
+// Sync existing charters with master routes data (MOVED BELOW TABLE CREATIONS)
+
 
 // Add segment_id, price, discount to bookings if not exists
 if (!db_column_exists($conn, 'bookings', 'segment_id')) {
@@ -104,11 +105,12 @@ $conn->exec("CREATE TABLE IF NOT EXISTS segments (
     harga NUMERIC(15,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW()
 )");
+// Add route_id column if it doesn't exist
 if (!db_column_exists($conn, 'segments', 'route_id')) {
   $conn->exec("ALTER TABLE segments ADD COLUMN route_id INT DEFAULT 0");
 }
 
-// Ensure trip_assignments table exists
+// Ensure trip_assignments table exists (links Trip -> Driver)
 $conn->exec("CREATE TABLE IF NOT EXISTS trip_assignments (
     id SERIAL PRIMARY KEY,
     rute VARCHAR(100),
@@ -163,6 +165,7 @@ $conn->exec("CREATE TABLE IF NOT EXISTS schedules (
     UNIQUE(rute, dow, jam)
 )");
 
+// Try to add unique constraint if missing
 try {
   @$conn->exec("ALTER TABLE schedules ADD CONSTRAINT unique_schedule_combo UNIQUE (rute, dow, jam)");
 } catch (PDOException $e) { /* ignore */ }
@@ -223,6 +226,8 @@ $conn->exec("CREATE TABLE IF NOT EXISTS luggages (
     created_at TIMESTAMP DEFAULT NOW()
 )");
 
+// SERIAL handles auto-increment in PostgreSQL, no ALTER needed
+
 // Ensure routes table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS routes (
     id SERIAL PRIMARY KEY,
@@ -232,6 +237,7 @@ $conn->exec("CREATE TABLE IF NOT EXISTS routes (
     created_at TIMESTAMP DEFAULT NOW()
 )");
 
+// Add columns if they don't exist
 if (!db_column_exists($conn, 'routes', 'origin')) {
   $conn->exec("ALTER TABLE routes ADD COLUMN origin VARCHAR(255)");
   $conn->exec("ALTER TABLE routes ADD COLUMN destination VARCHAR(255)");
@@ -251,16 +257,21 @@ $conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
     UNIQUE(origin, destination, duration)
 )");
 
-// Auto-sync charters
+// Ensure master_carter table exists (finished)
+
+/**
+ * AUTO-SYNC: Sync existing charters with master routes data
+ */
 try {
   $syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
               FROM master_carter r
               WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
                 AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
                 AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
+  // $conn->exec($syncSql * ""); // Wait, typo $syncSql * "" - This line was commented out in the instruction, so it's removed.
   $conn->exec($syncSql);
 } catch (PDOException $e) {
-  // Silent fail
+  // Silent fail if sync fails (e.g. data mismatch or table in flux)
 }
 
 // Ensure users table exists
@@ -271,7 +282,6 @@ $conn->exec("CREATE TABLE IF NOT EXISTS users (
     fullname VARCHAR(100),
     created_at TIMESTAMP DEFAULT NOW()
 )");
-
 // Create default admin if users table is empty
 $userCheck = $conn->query("SELECT id FROM users LIMIT 1");
 if ($userCheck->rowCount() === 0) {
@@ -279,23 +289,101 @@ if ($userCheck->rowCount() === 0) {
     $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
 }
 
-// ==================== HELPERS ====================
-
-function validDate($d) {
-  return preg_match('/^\d{4}-\d{2}-\d{2}$/', $d);
+/********** AUTH HANDLER (Legacy removed in favor of JWT) **********/
+if (isset($_GET['logout'])) {
+  header('Location: logout.php');
+  exit;
 }
 
-function validTime($t) {
+/********** EDIT-FETCH HANDLERS **********/
+$edit_route = null;
+if (isset($_GET['edit_route'])) {
+  $id = intval($_GET['edit_route']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM routes WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_route = $stmt->fetch();
+  }
+}
+$edit_carter = null;
+if (isset($_GET['edit_carter'])) {
+  $id = intval($_GET['edit_carter']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_carter = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_schedule'])) {
+  $id = intval($_GET['edit_schedule']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,rute,dow,jam,units,unit_id FROM schedules WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_schedule = $stmt->fetch();
+    if ($edit_schedule && isset($edit_schedule['jam']))
+      $edit_schedule['jam'] = substr($edit_schedule['jam'], 0, 5);
+  }
+}
+if (isset($_GET['edit_customer'])) {
+  $id = intval($_GET['edit_customer']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,name,phone,pickup_point,address FROM customers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_customer = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_user'])) {
+  $id = intval($_GET['edit_user']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,username,fullname FROM users WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_user = $stmt->fetch();
+  }
+}
+$edit_driver = null;
+if (isset($_GET['edit_driver'])) {
+  $id = intval($_GET['edit_driver']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,nama,phone,unit_id FROM drivers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_driver = $stmt->fetch();
+  }
+}
+$edit_segment = null;
+if (isset($_GET['edit_segment'])) {
+  $id = intval($_GET['edit_segment']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,harga FROM segments WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_segment = $stmt->fetch();
+  }
+}
+
+// Fetch All Segments for Dropdowns
+$globalSegments = [];
+$resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
+while ($rs = $resSeg->fetch()) {
+  $globalSegments[] = $rs;
+}
+
+/********** HELPERS **********/
+function validDate($d)
+{
+  return preg_match('/^\d{4}-\d{2}-\d{2}$/', $d);
+}
+function validTime($t)
+{
   return preg_match('/^\d{2}:\d{2}$/', $t);
 }
 
-function formatTimeWithLabel($timeStr) {
+function formatTimeWithLabel($timeStr)
+{
   if (!$timeStr || $timeStr === '00:00:00' || $timeStr === '-')
     return '-';
   $time = strtotime($timeStr);
   $hour = (int) date('H', $time);
   $ampm = date('h:i A', $time);
-  
+
   $label = 'Malam';
   if ($hour >= 5 && $hour < 11)
     $label = 'Pagi';
@@ -303,21 +391,24 @@ function formatTimeWithLabel($timeStr) {
     $label = 'Siang';
   elseif ($hour >= 15 && $hour < 19)
     $label = 'Sore';
-  
+
   return $ampm . ' (' . $label . ')';
 }
 
-function formatBookingId($id, $created_at) {
-  $year = date('y', strtotime($created_at));
+function formatBookingId($id, $created_at)
+{
+  $year = date('y', strtotime($created_at)); // 2 digits year
   return '#CBP' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-function formatCustomerId($id, $created_at) {
+function formatCustomerId($id, $created_at)
+{
   $year = date('y', strtotime($created_at));
   return 'CST' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-function buildQueryString($overrides = []) {
+function buildQueryString($overrides = [])
+{
   $qs = array_merge($_GET, $overrides);
   foreach ($qs as $k => $v)
     if ($v === null)
@@ -325,7 +416,8 @@ function buildQueryString($overrides = []) {
   return http_build_query($qs);
 }
 
-function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2) {
+function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2)
+{
   if ($total <= $per_page)
     return '';
   $total_pages = (int) ceil($total / $per_page);
@@ -351,7 +443,9 @@ function render_pagination_ajax($total, $per_page, $current_page, $param_prefix,
   return $html;
 }
 
-function getSetting($conn, $key, $default = null) {
+/* Settings helper */
+function getSetting($conn, $key, $default = null)
+{
   if (!$conn)
     return $default;
   try {
@@ -364,7 +458,8 @@ function getSetting($conn, $key, $default = null) {
   }
 }
 
-function updateSetting($conn, $key, $value) {
+function updateSetting($conn, $key, $value)
+{
   if (!$conn)
     return false;
   try {
@@ -375,183 +470,83 @@ function updateSetting($conn, $key, $value) {
   }
 }
 
-// ==================== ROUTER-BASED ACTION HANDLING ====================
-
+/********** AJAX HANDLERS (consolidated into admin.php to share sessions on Vercel) **********/
 if (isset($_REQUEST['action'])) {
-  header('Content-Type: application/json');
-  
   try {
-    // AUTH CHECK
+    // SECURITY: Use JWT Middleware (Decoded token contains user data)
     $auth = getAuthenticatedUser();
     if (!$auth) {
+      header('Content-Type: application/json');
       echo json_encode(['success' => false, 'error' => 'unauthorized']);
       exit;
     }
     
-    // Initialize Router
-    $router = new Router();
+    $action = $_REQUEST['action'];
     $ajax_dir = __DIR__ . '/admin/ajax/';
     
-    // ===== AJAX ROUTES - Include Files =====
-    // These routes include specific files that handle the logic
-    
-    $router->get('routesPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'routes.php';
-    });
-    
-    $router->get('bookingsPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'bookings.php';
-    });
-    
-    $router->get('customersPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'customers.php';
-    });
-    
-    $router->get('chartersPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'charters.php';
-    });
-    
-    $router->get('schedulesPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'schedules_page.php';
-    });
-    
-    $router->get('usersPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'users.php';
-    });
-    
-    $router->get('cancellationsPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'cancellations.php';
-    });
-    
-    $router->get('luggagePage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_page.php';
-    });
-    
-    $router->get('reportsPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'reports.php';
-    });
-    
-    $router->get('luggageServicesPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_services_page.php';
-    });
-    
-    $router->get('luggageServiceCRUD', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_service_crud.php';
-    });
-    
-    $router->get('getSchedules', function () use ($ajax_dir) {
-      include $ajax_dir . 'schedules.php';
-    });
-    
-    $router->get('getPassengers', function () use ($ajax_dir) {
-      include $ajax_dir . 'passengers.php';
-    });
-    
-    $router->get('assignDriver', function () use ($ajax_dir) {
-      include $ajax_dir . 'assign_driver.php';
-    });
-    
-    $router->get('getAvailableUnits', function () use ($ajax_dir) {
-      include $ajax_dir . 'get_available_units.php';
-    });
-    
-    $router->get('getScheduleSeats', function () use ($ajax_dir) {
-      include $ajax_dir . 'get_schedule_seats.php';
-    });
-    
-    $router->get('exportReportCsv', function () use ($ajax_dir) {
-      include $ajax_dir . 'export_report_csv.php';
-    });
-    
-    $router->get('changePassword', function () use ($ajax_dir) {
-      include $ajax_dir . 'change_password.php';
-    });
-    
-    // Charter CRUD actions
-    $router->any('delete_charter', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->any('get_charter', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->any('update_charter', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->any('toggle_bop', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->get('get_units', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->get('get_charter_routes', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    $router->get('get_drivers', function () use ($ajax_dir) {
-      include $ajax_dir . 'charter_crud.php';
-    });
-    
-    // Luggage actions
-    $router->post('markLuggagePaid', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_actions.php';
-    });
-    
-    $router->post('cancelLuggage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_actions.php';
-    });
-    
-    $router->post('inputLuggage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_actions.php';
-    });
-    
-    // Dispatch request
-    $router->dispatch();
-    
+    switch ($action) {
+      case 'routesPage': include $ajax_dir . 'routes.php'; break;
+      case 'bookingsPage': include $ajax_dir . 'bookings.php'; break;
+      case 'customersPage': include $ajax_dir . 'customers.php'; break;
+      case 'chartersPage': include $ajax_dir . 'charters.php'; break;
+      case 'schedulesPage': include $ajax_dir . 'schedules_page.php'; break;
+      case 'usersPage': include $ajax_dir . 'users.php'; break;
+      case 'cancellationsPage': include $ajax_dir . 'cancellations.php'; break;
+      case 'luggagePage': include $ajax_dir . 'luggage_page.php'; break;
+      case 'reportsPage': include $ajax_dir . 'reports.php'; break;
+      case 'luggageServicesPage': include $ajax_dir . 'luggage_services_page.php'; break;
+      case 'luggageServiceCRUD': include $ajax_dir . 'luggage_service_crud.php'; break;
+      case 'getSchedules': include $ajax_dir . 'schedules.php'; break;
+      case 'getPassengers': include $ajax_dir . 'passengers.php'; break;
+      case 'assignDriver': include $ajax_dir . 'assign_driver.php'; break;
+      case 'getAvailableUnits': include $ajax_dir . 'get_available_units.php'; break;
+      case 'getScheduleSeats': include $ajax_dir . 'get_schedule_seats.php'; break;
+      case 'exportReportCsv': include $ajax_dir . 'export_report_csv.php'; break;
+      case 'changePassword': include $ajax_dir . 'change_password.php'; break;
+      case 'delete_charter':
+      case 'get_charter':
+      case 'update_charter':
+      case 'toggle_bop':
+      case 'get_units':
+      case 'get_charter_routes':
+      case 'get_drivers':
+        include $ajax_dir . 'charter_crud.php';
+        break;
+      case 'markLuggagePaid':
+      case 'cancelLuggage':
+      case 'inputLuggage':
+        include $ajax_dir . 'luggage_actions.php';
+        break;
+      default:
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'unknown_action_consolidated: ' . $action]);
+        exit;
+    }
+    exit;
   } catch (Error $e) {
     if (ob_get_length()) ob_end_clean();
+    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'error' => 'PHP_ERROR: ' . $e->getMessage()]);
     exit;
   } catch (Exception $ex) {
     if (ob_get_length()) ob_end_clean();
+    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'error' => 'EXCEPTION: ' . $ex->getMessage()]);
     exit;
   }
 }
 
-/********** AUTH HANDLER **********/
-if (isset($_GET['logout'])) {
-  header('Location: logout.php');
-  exit;
-}
+/********** NON-AJAX ACTIONS (CRUD, IMPORT, CANCEL) **********/
 
-/********** EDIT-FETCH HANDLERS (dari halaman form) **********/
-// Code di sini dipangil ketika non-AJAX page loads
-// ... (preserved dari original)
+/* ROUTES */
+if (isset($_POST['save_route'])) {
+  $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
+  $type = isset($_POST['route_type']) && $_POST['route_type'] === 'carter' ? 'carter' : 'reguler';
 
-// Fetch All Segments for Dropdowns
-$globalSegments = [];
-$resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
-while ($rs = $resSeg->fetch()) {
-  $globalSegments[] = $rs;
-}
-
-// ========================================
-// NON-AJAX POST HANDLERS (CRUD, IMPORT, CANCEL)
-// ========================================
-// 
-// NOTE: Handlers di bawah ini masih menggunakan $_POST checks
-// Jika ingin full routing, bisa dimigrasikan ke POST routes juga
-// Untuk sekarang, kami preserve original logic untuk stability
-
-// (Include sisa dari admin.php.backup untuk handlers non-AJAX)
-// Baca dari admin.php.backup dari baris 550 ke akhir untuk mencakup semua POST handlers
-
-?>
+  $name = trim($_POST['route_name'] ?? '');
+  $origin = trim($_POST['origin'] ?? '');
+  $destination = trim($_POST['destination'] ?? '');
+  $duration = trim($_POST['duration'] ?? '');
   $rental = floatval($_POST['rental_price'] ?? 0);
   $bop = floatval($_POST['bop_price'] ?? 0);
   $notes = trim($_POST['notes'] ?? '');

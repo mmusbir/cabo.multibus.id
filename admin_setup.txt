@@ -1,0 +1,550 @@
+﻿<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// admin.php â€” modified for local debug (auto-login) + error reporting
+// IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
+
+// Error reporting - disable in production
+/* 
+if (getenv('APP_ENV') === 'production') {
+  ini_set('display_errors', 0);
+  ini_set('display_startup_errors', 0);
+  error_reporting(0);
+} else {
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+}
+*/
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+if (session_status() === PHP_SESSION_NONE) {
+  // Secure session settings
+  ini_set('session.cookie_httponly', 1);
+  if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    ini_set('session.cookie_secure', 1);
+  }
+  session_start();
+}
+
+require_once 'middleware/auth.php';
+require_once 'config/db.php';
+require_once 'config/auth_config.php';
+
+// Check Auth immediately BEFORE any HTML output
+$auth = null;
+if (!isset($_REQUEST['action'])) {
+  $auth = requireAdminAuth();
+}
+
+// Ensure charters table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS charters (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    departure_time TIME,
+    pickup_point VARCHAR(255),
+    drop_point VARCHAR(255),
+    unit_id INT,
+    driver_name VARCHAR(100),
+    price NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Add columns if they don't exist (for existing tables)
+if (!db_column_exists($conn, 'charters', 'departure_time')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN departure_time TIME");
+}
+if (!db_column_exists($conn, 'charters', 'company_name')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN company_name VARCHAR(255)");
+}
+if (!db_column_exists($conn, 'charters', 'bop_status')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN bop_status VARCHAR(20) DEFAULT 'pending'");
+}
+if (!db_column_exists($conn, 'charters', 'layanan')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN layanan VARCHAR(255) DEFAULT 'Regular'");
+}
+if (!db_column_exists($conn, 'charters', 'bop_price')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
+}
+
+
+// Sync existing charters with master routes data (MOVED BELOW TABLE CREATIONS)
+
+
+// Add segment_id, price, discount to bookings if not exists
+if (!db_column_exists($conn, 'bookings', 'segment_id')) {
+  $conn->exec("ALTER TABLE bookings ADD COLUMN segment_id INT");
+  $conn->exec("ALTER TABLE bookings ADD COLUMN price NUMERIC(15,2) DEFAULT 0");
+  $conn->exec("ALTER TABLE bookings ADD COLUMN discount NUMERIC(15,2) DEFAULT 0");
+}
+if (!db_column_exists($conn, 'segments', 'origin')) {
+  $conn->exec("ALTER TABLE segments ADD COLUMN origin VARCHAR(255)");
+  $conn->exec("ALTER TABLE segments ADD COLUMN destination VARCHAR(255)");
+}
+
+// Ensure drivers table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS drivers (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    phone VARCHAR(50),
+    unit_id INT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure segments table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS segments (
+    id SERIAL PRIMARY KEY,
+    route_id INT DEFAULT 0,
+    rute VARCHAR(100) NOT NULL,
+    harga NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+// Add route_id column if it doesn't exist
+if (!db_column_exists($conn, 'segments', 'route_id')) {
+  $conn->exec("ALTER TABLE segments ADD COLUMN route_id INT DEFAULT 0");
+}
+
+// Ensure trip_assignments table exists (links Trip -> Driver)
+$conn->exec("CREATE TABLE IF NOT EXISTS trip_assignments (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100),
+    tanggal DATE,
+    jam TIME,
+    unit INT,
+    driver_id INT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE (rute, tanggal, jam, unit)
+)");
+
+// Ensure bookings table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS bookings (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100) NOT NULL,
+    tanggal DATE NOT NULL,
+    jam TIME NOT NULL,
+    unit INT DEFAULT 1,
+    seat VARCHAR(20) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    pickup_point VARCHAR(255),
+    pembayaran VARCHAR(50) DEFAULT 'Belum Lunas',
+    status VARCHAR(20) DEFAULT 'active',
+    segment_id INT DEFAULT 0,
+    price NUMERIC(15,2) DEFAULT 0,
+    discount NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure customers table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL UNIQUE,
+    address TEXT,
+    pickup_point VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure schedules table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS schedules (
+    id SERIAL PRIMARY KEY,
+    rute VARCHAR(100) NOT NULL,
+    dow INT NOT NULL,
+    jam TIME NOT NULL,
+    units INT DEFAULT 1,
+    seats INT DEFAULT 8,
+    unit_id INT,
+    layout TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(rute, dow, jam)
+)");
+
+// Try to add unique constraint if missing
+try {
+  @$conn->exec("ALTER TABLE schedules ADD CONSTRAINT unique_schedule_combo UNIQUE (rute, dow, jam)");
+} catch (PDOException $e) { /* ignore */ }
+
+// Ensure units table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS units (
+    id SERIAL PRIMARY KEY,
+    nopol VARCHAR(50) NOT NULL UNIQUE,
+    merek VARCHAR(100),
+    type VARCHAR(100),
+    category VARCHAR(100) DEFAULT 'Big Bus',
+    tahun INT DEFAULT 0,
+    kapasitas INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT 'Aktif',
+    layout TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure settings table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS settings (
+    key VARCHAR(100) PRIMARY KEY,
+    value TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure cancellations table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS cancellations (
+    id SERIAL PRIMARY KEY,
+    booking_id INT NOT NULL,
+    admin_user VARCHAR(100),
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure luggage_services table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS luggage_services (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price NUMERIC(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Ensure luggages table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS luggages (
+    id SERIAL PRIMARY KEY,
+    sender_name VARCHAR(255) NOT NULL,
+    sender_phone VARCHAR(50) NOT NULL,
+    sender_address TEXT,
+    receiver_name VARCHAR(255) NOT NULL,
+    receiver_phone VARCHAR(50) NOT NULL,
+    receiver_address TEXT,
+    service_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    notes TEXT,
+    price NUMERIC(15,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    payment_status VARCHAR(20) DEFAULT 'Belum Lunas',
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// SERIAL handles auto-increment in PostgreSQL, no ALTER needed
+
+// Ensure routes table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS routes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    origin VARCHAR(255),
+    destination VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+// Add columns if they don't exist
+if (!db_column_exists($conn, 'routes', 'origin')) {
+  $conn->exec("ALTER TABLE routes ADD COLUMN origin VARCHAR(255)");
+  $conn->exec("ALTER TABLE routes ADD COLUMN destination VARCHAR(255)");
+}
+
+// Ensure master_carter table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    origin VARCHAR(255),
+    destination VARCHAR(255),
+    duration VARCHAR(50),
+    rental_price NUMERIC(15,2) DEFAULT 0,
+    bop_price NUMERIC(15,2) DEFAULT 0,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(origin, destination, duration)
+)");
+
+// Ensure master_carter table exists (finished)
+
+/**
+ * AUTO-SYNC: Sync existing charters with master routes data
+ */
+try {
+  $syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
+              FROM master_carter r
+              WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
+                AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
+                AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
+  // $conn->exec($syncSql * ""); // Wait, typo $syncSql * "" - This line was commented out in the instruction, so it's removed.
+  $conn->exec($syncSql);
+} catch (PDOException $e) {
+  // Silent fail if sync fails (e.g. data mismatch or table in flux)
+}
+
+// Ensure users table exists
+$conn->exec("CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    fullname VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+// Create default admin if users table is empty
+$userCheck = $conn->query("SELECT id FROM users LIMIT 1");
+if ($userCheck->rowCount() === 0) {
+    $default_hash = password_hash('admin', PASSWORD_BCRYPT);
+    $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
+}
+
+/********** AUTH HANDLER (Legacy removed in favor of JWT) **********/
+if (isset($_GET['logout'])) {
+  header('Location: logout.php');
+  exit;
+}
+
+/********** EDIT-FETCH HANDLERS **********/
+$edit_route = null;
+if (isset($_GET['edit_route'])) {
+  $id = intval($_GET['edit_route']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM routes WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_route = $stmt->fetch();
+  }
+}
+$edit_carter = null;
+if (isset($_GET['edit_carter'])) {
+  $id = intval($_GET['edit_carter']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_carter = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_schedule'])) {
+  $id = intval($_GET['edit_schedule']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,rute,dow,jam,units,unit_id FROM schedules WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_schedule = $stmt->fetch();
+    if ($edit_schedule && isset($edit_schedule['jam']))
+      $edit_schedule['jam'] = substr($edit_schedule['jam'], 0, 5);
+  }
+}
+if (isset($_GET['edit_customer'])) {
+  $id = intval($_GET['edit_customer']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,name,phone,pickup_point,address FROM customers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_customer = $stmt->fetch();
+  }
+}
+if (isset($_GET['edit_user'])) {
+  $id = intval($_GET['edit_user']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,username,fullname FROM users WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_user = $stmt->fetch();
+  }
+}
+$edit_driver = null;
+if (isset($_GET['edit_driver'])) {
+  $id = intval($_GET['edit_driver']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,nama,phone,unit_id FROM drivers WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_driver = $stmt->fetch();
+  }
+}
+$edit_segment = null;
+if (isset($_GET['edit_segment'])) {
+  $id = intval($_GET['edit_segment']);
+  if ($id > 0) {
+    $stmt = $conn->prepare("SELECT id,route_id,rute,origin,destination,harga FROM segments WHERE id=? LIMIT 1");
+    $stmt->execute([$id]);
+    $edit_segment = $stmt->fetch();
+  }
+}
+
+// Fetch All Segments for Dropdowns
+$globalSegments = [];
+$resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
+while ($rs = $resSeg->fetch()) {
+  $globalSegments[] = $rs;
+}
+
+/********** HELPERS **********/
+function validDate($d)
+{
+  return preg_match('/^\d{4}-\d{2}-\d{2}$/', $d);
+}
+function validTime($t)
+{
+  return preg_match('/^\d{2}:\d{2}$/', $t);
+}
+
+function formatTimeWithLabel($timeStr)
+{
+  if (!$timeStr || $timeStr === '00:00:00' || $timeStr === '-')
+    return '-';
+  $time = strtotime($timeStr);
+  $hour = (int) date('H', $time);
+  $ampm = date('h:i A', $time);
+
+  $label = 'Malam';
+  if ($hour >= 5 && $hour < 11)
+    $label = 'Pagi';
+  elseif ($hour >= 11 && $hour < 15)
+    $label = 'Siang';
+  elseif ($hour >= 15 && $hour < 19)
+    $label = 'Sore';
+
+  return $ampm . ' (' . $label . ')';
+}
+
+function formatBookingId($id, $created_at)
+{
+  $year = date('y', strtotime($created_at)); // 2 digits year
+  return '#CBP' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+function formatCustomerId($id, $created_at)
+{
+  $year = date('y', strtotime($created_at));
+  return 'CST' . $year . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
+function buildQueryString($overrides = [])
+{
+  $qs = array_merge($_GET, $overrides);
+  foreach ($qs as $k => $v)
+    if ($v === null)
+      unset($qs[$k]);
+  return http_build_query($qs);
+}
+
+function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2)
+{
+  if ($total <= $per_page)
+    return '';
+  $total_pages = (int) ceil($total / $per_page);
+  $html = '<div style="display:flex;align-items:center;gap:8px;margin-top:8px;" class="pagination-container">';
+  $prev = max(1, $current_page - 1);
+  $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $prev]) . '" data-target="' . $param_prefix . '" data-page="' . $prev . '">Prev</a>';
+  $start = max(1, $current_page - $around);
+  $end = min($total_pages, $current_page + $around);
+  if ($start > 1)
+    $html .= '<span class="small dots">...</span>';
+  for ($p = $start; $p <= $end; $p++) {
+    if ($p == $current_page)
+      $html .= '<span class="badge active">' . $p . '</span>';
+    else
+      $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $p]) . '" data-target="' . $param_prefix . '" data-page="' . $p . '">' . $p . '</a>';
+  }
+  if ($end < $total_pages)
+    $html .= '<span class="small dots">...</span>';
+  $next = min($total_pages, $current_page + 1);
+  $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $next]) . '" data-target="' . $param_prefix . '" data-page="' . $next . '">Next</a>';
+  $html .= '<div class="small" style="margin-left:12px">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
+  $html .= '</div>';
+  return $html;
+}
+
+/* Settings helper */
+function getSetting($conn, $key, $default = null)
+{
+  if (!$conn)
+    return $default;
+  try {
+    $stmt = $conn->prepare("SELECT value FROM settings WHERE key=? LIMIT 1");
+    $stmt->execute([$key]);
+    $row = $stmt->fetch();
+    return $row ? $row['value'] : $default;
+  } catch (PDOException $e) {
+    return $default;
+  }
+}
+
+function updateSetting($conn, $key, $value)
+{
+  if (!$conn)
+    return false;
+  try {
+    $stmt = $conn->prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value");
+    return $stmt->execute([$key, $value]);
+  } catch (PDOException $e) {
+    return false;
+  }
+}
+
+/********** AJAX HANDLERS (consolidated into admin.php to share sessions on Vercel) **********/
+if (isset($_REQUEST['action'])) {
+  try {
+    // SECURITY: Use JWT Middleware (Decoded token contains user data)
+    $auth = getAuthenticatedUser();
+    if (!$auth) {
+      header('Content-Type: application/json');
+      echo json_encode(['success' => false, 'error' => 'unauthorized']);
+      exit;
+    }
+    
+    $action = $_REQUEST['action'];
+    $ajax_dir = __DIR__ . '/admin/ajax/';
+    
+    switch ($action) {
+      case 'routesPage': include $ajax_dir . 'routes.php'; break;
+      case 'bookingsPage': include $ajax_dir . 'bookings.php'; break;
+      case 'customersPage': include $ajax_dir . 'customers.php'; break;
+      case 'chartersPage': include $ajax_dir . 'charters.php'; break;
+      case 'schedulesPage': include $ajax_dir . 'schedules_page.php'; break;
+      case 'usersPage': include $ajax_dir . 'users.php'; break;
+      case 'cancellationsPage': include $ajax_dir . 'cancellations.php'; break;
+      case 'luggagePage': include $ajax_dir . 'luggage_page.php'; break;
+      case 'reportsPage': include $ajax_dir . 'reports.php'; break;
+      case 'luggageServicesPage': include $ajax_dir . 'luggage_services_page.php'; break;
+      case 'luggageServiceCRUD': include $ajax_dir . 'luggage_service_crud.php'; break;
+      case 'getSchedules': include $ajax_dir . 'schedules.php'; break;
+      case 'getPassengers': include $ajax_dir . 'passengers.php'; break;
+      case 'assignDriver': include $ajax_dir . 'assign_driver.php'; break;
+      case 'getAvailableUnits': include $ajax_dir . 'get_available_units.php'; break;
+      case 'getScheduleSeats': include $ajax_dir . 'get_schedule_seats.php'; break;
+      case 'exportReportCsv': include $ajax_dir . 'export_report_csv.php'; break;
+      case 'changePassword': include $ajax_dir . 'change_password.php'; break;
+      case 'delete_charter':
+      case 'get_charter':
+      case 'update_charter':
+      case 'toggle_bop':
+      case 'get_units':
+      case 'get_charter_routes':
+      case 'get_drivers':
+        include $ajax_dir . 'charter_crud.php';
+        break;
+      case 'markLuggagePaid':
+      case 'cancelLuggage':
+      case 'inputLuggage':
+        include $ajax_dir . 'luggage_actions.php';
+        break;
+      default:
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'unknown_action_consolidated: ' . $action]);
+        exit;
+    }
+    exit;
+  } catch (Error $e) {
+    if (ob_get_length()) ob_end_clean();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'PHP_ERROR: ' . $e->getMessage()]);
+    exit;
+  } catch (Exception $ex) {
+    if (ob_get_length()) ob_end_clean();
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'EXCEPTION: ' . $ex->getMessage()]);
+    exit;
+  }
+}
+
+/********** NON-AJAX ACTIONS (CRUD, IMPORT, CANCEL) **********/
+
+/* ROUTES */
+if (isset($_POST['save_route'])) {
+  $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
+  $type = isset($_POST['route_type']) && $_POST['route_type'] === 'carter' ? 'carter' : 'reguler';
+
+  $name = trim($_POST['route_name'] ?? '');
+  $origin = trim($_POST['origin'] ?? '');
+  $destination = trim($_POST['destination'] ?? '');
+  $duration = trim($_POST['duration'] ?? '');
+  $rental = floatval($_POST['rental_price'] ?? 0);
