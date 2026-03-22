@@ -1459,6 +1459,7 @@
 
     #card-seats {
       background: var(--glass-bg);
+      position: relative;
     }
 
     .msg-display {
@@ -1477,6 +1478,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 2;
       flex: 0 0 auto;
       width: auto !important;
       height: auto !important;
@@ -1563,6 +1568,8 @@
       }
 
       .refresh-icon-action {
+        top: 16px;
+        right: 16px;
         margin-top: 0;
         flex-shrink: 0;
       }
@@ -1626,6 +1633,8 @@
       }
 
       .refresh-icon-action {
+        top: 14px;
+        right: 14px;
         margin-top: 0;
       }
 
@@ -1878,19 +1887,19 @@
 
       <!-- Seats card -->
       <div class="card" id="card-seats">
+        <span id="refresh" class="refresh-icon-action" title="Refresh layout" onclick="refreshSeats()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path
+              d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15">
+            </path>
+          </svg>
+        </span>
         <div class="flex-between-center">
           <div class="small" id="seat-counters">Kosong: <strong id="count-empty">-</strong> · Terisi: <strong
               id="count-booked">-</strong> · Dipilih: <strong id="count-selected">0</strong></div>
-          <span id="refresh" class="refresh-icon-action" title="Refresh layout" onclick="refreshSeats()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path
-                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15">
-              </path>
-            </svg>
-          </span>
         </div>
 
         <div class="layout" id="layout"></div>
