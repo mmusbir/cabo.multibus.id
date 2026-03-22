@@ -1,8 +1,16 @@
 <?php
 require_once __DIR__ . '/config/env.php';
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+$isActionRequest = isset($_REQUEST['action']);
+if ($isActionRequest) {
+  // Keep AJAX responses JSON-clean even if PHP emits warnings/notices.
+  ini_set('display_errors', 0);
+  ini_set('display_startup_errors', 0);
+  ini_set('html_errors', 0);
+} else {
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+}
 error_reporting(E_ALL);
 // admin.php — Router-based ACTION handling (v2.0)
 // IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
@@ -19,9 +27,11 @@ if (getenv('APP_ENV') === 'production') {
   error_reporting(E_ALL);
 }
 */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+if (!$isActionRequest) {
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+}
 
 if (session_status() === PHP_SESSION_NONE) {
   // Secure session settings
@@ -145,8 +155,14 @@ function updateSetting($conn, $key, $value) {
 
 // ==================== ROUTER-BASED ACTION HANDLING ====================
 
-if (isset($_REQUEST['action'])) {
+if ($isActionRequest) {
   header('Content-Type: application/json');
+  set_error_handler(function ($severity, $message, $file, $line) {
+    if (!(error_reporting() & $severity)) {
+      return false;
+    }
+    throw new ErrorException($message, 0, $severity, $file, $line);
+  });
   
   try {
     // AUTH CHECK
@@ -288,6 +304,8 @@ if (isset($_REQUEST['action'])) {
     if (ob_get_length()) ob_end_clean();
     echo json_encode(['success' => false, 'error' => 'EXCEPTION: ' . $ex->getMessage()]);
     exit;
+  } finally {
+    restore_error_handler();
   }
 }
 
@@ -1264,6 +1282,36 @@ if (!isset($_REQUEST['action'])):
       });
       // More menu (desktop) moved to includes/navbar.php
     });
+    async function parseAdminApiResponse(res) {
+      const raw = await res.text();
+      const trimmed = raw.trim();
+
+      try {
+        return JSON.parse(trimmed);
+      } catch (_) {
+        const jsonStart = Math.max(
+          trimmed.indexOf('{') === -1 ? Number.MAX_SAFE_INTEGER : trimmed.indexOf('{'),
+          0
+        );
+        const arrayStart = Math.max(
+          trimmed.indexOf('[') === -1 ? Number.MAX_SAFE_INTEGER : trimmed.indexOf('['),
+          0
+        );
+        const start = Math.min(jsonStart, arrayStart);
+
+        if (Number.isFinite(start) && start !== Number.MAX_SAFE_INTEGER) {
+          try {
+            return JSON.parse(trimmed.slice(start));
+          } catch (_) {
+            // Fall through to detailed error below.
+          }
+        }
+
+        const excerpt = trimmed.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220);
+        throw new Error(excerpt || 'Respon server tidak valid.');
+      }
+    }
+    window.parseAdminApiResponse = parseAdminApiResponse;
     // AJAX list loader
     async function ajaxListLoad(target, params) {
       const spinnerWrap = document.getElementById(target + '_spinner_wrap'); if (spinnerWrap) spinnerWrap.style.display = 'flex';
@@ -1281,7 +1329,7 @@ if (!isset($_REQUEST['action'])):
 
       try {
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
-        const js = await res.json();
+        const js = await parseAdminApiResponse(res);
         if (!js.success) { 
           if (tbody) tbody.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Unknown error') + '</div>'; 
           return; 
@@ -1592,7 +1640,7 @@ if (!isset($_REQUEST['action'])):
         url.searchParams.set('rute', rute);
         url.searchParams.set('tanggal', tanggal);
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
-        const js = await res.json();
+        const js = await parseAdminApiResponse(res);
         
         if (!js.success) {
           console.error('API Error:', js);
@@ -1655,7 +1703,7 @@ if (!isset($_REQUEST['action'])):
           url.searchParams.set('jam', jam);
           url.searchParams.set('unit', unit);
           const res = await fetch(url.toString(), { credentials: 'same-origin' });
-          const js = await res.json();
+          const js = await parseAdminApiResponse(res);
           if (js.success && js.html) {
             list.innerHTML = js.html;
           } else {

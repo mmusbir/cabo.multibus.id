@@ -308,7 +308,9 @@
         url.searchParams.set('unit', meta.unit);
 
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
-        const js = await res.json();
+        const js = typeof window.parseAdminApiResponse === 'function'
+          ? await window.parseAdminApiResponse(res)
+          : await res.json();
         if (!js.success || !js.html) {
           customAlert('Tidak ada data booking untuk jadwal ini.');
           return;
