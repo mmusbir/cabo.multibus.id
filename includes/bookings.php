@@ -4,7 +4,7 @@
     <div>
       <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
       <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
-      <p class="kinetic-command-subtitle" id="bookingPageSubtitle">Real-time schedule monitoring and dispatch control untuk booking reguler, carter, dan bagasi.</p>
+      <p class="kinetic-command-subtitle" id="bookingPageSubtitle">Real-time schedule monitoring and dispatch control untuk operasional keberangkatan, carter, dan bagasi.</p>
     </div>
     <div class="kinetic-command-metrics">
       <div class="kinetic-metric-card kinetic-metric-primary">
@@ -60,13 +60,9 @@
 
   <div class="kinetic-command-summary-bar">
     <div class="kinetic-command-summary-copy">
-      <span id="bookingSummaryStatus" class="kinetic-status-chip" data-state="ready">
-        <span class="kinetic-status-dot"></span>
-        READY
-      </span>
       <div>
-        <div id="bookingSummaryHeadline" class="kinetic-summary-headline">Booking Reguler</div>
-        <div id="bookings_info" class="small kinetic-summary-text">Memuat data booking reguler hari ini...</div>
+        <div id="bookingSummaryHeadline" class="kinetic-summary-headline">Data Booking</div>
+        <div id="bookings_info" class="small kinetic-summary-text">Memuat data keberangkatan hari ini...</div>
       </div>
     </div>
     <div class="kinetic-command-summary-side">
@@ -163,15 +159,15 @@
       return {
         label: 'Reguler',
         totalLabel: 'Trip Schedules',
-        state: 'ready',
-        badge: 'READY',
-        headline: 'Trip Booking Reguler',
+        state: 'neutral',
+        badge: '',
+        headline: 'Data Booking',
         info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail booking.',
         tag: 'Manifest Queue',
         context: 'Live',
         pageKicker: 'Kinetic Command',
         pageTitle: 'Data Keberangkatan',
-        pageSubtitle: 'Real-time schedule monitoring and dispatch control untuk booking reguler, carter, dan bagasi.',
+        pageSubtitle: 'Real-time schedule monitoring and dispatch control untuk operasional keberangkatan, carter, dan bagasi.',
         searchPlaceholder: 'Cari rute, driver, penumpang, atau jam...',
         mobileTitle: 'Jadwal Mendatang',
       };
@@ -184,7 +180,6 @@
       const metricContext = document.getElementById('bookingMetricContext');
       const metricTotal = document.getElementById('bookingMetricTotal');
       const metricLabel = document.getElementById('bookingMetricLabel');
-      const summaryStatus = document.getElementById('bookingSummaryStatus');
       const summaryHeadline = document.getElementById('bookingSummaryHeadline');
       const summaryTag = document.getElementById('bookingSummaryTag');
       const summaryMeta = document.getElementById('bookingSummaryMeta');
@@ -216,10 +211,6 @@
       }
       if (bookingsSection) bookingsSection.setAttribute('data-active-mode', mode);
       if (charterFilterRow) charterFilterRow.style.display = mode === 'charters' ? 'flex' : 'none';
-      if (summaryStatus) {
-        summaryStatus.setAttribute('data-state', meta.state);
-        summaryStatus.innerHTML = '<span class="kinetic-status-dot"></span>' + meta.badge;
-      }
     }
 
     window.updateBookingCommandSummary = function (mode, total) {

@@ -4333,7 +4333,8 @@ body.admin-bootstrap-page .kinetic-sidebar-brand {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-toggle,
-body.admin-bootstrap-page .kinetic-sidebar-reveal {
+body.admin-bootstrap-page .kinetic-sidebar-reveal,
+body.admin-bootstrap-page .kinetic-sidebar-floating-toggle {
     width: 2.7rem;
     height: 2.7rem;
     border: 1px solid rgba(88, 66, 55, 0.18);
@@ -4347,7 +4348,8 @@ body.admin-bootstrap-page .kinetic-sidebar-reveal {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-toggle:hover,
-body.admin-bootstrap-page .kinetic-sidebar-reveal:hover {
+body.admin-bootstrap-page .kinetic-sidebar-reveal:hover,
+body.admin-bootstrap-page .kinetic-sidebar-floating-toggle:hover {
     background: #1e1f26;
     color: #f97316;
     border-color: rgba(249, 115, 22, 0.28);
@@ -4360,6 +4362,21 @@ body.admin-bootstrap-page .kinetic-sidebar-reveal {
     z-index: 1035;
     display: none;
     box-shadow: 0 14px 30px rgba(12, 14, 20, 0.35);
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-floating-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 16.75rem;
+    z-index: 1036;
+    box-shadow: 0 14px 30px rgba(12, 14, 20, 0.35);
+}
+
+body.admin-bootstrap-page .kinetic-desktop-account {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1036;
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-scroll {
@@ -4517,6 +4534,10 @@ body.admin-bootstrap-page .kinetic-sidebar-links-footer .logout-link:hover {
 
     body.admin-bootstrap-page.sidebar-hidden .kinetic-sidebar-reveal {
         display: inline-flex !important;
+    }
+
+    body.admin-bootstrap-page.sidebar-hidden .kinetic-sidebar-floating-toggle {
+        left: 1rem;
     }
 
     body.admin-bootstrap-page.sidebar-hidden .admin-bootstrap-container {
@@ -5883,7 +5904,8 @@ body.admin-bootstrap-page .kinetic-brand-text {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-toggle,
-body.admin-bootstrap-page .kinetic-sidebar-reveal {
+body.admin-bootstrap-page .kinetic-sidebar-reveal,
+body.admin-bootstrap-page .kinetic-sidebar-floating-toggle {
     width: 2.4rem;
     height: 2.4rem;
     border-radius: 0.75rem;

@@ -10,9 +10,6 @@
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
         <span class="kinetic-brand-text">KINETIC COMMAND</span>
       </a>
-      <button class="kinetic-sidebar-toggle" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
-        <span class="material-symbols-outlined">left_panel_close</span>
-      </button>
     </div>
 
     <div class="kinetic-sidebar-scroll">
@@ -40,24 +37,34 @@
       </div>
     </div>
 
-    <div class="kinetic-sidebar-footer">
-      <div class="kinetic-sidebar-profile">
+  </aside>
+
+  <button class="kinetic-sidebar-floating-toggle d-none d-lg-inline-flex" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
+    <span class="material-symbols-outlined">left_panel_close</span>
+  </button>
+
+  <div class="kinetic-desktop-account d-none d-lg-flex">
+    <div class="profile-dropdown kinetic-profile-dropdown">
+      <button class="profile-btn kinetic-profile-btn" id="desktopProfileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil desktop">
         <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
-        <div>
+      </button>
+      <div class="profile-menu kinetic-profile-menu" id="desktopProfileMenuDropdown">
+        <div class="kinetic-profile-meta">
           <div class="kinetic-profile-name"><?php echo htmlspecialchars($userLabel); ?></div>
           <div class="kinetic-profile-role">Admin Panel</div>
         </div>
-      </div>
-      <div class="kinetic-sidebar-links kinetic-sidebar-links-footer">
-        <a href="javascript:void(0)" data-open-change-password><span class="material-symbols-outlined">lock</span>Ganti Password</a>
-        <a href="logout.php" class="logout-link"><span class="material-symbols-outlined">logout</span>Logout</a>
+        <a href="javascript:void(0)" data-open-change-password>
+          <span class="material-symbols-outlined">lock</span>
+          Ganti Password
+        </a>
+        <div class="menu-divider"></div>
+        <a href="logout.php" class="logout-link">
+          <span class="material-symbols-outlined">logout</span>
+          Logout
+        </a>
       </div>
     </div>
-  </aside>
-
-  <button class="kinetic-sidebar-reveal d-none d-lg-inline-flex" id="desktopSidebarReveal" type="button" aria-label="Tampilkan sidebar">
-    <span class="material-symbols-outlined">menu_open</span>
-  </button>
+  </div>
 
   <div class="topbar kinetic-topbar kinetic-mobile-topbar d-lg-none">
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
@@ -172,10 +179,11 @@
     const moreBtn = document.getElementById('moreMenuBtn');
     const profileBtn = document.getElementById('profileMenuBtn');
     const profileDropdown = document.getElementById('profileMenuDropdown');
+    const desktopProfileBtn = document.getElementById('desktopProfileMenuBtn');
+    const desktopProfileDropdown = document.getElementById('desktopProfileMenuDropdown');
     const bottomMoreModal = document.getElementById('bottomMoreModal');
     const closeMoreModal = document.getElementById('closeMoreModal');
     const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
-    const desktopSidebarReveal = document.getElementById('desktopSidebarReveal');
     const sidebarStorageKey = 'adminSidebarHidden';
 
     function syncDesktopSidebarButton() {
@@ -187,9 +195,6 @@
       }
       if (icon) {
         icon.textContent = isHidden ? 'left_panel_open' : 'left_panel_close';
-      }
-      if (desktopSidebarReveal) {
-        desktopSidebarReveal.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
       }
     }
 
@@ -232,6 +237,8 @@
     function closeProfileMenu() {
       if (profileDropdown) profileDropdown.style.display = 'none';
       setDropdownState(profileBtn, false);
+      if (desktopProfileDropdown) desktopProfileDropdown.style.display = 'none';
+      setDropdownState(desktopProfileBtn, false);
     }
 
     function openMobileMore() {
@@ -277,12 +284,6 @@
       });
     }
 
-    if (desktopSidebarReveal) {
-      desktopSidebarReveal.addEventListener('click', function () {
-        setDesktopSidebarHidden(false);
-      });
-    }
-
     if (moreBtn) {
       moreBtn.addEventListener('click', function (e) {
         e.preventDefault();
@@ -304,8 +305,23 @@
       });
     }
 
+    if (desktopProfileBtn && desktopProfileDropdown) {
+      desktopProfileBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = desktopProfileDropdown.style.display === 'block';
+        closeProfileMenu();
+        if (!isOpen) {
+          desktopProfileDropdown.style.display = 'block';
+          setDropdownState(desktopProfileBtn, true);
+        }
+      });
+    }
+
     document.addEventListener('click', function (e) {
-      if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileBtn) {
+      const outsideMobileProfile = !profileDropdown || (!profileDropdown.contains(e.target) && e.target !== profileBtn);
+      const outsideDesktopProfile = !desktopProfileDropdown || (!desktopProfileDropdown.contains(e.target) && e.target !== desktopProfileBtn);
+      if (outsideMobileProfile && outsideDesktopProfile) {
         closeProfileMenu();
       }
     });
