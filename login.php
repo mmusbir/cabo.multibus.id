@@ -74,21 +74,138 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login JWT</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 360px; }
-        .login-card h2 { margin: 0 0 24px; text-align: center; color: #333; }
-        .error-box { background: #fee2e2; border: 1px solid #f87171; color: #b91c1c; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; color: #555; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #3b82f6; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: 700; margin-top: 10px; }
-        button:hover { background: #2563eb; }
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.14);
+            --glass-border: rgba(255, 255, 255, 0.28);
+            --glass-shadow: 0 22px 54px rgba(15, 23, 42, 0.35);
+            --glass-blur: blur(22px);
+            --accent-1: #7c3aed;
+            --accent-2: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(1100px at 20% 20%, rgba(124, 58, 237, 0.18), transparent 45%),
+                        radial-gradient(900px at 80% 10%, rgba(6, 182, 212, 0.16), transparent 40%),
+                        radial-gradient(1100px at 30% 80%, rgba(34, 197, 94, 0.14), transparent 45%),
+                        #0f172a;
+            overflow: hidden;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            width: 520px;
+            height: 520px;
+            filter: blur(120px);
+            opacity: 0.45;
+            z-index: 0;
+            pointer-events: none;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+        }
+        body::before { background: #8b5cf6; top: -120px; left: -80px; }
+        body::after { background: #22c55e; bottom: -140px; right: -100px; }
+
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 36px 32px 32px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+            border-radius: 20px;
+            color: #e5e7eb;
+        }
+
+        .login-card h2 {
+            margin: 0 0 18px;
+            text-align: center;
+            color: #fff;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        .login-subtitle {
+            margin: -6px 0 22px;
+            text-align: center;
+            color: rgba(226, 232, 240, 0.8);
+            font-size: 14px;
+        }
+
+        .error-box {
+            background: rgba(248, 113, 113, 0.16);
+            border: 1px solid rgba(248, 113, 113, 0.55);
+            color: #fecdd3;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: rgba(226, 232, 240, 0.92);
+            font-size: 13px;
+            letter-spacing: 0.02em;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            box-sizing: border-box;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            transition: border 0.2s ease, background 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(124, 58, 237, 0.7);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(14, 165, 233, 0.95));
+            border: none;
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 12px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 16px 30px rgba(79, 70, 229, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); box-shadow: 0 20px 36px rgba(59, 130, 246, 0.38); }
+        button:active { transform: translateY(0); }
     </style>
 </head>
 <body>
     <div class="login-card">
         <h2>Login Panel</h2>
+        <div class="login-subtitle">Liquid Glass Interface</div>
         
         <?php if ($error_msg): ?>
             <div class="error-box">⚠️ <?php echo htmlspecialchars($error_msg); ?></div>

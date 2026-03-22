@@ -8,7 +8,7 @@
   <!--Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Vanilla Datepicker CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
@@ -1315,6 +1315,214 @@
     .luggage-notes-textarea {
       resize: vertical;
       min-height: 40px;
+    }
+
+    /* ================= LIQUID GLASS THEME OVERRIDES ================= */
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.14);
+      --glass-border: rgba(255, 255, 255, 0.28);
+      --glass-shadow: 0 22px 54px rgba(15, 23, 42, 0.35);
+      --accent-1: #7c3aed;
+      --accent-2: #22c55e;
+      --accent-3: #06b6d4;
+      --text-primary: #0b1222;
+      --text-muted: #5b6478;
+      --glass-blur: blur(20px);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text-primary);
+      background: radial-gradient(1200px at 20% 20%, rgba(124, 58, 237, 0.18), transparent 45%),
+        radial-gradient(900px at 80% 10%, rgba(6, 182, 212, 0.16), transparent 40%),
+        radial-gradient(1100px at 30% 80%, rgba(34, 197, 94, 0.14), transparent 45%),
+        #0f172a;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      filter: blur(120px);
+      opacity: 0.45;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+    }
+
+    body::before {
+      background: #8b5cf6;
+      top: -120px;
+      left: -80px;
+    }
+
+    body::after {
+      background: #22c55e;
+      bottom: -140px;
+      right: -100px;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      padding: 28px 18px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .toprow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: var(--glass-blur);
+      color: #e2e8f0;
+    }
+
+    .toprow h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      color: #e5e7eb;
+    }
+
+    .admin-btn {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      color: #fff !important;
+      padding: 10px 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      box-shadow: 0 10px 22px rgba(99, 102, 241, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .admin-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(99, 102, 241, 0.45);
+    }
+
+    .card,
+    .carter-section,
+    .search-container-modern,
+    .modal-content-box,
+    .modal-rekap-box,
+    .rekap-sticky-bar,
+    .confirm-popup-box {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: var(--glass-blur);
+    }
+
+    .card {
+      border-radius: 20px;
+    }
+
+    .toggle-container {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 auto 24px auto;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 3px;
+      border-radius: 12px;
+      width: fit-content;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .toggle-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.2s ease, transform 0.15s ease;
+      color: #e5e7eb;
+      font-size: 14px;
+      border: none;
+      background: transparent !important;
+      min-width: 120px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-btn.active {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.9) !important;
+      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .toggle-btn:not(.active) {
+      color: rgba(226, 232, 240, 0.72);
+      opacity: 0.9;
+    }
+
+    .btn-booking-modern {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(14, 165, 233, 0.95));
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn-booking-modern:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 36px rgba(59, 130, 246, 0.35);
+    }
+
+    .btn-booking-modern:disabled {
+      background: rgba(148, 163, 184, 0.7);
+      box-shadow: none;
+    }
+
+    .control-select,
+    input.control-select,
+    select.control-select,
+    textarea.control-select {
+      background: rgba(255, 255, 255, 0.82) !important;
+      border: 1px solid rgba(255, 255, 255, 0.65) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .legend,
+    .layout-row {
+      background: transparent;
+    }
+
+    #card-seats {
+      background: var(--glass-bg);
+    }
+
+    .msg-display {
+      color: #14b8a6;
+      font-weight: 700;
+    }
+
+    /* Minimal top blur strip */
+    .wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 120px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent);
+      pointer-events: none;
+      z-index: -1;
     }
   </style>
 </head>
