@@ -787,7 +787,7 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/admin.css?v=11">
   <link rel="stylesheet" href="assets/css/navbar.css?v=10">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=2">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=3">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -868,68 +868,57 @@ if (!isset($_REQUEST['action'])):
   <!-- Bottom Navbar for Mobile -->
   <!-- Bottom Navbar for Mobile moved to includes/navbar.php -->
   <!-- Modal for Edit Booking (Seat & Pickup) -->
-  <div class="bottom-more-modal" id="editBookingModal"
-    style="display:none;z-index:10002;align-items:center;justify-content:center;">
-    <div class="modal-popup-content" style="max-width:400px;width:92%;display:block;text-align:left;padding:24px;">
-      <h3 class="modal-popup-title" style="text-align:center;margin-bottom:20px;">Edit Penumpang</h3>
+  <div class="bottom-more-modal admin-modal-overlay" id="editBookingModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-md admin-modal-card-form">
+      <h3 class="modal-popup-title admin-modal-heading">Edit Penumpang</h3>
 
-      <form method="post" id="editBookingForm" novalidate>
-        <div id="editBookingErrorMsg" style="display:none; background:#fee2e2; color:#ef4444; padding:10px; border-radius:8px; margin-bottom:16px; font-size:13px; font-weight:500; border: 1px solid #f87171;"></div>
+      <form method="post" id="editBookingForm" novalidate class="admin-modal-form">
+        <div id="editBookingErrorMsg" class="admin-modal-error"></div>
         <input type="hidden" name="save_booking_edit" value="1">
         <input type="hidden" id="edit_booking_id" name="booking_id" value="">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-          <div>
-            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Unit</label>
-            <select id="edit_unit" name="unit" class="form-control" required
-              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;appearance:none;">
+        <div class="admin-modal-grid admin-modal-grid-2">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Unit</label>
+            <select id="edit_unit" name="unit" class="form-control admin-modal-control" required>
               <option value="1">Unit 1</option>
             </select>
           </div>
-          <div>
-            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Nomor
-              Kursi</label>
-            <select id="edit_seat" name="seat" class="form-control" required
-              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;appearance:none;">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Nomor Kursi</label>
+            <select id="edit_seat" name="seat" class="form-control admin-modal-control" required>
               <option value="">Pilih Kursi</option>
             </select>
           </div>
         </div>
 
-        <div style="margin-bottom:16px">
-          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Titik
-            Jemput</label>
-          <input type="text" id="edit_pickup" name="pickup_point" class="form-control" placeholder="Lokasi jemput"
-            style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Titik Jemput</label>
+          <input type="text" id="edit_pickup" name="pickup_point" class="form-control admin-modal-control"
+            placeholder="Lokasi jemput">
         </div>
 
-        <div style="margin-bottom:16px">
-          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Status
-            Pembayaran</label>
-          <div style="display:flex;gap:10px;background:#f1f5f9;padding:4px;border-radius:12px;">
-            <label
-              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
-              class="pay-radio-label">
-              <input type="radio" name="edit_pembayaran" value="Belum Lunas" style="display:none" required> Belum Lunas
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Status Pembayaran</label>
+          <div class="admin-modal-radio-group">
+            <label class="pay-radio-label admin-modal-radio-option">
+              <input type="radio" name="edit_pembayaran" value="Belum Lunas" required>
+              <span>Belum Lunas</span>
             </label>
-            <label
-              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
-              class="pay-radio-label">
-              <input type="radio" name="edit_pembayaran" value="Lunas" style="display:none" required> Lunas
+            <label class="pay-radio-label admin-modal-radio-option">
+              <input type="radio" name="edit_pembayaran" value="Lunas" required>
+              <span>Lunas</span>
             </label>
-            <label
-              style="flex:1;text-align:center;cursor:pointer;padding:8px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.2s;"
-              class="pay-radio-label">
-              <input type="radio" name="edit_pembayaran" value="Redbus" style="display:none" required> RedBus
+            <label class="pay-radio-label admin-modal-radio-option">
+              <input type="radio" name="edit_pembayaran" value="Redbus" required>
+              <span>RedBus</span>
             </label>
           </div>
         </div>
 
-        <div style="margin-bottom:16px">
-          <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Segment
-            Rute</label>
-          <select id="edit_segment_id" name="segment_id" class="form-control"
-            style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#f8fafc;appearance:none;">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Segment Rute</label>
+          <select id="edit_segment_id" name="segment_id" class="form-control admin-modal-control">
             <option value="0">-- Default Rute --</option>
             <?php foreach ($globalSegments as $gs): ?>
               <option value="<?= $gs['id'] ?>" data-price="<?= $gs['harga'] ?>">
@@ -939,158 +928,132 @@ if (!isset($_REQUEST['action'])):
           </select>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
-          <div>
-            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Harga
-              (Rp)</label>
-            <input type="number" id="edit_price_display" class="form-control" disabled
-              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f1f5f9;color:#94a3b8">
+        <div class="admin-modal-grid admin-modal-grid-2">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Harga (Rp)</label>
+            <input type="number" id="edit_price_display" class="form-control admin-modal-control" disabled>
             <input type="hidden" id="edit_price" name="price">
           </div>
-          <div>
-            <label style="display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#475569">Diskon
-              (Rp)</label>
-            <input type="number" id="edit_discount" name="discount" class="form-control" placeholder="0"
-              style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:15px;background:#f8fafc;">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Diskon (Rp)</label>
+            <input type="number" id="edit_discount" name="discount" class="form-control admin-modal-control"
+              placeholder="0">
           </div>
         </div>
 
         <div class="modal-popup-btn-group">
-          <button type="submit" class="btn-bright modal-popup-btn">Simpan Perubahan</button>
-          <button type="button" id="closeEditBookingModal" class="modal-popup-btn"
-            style="background:#f1f5f9;color:#64748b;">Batal</button>
+          <button type="submit" class="btn btn-modern modal-popup-btn">Simpan Perubahan</button>
+          <button type="button" id="closeEditBookingModal" class="btn btn-modern secondary modal-popup-btn">Batal</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Modal for Edit Charter -->
-  <div class="bottom-more-modal" id="editCharterModal" style="display:none;z-index:10002;align-items:center;">
-    <div class="bottom-more-content"
-      style="max-width:480px;width:92%;padding:16px;max-height:90vh;overflow-y:auto;border-radius:12px;transform:none;display:block;">
-      <form id="editCharterForm">
+  <div class="bottom-more-modal admin-modal-overlay" id="editCharterModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-lg admin-modal-card-form admin-modal-scroll">
+      <h3 class="modal-popup-title admin-modal-heading">Edit Carter</h3>
+      <form id="editCharterForm" class="admin-modal-form admin-modal-form-tight">
         <input type="hidden" id="edit_charter_id" name="id" value="">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Nama</label>
-            <input type="text" id="edit_charter_name" name="name" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-grid admin-modal-grid-2 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Nama</label>
+            <input type="text" id="edit_charter_name" name="name" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
-          <div>
-            <label
-              style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Perusahaan</label>
-            <input type="text" id="edit_charter_company" name="company_name" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Perusahaan</label>
+            <input type="text" id="edit_charter_company" name="company_name" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">No. HP</label>
-            <input type="text" id="edit_charter_phone" name="phone" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-grid admin-modal-grid-2 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">No. HP</label>
+            <input type="text" id="edit_charter_phone" name="phone" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Harga
-              (Rp)</label>
-            <input type="number" id="edit_charter_price" name="price" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px" min="0"
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Harga (Rp)</label>
+            <input type="number" id="edit_charter_price" name="price" class="form-control admin-modal-control admin-modal-control-tight" min="0"
               step="1">
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Tgl
-              Mulai</label>
-            <input type="date" id="edit_charter_start" name="start_date" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-grid admin-modal-grid-3 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Tgl Mulai</label>
+            <input type="date" id="edit_charter_start" name="start_date" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Tgl
-              Selesai</label>
-            <input type="date" id="edit_charter_end" name="end_date" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Tgl Selesai</label>
+            <input type="date" id="edit_charter_end" name="end_date" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Jam</label>
-            <input type="time" id="edit_charter_time" name="departure_time" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Jam</label>
+            <input type="time" id="edit_charter_time" name="departure_time" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
         </div>
 
-        <div style="margin-bottom:8px">
-          <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Pilih Rute
-            (Auto-fill)</label>
-          <select id="edit_charter_route_id" class="form-control"
-            style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Pilih Rute (Auto-fill)</label>
+          <select id="edit_charter_route_id" class="form-control admin-modal-control admin-modal-control-tight">
             <option value="">-- Master Rute Carter --</option>
           </select>
           <input type="hidden" id="edit_charter_pickup" name="pickup_point">
           <input type="hidden" id="edit_charter_drop" name="drop_point">
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Unit</label>
-            <select id="edit_charter_unit" name="unit_id" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-grid admin-modal-grid-2 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Unit</label>
+            <select id="edit_charter_unit" name="unit_id" class="form-control admin-modal-control admin-modal-control-tight">
               <option value="">-- Unit --</option>
             </select>
           </div>
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Driver</label>
-            <select id="edit_charter_driver" name="driver_name" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Driver</label>
+            <select id="edit_charter_driver" name="driver_name" class="form-control admin-modal-control admin-modal-control-tight">
               <option value="">-- Pilih Driver --</option>
             </select>
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Jenis
-              Layanan</label>
-            <input type="text" id="edit_charter_layanan" name="layanan" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+        <div class="admin-modal-grid admin-modal-grid-2 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Jenis Layanan</label>
+            <input type="text" id="edit_charter_layanan" name="layanan" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
-          <div>
-            <label style="display:block;margin-bottom:3px;font-weight:600;font-size:11px;color:#64748b">Bop
-              (Nominal)</label>
-            <input type="number" id="edit_charter_bop_val" name="bop_price" class="form-control"
-              style="width:100%;padding:6px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">BOP (Nominal)</label>
+            <input type="number" id="edit_charter_bop_val" name="bop_price" class="form-control admin-modal-control admin-modal-control-tight">
           </div>
         </div>
 
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button type="submit" class="btn-bright" style="flex:2;padding:10px;font-size:14px">Simpan Perubahan</button>
-          <button type="button" id="closeEditCharterModal" class="inline-small"
-            style="flex:1;padding:10px;font-size:14px;background:#f1f5f9;color:#64748b;border:none">Batal</button>
+        <div class="admin-modal-actions admin-modal-actions-split">
+          <button type="submit" class="btn btn-modern admin-modal-action admin-modal-action-wide">Simpan Perubahan</button>
+          <button type="button" id="closeEditCharterModal" class="btn btn-modern secondary admin-modal-action">Batal</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Modal for Copy All Passengers -->
-  <div class="bottom-more-modal" id="copyAllModal" style="display:none;z-index:10001;">
-    <div class="bottom-more-content" style="max-width:500px;width:90%;padding:20px;">
-      <h3 style="margin:0 0 15px 0;text-align:center;">Detail Penumpang Terisi</h3>
-      <div id="copyAllList" style="max-height:400px;overflow-y:auto;margin-bottom:15px;"></div>
-      <div style="display:flex;gap:10px;justify-content:center;">
-        <button id="copyAllFromModal" class="btn-bright" style="flex:1;">Copy Semua</button>
-        <button id="closeCopyAllModal" class="inline-small" style="flex:1;">Tutup</button>
+  <div class="bottom-more-modal admin-modal-overlay" id="copyAllModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-lg">
+      <h3 class="modal-popup-title admin-modal-heading">Detail Penumpang Terisi</h3>
+      <div id="copyAllList" class="admin-modal-list"></div>
+      <div class="admin-modal-actions admin-modal-actions-split">
+        <button id="copyAllFromModal" type="button" class="btn btn-modern admin-modal-action">Copy Semua</button>
+        <button id="closeCopyAllModal" type="button" class="btn btn-modern secondary admin-modal-action">Tutup</button>
       </div>
     </div>
   </div>
 
   <!-- Modal for Custom Alert -->
-  <div class="bottom-more-modal" id="globalAlertModal"
-    style="display:none;z-index:10010;align-items:center;justify-content:center;">
-    <div class="modal-popup-content" style="max-width:380px;width:90%;">
-      <div style="margin-bottom:20px;display:flex;justify-content:center;">
-        <div id="alertIconContainer"
-          style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fef3c7;">
+  <div class="bottom-more-modal admin-modal-overlay" id="globalAlertModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-sm admin-modal-card-center">
+      <div class="admin-modal-icon-row">
+        <div id="alertIconContainer" class="admin-modal-icon-wrap admin-modal-icon-alert">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
             stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -1101,122 +1064,51 @@ if (!isset($_REQUEST['action'])):
       </div>
       <div id="alertTitle" class="modal-popup-title">Pemberitahuan</div>
       <div id="alertMessage" class="modal-popup-message"></div>
-      <button type="button" id="closeAlertBtn" class="btn-bright modal-popup-btn">Mengerti</button>
+      <button type="button" id="closeAlertBtn" class="btn btn-modern modal-popup-btn">Mengerti</button>
     </div>
   </div>
 
   <!-- Modal for Custom Confirm -->
-  <div class="bottom-more-modal" id="globalConfirmModal"
-    style="display:none;z-index:10010;align-items:center;justify-content:center;">
-    <div class="modal-popup-content" style="max-width:400px;width:90%;">
-      <div style="margin-bottom:20px;display:flex;justify-content:center;">
-        <div id="confirmIconWrapper"
-          style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+  <div class="bottom-more-modal admin-modal-overlay" id="globalConfirmModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-sm admin-modal-card-center">
+      <div class="admin-modal-icon-row">
+        <div id="confirmIconWrapper" class="admin-modal-icon-wrap admin-modal-icon-confirm">
           <div id="confirmIconContainer"></div>
         </div>
       </div>
       <div id="confirmTitle" class="modal-popup-title">Konfirmasi</div>
       <div id="confirmMessage" class="modal-popup-message"></div>
       <div class="modal-popup-btn-group">
-        <button type="button" id="okConfirmBtn" class="btn-bright modal-popup-btn">Ya, Lanjutkan</button>
-        <button type="button" id="cancelConfirmBtn" class="modal-popup-btn"
-          style="background:#f1f5f9;color:#64748b;">Batal</button>
+        <button type="button" id="okConfirmBtn" class="btn btn-modern modal-popup-btn">Ya, Lanjutkan</button>
+        <button type="button" id="cancelConfirmBtn" class="btn btn-modern secondary modal-popup-btn">Batal</button>
       </div>
     </div>
   </div>
 
   <!-- Modal for Change Password -->
-  <div class="bottom-more-modal" id="changePasswordModal"
-    style="display:none;z-index:10010;align-items:center;justify-content:center;">
-    <div class="modal-popup-content" style="max-width:400px;width:90%;display:block;text-align:left;">
-      <h3 class="modal-popup-title" style="text-align:center;margin-bottom:24px;">Ganti Password</h3>
-      <form id="changePasswordForm">
-        <div style="margin-bottom:16px">
-          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Password
-            Lama</label>
-          <input type="password" name="old_password" required class="form-control"
-            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+  <div class="bottom-more-modal admin-modal-overlay" id="changePasswordModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-md admin-modal-card-form">
+      <h3 class="modal-popup-title admin-modal-heading">Ganti Password</h3>
+      <form id="changePasswordForm" class="admin-modal-form">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Password Lama</label>
+          <input type="password" name="old_password" required class="form-control admin-modal-control">
         </div>
-        <div style="margin-bottom:16px">
-          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Password
-            Baru</label>
-          <input type="password" name="new_password" required class="form-control"
-            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Password Baru</label>
+          <input type="password" name="new_password" required class="form-control admin-modal-control">
         </div>
-        <div style="margin-bottom:24px">
-          <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;color:#475569">Konfirmasi
-            Password Baru</label>
-          <input type="password" name="confirm_password" required class="form-control"
-            style="width:100%;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;background:#f8fafc;">
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Konfirmasi Password Baru</label>
+          <input type="password" name="confirm_password" required class="form-control admin-modal-control">
         </div>
         <div class="modal-popup-btn-group">
-          <button type="submit" class="btn-bright modal-popup-btn">Update Password</button>
-          <button type="button" id="closeChangePasswordModal" class="modal-popup-btn"
-            style="background:#f1f5f9;color:#64748b;">Batal</button>
+          <button type="submit" class="btn btn-modern modal-popup-btn">Update Password</button>
+          <button type="button" id="closeChangePasswordModal" class="btn btn-modern secondary modal-popup-btn">Batal</button>
         </div>
       </form>
     </div>
   </div>
-  <style>
-    /* Fixed Modal Popup Styles */
-    .modal-popup-content {
-      background: #ffffff;
-      padding: 32px 24px;
-      border-radius: 28px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-
-    .modal-popup-title {
-      font-weight: 800;
-      font-size: 22px;
-      color: #1e293b;
-      margin-bottom: 8px;
-      line-height: 1.2;
-    }
-
-    .modal-popup-message {
-      color: #64748b;
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 24px;
-      width: 100%;
-    }
-
-    .modal-popup-btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .modal-popup-btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 18px;
-      font-weight: 700;
-      font-size: 15px;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    @media (max-width: 899px) {
-      .modal-popup-content {
-        padding: 32px 20px;
-        border-radius: 24px;
-      }
-
-      .modal-popup-title {
-        font-size: 20px;
-      }
-    }
-  </style>
   <script>
     // --- Custom Modal Utilities ---
     window.customAlert = function (message, title = 'Pemberitahuan') {
@@ -1289,6 +1181,14 @@ if (!isset($_REQUEST['action'])):
         closePass.onclick = () => {
           passModal.classList.remove('show');
           setTimeout(() => { passModal.style.display = 'none'; }, 300);
+        };
+      }
+      if (passModal) {
+        passModal.onclick = (e) => {
+          if (e.target === passModal) {
+            passModal.classList.remove('show');
+            setTimeout(() => { passModal.style.display = 'none'; }, 300);
+          }
         };
       }
 
@@ -1938,6 +1838,13 @@ if (!isset($_REQUEST['action'])):
     attachCopyHandlers();
     attachCancelHandlers();
     attachSeatLayoutMarkPaidHandlers();
+    if (document.getElementById('closeCopyAllModal')) {
+      document.getElementById('closeCopyAllModal').onclick = function () {
+        const modal = document.getElementById('copyAllModal');
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+    }
     // Close modal when clicking outside
     document.getElementById('copyAllModal').onclick = function (e) {
       if (e.target === this) {
@@ -2028,6 +1935,16 @@ if (!isset($_REQUEST['action'])):
         };
       });
     }
+    function updatePaymentRadioState(radios, selectedValue = '') {
+      radios.forEach(radio => {
+        const label = radio.closest('.pay-radio-label');
+        if (!label) return;
+        const isSelected = radio.value.toLowerCase() === selectedValue.toLowerCase();
+        radio.checked = isSelected;
+        label.classList.toggle('is-selected', isSelected);
+      });
+    }
+
     function attachEditBookingHandlers() {
       document.querySelectorAll('.edit-booking-btn').forEach(btn => {
         btn.onclick = async function (e) {
@@ -2137,32 +2054,15 @@ if (!isset($_REQUEST['action'])):
 
           // Handle Payment Radio UI
           const radios = document.getElementsByName('edit_pembayaran');
-          radios.forEach(r => {
-            const label = r.parentElement;
-            if (r.value.toLowerCase() === (pembayaran || '').toLowerCase()) {
-              r.checked = true;
-              label.style.background = '#fff';
-              label.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-              label.style.color = '#0f172a';
-            } else {
-              label.style.background = 'transparent';
-              label.style.boxShadow = 'none';
-              label.style.color = '#64748b';
-            }
-          });
+          updatePaymentRadioState(radios, pembayaran || '');
 
           // Radio click events for UI
           radios.forEach(r => {
-            r.parentElement.onclick = function () {
-              radios.forEach(rad => {
-                rad.parentElement.style.background = 'transparent';
-                rad.parentElement.style.boxShadow = 'none';
-                rad.parentElement.style.color = '#64748b';
-              });
-              this.style.background = '#fff';
-              this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-              this.style.color = '#0f172a';
-              this.querySelector('input').checked = true;
+            const label = r.closest('.pay-radio-label');
+            if (!label || label.dataset.bound === '1') return;
+            label.dataset.bound = '1';
+            label.onclick = function () {
+              updatePaymentRadioState(radios, r.value);
             };
           });
 
