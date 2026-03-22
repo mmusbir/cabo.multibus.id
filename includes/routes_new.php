@@ -39,12 +39,12 @@
       } ?>
 
       <div id="form-shared" class="modern-form-grid admin-bs-form-grid">
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Keberangkatan (Dari)</label>
           <input name="origin" class="modern-input form-control" placeholder="Kota Asal"
             value="<?php echo htmlspecialchars($route_origin); ?>" required>
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Tujuan (Ke)</label>
           <input name="destination" class="modern-input form-control" placeholder="Kota Tujuan"
             value="<?php echo htmlspecialchars($route_destination); ?>" required>
@@ -116,3 +116,4 @@
     });
   </script>
 </section>
+

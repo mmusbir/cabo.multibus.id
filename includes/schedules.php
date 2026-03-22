@@ -36,7 +36,7 @@
       } ?>
 
       <div class="modern-form-grid admin-bs-form-grid">
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Rute</label>
           <select name="sch_rute" class="modern-select form-select" required>
             <option value="">Pilih Rute</option>
@@ -47,7 +47,7 @@
           </select>
         </div>
 
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Hari Operasi</label>
           <select name="sch_dow" class="modern-select form-select" required>
             <option value="">Pilih Hari</option>
@@ -60,13 +60,13 @@
           </select>
         </div>
 
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Jam Keberangkatan</label>
           <input type="time" name="sch_jam" class="modern-input form-control" required
             value="<?php echo htmlspecialchars($schedule_form_jam); ?>">
         </div>
 
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Jumlah Unit</label>
           <select name="sch_units" class="modern-select form-select" required title="Jumlah unit">
             <option value="">Pilih Jumlah Unit</option>
@@ -77,7 +77,7 @@
           </select>
         </div>
 
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Kendaraan</label>
           <select name="sch_unit_id" class="modern-select form-select">
             <option value="">Pilih Kendaraan</option>
@@ -138,3 +138,4 @@
   <div class="table-wrapper" style="display:none"></div>
   <div id="schedules_pagination" class="admin-pagination-host"></div>
 </section>
+

@@ -32,18 +32,18 @@
       } ?>
 
       <div class="modern-form-grid admin-bs-form-grid">
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Username</label>
           <input name="username" class="modern-input form-control" placeholder="Username" required
             value="<?php echo htmlspecialchars($edit_user_name); ?>">
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Password</label>
           <input type="password" name="password" class="modern-input form-control"
             placeholder="<?php echo !empty($edit_user) ? 'Kosongkan jika tidak diubah' : 'Password'; ?>"
             <?php echo empty($edit_user) ? 'required' : ''; ?>>
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Full Name</label>
           <input name="fullname" class="modern-input form-control" placeholder="Nama Lengkap"
             value="<?php echo htmlspecialchars($edit_user_full); ?>">
@@ -95,3 +95,4 @@
   <div class="table-wrapper" style="display:none"></div>
   <div id="users_pagination" class="admin-pagination-host"></div>
 </section>
+

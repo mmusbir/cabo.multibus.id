@@ -14,11 +14,11 @@
         </div>
         <form id="lsForm" class="modern-form-grid admin-bs-form-grid">
             <input type="hidden" id="ls_id" value="0">
-            <div class="input-group admin-bs-col-6">
+            <div class="admin-bs-field admin-bs-col-6">
                 <label class="admin-bs-input-label" for="ls_name">Nama Layanan</label>
                 <input type="text" id="ls_name" class="modern-input form-control" placeholder="Contoh: Paket < 5kg" required>
             </div>
-            <div class="input-group admin-bs-col-6">
+            <div class="admin-bs-field admin-bs-col-6">
                 <label class="admin-bs-input-label" for="ls_price">Harga (Rp)</label>
                 <input type="number" id="ls_price" class="modern-input form-control" placeholder="0" required>
             </div>
@@ -164,3 +164,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+

@@ -62,19 +62,19 @@
       <input type="hidden" name="route_type" id="hidden_route_type" value="<?php echo $route_type; ?>">
 
       <div id="form-shared" class="modern-form-grid admin-bs-form-grid">
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Keberangkatan (Dari)</label>
           <input name="origin" class="modern-input form-control" placeholder="Kota Asal"
             value="<?php echo htmlspecialchars($route_origin); ?>" required>
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Tujuan (Ke)</label>
           <input name="destination" class="modern-input form-control" placeholder="Kota Tujuan"
             value="<?php echo htmlspecialchars($route_destination); ?>" required>
         </div>
 
         <div id="carter-fields" style="display:contents">
-          <div class="input-group admin-bs-col-6">
+          <div class="admin-bs-field admin-bs-col-6">
             <label class="admin-bs-input-label">Jenis Layanan</label>
             <select name="duration" class="modern-select form-select">
               <option value="">-- Pilih Layanan --</option>
@@ -87,17 +87,17 @@
               ?>
             </select>
           </div>
-          <div class="input-group admin-bs-col-6">
+          <div class="admin-bs-field admin-bs-col-6">
             <label class="admin-bs-input-label">Nilai Sewa (Rp)</label>
             <input name="rental_price" type="number" class="modern-input form-control" placeholder="0"
               value="<?php echo htmlspecialchars($route_rental); ?>">
           </div>
-          <div class="input-group admin-bs-col-6">
+          <div class="admin-bs-field admin-bs-col-6">
             <label class="admin-bs-input-label">Nilai BOP (Rp)</label>
             <input name="bop_price" type="number" class="modern-input form-control" placeholder="0"
               value="<?php echo htmlspecialchars($route_bop); ?>">
           </div>
-          <div class="input-group admin-bs-col-12">
+          <div class="admin-bs-field admin-bs-col-12">
             <label class="admin-bs-input-label">Catatan</label>
             <textarea name="notes" class="modern-input form-control admin-textarea-sm"
               placeholder="Keterangan rute..."><?php echo htmlspecialchars($route_notes); ?></textarea>
@@ -190,3 +190,4 @@
     });
   </script>
 </section>
+

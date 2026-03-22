@@ -40,7 +40,7 @@
                 echo '<input type="hidden" name="segment_id" value="' . intval($segment_id) . '">'; ?>
 
             <div class="modern-form-grid admin-bs-form-grid">
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Rute Induk</label>
                     <select name="segment_route_id" class="modern-select form-select" required>
                         <option value="0">-- Pilih Rute Induk --</option>
@@ -52,22 +52,22 @@
                     </select>
                 </div>
 
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Asal Segment</label>
                     <input name="segment_origin" class="modern-input form-control" placeholder="Kota Asal" required
                         value="<?php echo htmlspecialchars($segment_origin); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Tujuan Segment</label>
                     <input name="segment_destination" class="modern-input form-control" placeholder="Kota Tujuan" required
                         value="<?php echo htmlspecialchars($segment_destination); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Jam Pickup Penumpang</label>
                     <input name="segment_pickup_time" type="time" class="modern-input form-control"
                         value="<?php echo htmlspecialchars($segment_pickup_time); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Harga Segment</label>
                     <input name="segment_harga" type="number" class="modern-input form-control" placeholder="Harga (Rp)" required
                         min="0" step="1" value="<?php echo htmlspecialchars($segment_harga); ?>">
@@ -158,3 +158,4 @@
         });
     </script>
 </section>
+

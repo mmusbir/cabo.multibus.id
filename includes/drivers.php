@@ -38,17 +38,17 @@
                 echo '<input type="hidden" name="driver_id" value="' . intval($driver_id) . '">'; ?>
 
             <div class="modern-form-grid admin-bs-form-grid">
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Nama Driver</label>
                     <input name="driver_nama" class="modern-input form-control" placeholder="Nama Driver" required
                         value="<?php echo htmlspecialchars($driver_nama); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">No. Telepon</label>
                     <input name="driver_phone" class="modern-input form-control" placeholder="No. HP" required
                         value="<?php echo htmlspecialchars($driver_phone); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Unit Kendaraan</label>
                     <select name="driver_unit_id" class="modern-select form-select" required>
                         <option value="">-- Pilih Unit --</option>
@@ -138,3 +138,4 @@
         });
     </script>
 </section>
+

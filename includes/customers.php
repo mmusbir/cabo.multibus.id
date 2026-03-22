@@ -23,22 +23,22 @@
         echo '<input type="hidden" name="customer_id" value="' . intval($edit_customer['id']) . '">';
       } ?>
       <div class="modern-form-grid admin-bs-form-grid">
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Nama Lengkap</label>
           <input id="cust_name_input" class="modern-input form-control" name="cust_name" placeholder="Nama Lengkap" required
             value="<?php echo htmlspecialchars($cust_name); ?>">
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">No. Handphone</label>
           <input id="cust_phone_input" class="modern-input form-control" name="cust_phone" placeholder="No. Handphone" required
             value="<?php echo htmlspecialchars($cust_phone); ?>">
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Titik Jemput</label>
           <input class="modern-input form-control" name="cust_pickup" placeholder="Contoh: Jl. Mawar"
             value="<?php echo htmlspecialchars($cust_pickup); ?>">
         </div>
-        <div class="input-group admin-bs-col-6">
+        <div class="admin-bs-field admin-bs-col-6">
           <label class="admin-bs-input-label">Google Maps Link</label>
           <input class="modern-input form-control" name="cust_address" placeholder="https://maps.google.com/..."
             value="<?php echo htmlspecialchars($cust_addr); ?>">
@@ -113,3 +113,4 @@
   <div class="table-wrapper" style="display:none"></div>
   <div id="customers_pagination" class="admin-pagination-host"></div>
 </section>
+

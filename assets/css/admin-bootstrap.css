@@ -1461,7 +1461,7 @@ body.admin-bootstrap-page .admin-bs-form-grid {
     align-items: end;
 }
 
-body.admin-bootstrap-page .admin-bs-form-grid .input-group {
+body.admin-bootstrap-page .admin-bs-form-grid .admin-bs-field {
     position: relative;
     display: block;
 }
@@ -1484,12 +1484,12 @@ body.admin-bootstrap-page .admin-bs-input-label {
     text-transform: uppercase;
 }
 
-body.admin-bootstrap-page .admin-bs-form-grid .input-group-icon {
+body.admin-bootstrap-page .admin-bs-form-grid .admin-bs-field-icon {
     top: 50%;
     transform: translateY(-50%);
 }
 
-body.admin-bootstrap-page .admin-bs-form-grid .input-group:hover .input-group-icon {
+body.admin-bootstrap-page .admin-bs-form-grid .admin-bs-field:hover .admin-bs-field-icon {
     transform: translateY(-50%) scale(1.06);
 }
 
@@ -6394,13 +6394,14 @@ body.admin-bootstrap-page #users .admin-bs-form-grid {
     align-items: start;
 }
 
-body.admin-bootstrap-page #customers .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #schedules .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #routes .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #segments .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #luggage_services .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #drivers .admin-bs-form-grid .input-group,
-body.admin-bootstrap-page #users .admin-bs-form-grid .input-group {
+body.admin-bootstrap-page #customers .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #schedules .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #routes .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #segments .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #units .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #luggage_services .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #drivers .admin-bs-form-grid .admin-bs-field,
+body.admin-bootstrap-page #users .admin-bs-form-grid .admin-bs-field {
     display: grid !important;
     gap: 0.38rem;
     align-content: start;
@@ -6412,6 +6413,7 @@ body.admin-bootstrap-page #customers .admin-bs-input-label,
 body.admin-bootstrap-page #schedules .admin-bs-input-label,
 body.admin-bootstrap-page #routes .admin-bs-input-label,
 body.admin-bootstrap-page #segments .admin-bs-input-label,
+body.admin-bootstrap-page #units .admin-bs-input-label,
 body.admin-bootstrap-page #luggage_services .admin-bs-input-label,
 body.admin-bootstrap-page #drivers .admin-bs-input-label,
 body.admin-bootstrap-page #users .admin-bs-input-label {
@@ -6437,6 +6439,10 @@ body.admin-bootstrap-page #segments .modern-input,
 body.admin-bootstrap-page #segments .modern-select,
 body.admin-bootstrap-page #segments .form-control,
 body.admin-bootstrap-page #segments .form-select,
+body.admin-bootstrap-page #units .modern-input,
+body.admin-bootstrap-page #units .modern-select,
+body.admin-bootstrap-page #units .form-control,
+body.admin-bootstrap-page #units .form-select,
 body.admin-bootstrap-page #luggage_services .modern-input,
 body.admin-bootstrap-page #luggage_services .modern-select,
 body.admin-bootstrap-page #luggage_services .form-control,
@@ -6462,12 +6468,46 @@ body.admin-bootstrap-page #users .form-select {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
     line-height: 1.35;
     -webkit-text-fill-color: #0f172a;
+    box-sizing: border-box;
+    flex: 0 0 auto !important;
+}
+
+body.admin-bootstrap-page #customers .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #customers .admin-bs-field > select,
+body.admin-bootstrap-page #customers .admin-bs-field > textarea,
+body.admin-bootstrap-page #schedules .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #schedules .admin-bs-field > select,
+body.admin-bootstrap-page #schedules .admin-bs-field > textarea,
+body.admin-bootstrap-page #routes .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #routes .admin-bs-field > select,
+body.admin-bootstrap-page #routes .admin-bs-field > textarea,
+body.admin-bootstrap-page #segments .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #segments .admin-bs-field > select,
+body.admin-bootstrap-page #segments .admin-bs-field > textarea,
+body.admin-bootstrap-page #units .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #units .admin-bs-field > select,
+body.admin-bootstrap-page #units .admin-bs-field > textarea,
+body.admin-bootstrap-page #luggage_services .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #luggage_services .admin-bs-field > select,
+body.admin-bootstrap-page #luggage_services .admin-bs-field > textarea,
+body.admin-bootstrap-page #drivers .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #drivers .admin-bs-field > select,
+body.admin-bootstrap-page #drivers .admin-bs-field > textarea,
+body.admin-bootstrap-page #users .admin-bs-field > input:not([type="hidden"]),
+body.admin-bootstrap-page #users .admin-bs-field > select,
+body.admin-bootstrap-page #users .admin-bs-field > textarea {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    align-self: stretch;
 }
 
 body.admin-bootstrap-page #customers .modern-input::placeholder,
 body.admin-bootstrap-page #schedules .modern-input::placeholder,
 body.admin-bootstrap-page #routes .modern-input::placeholder,
 body.admin-bootstrap-page #segments .modern-input::placeholder,
+body.admin-bootstrap-page #units .modern-input::placeholder,
 body.admin-bootstrap-page #luggage_services .modern-input::placeholder,
 body.admin-bootstrap-page #drivers .modern-input::placeholder,
 body.admin-bootstrap-page #users .modern-input::placeholder {
@@ -6483,6 +6523,8 @@ body.admin-bootstrap-page #routes .modern-input:focus,
 body.admin-bootstrap-page #routes .modern-select:focus,
 body.admin-bootstrap-page #segments .modern-input:focus,
 body.admin-bootstrap-page #segments .modern-select:focus,
+body.admin-bootstrap-page #units .modern-input:focus,
+body.admin-bootstrap-page #units .modern-select:focus,
 body.admin-bootstrap-page #luggage_services .modern-input:focus,
 body.admin-bootstrap-page #luggage_services .modern-select:focus,
 body.admin-bootstrap-page #drivers .modern-input:focus,
@@ -6618,3 +6660,4 @@ body.admin-bootstrap-page #users .admin-section-header {
         width: 100%;
     }
 }
+

@@ -27,17 +27,17 @@
                 echo '<input type="hidden" name="unit_id" value="' . intval($unit_id) . '">'; ?>
 
             <div class="modern-form-grid admin-bs-form-grid">
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Nama Kendaraan / Nopol</label>
                     <input name="nopol" class="modern-input form-control" placeholder="Nama Kendaraan" required
                         value="<?php echo htmlspecialchars($unit_nopol); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Merek</label>
                     <input name="merek" class="modern-input form-control" placeholder="Contoh: Toyota" required
                         value="<?php echo htmlspecialchars($unit_merek); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Type</label>
                     <input name="type" class="modern-input form-control" placeholder="Contoh: Hiace" required
                         value="<?php echo htmlspecialchars($unit_type); ?>">
@@ -45,17 +45,17 @@
 
                 <input type="hidden" name="category" value="Minibus">
 
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Tahun</label>
                     <input name="tahun" type="number" class="modern-input form-control" placeholder="Tahun" required
                         value="<?php echo htmlspecialchars($unit_tahun); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Kapasitas Kursi</label>
                     <input name="kapasitas" type="number" class="modern-input form-control" placeholder="Kapasitas Kursi" required
                         value="<?php echo htmlspecialchars($unit_kapasitas); ?>">
                 </div>
-                <div class="input-group admin-bs-col-6">
+                <div class="admin-bs-field admin-bs-col-6">
                     <label class="admin-bs-input-label">Status</label>
                     <select name="status" class="modern-select form-select" required>
                         <option value="Aktif" <?php echo $unit_status === 'Aktif' ? 'selected' : ''; ?>>Aktif</option>
@@ -564,3 +564,4 @@
         }
     });
 </script>
+
