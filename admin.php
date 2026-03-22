@@ -1738,9 +1738,9 @@ if (!isset($_REQUEST['action'])):
         const spinner = document.getElementById('passenger_spinner_wrap');
         const list = document.getElementById('passengerList');
         if (spinner) spinner.style.display = 'flex';
-        list.innerHTML = '<div class="small">Memuat data...</div>';
+        list.innerHTML = '<div class="admin-empty-state view-empty-state">Memuat data manifest...</div>';
         if (!rute || !tanggal || !jam || !unit) {
-          list.innerHTML = '<div class="small">Lengkapi rute, tanggal, jam, dan unit.</div>';
+          list.innerHTML = '<div class="admin-empty-state view-empty-state">Lengkapi rute, tanggal, jam, dan unit terlebih dahulu.</div>';
           if (spinner) spinner.style.display = 'none';
           return;
         }
@@ -1756,10 +1756,10 @@ if (!isset($_REQUEST['action'])):
           if (js.success && js.html) {
             list.innerHTML = js.html;
           } else {
-            list.innerHTML = '<div class="small">Tidak ada data penumpang.</div>';
+            list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak ada data penumpang untuk jadwal ini.</div>';
           }
         } catch (e) {
-          list.innerHTML = '<div class="small">Gagal memuat data penumpang.</div>';
+          list.innerHTML = '<div class="admin-empty-state view-empty-state">Gagal memuat data penumpang.</div>';
         } finally {
           if (spinner) spinner.style.display = 'none';
         }
@@ -1817,9 +1817,9 @@ if (!isset($_REQUEST['action'])):
               const driverName = driverInfo ? (driverInfo.getAttribute('data-driver-name') || '-') : '-';
 
               // Build header
-              let text = `📢 Info Pemberangkatan\nTanggal & Jam : ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
+              let text = `Info Pemberangkatan\nTanggal & Jam: ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
               occupied.forEach(s => {
-                text += `▪ Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
+                text += `- Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
               });
 
               // ADD SUMMARY TO COPY (Fallback)
@@ -1843,7 +1843,7 @@ if (!isset($_REQUEST['action'])):
                 const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
                 const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
                 const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
-                const text = `▪ Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
+                const text = `- Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
                 fallbackCopy(text);
               }
             }
@@ -1889,9 +1889,9 @@ if (!isset($_REQUEST['action'])):
           const driverName = driverInfo ? (driverInfo.getAttribute('data-driver-name') || '-') : '-';
 
           // Build header
-          let text = `📢Info Pemberangkatan\nTanggal & Jam : ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
+          let text = `Info Pemberangkatan\nTanggal & Jam: ${tanggalFormatted} - ${jamFormatted}\nRute: ${rute}\nTotal Penumpang: ${totalPenumpang}\nDriver: ${driverName}\n\n`;
           occupied.forEach(s => {
-            text += `▪ Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
+            text += `- Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
           });
 
           // ADD SUMMARY TO COPY
@@ -1924,7 +1924,7 @@ if (!isset($_REQUEST['action'])):
             const pickup = block.querySelector('.sb-val.pickup')?.innerText.trim() || '';
             const gmaps = block.querySelector('.sb-val.gmaps')?.innerText.trim() || '';
             const pay = block.querySelector('.sb-val.pay')?.innerText.trim() || '';
-            const text = `▪ Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
+            const text = `- Kursi: ${seat}\nNama: ${name}\nNo. HP: ${phone}\nTitik Jemput: ${pickup}\nGmaps: ${gmaps}\nPembayaran: ${pay}`;
             navigator.clipboard.writeText(text).then(() => {
               customAlert('Detail kursi berhasil disalin!');
             }, () => {
@@ -1981,7 +1981,7 @@ if (!isset($_REQUEST['action'])):
           const tanggal = this.getAttribute('data-tanggal') || '-';
           const jam = this.getAttribute('data-jam') || '-';
 
-          const confirmMsg = `Batalkan booking ini?\n\n📅 Tanggal: ${tanggal} ${jam}\n👤 Nama: ${name}\n📱 No. HP: ${phone}\n💺 Kursi: ${seat}`;
+          const confirmMsg = `Batalkan booking ini?\n\nTanggal: ${tanggal} ${jam}\nNama: ${name}\nNo. HP: ${phone}\nKursi: ${seat}`;
 
           customConfirm(confirmMsg, () => {
             fetch('admin.php?cancel_booking=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
@@ -2540,7 +2540,7 @@ Harga: ${price}`;
 
           // Toggleba ck to view mode
           document.getElementById('driverEdit').style.display = 'none';
-          document.getElementById('driverDisplay').style.display = 'inline';
+          document.getElementById('driverDisplay').style.display = 'flex';
 
         } else {
           customAlert('Gagal update driver: ' + (js.error || 'unknown'), 'Gagal');
