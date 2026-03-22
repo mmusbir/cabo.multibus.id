@@ -1,9 +1,12 @@
 {
-  "builds": [
-    { "src": "api.php", "use": "vercel-php@0.6.2" },
-    { "src": "admin.php", "use": "vercel-php@0.6.2" },
-    { "src": "admin/ajax.php", "use": "vercel-php@0.6.2" },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "assets/**", "use": "@vercel/static" }
+  "functions": {
+    "*.php": {
+      "runtime": "vercel-php@0.7.0"
+    }
+  },
+  "routes": [
+    { "src": "/admin", "dest": "/admin.php" },
+    { "src": "/login", "dest": "/login.php" },
+    { "src": "/logout", "dest": "/logout.php" }
   ]
 }
