@@ -1331,11 +1331,8 @@
     <!-- Controls card -->
     <div class="card" id="main-card">
       <!-- Toggle Type -->
-      <div class="toggle-container grid-cols-3 w-full max-w-400" id="mode-toggle-container">
-        <div class="toggle-slider"></div>
+      <div class="toggle-container w-full max-w-400" id="mode-toggle-container">
         <button class="toggle-btn active" id="btn-reguler" onclick="switchMode('reguler')">Reguler</button>
-        <button class="toggle-btn" id="btn-carter" onclick="switchMode('carter')">Carter</button>
-        <button class="toggle-btn" id="btn-bagasi" onclick="switchMode('bagasi')">Bagasi</button>
       </div>
 
       <!-- REGULER CONTROLS -->
@@ -2484,62 +2481,29 @@ Pembayaran: Tunai / Transfer / QRIS`;
 
       // Switch Mode
       window.switchMode = function (mode) {
-        console.log('Switching mode to:', mode);
+        // Only Reguler mode is available; force everything else back to reguler
+        if (mode !== 'reguler') mode = 'reguler';
+
         const btnReguler = document.getElementById('btn-reguler');
-        const btnCarter = document.getElementById('btn-carter');
-        const btnBagasi = document.getElementById('btn-bagasi');
-        const container = document.getElementById('mode-toggle-container');
         const regulerControls = document.getElementById('reguler-controls');
-        const carterControls = document.getElementById('carter-controls');
-        const bagasiControls = document.getElementById('bagasi-controls');
         const cardSeats = document.getElementById('card-seats');
         const cardPassenger = document.getElementById('card-passenger');
         const suggestions = document.getElementById('suggestions');
         const bookBtn = document.getElementById('book');
         const bookBtnWrap = bookBtn ? bookBtn.parentElement : null;
 
-        if (btnReguler) btnReguler.classList.toggle('active', mode === 'reguler');
-        if (btnCarter) btnCarter.classList.toggle('active', mode === 'carter');
-        if (btnBagasi) btnBagasi.classList.toggle('active', mode === 'bagasi');
+        if (btnReguler) btnReguler.classList.add('active');
+        if (regulerControls) regulerControls.style.display = 'block';
+        if (cardSeats) cardSeats.style.display = '';
+        if (cardPassenger) cardPassenger.style.display = '';
+        if (suggestions) suggestions.style.display = 'block';
+        if (bookBtnWrap) bookBtnWrap.style.display = '';
 
-        if (container) {
-          container.classList.remove('mode-carter', 'mode-bagasi');
-          if (mode === 'carter') container.classList.add('mode-carter');
-          if (mode === 'bagasi') container.classList.add('mode-bagasi');
-        }
-
-        if (regulerControls) regulerControls.style.display = 'none';
-        if (carterControls) carterControls.classList.remove('active');
-        if (bagasiControls) bagasiControls.classList.remove('active');
-
-        if (mode === 'carter') {
-          if (carterControls) carterControls.classList.add('active');
-          if (cardSeats) cardSeats.style.display = 'none';
-          if (cardPassenger) cardPassenger.style.display = 'none';
-          if (suggestions) suggestions.style.display = 'none';
-          if (bookBtnWrap) bookBtnWrap.style.display = 'none';
-        } else if (mode === 'bagasi') {
-          if (bagasiControls) bagasiControls.classList.add('active');
-          if (cardSeats) cardSeats.style.display = 'none';
-          if (cardPassenger) cardPassenger.style.display = 'none';
-          if (suggestions) suggestions.style.display = 'none';
-          if (bookBtnWrap) bookBtnWrap.style.display = 'none';
-        } else {
-          if (regulerControls) regulerControls.style.display = 'block';
-          if (cardSeats) cardSeats.style.display = '';
-          if (cardPassenger) cardPassenger.style.display = '';
-          if (suggestions) suggestions.style.display = 'block';
-          if (bookBtnWrap) bookBtnWrap.style.display = '';
-        }
         if (typeof validateBookingForm === 'function') validateBookingForm();
       }
 
       /* ---------------- INIT ---------------- */
       document.addEventListener('DOMContentLoaded', () => {
-        loadUnits();
-        loadDrivers();
-        loadCharterRoutes();
-        loadLuggageServices();
         switchMode('reguler');
       });
 
