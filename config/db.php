@@ -1,6 +1,8 @@
 <?php
 // config/db.php - Database connection configuration (PostgreSQL via PDO)
 
+require_once __DIR__ . '/env.php';
+
 // Database URL - Use environment variables in production
 $env_url = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? getenv('DATABASE_URL');
 $DATABASE_URL = $env_url ?: 'postgresql://postgres:password@localhost:5432/cabomultibus_db';

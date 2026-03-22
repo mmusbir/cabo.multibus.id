@@ -4,6 +4,8 @@
  * Contains: session, DB connection, auth check, and helper functions
  */
 
+require_once __DIR__ . '/../config/env.php';
+
 // Error reporting - disable in production
 if (getenv('APP_ENV') === 'production') {
     ini_set('display_errors', 0);
