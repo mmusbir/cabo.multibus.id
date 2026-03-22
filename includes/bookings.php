@@ -1,12 +1,15 @@
 <!-- BOOKINGS -->
 <section id="bookings" class="card">
-  <h3>Bookings</h3>
-
-
+  <div class="admin-section-header">
+    <div>
+      <h3 class="admin-section-title">Bookings</h3>
+      <p class="admin-section-subtitle">Pantau booking reguler, carter, dan bagasi dari satu tampilan ringkas.</p>
+    </div>
+  </div>
   <div class="bookings-header-row">
-    <div class="search-bar-modern">
+    <div class="search-bar-modern admin-bs-search">
       <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari nama penumpang...">
-      <button type="button" id="searchBtn" class="search-btn-icon">
+      <button type="button" id="searchBtn" class="search-btn-icon" aria-label="Cari booking">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -18,21 +21,23 @@
     <!-- Toggle Switch (Reguler / Carter / Bagasi) -->
     <div class="toggle-container grid-cols-3 w-full max-w-400" id="admin-mode-toggle-container">
       <div class="toggle-slider"></div>
-      <button class="toggle-btn active" id="btn-view-reguler" onclick="switchAdminView('bookings')">Reguler</button>
-      <button class="toggle-btn" id="btn-view-carter" onclick="switchAdminView('charters')">Carter</button>
-      <button class="toggle-btn" id="btn-view-bagasi" onclick="switchAdminView('luggage')">Bagasi</button>
+      <button type="button" class="toggle-btn active" id="btn-view-reguler" onclick="switchAdminView('bookings')">Reguler</button>
+      <button type="button" class="toggle-btn" id="btn-view-carter" onclick="switchAdminView('charters')">Carter</button>
+      <button type="button" class="toggle-btn" id="btn-view-bagasi" onclick="switchAdminView('luggage')">Bagasi</button>
     </div>
   </div>
 
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px">
+  <div class="admin-bs-meta">
     <div id="bookings_info" class="small">Memuat...</div>
-    <div style="display:flex;gap:8px;align-items:center"><label class="small">Per page</label><select
-        id="bookings_per_page">
+    <div class="d-flex gap-2 align-items-center">
+      <label class="small" for="bookings_per_page">Per page</label>
+      <select id="bookings_per_page" class="form-select form-select-sm">
         <option>10</option>
         <option selected>25</option>
         <option>50</option>
         <option>100</option>
-      </select></div>
+      </select>
+    </div>
   </div>
 
   <div id="bookings_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -40,20 +45,20 @@
   </div>
 
   <!-- Cards container replaces table -->
-  <div id="bookings_tbody" class="booking-cards-grid">
+  <div id="bookings_tbody" class="booking-cards-grid admin-bs-card-grid">
     <!-- Cards injected via AJAX -->
     <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading...</div>
   </div>
   <div id="bookings_pagination" style="margin-top:8px"></div>
 
   <!-- CHARTERS CONTAINER -->
-  <div id="charters_tbody" class="booking-cards-grid" style="display:none">
+  <div id="charters_tbody" class="booking-cards-grid admin-bs-card-grid" style="display:none">
     <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading Charters...</div>
   </div>
   <div id="charters_pagination" style="margin-top:8px;display:none"></div>
 
   <!-- LUGGAGE CONTAINER -->
-  <div id="luggage_tbody" class="booking-cards-grid" style="display:none">
+  <div id="luggage_tbody" class="booking-cards-grid admin-bs-card-grid" style="display:none">
     <div class="small" style="grid-column: 1/-1; text-align:center; padding: 20px;">Loading Luggage...</div>
   </div>
   <div id="luggage_pagination" style="margin-top:8px;display:none"></div>

@@ -360,6 +360,257 @@ body.admin-bootstrap-page .admin-bs-card-grid {
     gap: 1rem;
 }
 
+body.admin-bootstrap-page .bookings-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+body.admin-bootstrap-page .bookings-header-row .admin-bs-search {
+    flex: 1 1 320px;
+    max-width: 480px;
+}
+
+body.admin-bootstrap-page .bookings-header-row .toggle-container {
+    min-width: 300px;
+    padding: 0.3rem;
+    border-radius: 999px;
+    border: 1px solid #d6dde8;
+    background: #f8fafc;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.admin-bootstrap-page .bookings-header-row .toggle-slider {
+    top: 0.3rem;
+    bottom: 0.3rem;
+    left: 0.3rem;
+    border-radius: 999px;
+    background: #0d6efd;
+    box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.18);
+}
+
+body.admin-bootstrap-page .bookings-header-row .toggle-btn {
+    font-weight: 700;
+    color: #475569;
+}
+
+body.admin-bootstrap-page .bookings-header-row .toggle-btn.active {
+    color: #fff;
+}
+
+body.admin-bootstrap-page .layout-popup {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(15, 23, 42, 0.46);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+}
+
+body.admin-bootstrap-page .layout-popup-card {
+    position: relative;
+    width: min(100%, 560px);
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: #fff;
+    box-shadow: 0 1.5rem 3rem rgba(15, 23, 42, 0.18);
+}
+
+body.admin-bootstrap-page .layout-popup-card h3 {
+    margin-bottom: 1rem;
+}
+
+body.admin-bootstrap-page .layout-popup-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 1rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #64748b;
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+body.admin-bootstrap-page .layout-popup-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page .layout-popup-info {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0.9rem 1rem;
+    margin: 0.5rem 0 0.9rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+    font-size: 0.86rem;
+}
+
+body.admin-bootstrap-page .layout-popup-meta strong {
+    color: #334155;
+}
+
+body.admin-bootstrap-page .layout-mode-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+    background: #fff;
+}
+
+body.admin-bootstrap-page .layout-mode-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0;
+    cursor: pointer;
+    color: #334155;
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .layout-mode-option input {
+    margin: 0;
+}
+
+body.admin-bootstrap-page .layout-hint {
+    margin-bottom: 0.75rem;
+    color: #64748b;
+    font-size: 0.78rem;
+}
+
+body.admin-bootstrap-page .seat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid #dbe4f0;
+    border-radius: 1rem;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+}
+
+body.admin-bootstrap-page .grid-row {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 3), 1fr);
+    gap: 0.5rem;
+}
+
+body.admin-bootstrap-page .cell {
+    min-height: 3.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.85rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: #e2e8f0;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+body.admin-bootstrap-page .cell.fixed {
+    cursor: not-allowed;
+    opacity: 0.95;
+}
+
+body.admin-bootstrap-page .cell.driver {
+    color: #7c2d12;
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+    border: 1px solid #fb923c;
+}
+
+body.admin-bootstrap-page .cell.bagasi {
+    color: #fff;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    border: 1px solid #334155;
+}
+
+body.admin-bootstrap-page .cell.clickable {
+    cursor: pointer;
+    background: #fff;
+    border: 2px dashed #cbd5e1;
+    color: #64748b;
+}
+
+body.admin-bootstrap-page .cell.clickable:hover {
+    transform: translateY(-2px);
+    border-color: #0d6efd;
+    background: #eff6ff;
+    color: #0d6efd;
+    box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.12);
+}
+
+body.admin-bootstrap-page .cell.seat {
+    cursor: pointer;
+    color: #1d4ed8;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid #60a5fa;
+}
+
+body.admin-bootstrap-page .cell.seat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(59, 130, 246, 0.18);
+}
+
+body.admin-bootstrap-page .cell.bagasi-custom {
+    cursor: pointer;
+    color: #334155;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    border: 1px solid #94a3b8;
+}
+
+body.admin-bootstrap-page .cell.bagasi-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(100, 116, 139, 0.16);
+}
+
+body.admin-bootstrap-page .layout-grid-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+body.admin-bootstrap-page .layout-grid-actions .inline-small {
+    margin: 0;
+}
+
+body.admin-bootstrap-page #remove-row-btn,
+body.admin-bootstrap-page #remove-col-btn {
+    color: #dc3545;
+}
+
+body.admin-bootstrap-page .layout-grid-actions-primary {
+    align-items: stretch;
+}
+
+body.admin-bootstrap-page .layout-primary-action {
+    flex: 1 1 180px;
+}
+
+body.admin-bootstrap-page .layout-message {
+    display: none;
+    margin-top: 0.9rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.85rem;
+    font-size: 0.9rem;
+}
+
 @media (max-width: 1199px) {
     body.admin-bootstrap-page .admin-bootstrap-container {
         margin-top: 1rem;
@@ -397,5 +648,39 @@ body.admin-bootstrap-page .admin-bs-card-grid {
     body.admin-bootstrap-page .admin-bs-actions .btn,
     body.admin-bootstrap-page .admin-bs-actions .btn-modern {
         width: 100%;
+    }
+
+    body.admin-bootstrap-page .bookings-header-row {
+        align-items: stretch;
+    }
+
+    body.admin-bootstrap-page .bookings-header-row .admin-bs-search,
+    body.admin-bootstrap-page .bookings-header-row .toggle-container {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .layout-popup {
+        padding: 0.75rem;
+    }
+
+    body.admin-bootstrap-page .layout-popup-card {
+        width: 100%;
+        max-height: 85vh;
+        padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .seat-grid {
+        padding: 0.85rem;
+        gap: 0.4rem;
+    }
+
+    body.admin-bootstrap-page .grid-row {
+        gap: 0.4rem;
+    }
+
+    body.admin-bootstrap-page .cell {
+        min-height: 2.7rem;
+        font-size: 0.8rem;
     }
 }

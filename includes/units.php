@@ -129,198 +129,49 @@
     </div>
 </section>
 <!-- Popup Layout Edit -->
-<div class="popup-bg" id="popup-bg">
-    <div class="popup-content" id="popup-content">
-        <span class="popup-close" id="popup-close">&times;</span>
+<div class="popup-bg layout-popup" id="popup-bg">
+    <div class="popup-content layout-popup-card" id="popup-content">
+        <button type="button" class="popup-close layout-popup-close" id="popup-close" aria-label="Tutup popup">&times;</button>
         <h3 id="popup-title">Edit Layout Kursi</h3>
-        <div class="layout-info"
-            style="margin:8px 0;padding:8px 12px;background:#f3f4f6;border-radius:6px;font-size:13px;">
-            <div><strong>Kendaraan:</strong> <span id="nopol-display"></span></div>
-            <div><strong>Kapasitas:</strong> <span id="kapasitas-display"></span> kursi</div>
-            <div><strong>Kursi Aktif:</strong> <span id="current-seats-display">0</span></div>
+        <div class="layout-info layout-popup-info">
+            <div class="layout-popup-meta"><strong>Kendaraan:</strong> <span id="nopol-display"></span></div>
+            <div class="layout-popup-meta"><strong>Kapasitas:</strong> <span id="kapasitas-display"></span> kursi</div>
+            <div class="layout-popup-meta"><strong>Kursi Aktif:</strong> <span id="current-seats-display">0</span></div>
         </div>
 
-        <div class="mode-selector"
-            style="margin:12px 0;padding:8px;background:#fff;border-radius:6px;border:1px solid #e5e7eb;">
-            <label style="margin-right:16px;cursor:pointer;">
+        <div class="mode-selector layout-mode-selector">
+            <label class="layout-mode-option">
                 <input type="radio" name="addMode" value="seat" checked>
-                <span style="margin-left:4px;">Tambah Kursi</span>
+                <span>Tambah Kursi</span>
             </label>
-            <label style="cursor:pointer;">
+            <label class="layout-mode-option">
                 <input type="radio" name="addMode" value="bagasi">
-                <span style="margin-left:4px;">Tambah Bagasi</span>
+                <span>Tambah Bagasi</span>
             </label>
         </div>
 
-        <div class="layout-hint" style="font-size:12px;color:#6b7280;margin-bottom:8px;">
+        <div class="layout-hint">
             Klik <strong>+</strong> untuk menambah kursi/bagasi. Klik kursi untuk menghapus.
         </div>
 
         <div id="seat-grid" class="seat-grid"></div>
 
-        <div class="actions" style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-            <button id="add-row-btn" class="inline-small">+ Baris</button>
-            <button id="remove-row-btn" class="inline-small" style="color:#dc3545;">- Baris</button>
-            <button id="add-col-btn" class="inline-small">+ Kolom</button>
-            <button id="remove-col-btn" class="inline-small" style="color:#dc3545;">- Kolom</button>
+        <div class="actions layout-grid-actions">
+            <button type="button" id="add-row-btn" class="inline-small">+ Baris</button>
+            <button type="button" id="remove-row-btn" class="inline-small">- Baris</button>
+            <button type="button" id="add-col-btn" class="inline-small">+ Kolom</button>
+            <button type="button" id="remove-col-btn" class="inline-small">- Kolom</button>
         </div>
 
-        <div class="actions" style="display:flex;gap:12px;margin-top:12px;">
-            <button id="reset-btn" class="inline-small">Reset Layout</button>
-            <button id="save-btn" class="btn-bright" style="flex:1;background:#2563eb;color:#fff;">Simpan
+        <div class="actions layout-grid-actions layout-grid-actions-primary">
+            <button type="button" id="reset-btn" class="inline-small">Reset Layout</button>
+            <button type="button" id="save-btn" class="btn-bright layout-primary-action">Simpan
                 Layout</button>
         </div>
 
-        <div id="layout-msg" style="margin-top:12px;font-size:14px;padding:8px;border-radius:6px;display:none;"></div>
+        <div id="layout-msg" class="layout-message"></div>
     </div>
 </div>
-
-<style>
-    .popup-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.4);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-
-    .popup-content {
-        background: #fff;
-        padding: 24px;
-        border-radius: 12px;
-        min-width: 320px;
-        max-width: 500px;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-        position: relative;
-    }
-
-    .popup-close {
-        position: absolute;
-        top: 12px;
-        right: 18px;
-        font-size: 28px;
-        cursor: pointer;
-        color: #6b7280;
-        line-height: 1;
-    }
-
-    .popup-close:hover {
-        color: #374151;
-    }
-
-    .seat-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 16px;
-        background: #f9fafb;
-        border-radius: 8px;
-        border: 2px solid #e5e7eb;
-    }
-
-    .grid-row {
-        display: grid;
-        grid-template-columns: repeat(var(--cols, 3), 1fr);
-        gap: 8px;
-    }
-
-    .cell {
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 14px;
-        background: #e5e7eb;
-        transition: all 0.2s ease;
-        user-select: none;
-    }
-
-    .cell.fixed {
-        cursor: not-allowed;
-        opacity: 0.9;
-    }
-
-    .cell.driver {
-        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        color: #000;
-        border: 2px solid #d97706;
-    }
-
-    .cell.bagasi {
-        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-        color: #fff;
-        border: 2px solid #374151;
-    }
-
-    .cell.clickable {
-        cursor: pointer;
-        background: #ffffff;
-        border: 2px dashed #d1d5db;
-    }
-
-    .cell.clickable:hover {
-        background: #e0e7ef;
-        border-color: #158303;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(21, 131, 3, 0.2);
-    }
-
-    .cell.seat {
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-        color: #1e40af;
-        border: 2px solid #3b82f6;
-        cursor: pointer;
-    }
-
-    .cell.seat:hover {
-        background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-    }
-
-    .cell.bagasi-custom {
-        background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%);
-        color: #1f2937;
-        border: 2px solid #6b7280;
-        cursor: pointer;
-    }
-
-    .cell.bagasi-custom:hover {
-        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 600px) {
-        .popup-content {
-            padding: 16px;
-            width: 95vw;
-            max-height: 85vh;
-        }
-
-        .seat-grid {
-            padding: 12px;
-            gap: 6px;
-        }
-
-        .cell {
-            min-height: 42px;
-            font-size: 12px;
-        }
-
-        .grid-row {
-            gap: 6px;
-        }
-    }
-</style>
 
 <script>
     document.getElementById('filter_unit_input')?.addEventListener('input', function () {
