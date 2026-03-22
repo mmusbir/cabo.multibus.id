@@ -4,10 +4,12 @@
     { "src": "admin.php", "use": "vercel-php@0.6.2" },
     { "src": "login.php", "use": "vercel-php@0.6.2" },
     { "src": "logout.php", "use": "vercel-php@0.6.2" },
-    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "index.php", "use": "vercel-php@0.6.2" },
     { "src": "assets/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/views/.*", "dest": "/index.php" },
+    { "src": "/(index\\.html)?", "dest": "/index.php" },
     { "src": "/admin", "dest": "/admin.php" },
     { "src": "/login", "dest": "/login.php" },
     { "src": "/logout", "dest": "/logout.php" }

@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]
             );
 
-            // 6. Redirect to Protected Page (Main Admin)
-            header('Location: admin.php');
+            // 6. Redirect to Booking Page after successful login
+            header('Location: index.php');
             exit;
         } else {
             $error_msg = "Username atau Password salah!";

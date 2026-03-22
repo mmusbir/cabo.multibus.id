@@ -135,7 +135,7 @@
         </div>
       </nav>
       <div class="topbar-right">
-        <a href="index.html" class="inline-small btn-booking">Booking Area</a>
+        <a href="index.php" class="inline-small btn-booking">Booking Area</a>
 
         <div class="profile-dropdown">
           <button class="profile-btn" id="profileMenuBtn">
@@ -294,7 +294,7 @@
 <?php else: ?>
   <div class="topbar">
     <div class="topbar-inner" style="justify-content:flex-end;">
-      <a href="index.html" class="inline-small btn-booking">Buat Booking</a>
+      <a href="index.php" class="inline-small btn-booking">Buat Booking</a>
     </div>
   </div>
 <?php endif; ?>
@@ -450,7 +450,7 @@
   </div>
 
   <!-- Floating Action Button for Mobile -->
-  <a href="index.html" class="fab-booking" title="Buat Booking">
+  <a href="index.php" class="fab-booking" title="Buat Booking">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <line x1="12" y1="5" x2="12" y2="19"></line>
