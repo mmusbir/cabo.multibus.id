@@ -1,0 +1,242 @@
+body.admin-bootstrap-page {
+    background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page a {
+    text-decoration: none;
+}
+
+body.admin-bootstrap-page h2,
+body.admin-bootstrap-page h3 {
+    padding: 0;
+    margin-bottom: 1rem;
+    color: #0f172a;
+    text-shadow: none;
+}
+
+body.admin-bootstrap-page .admin-bootstrap-container {
+    max-width: 1540px;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+body.admin-bootstrap-page .admin-bootstrap-grid {
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+body.admin-bootstrap-page .admin-main-column {
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .topbar {
+    background: rgba(255, 255, 255, 0.94);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 0.75rem 1.75rem rgba(15, 23, 42, 0.08);
+    height: auto;
+    min-height: 72px;
+}
+
+body.admin-bootstrap-page .topbar-inner {
+    max-width: 1540px;
+    padding: 0.85rem 1rem;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .nav a,
+body.admin-bootstrap-page .nav-more button {
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .nav a.active,
+body.admin-bootstrap-page #moreMenuDropdown a.active {
+    background: #e7f1ff;
+    color: #0d6efd;
+}
+
+body.admin-bootstrap-page #moreMenuDropdown,
+body.admin-bootstrap-page .profile-menu {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+}
+
+body.admin-bootstrap-page .btn-booking {
+    background: #198754;
+    color: #fff !important;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.18);
+}
+
+body.admin-bootstrap-page .btn-booking:hover {
+    background: #157347;
+}
+
+body.admin-bootstrap-page .profile-btn {
+    background: #fff;
+    border: 1px solid #d6dde8;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .card,
+body.admin-bootstrap-page .modern-form-card,
+body.admin-bootstrap-page .admin-card-compact {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+}
+
+body.admin-bootstrap-page .card {
+    padding: 1.25rem;
+}
+
+body.admin-bootstrap-page .admin-card-compact:hover {
+    border-color: rgba(13, 110, 253, 0.3);
+    box-shadow: 0 1.25rem 2.5rem rgba(15, 23, 42, 0.12);
+}
+
+body.admin-bootstrap-page .acc-id {
+    background: #f8fafc;
+    border-color: #d6dde8;
+}
+
+body.admin-bootstrap-page .acc-btn {
+    background: #f8fafc;
+    border: 1px solid #d6dde8;
+    color: #334155;
+}
+
+body.admin-bootstrap-page .acc-btn:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #0d6efd;
+}
+
+body.admin-bootstrap-page .acc-btn.danger {
+    background: #fff5f5;
+    border-color: #f5c2c7;
+    color: #dc3545;
+}
+
+body.admin-bootstrap-page .acc-btn.danger:hover {
+    background: #ffe3e6;
+    border-color: #f1aeb5;
+    color: #b02a37;
+}
+
+body.admin-bootstrap-page input,
+body.admin-bootstrap-page select,
+body.admin-bootstrap-page textarea,
+body.admin-bootstrap-page .form-control,
+body.admin-bootstrap-page .modern-input,
+body.admin-bootstrap-page .modern-select {
+    background: #fff;
+    border: 1px solid #d6dde8;
+    box-shadow: none;
+    color: #0f172a;
+}
+
+body.admin-bootstrap-page input:focus,
+body.admin-bootstrap-page select:focus,
+body.admin-bootstrap-page textarea:focus,
+body.admin-bootstrap-page .form-control:focus,
+body.admin-bootstrap-page .modern-input:focus,
+body.admin-bootstrap-page .modern-select:focus {
+    border-color: rgba(13, 110, 253, 0.55);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.14);
+    outline: none;
+}
+
+body.admin-bootstrap-page .modern-input:hover,
+body.admin-bootstrap-page .modern-select:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .btn-modern {
+    background: #0d6efd;
+    border: 1px solid #0d6efd;
+    box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.18);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+body.admin-bootstrap-page .btn-modern:hover {
+    background: #0b5ed7;
+    border-color: #0a58ca;
+    box-shadow: 0 1rem 1.75rem rgba(13, 110, 253, 0.22);
+}
+
+body.admin-bootstrap-page .btn-modern.secondary {
+    background: #fff;
+    color: #475569;
+    border: 1px solid #d6dde8;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .btn-modern.secondary:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+body.admin-bootstrap-page .search-bar-modern {
+    background: #fff;
+    border: 1px solid #d6dde8;
+    border-radius: 999px;
+    box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.05);
+}
+
+body.admin-bootstrap-page .search-bar-modern:focus-within {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+    border-color: rgba(13, 110, 253, 0.45);
+    transform: none;
+}
+
+body.admin-bootstrap-page .search-btn-icon {
+    background: #0d6efd;
+    color: #fff;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .search-btn-icon:hover {
+    background: #0b5ed7;
+}
+
+body.admin-bootstrap-page .toast {
+    background: #0f172a;
+    color: #fff;
+    border-radius: 0.85rem;
+    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.2);
+}
+
+@media (max-width: 1199px) {
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        margin-top: 1rem;
+    }
+
+    body.admin-bootstrap-page .topbar-inner {
+        flex-wrap: wrap;
+    }
+
+    body.admin-bootstrap-page .nav {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 899px) {
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        margin-bottom: 5rem;
+    }
+
+    body.admin-bootstrap-page .card {
+        padding: 1rem;
+    }
+}

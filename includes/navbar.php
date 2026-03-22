@@ -2,9 +2,9 @@
   $auth = getAuthenticatedUser();
   if ($auth): 
 ?>
-  <div class="topbar">
-    <div class="topbar-inner">
-      <nav class="nav" id="siteNav">
+  <div class="topbar navbar navbar-expand-lg sticky-top">
+    <div class="topbar-inner container-fluid">
+      <nav class="nav d-flex flex-wrap align-items-center" id="siteNav">
         <a href="#bookings" data-target="bookings">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,7 +134,7 @@
           </div>
         </div>
       </nav>
-      <div class="topbar-right">
+      <div class="topbar-right d-flex align-items-center">
         <a href="index.php" class="inline-small btn-booking">Booking Area</a>
 
         <div class="profile-dropdown">

@@ -772,8 +772,12 @@ if (!isset($_REQUEST['action'])):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/admin.css?v=10">
   <link rel="stylesheet" href="assets/css/navbar.css?v=10">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=1">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -795,15 +799,15 @@ if (!isset($_REQUEST['action'])):
 
 </head>
 
-<body>
+<body class="admin-bootstrap-page">
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <?php include 'includes/navbar.php'; ?>
 
-  <div class="container">
-    <div class="layout">
-      <div class="left">
+  <main class="container container-fluid admin-bootstrap-container">
+    <div class="layout admin-bootstrap-grid">
+      <div class="left admin-main-column">
         <!-- BOOKINGS -->
         <?php include 'includes/bookings.php'; ?>
 
@@ -845,11 +849,11 @@ if (!isset($_REQUEST['action'])):
       </div>
 
       <!-- RIGHT column -->
-      <div class="right">
+      <div class="right admin-side-column">
       </div>
 
     </div>
-  </div>
+  </main>
 
   <!-- Bottom Navbar for Mobile -->
   <!-- Bottom Navbar for Mobile moved to includes/navbar.php -->
@@ -2541,6 +2545,9 @@ Harga: ${price}`;
 
     /* Responsive styles moved to includes/navbar.php */
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
