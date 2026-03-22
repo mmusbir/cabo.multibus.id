@@ -1581,7 +1581,7 @@ if (!isset($_REQUEST['action'])):
       const jamSelect = document.getElementById('view_jam');
       jamSelect.innerHTML = '<option value="">Loading...</option>';
       if (!rute || !tanggal) {
-        jamSelect.innerHTML = '<option value="">-- pilih jam --</option>';
+        jamSelect.innerHTML = '<option value="">-- Pilih Rute & Tanggal Dulu --</option>';
         return;
       }
       try {
@@ -1591,8 +1591,15 @@ if (!isset($_REQUEST['action'])):
         url.searchParams.set('tanggal', tanggal);
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
         const js = await res.json();
-        if (js.success && js.schedules && js.schedules.length) {
-          jamSelect.innerHTML = '<option value="">-- pilih jam --</option>';
+        
+        if (!js.success) {
+          console.error('API Error:', js);
+          jamSelect.innerHTML = '<option value="">Gagal load jam - ' + (js.message || js.error) + '</option>';
+          return;
+        }
+        
+        if (js.schedules && js.schedules.length > 0) {
+          jamSelect.innerHTML = '<option value="">-- Pilih Jam --</option>';
           let maxUnits = 1;
           js.schedules.forEach(sch => {
             jamSelect.innerHTML += `<option value="${sch.jam}">${sch.jam}</option>`;
@@ -1604,12 +1611,14 @@ if (!isset($_REQUEST['action'])):
             unitSelect.innerHTML += `<option value="${i}">Unit ${i}</option>`;
           }
         } else {
-          jamSelect.innerHTML = '<option value="">Tidak ada jam</option>';
+          // No schedules for this route/date combination
+          jamSelect.innerHTML = '<option value="">Tidak ada jadwal untuk rute & tanggal ini. Buat jadwal di menu Schedules.</option>';
           const unitSelect = document.getElementById('view_unit');
           unitSelect.innerHTML = '<option value="1">Unit 1</option>';
         }
       } catch (e) {
-        jamSelect.innerHTML = '<option value="">Gagal load jam</option>';
+        console.error('Fetch Error:', e);
+        jamSelect.innerHTML = '<option value="">Error: ' + e.message + '</option>';
       }
     }
     // Auto-refresh jam ketika rute atau tanggal berubah
