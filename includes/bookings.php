@@ -382,6 +382,10 @@
         document.getElementById('bookings_tbody').style.display = 'flex';
         document.getElementById('bookings_pagination').style.display = 'flex';
       }
+
+      if (typeof window.syncAdminNavState === 'function') {
+        window.syncAdminNavState('bookings');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {

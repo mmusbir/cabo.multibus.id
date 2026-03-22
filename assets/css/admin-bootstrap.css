@@ -3547,3 +3547,402 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         display: none;
     }
 }
+
+/* --- Kinetic Admin Navigation --- */
+body.admin-bootstrap-page .topbar.kinetic-topbar {
+    background: rgba(17, 19, 25, 0.96);
+    border-bottom: 1px solid rgba(88, 66, 55, 0.2);
+    box-shadow: 0 12px 30px rgba(12, 14, 20, 0.28);
+    backdrop-filter: blur(16px);
+    min-height: 60px;
+}
+
+body.admin-bootstrap-page .kinetic-topbar-inner {
+    position: relative;
+    max-width: 1540px;
+    padding: 0.8rem 1.2rem;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-topbar-brand-wrap {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .kinetic-topbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: #f97316;
+    text-decoration: none;
+}
+
+body.admin-bootstrap-page .kinetic-brand-icon {
+    font-size: 1.55rem;
+    line-height: 1;
+}
+
+body.admin-bootstrap-page .kinetic-brand-text {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .kinetic-primary-nav {
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+body.admin-bootstrap-page .kinetic-primary-nav a {
+    color: rgba(224, 192, 177, 0.7);
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.35rem 0;
+    border-radius: 0;
+    min-height: auto;
+    position: relative;
+}
+
+body.admin-bootstrap-page .kinetic-primary-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.35rem;
+    height: 2px;
+    border-radius: 999px;
+    background: #f97316;
+    opacity: 0;
+    transform: scaleX(0.6);
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-primary-nav a:hover,
+body.admin-bootstrap-page .kinetic-primary-nav a.active {
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-primary-nav a.active::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+body.admin-bootstrap-page .kinetic-topbar-right {
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .kinetic-icon-btn {
+    width: 2.45rem;
+    height: 2.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #94a3b8;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-icon-btn:hover,
+body.admin-bootstrap-page .kinetic-icon-btn:focus {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f97316;
+    outline: none;
+}
+
+body.admin-bootstrap-page .kinetic-profile-btn {
+    padding: 0;
+    min-height: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .kinetic-profile-avatar {
+    width: 2.15rem;
+    height: 2.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #1e1f26;
+    border: 1px solid rgba(249, 115, 22, 0.24);
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+body.admin-bootstrap-page .kinetic-profile-menu,
+body.admin-bootstrap-page .kinetic-more-dropdown {
+    background: #191b22;
+    border: 1px solid rgba(88, 66, 55, 0.35);
+    box-shadow: 0 22px 45px rgba(12, 14, 20, 0.42);
+    border-radius: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-more-dropdown {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 5.35rem;
+    min-width: 280px;
+    max-width: min(360px, 92vw);
+    padding: 0.55rem;
+    display: none;
+    z-index: 1002;
+}
+
+body.admin-bootstrap-page .kinetic-profile-menu {
+    min-width: 220px;
+    padding: 0.45rem;
+}
+
+body.admin-bootstrap-page .kinetic-profile-meta {
+    padding: 0.75rem 0.8rem 0.6rem;
+}
+
+body.admin-bootstrap-page .kinetic-profile-name {
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .kinetic-profile-role {
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+}
+
+body.admin-bootstrap-page .kinetic-more-dropdown a,
+body.admin-bootstrap-page .kinetic-profile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.78rem 0.85rem;
+    color: #d7dde7;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border-radius: 0.85rem;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-more-dropdown a:hover,
+body.admin-bootstrap-page .kinetic-profile-menu a:hover,
+body.admin-bootstrap-page .kinetic-more-dropdown a.active {
+    background: #282a30;
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-more-dropdown .material-symbols-outlined,
+body.admin-bootstrap-page .kinetic-profile-menu .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+body.admin-bootstrap-page .kinetic-topbar .menu-section-header {
+    padding: 0.9rem 0.85rem 0.35rem;
+    color: #7c8798;
+    border-top: 1px solid rgba(88, 66, 55, 0.2);
+}
+
+body.admin-bootstrap-page .kinetic-topbar .menu-section-header:first-child {
+    border-top: 0;
+    padding-top: 0.35rem;
+}
+
+body.admin-bootstrap-page .kinetic-public-booking {
+    background: #f97316;
+    color: #341100 !important;
+    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.22);
+}
+
+body.admin-bootstrap-page .kinetic-public-booking:hover {
+    background: #fb923c;
+}
+
+body.admin-bootstrap-page .kinetic-bottom-nav {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    background: #111319;
+    border-top: 1px solid rgba(88, 66, 55, 0.2);
+    box-shadow: 0 -8px 22px rgba(12, 14, 20, 0.45);
+}
+
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-width: 4.1rem;
+    padding: 0.25rem 0.35rem;
+    color: rgba(224, 192, 177, 0.6);
+    text-decoration: none;
+    border-radius: 0.9rem;
+    background: transparent;
+    border: 0;
+}
+
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .material-symbols-outlined {
+    font-size: 1.35rem;
+}
+
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .nav-label {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.active {
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.08);
+}
+
+body.admin-bootstrap-page #bottomMoreModal {
+    display: none;
+    align-items: flex-end;
+    background: rgba(12, 14, 20, 0.55);
+    backdrop-filter: blur(8px);
+}
+
+body.admin-bootstrap-page #bottomMoreModal.show {
+    display: flex;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    padding: 1rem 1rem calc(1.45rem + env(safe-area-inset-bottom));
+    border-radius: 1.5rem 1.5rem 0 0;
+    background: #191b22;
+    box-shadow: 0 -20px 40px rgba(12, 14, 20, 0.42);
+    transform: translateY(100%);
+    transition: transform 0.28s ease;
+}
+
+body.admin-bootstrap-page #bottomMoreModal.show .bottom-more-content {
+    transform: translateY(0);
+}
+
+body.admin-bootstrap-page #bottomMoreModal .sheet-handle {
+    width: 3rem;
+    height: 0.3rem;
+    margin: 0 auto 1rem;
+    border-radius: 999px;
+    background: rgba(224, 192, 177, 0.2);
+}
+
+body.admin-bootstrap-page #bottomMoreModal .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0.45rem 0 1rem;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .menu-section-header {
+    padding: 1rem 0.25rem 0.4rem;
+    color: #7c8798;
+    border-top: 1px solid rgba(88, 66, 55, 0.2);
+}
+
+body.admin-bootstrap-page #bottomMoreModal .menu-section-header:first-child {
+    border-top: 0;
+    padding-top: 0.35rem;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn {
+    width: 100%;
+    min-height: 5.4rem;
+    padding: 0.8rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    border-radius: 1rem;
+    background: #111319;
+    border: 1px solid rgba(88, 66, 55, 0.2);
+    color: #d7dde7;
+    text-decoration: none;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn .material-symbols-outlined {
+    font-size: 1.3rem;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn .nav-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn:hover,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn.active {
+    color: #f97316;
+    background: #1e1f26;
+}
+
+body.admin-bootstrap-page #bottomMoreModal .nav-btn-close {
+    color: #fda4af;
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .kinetic-topbar-inner {
+        padding: 0.8rem 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-brand-text {
+        font-size: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-more-dropdown {
+        display: none !important;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav {
+        display: flex;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .kinetic-topbar-inner {
+        padding: 0.75rem 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-icon-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-profile-avatar {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    body.admin-bootstrap-page #bottomMoreModal .menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
