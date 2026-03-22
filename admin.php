@@ -781,11 +781,12 @@ if (!isset($_REQUEST['action'])):
   <title>Admin Panel — Hiace Booking</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=5">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=6">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1281,6 +1282,9 @@ if (!isset($_REQUEST['action'])):
         if (tbody) tbody.innerHTML = js.rows;
         if (pagination) pagination.innerHTML = js.pagination;
         if (info) info.textContent = (js.total !== undefined ? ('Total: ' + js.total) : '');
+        if (typeof window.updateBookingCommandSummary === 'function' && ['bookings', 'charters', 'luggage'].includes(target)) {
+          window.updateBookingCommandSummary(target, js.total);
+        }
         if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
         if (target === 'luggage') { attachLuggageHandlers(); }
       } catch (e) { if (tbody) tbody.innerHTML = '<div class="small admin-grid-message">Kesalahan koneksi</div>'; }

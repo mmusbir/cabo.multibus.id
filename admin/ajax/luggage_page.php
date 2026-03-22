@@ -1,7 +1,7 @@
 <?php
 /**
  * admin/ajax/luggage_page.php - Handle luggage shipment listing
- * Only shows: today's data + status='pending' (Need Input) + payment='Belum Lunas'
+ * Only shows: today's data + status='pending' + payment='Belum Lunas'
  */
 
 global $conn;
@@ -41,49 +41,71 @@ if (empty($rows)) {
         $status = $l['status'];
         $payment = $l['payment_status'];
 
-        $statusLabel = 'Need Input';
-        $statusClass = 'warning';
+        $statusLabel = 'NEED INPUT';
+        $stateClass = 'warning';
+        $noteText = 'Menunggu proses bagasi';
+        $noteClass = 'warning';
+
         if ($status === 'active') {
-            $statusLabel = 'Diproses';
-            $statusClass = 'active';
+            $statusLabel = 'READY';
+            $stateClass = 'ready';
+            $noteText = 'Bagasi sedang diproses';
+            $noteClass = '';
         } elseif ($status === 'canceled') {
-            $statusLabel = 'Dibatalkan';
-            $statusClass = 'canceled';
+            $statusLabel = 'CANCELED';
+            $stateClass = 'danger';
+            $noteText = 'Pengiriman dibatalkan';
+            $noteClass = 'danger';
+        } elseif ($payment === 'Lunas') {
+            $statusLabel = 'LOADING';
+            $stateClass = 'loading';
+            $noteText = 'Pembayaran sudah masuk';
+            $noteClass = '';
         }
 
-        $paymentClass = ($payment === 'Lunas') ? 'paid' : 'warning';
         $serviceName = $l['service_name'] ?: '-';
-        $noteText = trim($l['notes'] ?? '');
+        $noteExtra = trim($l['notes'] ?? '');
+        $tripDate = !empty($l['created_at']) ? strtoupper(date('d M', strtotime($l['created_at']))) : '-';
+        $tripHour = !empty($l['created_at']) ? date('H:i', strtotime($l['created_at'])) : '--:--';
 
-        echo '<div class="admin-card-compact">';
-        echo '  <div class="acc-header">';
-        echo '    <div>';
-        echo '      <div class="acc-title">' . htmlspecialchars($l['sender_name']) . ' -> ' . htmlspecialchars($l['receiver_name']) . '</div>';
-        echo '      <div class="admin-card-subtitle">Layanan bagasi</div>';
+        echo '<div class="admin-card-compact kinetic-trip-card">';
+        echo '  <div class="kinetic-trip-card-inner">';
+        echo '    <div class="kinetic-trip-time">';
+        echo '      <span class="kinetic-trip-date">' . htmlspecialchars($tripDate) . '</span>';
+        echo '      <span class="kinetic-trip-hour">' . htmlspecialchars($tripHour) . '</span>';
+        echo '      <span class="kinetic-trip-zone">LOG</span>';
         echo '    </div>';
-        echo '    <div class="admin-card-tags">';
-        echo '      <div class="acc-id">#LUG' . str_pad($l['id'], 5, '0', STR_PAD_LEFT) . '</div>';
-        echo '      <span class="admin-status-pill ' . $paymentClass . '">' . htmlspecialchars($payment) . '</span>';
-        echo '    </div>';
-        echo '  </div>';
-
-        echo '  <div class="acc-body">';
-        echo '    <div class="acc-row"><div class="acc-label">Layanan</div><div class="acc-val admin-value-stack"><div><strong>' . htmlspecialchars($serviceName) . '</strong></div><div class="admin-card-subtitle">Qty: ' . intval($l['quantity']) . '</div></div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Total</div><div class="acc-val"><span class="admin-price-main">Rp ' . number_format($l['price'], 0, ',', '.') . '</span></div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Pengirim</div><div class="acc-val">' . htmlspecialchars($l['sender_phone']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Penerima</div><div class="acc-val">' . htmlspecialchars($l['receiver_phone']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Catatan</div><div class="acc-val">' . htmlspecialchars($noteText !== '' ? $noteText : '-') . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Status</div><div class="acc-val"><span class="bc-status ' . $statusClass . '">' . $statusLabel . '</span></div></div>';
-        echo '  </div>';
-
-        echo '  <div class="acc-actions">';
+        echo '    <div class="kinetic-trip-main">';
+        echo '      <div>';
+        echo '        <div class="kinetic-trip-meta">';
+        echo '          <span class="kinetic-trip-state ' . $stateClass . '"><span class="status-dot"></span>' . htmlspecialchars($statusLabel) . '</span>';
+        echo '          <span class="kinetic-trip-id">#LUG' . str_pad($l['id'], 5, '0', STR_PAD_LEFT) . '</span>';
+        echo '        </div>';
+        echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($l['sender_name']) . ' -> ' . htmlspecialchars($l['receiver_name']) . '</h4>';
+        echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars($serviceName) . ' / Qty ' . intval($l['quantity']) . '</div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call</span><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call_received</span>' . htmlspecialchars($l['receiver_phone']) . '</div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">notes</span>' . htmlspecialchars($noteExtra !== '' ? $noteExtra : 'Tanpa catatan') . '</div>';
+        echo '      </div>';
+        echo '      <div class="kinetic-trip-stat">';
+        echo '        <div class="kinetic-trip-stat-label">Shipment Snapshot</div>';
+        echo '        <div class="kinetic-trip-progress">';
+        echo '          <div class="kinetic-trip-progress-bar"><span class="kinetic-trip-progress-fill" style="width:' . ($payment === 'Lunas' ? '100' : ($status === 'active' ? '76' : '42')) . '%"></span></div>';
+        echo '          <div class="kinetic-trip-progress-value">Rp ' . number_format($l['price'], 0, ',', '.') . '<span> total</span></div>';
+        echo '        </div>';
+        echo '        <div class="kinetic-trip-note ' . $noteClass . '"><span class="material-symbols-outlined">inventory_2</span>' . htmlspecialchars($noteText) . '</div>';
+        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">payments</span>Status pembayaran: ' . htmlspecialchars($payment) . '</div>';
+        echo '      </div>';
+        echo '      <div class="kinetic-trip-actions">';
         if ($status === 'pending') {
-            echo '    <a href="#" class="acc-btn luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi">Input</a>';
+            echo '        <a href="#" class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><span class="material-symbols-outlined">edit_note</span>Input</a>';
         }
         if ($payment !== 'Lunas') {
-            echo '    <a href="#" class="acc-btn success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas">Bayar</a>';
+            echo '        <a href="#" class="kinetic-trip-action success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas"><span class="material-symbols-outlined">task_alt</span>Bayar</a>';
         }
-        echo '    <a href="#" class="acc-btn danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" title="Batalkan bagasi">Batalkan</a>';
+        echo '        <a href="#" class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" title="Batalkan bagasi"><span class="material-symbols-outlined">block</span>Batalkan</a>';
+        echo '      </div>';
+        echo '    </div>';
         echo '  </div>';
         echo '</div>';
     }

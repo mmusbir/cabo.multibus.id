@@ -69,66 +69,76 @@ if (empty($rows)) {
         $fmtId = formatBookingId($b['id'], $b['created_at']);
         $isPaid = ($b['pembayaran'] === 'Lunas');
         $payStatus = $b['pembayaran'] ?? 'Belum Lunas';
-        $payClass = 'warning';
+        $statusLabel = $b['status'] === 'active' ? 'READY' : 'CANCELED';
+        $stateClass = $b['status'] === 'active' ? 'ready' : 'danger';
+        $noteText = 'Booking Open';
+        $noteClass = 'muted';
+
         if ($payStatus === 'Lunas') {
-            $payClass = 'paid';
+            $noteText = 'Manifest Verified';
+            $noteClass = '';
         } elseif (in_array($payStatus, ['Redbus', 'Traveloka'], true)) {
-            $payClass = 'info';
+            $noteText = 'Channel Partner';
+            $noteClass = 'warning';
+        } elseif ($b['status'] !== 'active') {
+            $noteText = 'Booking Dibatalkan';
+            $noteClass = 'danger';
         }
 
-        $statusClass = $b['status'] === 'active' ? 'active' : 'canceled';
-        $statusLabel = $b['status'] === 'active' ? 'Aktif' : 'Dibatalkan';
         $pickupPoint = trim($b['pickup_point'] ?? '');
         $segmentName = trim($b['segment_rute'] ?? '');
         $price = floatval($b['price'] ?? 0);
         $disc = floatval($b['discount'] ?? 0);
-        $finalPrice = $price - $disc;
+        $finalPrice = max(0, $price - $disc);
+        $tripDate = !empty($b['tanggal']) ? strtoupper(date('d M', strtotime($b['tanggal']))) : '-';
+        $tripHour = !empty($b['jam']) ? substr($b['jam'], 0, 5) : '--:--';
+        $subtitle = $segmentName !== '' ? $segmentName : $b['rute'];
+        $pickupLabel = $pickupPoint !== '' ? $pickupPoint : 'Pickup belum diisi';
 
-        echo '<div class="admin-card-compact">';
-        echo '  <div class="acc-header">';
-        echo '    <div>';
-        echo '      <div class="acc-title">' . htmlspecialchars($b['name']) . '</div>';
-        echo '      <div class="admin-card-subtitle">' . htmlspecialchars($b['rute']) . '</div>';
+        echo '<div class="admin-card-compact kinetic-trip-card">';
+        echo '  <div class="kinetic-trip-card-inner">';
+        echo '    <div class="kinetic-trip-time">';
+        echo '      <span class="kinetic-trip-date">' . htmlspecialchars($tripDate) . '</span>';
+        echo '      <span class="kinetic-trip-hour">' . htmlspecialchars($tripHour) . '</span>';
+        echo '      <span class="kinetic-trip-zone">WIB</span>';
         echo '    </div>';
-        echo '    <div class="admin-card-tags">';
-        echo '      <div class="acc-id">' . $fmtId . '</div>';
-        echo '      <span class="admin-status-pill ' . $payClass . '">' . htmlspecialchars($payStatus) . '</span>';
-        echo '    </div>';
-        echo '  </div>';
-
-        echo '  <div class="acc-body">';
-        echo '    <div class="acc-row"><div class="acc-label">Telepon</div><div class="acc-val">' . htmlspecialchars($b['phone']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Jadwal</div><div class="acc-val">' . htmlspecialchars($b['tanggal']) . ' - ' . htmlspecialchars(substr($b['jam'], 0, 5)) . '</div></div>';
-        if ($pickupPoint !== '') {
-            echo '    <div class="acc-row"><div class="acc-label">Pickup</div><div class="acc-val">' . htmlspecialchars($pickupPoint) . '</div></div>';
-        }
-        if ($segmentName !== '' || $price > 0) {
-            echo '    <div class="acc-row"><div class="acc-label">Tarif</div><div class="acc-val admin-value-stack">';
-            if ($segmentName !== '') {
-                echo '      <div>' . htmlspecialchars($segmentName) . '</div>';
-            }
-            if ($price > 0) {
-                echo '      <div class="admin-price-main">Rp ' . number_format($finalPrice, 0, ',', '.') . '</div>';
-                if ($disc > 0) {
-                    echo '      <div class="admin-price-note">Harga awal Rp ' . number_format($price, 0, ',', '.') . ' - diskon Rp ' . number_format($disc, 0, ',', '.') . '</div>';
-                }
-            }
-            echo '    </div></div>';
-        }
-        echo '    <div class="acc-row"><div class="acc-label">Unit / Kursi</div><div class="acc-val">Unit ' . intval($b['unit']) . ' / Kursi ' . htmlspecialchars($b['seat']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Status</div><div class="acc-val"><span class="bc-status ' . $statusClass . '">' . $statusLabel . '</span></div></div>';
-        echo '  </div>';
-
-        echo '  <div class="acc-actions">';
-        if ($b['status'] !== 'canceled') {
-            echo '    <a href="#" class="acc-btn edit-booking-btn" data-id="' . $b['id'] . '" data-unit="' . htmlspecialchars($b['unit']) . '" data-rute="' . htmlspecialchars($b['rute']) . '" data-tanggal="' . htmlspecialchars($b['tanggal']) . '" data-jam="' . htmlspecialchars(substr($b['jam'], 0, 5)) . '" data-seat="' . htmlspecialchars($b['seat']) . '" data-pickup="' . htmlspecialchars($pickupPoint) . '" data-segment-id="' . intval($b['segment_id']) . '" data-price="' . floatval($b['price']) . '" data-discount="' . floatval($b['discount']) . '" title="Edit booking">Edit</a>';
-            if (!$isPaid) {
-                echo '    <a href="#" class="acc-btn success mark-paid" data-id="' . $b['id'] . '" title="Tandai lunas">Bayar</a>';
-            }
-            echo '    <a href="#" class="acc-btn danger cancel-link" data-id="' . $b['id'] . '" data-name="' . htmlspecialchars($b['name']) . '" data-phone="' . htmlspecialchars($b['phone']) . '" data-seat="' . htmlspecialchars($b['seat']) . '" data-tanggal="' . htmlspecialchars($b['tanggal']) . '" data-jam="' . htmlspecialchars(substr($b['jam'], 0, 5)) . '" title="Batalkan booking">Batalkan</a>';
+        echo '    <div class="kinetic-trip-main">';
+        echo '      <div>';
+        echo '        <div class="kinetic-trip-meta">';
+        echo '          <span class="kinetic-trip-state ' . $stateClass . '"><span class="status-dot"></span>' . htmlspecialchars($statusLabel) . '</span>';
+        echo '          <span class="kinetic-trip-id">' . htmlspecialchars($fmtId) . '</span>';
+        echo '          <span class="status-tag">' . htmlspecialchars($payStatus) . '</span>';
+        echo '        </div>';
+        echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($b['name']) . '</h4>';
+        echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars($subtitle) . '</div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call</span><strong>' . htmlspecialchars($b['phone']) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">event_seat</span>Unit ' . intval($b['unit']) . ' - Kursi ' . htmlspecialchars($b['seat']) . '</div>';
+        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">location_on</span>' . htmlspecialchars($pickupLabel) . '</div>';
+        echo '      </div>';
+        echo '      <div class="kinetic-trip-stat">';
+        echo '        <div class="kinetic-trip-stat-label">Fare Snapshot</div>';
+        echo '        <div class="kinetic-trip-progress">';
+        echo '          <div class="kinetic-trip-progress-bar"><span class="kinetic-trip-progress-fill" style="width:' . ($isPaid ? '100' : '58') . '%"></span></div>';
+        echo '          <div class="kinetic-trip-progress-value">Rp ' . number_format($finalPrice, 0, ',', '.') . '<span> final</span></div>';
+        echo '        </div>';
+        if ($price > 0 && $disc > 0) {
+            echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">sell</span>Harga awal Rp ' . number_format($price, 0, ',', '.') . ' - diskon Rp ' . number_format($disc, 0, ',', '.') . '</div>';
         } else {
-            echo '    <span class="small muted">Booking sudah dibatalkan</span>';
+            echo '        <div class="kinetic-trip-note ' . $noteClass . '"><span class="material-symbols-outlined">info</span>' . htmlspecialchars($noteText) . '</div>';
         }
+        echo '      </div>';
+        echo '      <div class="kinetic-trip-actions">';
+        if ($b['status'] !== 'canceled') {
+            echo '        <a href="#" class="kinetic-trip-action edit-booking-btn" data-id="' . $b['id'] . '" data-unit="' . htmlspecialchars($b['unit']) . '" data-rute="' . htmlspecialchars($b['rute']) . '" data-tanggal="' . htmlspecialchars($b['tanggal']) . '" data-jam="' . htmlspecialchars(substr($b['jam'], 0, 5)) . '" data-seat="' . htmlspecialchars($b['seat']) . '" data-pickup="' . htmlspecialchars($pickupPoint) . '" data-segment-id="' . intval($b['segment_id']) . '" data-price="' . floatval($b['price']) . '" data-discount="' . floatval($b['discount']) . '"><span class="material-symbols-outlined">edit_square</span>Edit</a>';
+            if (!$isPaid) {
+                echo '        <a href="#" class="kinetic-trip-action success mark-paid" data-id="' . $b['id'] . '"><span class="material-symbols-outlined">check_circle</span>Bayar</a>';
+            }
+            echo '        <a href="#" class="kinetic-trip-action danger cancel-link" data-id="' . $b['id'] . '" data-name="' . htmlspecialchars($b['name']) . '" data-phone="' . htmlspecialchars($b['phone']) . '" data-seat="' . htmlspecialchars($b['seat']) . '" data-tanggal="' . htmlspecialchars($b['tanggal']) . '" data-jam="' . htmlspecialchars(substr($b['jam'], 0, 5)) . '"><span class="material-symbols-outlined">block</span>Batalkan</a>';
+        } else {
+            echo '        <span class="kinetic-trip-action muted">Booking sudah dibatalkan</span>';
+        }
+        echo '      </div>';
+        echo '    </div>';
         echo '  </div>';
         echo '</div>';
     }
