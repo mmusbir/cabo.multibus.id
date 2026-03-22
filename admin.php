@@ -694,6 +694,9 @@ if (isset($_GET['delete_segment'])) {
   exit;
 }
 if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
+  @set_time_limit(0);
+  @ini_set('max_execution_time', '0');
+  @ini_set('memory_limit', '512M');
   $fileKey = isset($_FILES['csv_file']) ? 'csv_file' : 'csv';
   if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
     $_SESSION['import_msg'] = 'Upload gagal';
@@ -701,19 +704,21 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
     exit;
   }
   $tmp = $_FILES[$fileKey]['tmp_name'];
-  $rawLines = file($tmp, FILE_IGNORE_NEW_LINES);
-  if (!$rawLines || !count($rawLines)) {
-    $_SESSION['import_msg'] = 'CSV kosong';
-    header('Location: admin.php#customers');
-    exit;
-  }
-  $delimiter = (substr_count($rawLines[0], ';') > substr_count($rawLines[0], ',')) ? ';' : ',';
   $f = fopen($tmp, 'r');
   if (!$f) {
     $_SESSION['import_msg'] = 'Tidak dapat buka file';
     header('Location: admin.php#customers');
     exit;
   }
+  $firstLine = fgets($f);
+  if ($firstLine === false) {
+    $_SESSION['import_msg'] = 'CSV kosong';
+    fclose($f);
+    header('Location: admin.php#customers');
+    exit;
+  }
+  $delimiter = (substr_count($firstLine, ';') > substr_count($firstLine, ',')) ? ';' : ',';
+  rewind($f);
   $header = fgetcsv($f, 0, $delimiter);
   if (!$header) {
     $_SESSION['import_msg'] = 'CSV kosong';
@@ -743,10 +748,12 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   }
   $ok = 0;
   $err = 0;
-  $conn->beginTransaction();
-  while (($row = fgetcsv($f, 0, $delimiter)) !== false) {
-    $name = strtoupper(trim($row[$colIndex['name']] ?? ''));
-    $phone = trim($row[$colIndex['phone']] ?? '');
+  $batchSize = 1000;
+  $rowsBuffer = [];
+  $singleStmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
+
+  $normalizePhone = function ($phone) {
+    $phone = trim((string) $phone);
     $phone = preg_replace('/\D/', '', $phone);
     if (substr($phone, 0, 2) === '62')
       $phone = '0' . substr($phone, 2);
@@ -754,24 +761,62 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
       $phone = '0' . $phone;
     if (strlen($phone) > 13)
       $phone = substr($phone, 0, 13);
+    return $phone;
+  };
+
+  $flushCustomerImportBatch = function (array &$batchRows) use ($conn, $singleStmt, &$ok, &$err) {
+    if (!$batchRows) {
+      return;
+    }
+    $values = [];
+    $params = [];
+    $uniqueRows = array_values($batchRows);
+    foreach ($uniqueRows as $item) {
+      $values[] = '(?,?,?,?)';
+      array_push($params, $item['name'], $item['phone'], $item['address'], $item['pickup']);
+    }
+    $sql = "INSERT INTO customers (name,phone,address,pickup_point) VALUES " . implode(',', $values) . " ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point";
+    try {
+      $conn->prepare($sql)->execute($params);
+      $ok += count($uniqueRows);
+    } catch (PDOException $batchError) {
+      foreach ($uniqueRows as $item) {
+        try {
+          if ($singleStmt->execute([$item['name'], $item['phone'], $item['address'], $item['pickup']])) {
+            $ok++;
+          } else {
+            $err++;
+          }
+        } catch (PDOException $rowError) {
+          $err++;
+        }
+      }
+    }
+    $batchRows = [];
+  };
+
+  while (($row = fgetcsv($f, 0, $delimiter)) !== false) {
+    $name = strtoupper(trim($row[$colIndex['name']] ?? ''));
+    $phone = $normalizePhone($row[$colIndex['phone']] ?? '');
     $pickup = trim($row[$colIndex['pickup_point']] ?? '');
     $address = trim($row[$colIndex['address']] ?? '');
     if (!$name || !$phone) {
       $err++;
       continue;
     }
-    $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
-    try {
-      if ($stmt->execute([$name, $phone, $address, $pickup])) {
-        $ok++;
-      } else {
-        $err++;
-      }
-    } catch (PDOException $e) {
-      $err++;
+
+    $rowsBuffer[$phone] = [
+      'name' => $name,
+      'phone' => $phone,
+      'pickup' => $pickup,
+      'address' => $address,
+    ];
+
+    if (count($rowsBuffer) >= $batchSize) {
+      $flushCustomerImportBatch($rowsBuffer);
     }
   }
-  $conn->commit();
+  $flushCustomerImportBatch($rowsBuffer);
   fclose($f);
   $_SESSION['import_msg'] = "Import selesai - berhasil: $ok, error: $err";
   header('Location: admin.php#customers');
