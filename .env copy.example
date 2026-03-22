@@ -1,9 +1,0 @@
-# Environment Configuration for Production
-# Copy this file to .env and fill in the values
-# Set these in your hosting panel's environment variables section
-
-# Application Environment
-APP_ENV=production
-
-# Database Configuration (Supabase PostgreSQL)
-DATABASE_URL=postgresql://postgres.xxxx:your_password@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
