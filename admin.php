@@ -34,10 +34,11 @@ require_once 'middleware/auth.php';
 require_once 'config/db.php';
 require_once 'config/auth_config.php';
 
-/* ------------------ AUTO-LOGIN DEBUG REMOVED ------------------ */
-
-// --- Database Connection ---
-
+// Check Auth immediately BEFORE any HTML output
+$auth = null;
+if (!isset($_REQUEST['action'])) {
+  $auth = requireAdminAuth();
+}
 
 // Ensure charters table exists
 $conn->exec("CREATE TABLE IF NOT EXISTS charters (
@@ -1017,11 +1018,6 @@ include 'includes/units_logic.php';
   <?php include 'includes/navbar.php'; ?>
 
   <div class="container">
-    <?php 
-       // SECURITY: This will auto-redirect to login.php if JWT is missing or invalid
-       $auth = requireAdminAuth(); 
-    ?>
-
     <div class="layout">
       <div class="left">
         <!-- BOOKINGS -->
