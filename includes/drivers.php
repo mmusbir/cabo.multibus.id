@@ -1,6 +1,11 @@
 <!-- DRIVERS -->
 <section id="drivers" class="card">
-    <h3>Manajemen Data Driver</h3>
+    <div class="admin-section-header">
+        <div>
+            <h3 class="admin-section-title">Manajemen Data Driver</h3>
+            <p class="admin-section-subtitle">Kelola identitas driver dan unit kendaraan yang terhubung.</p>
+        </div>
+    </div>
     <?php
     $edit_driver = null;
     if (isset($_GET['edit_driver'])) {
@@ -16,42 +21,36 @@
     $driver_unit_id = $edit_driver['unit_id'] ?? '';
     $driver_id = $edit_driver['id'] ?? 0;
 
-    // Fetch units for dropdown
     $units_list = [];
     $res = $conn->query("SELECT id, nopol, merek FROM units ORDER BY nopol");
-    while ($u = $res->fetch(PDO::FETCH_ASSOC))
+    while ($u = $res->fetch(PDO::FETCH_ASSOC)) {
         $units_list[] = $u;
+    }
     ?>
-    <!-- FORM -->
-    <div class="modern-form-card">
-        <div
-            style="margin-bottom:16px;font-weight:700;color:var(--neu-text-dark);font-size:15px;display:flex;align-items:center;gap:8px;">
-            <span style="background:#dcfce7;color:#15803d;padding:4px 8px;border-radius:6px;font-size:12px">PLUS</span>
+
+    <div class="modern-form-card admin-bs-panel">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="admin-bs-chip">Form</span>
             <?php echo $driver_id > 0 ? 'Edit Driver' : 'Tambah Driver'; ?>
         </div>
         <form method="post">
             <?php if ($driver_id > 0)
                 echo '<input type="hidden" name="driver_id" value="' . intval($driver_id) . '">'; ?>
 
-            <div class="modern-form-grid">
-                <!-- NAMA -->
-                <div class="input-group">
-                    <span class="input-group-icon">👤</span>
-                    <input name="driver_nama" class="modern-input" placeholder="Nama Driver" required
+            <div class="modern-form-grid admin-bs-form-grid">
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Nama Driver</label>
+                    <input name="driver_nama" class="modern-input form-control" placeholder="Nama Driver" required
                         value="<?php echo htmlspecialchars($driver_nama); ?>">
                 </div>
-
-                <!-- PHONE -->
-                <div class="input-group">
-                    <span class="input-group-icon">📱</span>
-                    <input name="driver_phone" class="modern-input" placeholder="No. HP" required
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">No. Telepon</label>
+                    <input name="driver_phone" class="modern-input form-control" placeholder="No. HP" required
                         value="<?php echo htmlspecialchars($driver_phone); ?>">
                 </div>
-
-                <!-- UNIT DROPDOWN -->
-                <div class="input-group">
-                    <span class="input-group-icon">🚐</span>
-                    <select name="driver_unit_id" class="modern-select" required>
+                <div class="input-group admin-bs-col-6">
+                    <label class="admin-bs-input-label">Unit Kendaraan</label>
+                    <select name="driver_unit_id" class="modern-select form-select" required>
                         <option value="">-- Pilih Unit --</option>
                         <?php foreach ($units_list as $u): ?>
                             <option value="<?= $u['id'] ?>" <?= ($driver_unit_id == $u['id']) ? 'selected' : '' ?>>
@@ -61,13 +60,11 @@
                     </select>
                 </div>
 
-                <!-- ACTIONS -->
-                <div style="display:flex;gap:8px;grid-column:1/-1;justify-content:flex-end;margin-top:8px">
+                <div class="admin-bs-actions admin-bs-col-12">
                     <?php if ($driver_id > 0) {
-                        echo '<a href="admin.php#drivers" class="btn-modern secondary" style="text-align:center">Batal</a>';
+                        echo '<a href="admin.php#drivers" class="btn btn-outline-secondary btn-modern secondary">Batal</a>';
                     } ?>
-                    <button name="save_driver" class="btn-modern">
-                        💾
+                    <button name="save_driver" class="btn btn-primary btn-modern">
                         <?php echo $driver_id > 0 ? 'Update Driver' : 'Simpan Driver'; ?>
                     </button>
                 </div>
@@ -75,12 +72,11 @@
         </form>
     </div>
 
-    <!-- SEARCH BAR -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;margin-bottom:12px">
-        <div class="search-bar-modern">
+    <div class="admin-bs-toolbar">
+        <div class="search-bar-modern admin-bs-search">
             <input type="text" id="filter_driver_input" class="search-input-modern"
                 placeholder="Cari nama atau no. HP driver...">
-            <button type="button" class="search-btn-icon">
+            <button type="button" class="search-btn-icon" aria-label="Cari driver">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -90,13 +86,13 @@
         </div>
     </div>
 
-    <!-- LIST DRIVERS -->
-    <div class="booking-cards-grid" id="drivers_grid" style="margin-top:12px;">
+    <div class="booking-cards-grid admin-bs-card-grid" id="drivers_grid" style="margin-top:12px;">
         <?php
         $drivers = [];
         $res = $conn->query("SELECT d.*, u.nopol, u.merek FROM drivers d LEFT JOIN units u ON d.unit_id = u.id ORDER BY d.nama");
-        while ($d = $res->fetch(PDO::FETCH_ASSOC))
+        while ($d = $res->fetch(PDO::FETCH_ASSOC)) {
             $drivers[] = $d;
+        }
         foreach ($drivers as $d):
             $unit_display = $d['nopol'] ? htmlspecialchars($d['nopol'] . ' - ' . $d['merek']) : '-';
             ?>
@@ -111,13 +107,13 @@
                 </div>
                 <div class="acc-body">
                     <div class="acc-row">
-                        <div class="acc-label">📱</div>
+                        <div class="acc-label">Telepon</div>
                         <div class="acc-val">
                             <?= htmlspecialchars($d['phone']) ?>
                         </div>
                     </div>
                     <div class="acc-row">
-                        <div class="acc-label">🚐</div>
+                        <div class="acc-label">Unit</div>
                         <div class="acc-val">
                             <?= $unit_display ?>
                         </div>
@@ -132,10 +128,10 @@
         <?php endforeach; ?>
     </div>
     <script>
-        document.getElementById('filter_driver_input')?.addEventListener('input', function() {
+        document.getElementById('filter_driver_input')?.addEventListener('input', function () {
             const val = this.value.toLowerCase();
             const cards = document.querySelectorAll('#drivers_grid .admin-card-compact');
-            cards.forEach(card => {
+            cards.forEach((card) => {
                 const text = card.textContent.toLowerCase();
                 card.style.display = text.includes(val) ? 'flex' : 'none';
             });

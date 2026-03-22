@@ -1,91 +1,87 @@
 <!-- CUSTOMERS -->
 <section id="customers" class="card">
-  <h3>Data Penumpang (Customers)</h3>
-  <div class="muted">Tambah, edit, hapus atau import CSV data penumpang.</div>
+  <div class="admin-section-header">
+    <div>
+      <h3 class="admin-section-title">Data Penumpang</h3>
+      <p class="admin-section-subtitle">Tambah, ubah, hapus, atau import data penumpang dalam satu panel.</p>
+    </div>
+  </div>
   <?php
   $cust_name = $edit_customer['name'] ?? '';
   $cust_phone = $edit_customer['phone'] ?? '';
   $cust_pickup = $edit_customer['pickup_point'] ?? '';
   $cust_addr = $edit_customer['address'] ?? '';
   ?>
-  <!-- FORM TAMBAH -->
-  <div class="modern-form-card">
-    <div
-      style="margin-bottom:16px;font-weight:700;color:var(--neu-text-dark);font-size:15px;display:flex;align-items:center;gap:8px;">
-      <span style="background:#dcfce7;color:#15803d;padding:4px 8px;border-radius:6px;font-size:12px">PLUS</span>
-      Tambah / Edit Penumpang
+
+  <div class="modern-form-card admin-bs-panel">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <span class="admin-bs-chip">Form</span>
+      <?php echo !empty($edit_customer) ? 'Edit Penumpang' : 'Tambah Penumpang'; ?>
     </div>
     <form method="post" enctype="multipart/form-data">
       <?php if (!empty($edit_customer)) {
         echo '<input type="hidden" name="customer_id" value="' . intval($edit_customer['id']) . '">';
       } ?>
-      <div class="modern-form-grid">
-        <!-- NAMA -->
-        <div class="input-group">
-          <span class="input-group-icon">👤</span>
-          <input id="cust_name_input" class="modern-input" name="cust_name" placeholder="Nama Lengkap" required
+      <div class="modern-form-grid admin-bs-form-grid">
+        <div class="input-group admin-bs-col-6">
+          <label class="admin-bs-input-label">Nama Lengkap</label>
+          <input id="cust_name_input" class="modern-input form-control" name="cust_name" placeholder="Nama Lengkap" required
             value="<?php echo htmlspecialchars($cust_name); ?>">
         </div>
-        <!-- HP -->
-        <div class="input-group">
-          <span class="input-group-icon">📱</span>
-          <input id="cust_phone_input" class="modern-input" name="cust_phone" placeholder="No. Handphone" required
+        <div class="input-group admin-bs-col-6">
+          <label class="admin-bs-input-label">No. Handphone</label>
+          <input id="cust_phone_input" class="modern-input form-control" name="cust_phone" placeholder="No. Handphone" required
             value="<?php echo htmlspecialchars($cust_phone); ?>">
         </div>
-        <!-- ALAMAT -->
-        <div class="input-group">
-          <span class="input-group-icon">📍</span>
-          <input class="modern-input" name="cust_pickup" placeholder="Titik Jemput (cth: Jl. Mawar)"
+        <div class="input-group admin-bs-col-6">
+          <label class="admin-bs-input-label">Titik Jemput</label>
+          <input class="modern-input form-control" name="cust_pickup" placeholder="Contoh: Jl. Mawar"
             value="<?php echo htmlspecialchars($cust_pickup); ?>">
         </div>
-        <!-- GMAPS -->
-        <div class="input-group">
-          <span class="input-group-icon">🗺️</span>
-          <input class="modern-input" name="cust_address" placeholder="Google Maps Link"
+        <div class="input-group admin-bs-col-6">
+          <label class="admin-bs-input-label">Google Maps Link</label>
+          <input class="modern-input form-control" name="cust_address" placeholder="https://maps.google.com/..."
             value="<?php echo htmlspecialchars($cust_addr); ?>">
         </div>
-        <!-- ACTIONS -->
-        <div style="display:flex;gap:8px">
-          <button name="save_customer" class="btn-modern" style="flex:1">
-            <?php echo !empty($edit_customer) ? '💾 Update' : '💾 Simpan'; ?>
-          </button>
+        <div class="admin-bs-actions admin-bs-col-12">
           <?php if (!empty($edit_customer)) {
-            echo ' <a href="admin.php" class="btn-modern secondary" style="flex:1;text-align:center">Batal</a>';
+            echo '<a href="admin.php#customers" class="btn btn-outline-secondary btn-modern secondary">Batal</a>';
           } ?>
+          <button name="save_customer" class="btn btn-primary btn-modern">
+            <?php echo !empty($edit_customer) ? 'Update Penumpang' : 'Simpan Penumpang'; ?>
+          </button>
         </div>
       </div>
     </form>
   </div>
 
-  <!-- IMPORT / EXPORT ROW -->
-  <div class="import-row">
-    <form method="post" enctype="multipart/form-data"
-      style="flex:1;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+  <div class="import-row admin-bs-panel">
+    <form method="post" enctype="multipart/form-data" class="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
       <div class="file-upload-wrapper">
         <label class="file-upload-btn">
           <input type="file" name="csv" accept=".csv" required
             onchange="this.parentElement.querySelector('span').innerText = this.files[0].name">
-          📁 <span>Pilih File CSV...</span>
+          <span>Pilih File CSV...</span>
         </label>
       </div>
-      <button name="import_customers" class="btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
-        📥 Import
+      <button name="import_customers" class="btn btn-outline-secondary btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
+        Import CSV
       </button>
       <div class="small muted" style="margin-left:8px"><?php echo htmlspecialchars($import_msg ?? ''); ?></div>
     </form>
 
-    <form method="post">
-      <button name="export_customers" class="btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
-        📤 Export CSV
+    <form method="post" class="ms-lg-auto">
+      <button name="export_customers" class="btn btn-outline-secondary btn-modern secondary" style="height:46px;padding:0 20px;min-width:auto">
+        Export CSV
       </button>
     </form>
   </div>
 
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;margin-bottom:12px">
-    <div class="search-bar-modern">
+  <div class="admin-bs-toolbar">
+    <div class="search-bar-modern admin-bs-search">
       <input type="text" id="search_customer_name_input" class="search-input-modern"
         placeholder="Cari data penumpang...">
-      <button type="button" id="searchCustomerBtn" class="search-btn-icon">
+      <button type="button" id="searchCustomerBtn" class="search-btn-icon" aria-label="Cari penumpang">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -94,22 +90,24 @@
       </button>
     </div>
   </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+  <div class="admin-bs-meta">
     <div id="customers_info" class="small">Memuat data...</div>
-    <div style="display:flex;gap:8px;align-items:center"><label class="small">Per page</label><select
-        id="customers_per_page">
+    <div class="d-flex gap-2 align-items-center">
+      <label class="small" for="customers_per_page">Per page</label>
+      <select id="customers_per_page" class="form-select form-select-sm">
         <option>10</option>
         <option selected>25</option>
         <option>50</option>
         <option>100</option>
-      </select></div>
+      </select>
+    </div>
   </div>
 
   <div id="customers_spinner_wrap" class="spinner-wrap" style="display:none">
     <div class="ajax-spinner"></div>
   </div>
 
-  <div id="customers_tbody" class="booking-cards-grid" style="margin-top:12px;min-height:100px">
+  <div id="customers_tbody" class="booking-cards-grid admin-bs-card-grid" style="margin-top:12px;min-height:100px">
     <div class="small" style="grid-column:1/-1;text-align:center">Loading...</div>
   </div>
   <div class="table-wrapper" style="display:none"></div>

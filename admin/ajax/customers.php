@@ -39,28 +39,31 @@ try {
 }
 
 ob_start();
-$no = $offset + 1;
-foreach ($rows as $c) {
-    $fmtId = formatCustomerId($c['id'], $c['created_at']);
-    echo '<div class="admin-card-compact">';
-    echo '  <div class="acc-header">';
-    echo '    <div class="acc-title">' . htmlspecialchars($c['name']) . '</div>';
-    echo '    <div class="acc-id">#' . $fmtId . '</div>';
-    echo '  </div>';
-    echo '  <div class="acc-body">';
-    echo '    <div class="acc-row"><div class="acc-label">📞</div><div class="acc-val">' . htmlspecialchars($c['phone']) . '</div></div>';
-    if (!empty($c['pickup_point'])) {
-        echo '    <div class="acc-row"><div class="acc-label">📍</div><div class="acc-val">' . htmlspecialchars($c['pickup_point']) . '</div></div>';
+if (empty($rows)) {
+    echo '<div class="small" style="grid-column:1/-1;text-align:center;padding:20px;opacity:0.6;">Data tidak ditemukan</div>';
+} else {
+    foreach ($rows as $c) {
+        $fmtId = formatCustomerId($c['id'], $c['created_at']);
+        echo '<div class="admin-card-compact">';
+        echo '  <div class="acc-header">';
+        echo '    <div class="acc-title">' . htmlspecialchars($c['name']) . '</div>';
+        echo '    <div class="acc-id">#' . $fmtId . '</div>';
+        echo '  </div>';
+        echo '  <div class="acc-body">';
+        echo '    <div class="acc-row"><div class="acc-label">Telepon</div><div class="acc-val">' . htmlspecialchars($c['phone']) . '</div></div>';
+        if (!empty($c['pickup_point'])) {
+            echo '    <div class="acc-row"><div class="acc-label">Pickup</div><div class="acc-val">' . htmlspecialchars($c['pickup_point']) . '</div></div>';
+        }
+        if (!empty($c['address'])) {
+            echo '    <div class="acc-row"><div class="acc-label">Maps</div><div class="acc-val" title="' . htmlspecialchars($c['address']) . '">' . htmlspecialchars($c['address']) . '</div></div>';
+        }
+        echo '  </div>';
+        echo '  <div class="acc-actions">';
+        echo '    <a class="acc-btn" href="admin.php?edit_customer=' . intval($c['id']) . '#customers">Edit</a>';
+        echo '    <a class="acc-btn danger" href="admin.php?delete_customer=' . intval($c['id']) . '#customers" onclick="event.preventDefault(); customConfirm(\'Hapus penumpang?\', () => { window.location.href = this.href; }, \'Hapus Penumpang\', \'danger\')">Hapus</a>';
+        echo '  </div>';
+        echo '</div>';
     }
-    if (!empty($c['address'])) {
-        echo '    <div class="acc-row"><div class="acc-label">🗺️</div><div class="acc-val" title="' . htmlspecialchars($c['address']) . '">' . htmlspecialchars($c['address']) . '</div></div>';
-    }
-    echo '  </div>';
-    echo '  <div class="acc-actions">';
-    echo '    <a class="acc-btn" href="admin.php?edit_customer=' . intval($c['id']) . '#customers">Edit</a>';
-    echo '    <a class="acc-btn danger" href="admin.php?delete_customer=' . intval($c['id']) . '#customers" onclick="event.preventDefault(); customConfirm(\'Hapus penumpang?\', () => { window.location.href = this.href; }, \'Hapus Penumpang\', \'danger\')">Hapus</a>';
-    echo '  </div>';
-    echo '</div>';
 }
 $rows_html = ob_get_clean();
 $pag_html = render_pagination_ajax($total, $per_page, $page, 'customers');
