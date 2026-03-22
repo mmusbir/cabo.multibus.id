@@ -105,6 +105,82 @@ body.admin-bootstrap-page .acc-id {
     border-color: #d6dde8;
 }
 
+body.admin-bootstrap-page .admin-card-tags {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+body.admin-bootstrap-page .admin-card-subtitle {
+    margin-top: 0.2rem;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+body.admin-bootstrap-page .admin-status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.65rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+body.admin-bootstrap-page .admin-status-pill.paid {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+}
+
+body.admin-bootstrap-page .admin-status-pill.info {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+body.admin-bootstrap-page .admin-status-pill.warning {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+body.admin-bootstrap-page .admin-status-pill.danger {
+    background: #fff1f2;
+    color: #be123c;
+    border-color: #fecdd3;
+}
+
+body.admin-bootstrap-page .admin-value-stack {
+    display: grid;
+    gap: 0.2rem;
+}
+
+body.admin-bootstrap-page .admin-price-main {
+    color: #198754;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .admin-price-note {
+    color: #64748b;
+    font-size: 0.76rem;
+}
+
+body.admin-bootstrap-page .admin-empty-state {
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 1rem;
+}
+
 body.admin-bootstrap-page .acc-btn {
     background: #f8fafc;
     border: 1px solid #d6dde8;
@@ -127,6 +203,18 @@ body.admin-bootstrap-page .acc-btn.danger:hover {
     background: #ffe3e6;
     border-color: #f1aeb5;
     color: #b02a37;
+}
+
+body.admin-bootstrap-page .acc-btn.success {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #047857;
+}
+
+body.admin-bootstrap-page .acc-btn.success:hover {
+    background: #d1fae5;
+    border-color: #6ee7b7;
+    color: #065f46;
 }
 
 body.admin-bootstrap-page input,
