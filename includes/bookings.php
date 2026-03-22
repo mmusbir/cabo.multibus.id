@@ -34,7 +34,7 @@
 
     <div class="kinetic-command-toolbar-actions">
       <div class="search-bar-modern admin-bs-search kinetic-command-search">
-        <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari nama penumpang atau nomor...">
+        <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari rute, driver, penumpang, atau jam...">
         <button type="button" id="searchBtn" class="search-btn-icon" aria-label="Cari booking">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -148,12 +148,12 @@
       }
       return {
         label: 'Reguler',
-        totalLabel: 'Bookings',
+        totalLabel: 'Trip Schedules',
         state: 'ready',
         badge: 'READY',
-        headline: 'Booking Reguler',
-        info: 'Pantau booking reguler aktif hari ini dan tindak lanjuti pembayaran atau pembatalan dengan cepat.',
-        tag: 'Dispatch View',
+        headline: 'Trip Booking Reguler',
+        info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail manifest.',
+        tag: 'Manifest Queue',
         context: 'Live',
       };
     }
@@ -193,6 +193,145 @@
       if (window.bookingDashboardState.active === mode) {
         updateBookingModeMeta(mode);
       }
+    };
+
+    function formatBookingTripDate(tanggalRaw) {
+      if (!tanggalRaw) return '-';
+      const d = new Date(tanggalRaw + 'T00:00:00');
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0') + ', ' + d.getFullYear();
+    }
+
+    function buildBookingTripCopyText(root, meta) {
+      const occupied = [];
+      root.querySelectorAll('.seat-block').forEach(block => {
+        const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+        if (!name) return;
+        occupied.push({
+          seat: block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '',
+          name,
+          phone: block.querySelector('.sb-val.phone')?.innerText.trim() || '',
+          pickup: block.querySelector('.sb-val.pickup')?.innerText.trim() || '',
+          gmaps: block.querySelector('.sb-val.gmaps')?.innerText.trim() || '',
+          pay: block.querySelector('.sb-val.pay')?.innerText.trim() || ''
+        });
+      });
+
+      const driverInfo = root.querySelector('#departureInfoCard');
+      const driverName = driverInfo ? (driverInfo.getAttribute('data-driver-name') || '-') : '-';
+      const tanggalFormatted = formatBookingTripDate(meta.tanggal);
+      const jamFormatted = meta.jam ? meta.jam.replace(':', '.') : '';
+
+      let text = `Info Pemberangkatan\nTanggal & Jam: ${tanggalFormatted} - ${jamFormatted}\nRute: ${meta.rute}\nTotal Penumpang: ${occupied.length}\nDriver: ${driverName}\n\n`;
+      occupied.forEach(s => {
+        text += `- Kursi: ${s.seat}\nNama: ${s.name}\nNo. HP: ${s.phone}\nTitik Jemput: ${s.pickup}\nGmaps: ${s.gmaps}\nPembayaran: ${s.pay}\n\n`;
+      });
+
+      const summaryDiv = root.querySelector('#passengerSummary');
+      if (summaryDiv) {
+        const paid = parseInt(summaryDiv.getAttribute('data-paid') || '0', 10);
+        const unpaid = parseInt(summaryDiv.getAttribute('data-unpaid') || '0', 10);
+        text += `Ringkasan Pembayaran\n`;
+        text += `Sudah Lunas: Rp ${paid.toLocaleString('id-ID')}\n`;
+        text += `Belum Lunas: Rp ${unpaid.toLocaleString('id-ID')}\n`;
+        text += `Total Estimasi: Rp ${(paid + unpaid).toLocaleString('id-ID')}\n`;
+      }
+
+      return text;
+    }
+
+    function fallbackBookingTripCopy(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        customAlert('Semua detail penumpang berhasil disalin!');
+      } catch (e) {
+        customAlert('Gagal menyalin ke clipboard.');
+      }
+      document.body.removeChild(temp);
+    }
+
+    window.copyBookingTripManifest = async function (trigger) {
+      const meta = {
+        rute: trigger.getAttribute('data-rute') || '',
+        tanggal: trigger.getAttribute('data-tanggal') || '',
+        jam: trigger.getAttribute('data-jam') || '',
+        unit: trigger.getAttribute('data-unit') || '1',
+      };
+
+      try {
+        const url = new URL('admin/ajax.php', window.location.origin);
+        url.searchParams.set('action', 'getPassengers');
+        url.searchParams.set('rute', meta.rute);
+        url.searchParams.set('tanggal', meta.tanggal);
+        url.searchParams.set('jam', meta.jam);
+        url.searchParams.set('unit', meta.unit);
+
+        const res = await fetch(url.toString(), { credentials: 'same-origin' });
+        const js = await res.json();
+        if (!js.success || !js.html) {
+          customAlert('Tidak ada data booking untuk jadwal ini.');
+          return;
+        }
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(js.html, 'text/html');
+        const text = buildBookingTripCopyText(doc, meta);
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(text).then(() => {
+            customAlert('Semua detail penumpang berhasil disalin!');
+          }).catch(() => fallbackBookingTripCopy(text));
+        } else {
+          fallbackBookingTripCopy(text);
+        }
+      } catch (e) {
+        customAlert('Gagal memuat data copy manifest.');
+      }
+    };
+
+    window.openBookingTripDetail = async function (trigger) {
+      const rute = trigger.getAttribute('data-rute') || '';
+      const tanggal = trigger.getAttribute('data-tanggal') || '';
+      const jam = trigger.getAttribute('data-jam') || '';
+      const unit = trigger.getAttribute('data-unit') || '1';
+
+      const viewRoute = document.getElementById('view_rute');
+      const viewTanggal = document.getElementById('view_tanggal');
+      const viewJam = document.getElementById('view_jam');
+      const viewUnit = document.getElementById('view_unit');
+
+      if (!viewRoute || !viewTanggal || !viewJam || !viewUnit) {
+        customAlert('Panel view belum tersedia.');
+        return;
+      }
+
+      viewRoute.value = rute;
+      viewTanggal.value = tanggal;
+
+      if (typeof window.refreshViewJamOptions === 'function') {
+        await window.refreshViewJamOptions();
+      }
+
+      if (![...viewJam.options].some(opt => opt.value === jam)) {
+        viewJam.innerHTML += `<option value="${jam}">${jam}</option>`;
+      }
+      viewJam.value = jam;
+
+      if (![...viewUnit.options].some(opt => opt.value === unit)) {
+        viewUnit.innerHTML += `<option value="${unit}">Unit ${unit}</option>`;
+      }
+      viewUnit.value = unit;
+
+      if (typeof window.showSectionById === 'function') {
+        window.showSectionById('view');
+      }
+      window.location.hash = '#view';
+      document.getElementById('view')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('btnLoadPassengers')?.click();
     };
 
     function refreshActiveBookingMode() {

@@ -1625,6 +1625,7 @@ if (!isset($_REQUEST['action'])):
         jamSelect.innerHTML = '<option value="">Error: ' + e.message + '</option>';
       }
     }
+    window.refreshViewJamOptions = refreshJamOptions;
     // Auto-refresh jam ketika rute atau tanggal berubah
     if (document.getElementById('view_rute')) {
       document.getElementById('view_rute').onchange = refreshJamOptions;
