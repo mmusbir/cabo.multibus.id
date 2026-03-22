@@ -597,9 +597,18 @@
       color: #4f46e5;
     }
 
-    .payment-icon-large {
-      font-size: 18px;
-      margin-bottom: 4px;
+    .payment-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.08);
+      color: #0f172a;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
     }
 
     /* Custom Radio Display */
@@ -1325,8 +1334,8 @@
       --accent-1: #7c3aed;
       --accent-2: #22c55e;
       --accent-3: #06b6d4;
-      --text-primary: #e5e7eb;
-      --text-muted: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-muted: #334155;
       --glass-blur: blur(20px);
     }
 
@@ -1335,10 +1344,11 @@
       min-height: 100vh;
       margin: 0;
       color: var(--text-primary);
-      background: radial-gradient(1200px at 20% 20%, rgba(124, 58, 237, 0.18), transparent 45%),
-        radial-gradient(900px at 80% 10%, rgba(6, 182, 212, 0.16), transparent 40%),
-        radial-gradient(1100px at 30% 80%, rgba(34, 197, 94, 0.14), transparent 45%),
-        #0f172a;
+      background:
+        radial-gradient(1200px at 20% 20%, rgba(253, 146, 64, 0.25), transparent 50%),
+        radial-gradient(900px at 80% 10%, rgba(250, 204, 21, 0.18), transparent 45%),
+        radial-gradient(1100px at 30% 80%, rgba(255, 183, 94, 0.22), transparent 50%),
+        linear-gradient(135deg, #ffb26b 0%, #ff7c45 40%, #f97316 100%);
       position: relative;
       overflow-x: hidden;
     }
@@ -1442,53 +1452,25 @@
       backdrop-filter: none;
     }
 
-    .toggle-container {
+    .section-chip {
       display: inline-flex;
       align-items: center;
-      margin: 0 auto 24px auto;
-      background: rgba(255, 255, 255, 0.12);
-      padding: 3px;
-      border-radius: 12px;
-      width: fit-content;
-      position: relative;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      box-shadow: var(--glass-shadow);
-      backdrop-filter: blur(12px);
-    }
-
-    .toggle-btn {
-      padding: 10px 18px;
-      border-radius: 10px;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.65);
+      color: #7c2d12;
       font-weight: 700;
-      cursor: pointer;
-      transition: color 0.15s ease, background 0.2s ease, transform 0.15s ease;
-      color: #e5e7eb;
-      font-size: 14px;
-      border: none;
-      background: transparent !important;
-      min-width: 120px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
     }
 
-    .toggle-btn.active {
-      color: #0f172a;
-      background: rgba(255, 255, 255, 0.9) !important;
-      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-    }
-
-    .toggle-btn:not(.active) {
-      color: rgba(226, 232, 240, 0.72);
-      opacity: 0.9;
-    }
+    /* Removed mode toggle button */
 
     .btn-booking-modern {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.92), rgba(14, 165, 233, 0.95));
-      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.35);
-      color: #f8fafc;
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 40%, #fbbf24 100%);
+      box-shadow: 0 14px 28px rgba(234, 88, 12, 0.35);
+      color: #0f172a;
     }
 
     .btn-booking-modern:hover {
@@ -1520,7 +1502,7 @@
     }
 
     .msg-display {
-      color: #a5f3fc;
+      color: #0f172a;
       font-weight: 700;
     }
 
@@ -1528,7 +1510,27 @@
     .input-label,
     .legend,
     .small {
-      color: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+      color: #0f172a;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.22);
     }
 
     /* Minimal top blur strip */
@@ -1555,10 +1557,7 @@
 
     <!-- Controls card -->
     <div class="card" id="main-card">
-      <!-- Toggle Type -->
-      <div class="toggle-container w-full max-w-400" id="mode-toggle-container">
-        <button class="toggle-btn active" id="btn-reguler" onclick="switchMode('reguler')">Reguler</button>
-      </div>
+      <div class="section-chip">Reguler</div>
 
       <!-- REGULER CONTROLS -->
       <div id="reguler-controls" class="active">
@@ -1775,6 +1774,16 @@
         <div class="flex-between-center">
           <div class="small" id="seat-counters">Kosong: <strong id="count-empty">-</strong> · Terisi: <strong
               id="count-booked">-</strong> · Dipilih: <strong id="count-selected">0</strong></div>
+          <button id="refresh" class="icon-btn" title="Refresh layout" onclick="refreshSeats()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path
+                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15">
+              </path>
+            </svg>
+          </button>
         </div>
 
         <div class="layout" id="layout"></div>
@@ -1830,21 +1839,21 @@
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
               <label for="p_belum" class="payment-label">
-                <span class="payment-icon-large">⌛</span>
+                <span class="payment-badge">DP</span>
                 <span>Belum Lunas</span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
               <label for="p_lunas" class="payment-label">
-                <span class="payment-icon-large">✅</span>
+                <span class="payment-badge">OK</span>
                 <span>Lunas</span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_redbus" value="Redbus">
               <label for="p_redbus" class="payment-label">
-                <span class="payment-icon-large">🚌</span>
+                <span class="payment-badge">RB</span>
                 <span>Redbus</span>
               </label>
             </div>
