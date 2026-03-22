@@ -2767,6 +2767,29 @@ body.admin-bootstrap-page .kinetic-command-toolbar-actions {
     flex: 1;
 }
 
+body.admin-bootstrap-page .kinetic-command-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.8rem;
+    padding: 0.72rem 1rem;
+    border-radius: 0.8rem;
+    background: #f97316;
+    color: #341100;
+    text-decoration: none;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-command-add-btn:hover {
+    background: #fb923c;
+    color: #341100;
+}
+
 body.admin-bootstrap-page .kinetic-command-search {
     min-width: 18rem;
     max-width: 24rem;

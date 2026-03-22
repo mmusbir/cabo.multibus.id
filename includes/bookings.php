@@ -9,6 +9,11 @@
 
   <div class="kinetic-command-toolbar">
     <div class="kinetic-command-toolbar-actions">
+      <a href="index.php" class="kinetic-command-add-btn">
+        <span class="material-symbols-outlined">add</span>
+        <span>Tambah Booking</span>
+      </a>
+
       <div class="search-bar-modern admin-bs-search kinetic-command-search">
         <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari rute, driver, penumpang, atau jam...">
         <button type="button" id="searchBtn" class="search-btn-icon" aria-label="Cari booking">
@@ -42,10 +47,6 @@
         <div id="bookingSummaryHeadline" class="kinetic-summary-headline">Data Booking</div>
         <div id="bookings_info" class="small kinetic-summary-text">Memuat data keberangkatan hari ini...</div>
       </div>
-    </div>
-    <div class="kinetic-command-summary-side">
-      <span class="kinetic-summary-tag" id="bookingSummaryTag">Dispatch View</span>
-      <span class="kinetic-summary-meta" id="bookingSummaryMeta">Desktop list</span>
     </div>
   </div>
 
@@ -159,8 +160,6 @@
       const metricTotal = document.getElementById('bookingMetricTotal');
       const metricLabel = document.getElementById('bookingMetricLabel');
       const summaryHeadline = document.getElementById('bookingSummaryHeadline');
-      const summaryTag = document.getElementById('bookingSummaryTag');
-      const summaryMeta = document.getElementById('bookingSummaryMeta');
       const info = document.getElementById('bookings_info');
       const pageKicker = document.getElementById('bookingPageKicker');
       const pageTitle = document.getElementById('bookingPageTitle');
@@ -177,8 +176,6 @@
       const modeChipLabel = document.getElementById('bookingModeChipLabel');
       if (modeChipLabel) modeChipLabel.textContent = meta.label;
       if (summaryHeadline) summaryHeadline.textContent = meta.headline;
-      if (summaryTag) summaryTag.textContent = meta.tag;
-      if (summaryMeta) summaryMeta.textContent = 'Total ' + total.toLocaleString('id-ID') + ' data';
       if (info) info.textContent = meta.info;
       if (pageKicker) pageKicker.textContent = meta.pageKicker;
       if (pageTitle) pageTitle.textContent = meta.pageTitle;
