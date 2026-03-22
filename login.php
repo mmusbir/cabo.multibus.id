@@ -91,12 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body {
             font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
             min-height: 100vh;
+            min-height: 100dvh;
             margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #fb923c;
-            overflow: hidden;
+            padding: 20px 14px;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body::before, body::after {
@@ -155,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         input {
             width: 100%;
             padding: 12px 14px;
+            font-size: 16px;
             border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.08);
@@ -173,6 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         button {
             width: 100%;
             padding: 14px;
+            font-size: 16px;
             background: #c2410c;
             border: none;
             color: white;
@@ -186,6 +191,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         button:hover { transform: translateY(-1px); box-shadow: 0 20px 36px rgba(124, 45, 18, 0.35); }
         button:active { transform: translateY(0); }
+
+        @media (max-width: 640px) {
+            body {
+                align-items: flex-start;
+                padding: 18px 12px;
+            }
+
+            .login-card {
+                max-width: 100%;
+                padding: 24px 18px 20px;
+                border-radius: 16px;
+                margin: auto 0;
+            }
+
+            .login-card h2 {
+                margin-bottom: 12px;
+                font-size: 28px;
+            }
+
+            .login-subtitle {
+                margin: -2px 0 18px;
+                font-size: 13px;
+            }
+
+            .error-box {
+                padding: 11px;
+                margin-bottom: 16px;
+                font-size: 13px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            label {
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
+
+            input {
+                padding: 13px 14px;
+                border-radius: 10px;
+            }
+
+            button {
+                margin-top: 10px;
+                padding: 13px 14px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding: 14px 10px;
+            }
+
+            .login-card {
+                padding: 20px 14px 16px;
+                border-radius: 14px;
+            }
+
+            .login-card h2 {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
