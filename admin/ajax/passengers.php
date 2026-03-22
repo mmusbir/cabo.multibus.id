@@ -180,16 +180,6 @@ try {
     </a>
   </div>
 
-  <div class="view-booking-chip-row no-scrollbar">
-    <span class="view-booking-chip active">Semua (<?php echo $totalPax; ?>)</span>
-    <span class="view-booking-chip">Pending (<?php echo $countUnpaid; ?>)</span>
-    <span class="view-booking-chip">Confirmed (<?php echo $countPaid; ?>)</span>
-    <span class="view-booking-chip">Rute <?php echo h($routeOrigin); ?></span>
-    <?php if ($routeDestination !== ''): ?>
-      <span class="view-booking-chip">Tujuan <?php echo h($routeDestination); ?></span>
-    <?php endif; ?>
-  </div>
-
   <div class="booking-detail-grid">
     <?php if (empty($rows)): ?>
       <div class="admin-empty-state view-empty-state">Belum ada penumpang untuk jadwal ini.</div>

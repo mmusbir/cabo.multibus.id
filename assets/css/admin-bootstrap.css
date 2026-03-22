@@ -5945,3 +5945,59 @@ body.admin-bootstrap-page .kinetic-profile-name {
 body.admin-bootstrap-page .kinetic-profile-role {
     font-size: 0.64rem;
 }
+
+/* Booking detail dark-contrast cleanup */
+body.admin-bootstrap-page .booking-detail-page-kicker,
+body.admin-bootstrap-page .view-booking-kicker,
+body.admin-bootstrap-page .booking-detail-filter-label,
+body.admin-bootstrap-page .view-trip-meta-label,
+body.admin-bootstrap-page .view-driver-label,
+body.admin-bootstrap-page .booking-detail-side-label {
+    color: #94a3b8 !important;
+}
+
+body.admin-bootstrap-page .booking-detail-page-title,
+body.admin-bootstrap-page .view-booking-title,
+body.admin-bootstrap-page .view-trip-title,
+body.admin-bootstrap-page .booking-detail-name,
+body.admin-bootstrap-page .view-driver-display strong,
+body.admin-bootstrap-page .sum-val,
+body.admin-bootstrap-page .view-trip-meta-value {
+    color: #f8fafc !important;
+}
+
+body.admin-bootstrap-page .booking-detail-page-subtitle,
+body.admin-bootstrap-page .booking-detail-route,
+body.admin-bootstrap-page .booking-detail-side-value,
+body.admin-bootstrap-page .sum-label,
+body.admin-bootstrap-page .view-trip-badge {
+    color: #cbd5e1 !important;
+}
+
+body.admin-bootstrap-page .view-trip-card,
+body.admin-bootstrap-page .booking-detail-page-panel,
+body.admin-bootstrap-page .view-booking-list-shell,
+body.admin-bootstrap-page .summary-footer,
+body.admin-bootstrap-page .booking-detail-card {
+    background: #15181f !important;
+    border-color: rgba(88, 66, 55, 0.18) !important;
+}
+
+body.admin-bootstrap-page .view-driver-row,
+body.admin-bootstrap-page .summary-footer {
+    border-color: rgba(88, 66, 55, 0.18) !important;
+}
+
+body.admin-bootstrap-page .view-trip-badge {
+    background: #282a30 !important;
+}
+
+body.admin-bootstrap-page .booking-detail-page-cta,
+body.admin-bootstrap-page .view-booking-cta {
+    color: #341100 !important;
+}
+
+body.admin-bootstrap-page .booking-detail-filter-btn.secondary {
+    color: #e2e8f0 !important;
+    background: #282a30 !important;
+}

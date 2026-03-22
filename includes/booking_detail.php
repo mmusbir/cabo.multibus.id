@@ -15,14 +15,6 @@
       </div>
     </div>
 
-    <div class="booking-detail-page-chips no-scrollbar">
-      <button type="button" class="booking-detail-static-chip active">Semua Jadwal</button>
-      <button type="button" class="booking-detail-static-chip">Pending</button>
-      <button type="button" class="booking-detail-static-chip">Confirmed</button>
-      <button type="button" class="booking-detail-static-chip">Selesai</button>
-      <button type="button" class="booking-detail-static-chip">End User</button>
-    </div>
-
     <div class="booking-detail-page-panel admin-bs-panel">
       <div class="booking-detail-filter-grid">
         <div class="booking-detail-filter-field">
@@ -124,17 +116,4 @@
     </div>
   </div>
 </section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.booking-detail-static-chip').forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        document.querySelectorAll('.booking-detail-static-chip').forEach(function (item) {
-          item.classList.remove('active');
-        });
-        chip.classList.add('active');
-      });
-    });
-  });
-</script>
 
