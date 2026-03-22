@@ -551,7 +551,15 @@ while ($rs = $resSeg->fetch()) {
 // (Include sisa dari admin.php.backup untuk handlers non-AJAX)
 // Baca dari admin.php.backup dari baris 550 ke akhir untuk mencakup semua POST handlers
 
-$rental = floatval($_POST['rental_price'] ?? 0);
+if (isset($_POST['save_route'])) {
+  $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
+  $type = isset($_POST['route_type']) && $_POST['route_type'] === 'carter' ? 'carter' : 'reguler';
+
+  $name = trim($_POST['route_name'] ?? '');
+  $origin = trim($_POST['origin'] ?? '');
+  $destination = trim($_POST['destination'] ?? '');
+  $duration = trim($_POST['duration'] ?? '');
+  $rental = floatval($_POST['rental_price'] ?? 0);
   $bop = floatval($_POST['bop_price'] ?? 0);
   $notes = trim($_POST['notes'] ?? '');
 
