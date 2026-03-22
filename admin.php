@@ -1345,6 +1345,7 @@ if (!isset($_REQUEST['action'])):
         if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
         if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10) });
         if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 25 });
+        if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
       }
       function updateSectionFromHash() {

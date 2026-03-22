@@ -1,80 +1,79 @@
 <!-- LUGGAGE SERVICES MANAGEMENT -->
 <section id="luggage_services" class="card" style="display:none;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="margin:0;">Manajemen Layanan Bagasi</h3>
+    <div class="admin-section-header">
+        <div>
+            <h3 class="admin-section-title">Manajemen Layanan Bagasi</h3>
+            <p class="admin-section-subtitle">Kelola master layanan bagasi dan harga dasar yang dipakai saat input.</p>
+        </div>
     </div>
 
-    <!-- FORM ADD/EDIT -->
-    <div class="modern-form-card" style="margin-bottom:24px;">
-        <div style="margin-bottom:16px;font-weight:700;color:var(--neu-text-dark);font-size:15px;display:flex;align-items:center;gap:8px;">
-            <span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:6px;font-size:12px">MASTER</span>
+    <div class="modern-form-card admin-bs-panel" style="margin-bottom:24px;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="admin-bs-chip">Master</span>
             <span id="ls-form-title">Tambah Layanan Baru</span>
         </div>
-        <form id="lsForm" style="display:grid; grid-template-columns: 1fr 1fr auto; gap:12px; align-items: flex-end;">
+        <form id="lsForm" class="modern-form-grid admin-bs-form-grid">
             <input type="hidden" id="ls_id" value="0">
-            <div class="input-group">
-                <label style="font-size:11px;font-weight:700;margin-bottom:4px;display:block;color:#64748b;">Nama Layanan</label>
-                <input type="text" id="ls_name" class="modern-input" placeholder="Contoh: Paket < 5kg" required style="width:100%">
+            <div class="input-group admin-bs-col-6">
+                <label class="admin-bs-input-label" for="ls_name">Nama Layanan</label>
+                <input type="text" id="ls_name" class="modern-input form-control" placeholder="Contoh: Paket < 5kg" required>
             </div>
-            <div class="input-group">
-                <label style="font-size:11px;font-weight:700;margin-bottom:4px;display:block;color:#64748b;">Harga (Rp)</label>
-                <input type="number" id="ls_price" class="modern-input" placeholder="0" required style="width:100%">
+            <div class="input-group admin-bs-col-6">
+                <label class="admin-bs-input-label" for="ls_price">Harga (Rp)</label>
+                <input type="number" id="ls_price" class="modern-input form-control" placeholder="0" required>
             </div>
-            <div>
-                <button type="submit" class="btn-modern" style="height:44px; padding:0 24px;">
-                    💾 Simpan
-                </button>
-                <button type="button" id="btnCancelLsEdit" class="btn-modern secondary" style="height:44px; display:none;">
-                    Batal
-                </button>
+            <div class="admin-bs-actions admin-bs-col-12">
+                <button type="submit" id="btnSaveLs" class="btn btn-primary btn-modern">Simpan Layanan</button>
+                <button type="button" id="btnCancelLsEdit" class="btn btn-outline-secondary btn-modern secondary" style="display:none;">Batal</button>
             </div>
         </form>
     </div>
 
-    <!-- SEARCH & INFO -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="admin-bs-meta" style="margin-bottom:12px;">
         <div class="small" id="ls_info">Memuat layanan...</div>
     </div>
 
-    <!-- LIST CONTAINER -->
-    <div id="ls_tbody" class="booking-cards-grid" style="min-height:100px">
+    <div id="ls_tbody" class="booking-cards-grid admin-bs-card-grid" style="min-height:100px">
         <div class="small" style="grid-column:1/-1;text-align:center">Memuat data...</div>
     </div>
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const lsForm = document.getElementById('lsForm');
     const lsTbody = document.getElementById('ls_tbody');
     const lsInfo = document.getElementById('ls_info');
     const btnCancel = document.getElementById('btnCancelLsEdit');
+    const btnSave = document.getElementById('btnSaveLs');
     const inputId = document.getElementById('ls_id');
     const inputName = document.getElementById('ls_name');
     const inputPrice = document.getElementById('ls_price');
     const formTitle = document.getElementById('ls-form-title');
 
     function loadLuggageServices() {
-        lsTbody.innerHTML = '<div class="small" style="grid-column:1/-1;text-align:center">Memuat data...</div>';
+        lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Memuat data...</div>';
         fetch('admin.php?action=luggageServicesPage')
-            .then(r => r.json())
-            .then(js => {
+            .then((r) => r.json())
+            .then((js) => {
                 if (js.success) {
                     lsTbody.innerHTML = js.rows;
                     lsInfo.textContent = 'Total: ' + js.total + ' layanan';
                     attachActionListeners();
                 } else {
-                    lsTbody.innerHTML = '<div class="small danger" style="grid-column:1/-1;text-align:center">Gagal memuat data.</div>';
+                    lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Gagal memuat data.</div>';
                 }
             })
-            .catch(e => {
+            .catch((e) => {
                 console.error(e);
-                lsTbody.innerHTML = '<div class="small danger" style="grid-column:1/-1;text-align:center">Kesalahan koneksi.</div>';
+                lsTbody.innerHTML = '<div class="small admin-empty-state" style="grid-column:1/-1;text-align:center;padding:20px;">Kesalahan koneksi.</div>';
             });
     }
 
+    window.loadLuggageServices = loadLuggageServices;
+
     function attachActionListeners() {
-        document.querySelectorAll('.luggage-service-action').forEach(btn => {
-            btn.onclick = function(e) {
+        document.querySelectorAll('.luggage-service-action').forEach((btn) => {
+            btn.onclick = function (e) {
                 e.preventDefault();
                 const action = this.dataset.action;
                 const id = this.dataset.id;
@@ -84,38 +83,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     inputName.value = this.dataset.name;
                     inputPrice.value = this.dataset.price;
                     formTitle.textContent = 'Edit Layanan';
-                    btnCancel.style.display = 'inline-block';
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    btnSave.textContent = 'Update Layanan';
+                    btnCancel.style.display = 'inline-flex';
+                    document.getElementById('luggage_services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else if (action === 'delete') {
-                    if (confirm('Hapus layanan ini?')) {
+                    customConfirm('Hapus layanan ini?', async () => {
                         const fd = new FormData();
                         fd.append('subAction', 'delete');
                         fd.append('id', id);
-                        
-                        fetch('admin.php?action=luggageServiceCRUD', {
-                            method: 'POST',
-                            body: fd
-                        })
-                        .then(r => r.json())
-                        .then(js => {
+
+                        try {
+                            const r = await fetch('admin.php?action=luggageServiceCRUD', {
+                                method: 'POST',
+                                body: fd
+                            });
+                            const js = await r.json();
                             if (js.success) {
-                                showToast('Layanan dihapus');
+                                await customAlert('Layanan dihapus', 'Sukses');
                                 loadLuggageServices();
                             } else {
-                                alert('Gagal: ' + js.error);
+                                customAlert('Gagal: ' + (js.error || 'Tidak diketahui'), 'Gagal');
                             }
-                        })
-                        .catch(e => {
-                            // Suppress alert, just refresh
+                        } catch (err) {
                             loadLuggageServices();
-                        });
-                    }
+                        }
+                    }, 'Hapus Layanan', 'danger');
                 }
             };
         });
     }
 
-    lsForm.onsubmit = function(e) {
+    lsForm.onsubmit = async function (e) {
         e.preventDefault();
         const fd = new FormData();
         fd.append('subAction', 'save');
@@ -123,28 +121,26 @@ document.addEventListener('DOMContentLoaded', function() {
         fd.append('name', inputName.value);
         fd.append('price', inputPrice.value);
 
-        fetch('admin.php?action=luggageServiceCRUD', {
-            method: 'POST',
-            body: fd
-        })
-        .then(r => r.json())
-        .then(js => {
+        try {
+            const r = await fetch('admin.php?action=luggageServiceCRUD', {
+                method: 'POST',
+                body: fd
+            });
+            const js = await r.json();
             if (js.success) {
-                showToast('Layanan berhasil disimpan');
+                await customAlert('Layanan berhasil disimpan', 'Sukses');
                 resetLsForm();
                 loadLuggageServices();
             } else {
-                alert('Gagal: ' + js.error);
+                customAlert('Gagal: ' + (js.error || 'Tidak diketahui'), 'Gagal');
             }
-        })
-        .catch(e => {
-            // Suppress alert, just refresh
+        } catch (err) {
             resetLsForm();
             loadLuggageServices();
-        });
+        }
     };
 
-    btnCancel.onclick = function() {
+    btnCancel.onclick = function () {
         resetLsForm();
     };
 
@@ -153,17 +149,15 @@ document.addEventListener('DOMContentLoaded', function() {
         inputName.value = '';
         inputPrice.value = '';
         formTitle.textContent = 'Tambah Layanan Baru';
+        btnSave.textContent = 'Simpan Layanan';
         btnCancel.style.display = 'none';
     }
 
-    // Initial load when section shown (handled by navbar.php usually)
-    // But we add a hash listener just in case it's loaded directly
     if (window.location.hash === '#luggage_services') {
         loadLuggageServices();
     }
-    
-    // Listen for hash changes to trigger refresh
-    window.addEventListener('hashchange', function() {
+
+    window.addEventListener('hashchange', function () {
         if (window.location.hash === '#luggage_services') {
             loadLuggageServices();
         }
