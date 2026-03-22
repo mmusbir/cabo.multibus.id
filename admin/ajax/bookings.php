@@ -57,7 +57,14 @@ $sql = "SELECT
     MAX(COALESCE(d.nama, '')) AS driver_name
     $baseFrom
     GROUP BY b.rute, b.tanggal, b.jam, b.unit
-    ORDER BY b.tanggal ASC, b.jam ASC, b.unit ASC
+    ORDER BY
+      CASE
+        WHEN b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME THEN 1
+        ELSE 0
+      END ASC,
+      b.tanggal ASC,
+      b.jam ASC,
+      b.unit ASC
     LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $queryParams = $params;
@@ -81,12 +88,8 @@ if (empty($rows)) {
         $totalPax = intval($trip['total_pax'] ?? 0);
         $paidCount = intval($trip['paid_count'] ?? 0);
         $unpaidCount = intval($trip['unpaid_count'] ?? 0);
-        $progressWidth = $totalPax > 0 ? max(12, min(100, (int) round(($paidCount / $totalPax) * 100))) : 12;
-
         $statusLabel = $driverName !== '-' ? 'CONFIRMED' : 'PENDING';
         $stateClass = $driverName !== '-' ? 'ready' : 'warning';
-        $noteClass = $driverName !== '-' ? '' : 'warning';
-        $noteText = $driverName !== '-' ? ('Driver: ' . $driverName) : 'Driver belum di-assign';
 
         echo '<div class="admin-card-compact kinetic-trip-card">';
         echo '  <div class="kinetic-trip-card-inner">';
@@ -106,15 +109,6 @@ if (empty($rows)) {
         echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">person</span>Driver: <strong>' . htmlspecialchars($driverName) . '</strong></div>';
         echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">groups</span>Total booking customer: <strong>' . $totalPax . ' penumpang</strong></div>';
         echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">confirmation_number</span>Lunas ' . $paidCount . ' / Belum lunas ' . $unpaidCount . '</div>';
-        echo '      </div>';
-        echo '      <div class="kinetic-trip-stat">';
-        echo '        <div class="kinetic-trip-stat-label">Manifest Readiness</div>';
-        echo '        <div class="kinetic-trip-progress">';
-        echo '          <div class="kinetic-trip-progress-bar"><span class="kinetic-trip-progress-fill" style="width:' . $progressWidth . '%"></span></div>';
-        echo '          <div class="kinetic-trip-progress-value">' . $paidCount . '/' . $totalPax . '<span> paid</span></div>';
-        echo '        </div>';
-        echo '        <div class="kinetic-trip-note ' . $noteClass . '"><span class="material-symbols-outlined">badge</span>' . htmlspecialchars($noteText) . '</div>';
-        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">event_note</span>Copy data akan mengikuti format detail booking.</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         echo '        <a href="#" class="kinetic-trip-action" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); copyBookingTripManifest(this);"><span class="material-symbols-outlined">content_copy</span>Copy Data</a>';

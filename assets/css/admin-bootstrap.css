@@ -2941,8 +2941,8 @@ body.admin-bootstrap-page .kinetic-summary-meta {
 }
 
 body.admin-bootstrap-page .kinetic-command-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
 }
 
@@ -2951,6 +2951,7 @@ body.admin-bootstrap-page .kinetic-trip-card {
     border: 1px solid rgba(148, 163, 184, 0.12);
     border-radius: 1.2rem;
     overflow: hidden;
+    height: 100%;
     transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
@@ -2961,8 +2962,10 @@ body.admin-bootstrap-page .kinetic-trip-card:hover {
 }
 
 body.admin-bootstrap-page .kinetic-trip-card-inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
     align-items: stretch;
+    height: 100%;
 }
 
 body.admin-bootstrap-page .kinetic-trip-time {
@@ -3006,11 +3009,11 @@ body.admin-bootstrap-page .kinetic-trip-zone {
 
 body.admin-bootstrap-page .kinetic-trip-main {
     flex: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.85fr) auto;
-    gap: 1.2rem;
-    padding: 1.35rem;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    align-items: stretch;
 }
 
 body.admin-bootstrap-page .kinetic-trip-meta {
@@ -3081,73 +3084,12 @@ body.admin-bootstrap-page .kinetic-trip-line strong {
     font-weight: 600;
 }
 
-body.admin-bootstrap-page .kinetic-trip-stat {
-    min-width: 0;
-}
-
-body.admin-bootstrap-page .kinetic-trip-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-body.admin-bootstrap-page .kinetic-trip-progress-bar {
-    flex: 1;
-    height: 0.42rem;
-    background: #0f1117;
-    border-radius: 999px;
-    overflow: hidden;
-}
-
-body.admin-bootstrap-page .kinetic-trip-progress-fill {
-    display: block;
-    height: 100%;
-    background: linear-gradient(90deg, #f97316 0%, #fb923c 100%);
-    border-radius: 999px;
-}
-
-body.admin-bootstrap-page .kinetic-trip-progress-value {
-    white-space: nowrap;
-    color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    font-size: 0.96rem;
-    font-weight: 800;
-}
-
-body.admin-bootstrap-page .kinetic-trip-progress-value span {
-    color: #7c8798;
-    font-size: 0.62rem;
-    font-weight: 600;
-}
-
-body.admin-bootstrap-page .kinetic-trip-note {
-    display: flex;
-    align-items: center;
-    gap: 0.38rem;
-    margin-top: 0.55rem;
-    color: #93ccff;
-    font-size: 0.72rem;
-    font-weight: 700;
-}
-
-body.admin-bootstrap-page .kinetic-trip-note.warning {
-    color: #fdba74;
-}
-
-body.admin-bootstrap-page .kinetic-trip-note.muted {
-    color: #b6c0ce;
-}
-
-body.admin-bootstrap-page .kinetic-trip-note.danger {
-    color: #fda4af;
-}
-
 body.admin-bootstrap-page .kinetic-trip-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 0.65rem;
-    align-self: center;
+    margin-top: auto;
 }
 
 body.admin-bootstrap-page .kinetic-trip-action {
@@ -3465,6 +3407,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     }
 
     body.admin-bootstrap-page .kinetic-command-list {
+        grid-template-columns: 1fr;
         gap: 0.85rem;
     }
 
@@ -3474,6 +3417,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     }
 
     body.admin-bootstrap-page .kinetic-trip-card-inner {
+        grid-template-columns: 1fr;
         gap: 0;
     }
 
@@ -3519,26 +3463,6 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
 
     body.admin-bootstrap-page .kinetic-trip-line .material-symbols-outlined {
         font-size: 1rem;
-    }
-
-    body.admin-bootstrap-page .kinetic-trip-stat {
-        background: #111319;
-        border: 1px solid rgba(167, 139, 125, 0.12);
-        border-radius: 0.9rem;
-        padding: 0.85rem 0.9rem;
-    }
-
-    body.admin-bootstrap-page .kinetic-trip-progress {
-        gap: 0.55rem;
-    }
-
-    body.admin-bootstrap-page .kinetic-trip-progress-value {
-        font-size: 0.9rem;
-    }
-
-    body.admin-bootstrap-page .kinetic-trip-note {
-        margin-top: 0.5rem;
-        font-size: 0.7rem;
     }
 
     body.admin-bootstrap-page .kinetic-trip-actions {
