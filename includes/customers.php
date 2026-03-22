@@ -107,10 +107,25 @@
     <div class="ajax-spinner"></div>
   </div>
 
-  <div id="customers_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
-    <div class="small admin-grid-message">Loading...</div>
+  <div class="table-wrapper customers-table-wrap">
+    <table class="table align-middle mb-0 customers-admin-table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nama</th>
+          <th scope="col">No. Handphone</th>
+          <th scope="col">Titik Jemput</th>
+          <th scope="col">Google Maps</th>
+          <th scope="col">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="customers_tbody">
+        <tr>
+          <td colspan="6" class="customers-table-empty">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="table-wrapper" style="display:none"></div>
   <div id="customers_pagination" class="admin-pagination-host"></div>
 </section>
 

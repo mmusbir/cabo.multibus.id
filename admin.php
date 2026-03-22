@@ -697,25 +697,32 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   $fileKey = isset($_FILES['csv_file']) ? 'csv_file' : 'csv';
   if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
     $_SESSION['import_msg'] = 'Upload gagal';
-    header('Location: admin.php');
+    header('Location: admin.php#customers');
     exit;
   }
   $tmp = $_FILES[$fileKey]['tmp_name'];
+  $rawLines = file($tmp, FILE_IGNORE_NEW_LINES);
+  if (!$rawLines || !count($rawLines)) {
+    $_SESSION['import_msg'] = 'CSV kosong';
+    header('Location: admin.php#customers');
+    exit;
+  }
+  $delimiter = (substr_count($rawLines[0], ';') > substr_count($rawLines[0], ',')) ? ';' : ',';
   $f = fopen($tmp, 'r');
   if (!$f) {
     $_SESSION['import_msg'] = 'Tidak dapat buka file';
-    header('Location: admin.php');
+    header('Location: admin.php#customers');
     exit;
   }
-  $header = fgetcsv($f);
+  $header = fgetcsv($f, 0, $delimiter);
   if (!$header) {
     $_SESSION['import_msg'] = 'CSV kosong';
     fclose($f);
-    header('Location: admin.php');
+    header('Location: admin.php#customers');
     exit;
   }
   $hmap = array_map(function ($v) {
-    return strtolower(trim($v));
+    return strtolower(trim(preg_replace('/^\xEF\xBB\xBF/', '', (string) $v)));
   }, $header);
   $colIndex = ['name' => -1, 'phone' => -1, 'pickup_point' => -1, 'address' => -1];
   foreach ($hmap as $i => $h) {
@@ -731,22 +738,29 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   if ($colIndex['name'] == -1 || $colIndex['phone'] == -1) {
     $_SESSION['import_msg'] = 'Header CSV minimal name & phone';
     fclose($f);
-    header('Location: admin.php');
+    header('Location: admin.php#customers');
     exit;
   }
   $ok = 0;
   $err = 0;
   $conn->beginTransaction();
-  while (($row = fgetcsv($f)) !== false) {
-    $name = trim($row[$colIndex['name']] ?? '');
+  while (($row = fgetcsv($f, 0, $delimiter)) !== false) {
+    $name = strtoupper(trim($row[$colIndex['name']] ?? ''));
     $phone = trim($row[$colIndex['phone']] ?? '');
+    $phone = preg_replace('/\D/', '', $phone);
+    if (substr($phone, 0, 2) === '62')
+      $phone = '0' . substr($phone, 2);
+    if (substr($phone, 0, 1) === '8')
+      $phone = '0' . $phone;
+    if (strlen($phone) > 13)
+      $phone = substr($phone, 0, 13);
     $pickup = trim($row[$colIndex['pickup_point']] ?? '');
     $address = trim($row[$colIndex['address']] ?? '');
     if (!$name || !$phone) {
       $err++;
       continue;
     }
-    $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
+    $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
     try {
       if ($stmt->execute([$name, $phone, $address, $pickup])) {
         $ok++;
@@ -759,8 +773,8 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   }
   $conn->commit();
   fclose($f);
-  $_SESSION['import_msg'] = "Import selesai — berhasil: $ok, error: $err";
-  header('Location: admin.php');
+  $_SESSION['import_msg'] = "Import selesai - berhasil: $ok, error: $err";
+  header('Location: admin.php#customers');
   exit;
 }
 
@@ -805,7 +819,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=24">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=25">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1330,7 +1344,11 @@ if (!isset($_REQUEST['action'])):
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
         const js = await parseAdminApiResponse(res);
         if (!js.success) { 
-          if (tbody) tbody.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Unknown error') + '</div>'; 
+          if (tbody) {
+            tbody.innerHTML = target === 'customers'
+              ? '<tr><td colspan="6" class="customers-table-empty">Error: ' + (js.error || 'Unknown error') + '</td></tr>'
+              : '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Unknown error') + '</div>';
+          }
           return; 
         }
         if (tbody) tbody.innerHTML = js.rows;
@@ -1341,7 +1359,13 @@ if (!isset($_REQUEST['action'])):
         }
         if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
         if (target === 'luggage') { attachLuggageHandlers(); }
-      } catch (e) { if (tbody) tbody.innerHTML = '<div class="small admin-grid-message">Kesalahan koneksi</div>'; }
+      } catch (e) {
+        if (tbody) {
+          tbody.innerHTML = target === 'customers'
+            ? '<tr><td colspan="6" class="customers-table-empty">Kesalahan koneksi</td></tr>'
+            : '<div class="small admin-grid-message">Kesalahan koneksi</div>';
+        }
+      }
       finally { if (spinnerWrap) spinnerWrap.style.display = 'none'; }
     }
     // Search handlers
