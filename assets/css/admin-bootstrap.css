@@ -836,10 +836,13 @@ body.admin-bootstrap-page #navMore.active .nav-icon {
 }
 
 body.admin-bootstrap-page #bottomMoreModal {
+    position: fixed;
+    inset: 0;
     display: none;
     align-items: flex-end;
     background: rgba(15, 23, 42, 0.42);
     backdrop-filter: blur(8px);
+    z-index: 10005;
 }
 
 body.admin-bootstrap-page #bottomMoreModal.show {
@@ -935,34 +938,38 @@ body.admin-bootstrap-page .fab-booking svg {
 }
 
 body.admin-bootstrap-page .admin-modal-overlay {
+    position: fixed;
+    inset: 0;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 1.25rem;
+    padding: 1rem;
     background: rgba(15, 23, 42, 0.48);
     backdrop-filter: blur(10px);
     z-index: 10010;
+    overflow-y: auto;
 }
 
 body.admin-bootstrap-page .admin-modal-card {
-    width: min(100%, 540px);
-    padding: 1.6rem;
-    border-radius: 1.35rem;
+    width: min(100%, 500px);
+    margin: auto;
+    padding: 1.2rem;
+    border-radius: 1rem;
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow: 0 1.5rem 3rem rgba(15, 23, 42, 0.2);
 }
 
 body.admin-bootstrap-page .admin-modal-card-sm {
-    width: min(100%, 400px);
+    width: min(100%, 360px);
 }
 
 body.admin-bootstrap-page .admin-modal-card-md {
-    width: min(100%, 440px);
+    width: min(100%, 410px);
 }
 
 body.admin-bootstrap-page .admin-modal-card-lg {
-    width: min(100%, 560px);
+    width: min(100%, 520px);
 }
 
 body.admin-bootstrap-page .admin-modal-card-center {
@@ -974,7 +981,7 @@ body.admin-bootstrap-page .admin-modal-card-form {
 }
 
 body.admin-bootstrap-page .admin-modal-scroll {
-    max-height: 90vh;
+    max-height: calc(100vh - 2rem);
     overflow-y: auto;
 }
 
@@ -989,48 +996,48 @@ body.admin-bootstrap-page .modal-popup-content {
 
 body.admin-bootstrap-page .admin-modal-heading,
 body.admin-bootstrap-page .modal-popup-title {
-    margin-bottom: 1.1rem;
+    margin-bottom: 0.9rem;
     text-align: center;
     font-weight: 800;
-    font-size: 1.35rem;
+    font-size: 1.15rem;
     line-height: 1.2;
     color: #0f172a;
 }
 
 body.admin-bootstrap-page .modal-popup-message {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     color: #64748b;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.88rem;
+    line-height: 1.5;
 }
 
 body.admin-bootstrap-page .admin-modal-form {
     display: grid;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 body.admin-bootstrap-page .admin-modal-form-tight {
-    gap: 0.85rem;
+    gap: 0.7rem;
 }
 
 body.admin-bootstrap-page .admin-modal-field {
     display: grid;
-    gap: 0.38rem;
+    gap: 0.28rem;
 }
 
 body.admin-bootstrap-page .admin-modal-label {
     color: #475569;
-    font-size: 0.77rem;
+    font-size: 0.69rem;
     font-weight: 700;
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
 
 body.admin-bootstrap-page .admin-modal-control {
-    min-height: 2.9rem;
-    padding: 0.7rem 0.85rem;
-    border-radius: 0.9rem;
-    font-size: 0.96rem;
+    min-height: 2.45rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.8rem;
+    font-size: 0.88rem;
     background: #f8fafc;
 }
 
@@ -1040,15 +1047,15 @@ body.admin-bootstrap-page .admin-modal-control:disabled {
 }
 
 body.admin-bootstrap-page .admin-modal-control-tight {
-    min-height: 2.55rem;
-    padding: 0.55rem 0.75rem;
-    border-radius: 0.8rem;
-    font-size: 0.88rem;
+    min-height: 2.3rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.75rem;
+    font-size: 0.84rem;
 }
 
 body.admin-bootstrap-page .admin-modal-grid {
     display: grid;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 body.admin-bootstrap-page .admin-modal-grid-2 {
@@ -1060,7 +1067,7 @@ body.admin-bootstrap-page .admin-modal-grid-3 {
 }
 
 body.admin-bootstrap-page .admin-modal-grid-tight {
-    gap: 0.8rem;
+    gap: 0.65rem;
 }
 
 body.admin-bootstrap-page .admin-modal-error {
@@ -1111,12 +1118,12 @@ body.admin-bootstrap-page .modal-popup-btn-group,
 body.admin-bootstrap-page .admin-modal-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.65rem;
     width: 100%;
 }
 
 body.admin-bootstrap-page .admin-modal-actions {
-    margin-top: 0.3rem;
+    margin-top: 0.15rem;
 }
 
 body.admin-bootstrap-page .admin-modal-actions-split {
@@ -1126,11 +1133,11 @@ body.admin-bootstrap-page .admin-modal-actions-split {
 body.admin-bootstrap-page .modal-popup-btn,
 body.admin-bootstrap-page .admin-modal-action {
     width: 100%;
-    min-height: 3rem;
-    padding: 0.8rem 1rem;
-    border-radius: 1rem;
+    min-height: 2.45rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0.8rem;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.84rem;
 }
 
 body.admin-bootstrap-page .admin-modal-action-wide {
