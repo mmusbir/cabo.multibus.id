@@ -1587,7 +1587,7 @@ if (!isset($_REQUEST['action'])):
         return;
       }
       try {
-        const url = new URL('admin/ajax.php', window.location.origin);
+        const url = new URL('admin.php', window.location.origin);
         url.searchParams.set('action', 'getSchedules');
         url.searchParams.set('rute', rute);
         url.searchParams.set('tanggal', tanggal);
@@ -1648,7 +1648,7 @@ if (!isset($_REQUEST['action'])):
           return;
         }
         try {
-          const url = new URL('admin/ajax.php', window.location.origin);
+          const url = new URL('admin.php', window.location.origin);
           url.searchParams.set('action', 'getPassengers');
           url.searchParams.set('rute', rute);
           url.searchParams.set('tanggal', tanggal);
@@ -1659,10 +1659,11 @@ if (!isset($_REQUEST['action'])):
           if (js.success && js.html) {
             list.innerHTML = js.html;
           } else {
-            list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak ada data penumpang untuk jadwal ini.</div>';
+            const errMsg = js.detail || js.message || js.error || 'Data penumpang tidak ditemukan.';
+            list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak dapat memuat detail booking. ' + errMsg + '</div>';
           }
         } catch (e) {
-          list.innerHTML = '<div class="admin-empty-state view-empty-state">Gagal memuat data penumpang.</div>';
+          list.innerHTML = '<div class="admin-empty-state view-empty-state">Gagal memuat data penumpang. ' + (e.message || '') + '</div>';
         } finally {
           if (spinner) spinner.style.display = 'none';
         }

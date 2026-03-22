@@ -34,67 +34,68 @@ function route_parts(string $route): array
     return [$route, ''];
 }
 
-$assignedDriverName = '-';
-$assignedDriverId = 0;
-$stmtD = $conn->prepare("\n    SELECT ta.driver_id, d.nama\n    FROM trip_assignments ta\n    JOIN drivers d ON ta.driver_id = d.id\n    WHERE ta.rute=? AND ta.tanggal=? AND ta.jam=? AND ta.unit=?\n");
-if ($stmtD) {
-    try {
-        $stmtD->execute([$rute, $tanggal, $jam, $unit]);
-        $resD = $stmtD->fetch();
-        if ($resD) {
-            $assignedDriverName = $resD['nama'];
-            $assignedDriverId = intval($resD['driver_id']);
-        }
-    } catch (PDOException $e) {
-        // Keep UI resilient.
-    }
-}
-
-$allDrivers = [];
-$resAllD = $conn->query("SELECT id, nama FROM drivers ORDER BY nama ASC");
-while ($rd = $resAllD->fetch()) {
-    $allDrivers[] = $rd;
-}
-
-$stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
-if (!$stmt) {
-    echo json_encode(['success' => false, 'error' => 'db_error']);
-    exit;
-}
 try {
-    $stmt->execute([$rute, $tanggal, $jam, $unit]);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'error' => 'db_error', 'detail' => $e->getMessage()]);
-    exit;
-}
-
-$totalPaid = 0;
-$countPaid = 0;
-$totalUnpaid = 0;
-$countUnpaid = 0;
-
-foreach ($rows as $r) {
-    $priceValue = floatval($r['price'] ?? 0);
-    $discountValue = floatval($r['discount'] ?? 0);
-    $finalValue = max(0, $priceValue - $discountValue);
-
-    if (($r['pembayaran'] ?? '') === 'Lunas') {
-        $totalPaid += $finalValue;
-        $countPaid++;
-    } else {
-        $totalUnpaid += $finalValue;
-        $countUnpaid++;
+    $assignedDriverName = '-';
+    $assignedDriverId = 0;
+    $stmtD = $conn->prepare("\n    SELECT ta.driver_id, d.nama\n    FROM trip_assignments ta\n    JOIN drivers d ON ta.driver_id = d.id\n    WHERE ta.rute=? AND ta.tanggal=? AND ta.jam=? AND ta.unit=?\n");
+    if ($stmtD) {
+        try {
+            $stmtD->execute([$rute, $tanggal, $jam, $unit]);
+            $resD = $stmtD->fetch();
+            if ($resD) {
+                $assignedDriverName = $resD['nama'];
+                $assignedDriverId = intval($resD['driver_id']);
+            }
+        } catch (PDOException $e) {
+            // Keep UI resilient.
+        }
     }
-}
 
-$tglIndo = date('d M Y', strtotime($tanggal));
-$jamIndo = substr($jam, 0, 5);
-$totalPax = count($rows);
-[$routeOrigin, $routeDestination] = route_parts($rute);
+    $allDrivers = [];
+    $resAllD = $conn->query("SELECT id, nama FROM drivers ORDER BY nama ASC");
+    while ($rd = $resAllD->fetch()) {
+        $allDrivers[] = $rd;
+    }
 
-ob_start();
-?>
+    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'error' => 'db_error']);
+        exit;
+    }
+    try {
+        $stmt->execute([$rute, $tanggal, $jam, $unit]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'error' => 'db_error', 'detail' => $e->getMessage()]);
+        exit;
+    }
+
+    $totalPaid = 0;
+    $countPaid = 0;
+    $totalUnpaid = 0;
+    $countUnpaid = 0;
+
+    foreach ($rows as $r) {
+        $priceValue = floatval($r['price'] ?? 0);
+        $discountValue = floatval($r['discount'] ?? 0);
+        $finalValue = max(0, $priceValue - $discountValue);
+
+        if (($r['pembayaran'] ?? '') === 'Lunas') {
+            $totalPaid += $finalValue;
+            $countPaid++;
+        } else {
+            $totalUnpaid += $finalValue;
+            $countUnpaid++;
+        }
+    }
+
+    $tglIndo = date('d M Y', strtotime($tanggal));
+    $jamIndo = substr($jam, 0, 5);
+    $totalPax = count($rows);
+    [$routeOrigin, $routeDestination] = route_parts($rute);
+
+    ob_start();
+    ?>
 <div id="departureInfoCard" class="info-card view-trip-card admin-bs-panel" data-driver-name="<?php echo h($assignedDriverName); ?>">
   <div class="view-trip-head">
     <div>
@@ -289,7 +290,14 @@ ob_start();
   </div>
 </div>
 <?php
-$html = ob_get_clean();
+    $html = ob_get_clean();
 
-echo json_encode(['success' => true, 'html' => $html]);
-exit;
+    echo json_encode(['success' => true, 'html' => $html]);
+    exit;
+} catch (Throwable $e) {
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    echo json_encode(['success' => false, 'error' => 'server_error', 'detail' => $e->getMessage()]);
+    exit;
+}

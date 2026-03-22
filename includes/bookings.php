@@ -300,7 +300,7 @@
       };
 
       try {
-        const url = new URL('admin/ajax.php', window.location.origin);
+        const url = new URL('admin.php', window.location.origin);
         url.searchParams.set('action', 'getPassengers');
         url.searchParams.set('rute', meta.rute);
         url.searchParams.set('tanggal', meta.tanggal);

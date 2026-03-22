@@ -52,7 +52,7 @@ $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-$where = "WHERE start_date >= CURDATE()";
+$where = "WHERE start_date >= CURRENT_DATE";
 $params = [];
 
 if ($search !== '') {
@@ -64,24 +64,34 @@ if ($search !== '') {
     $params[] = $like;
 }
 
-$countSql = "SELECT COUNT(*) AS cnt FROM charters $where";
-$stmt = $conn->prepare($countSql);
-$stmt->execute($params);
-$total = intval(($stmt->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
+try {
+    $countSql = "SELECT COUNT(*) AS cnt FROM charters $where";
+    $stmt = $conn->prepare($countSql);
+    $stmt->execute($params);
+    $total = intval(($stmt->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
 
-$sql = "SELECT c.*, u.nopol, u.merek
-        FROM charters c
-        LEFT JOIN units u ON c.unit_id = u.id
-        $where
-        ORDER BY c.created_at DESC
-        LIMIT ? OFFSET ?";
+    $sql = "SELECT c.*, u.nopol, u.merek
+            FROM charters c
+            LEFT JOIN units u ON c.unit_id = u.id
+            $where
+            ORDER BY c.created_at DESC
+            LIMIT ? OFFSET ?";
 
-$params[] = $per_page;
-$params[] = $offset;
+    $params[] = $per_page;
+    $params[] = $offset;
 
-$stmt = $conn->prepare($sql);
-$stmt->execute($params);
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'error' => 'charter_query_failed',
+        'detail' => $e->getMessage(),
+    ]);
+    exit;
+}
 
 ob_start();
 if (empty($rows)) {
