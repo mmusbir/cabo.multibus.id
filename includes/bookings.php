@@ -166,7 +166,7 @@
         state: 'ready',
         badge: 'READY',
         headline: 'Trip Booking Reguler',
-        info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail manifest.',
+        info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail booking.',
         tag: 'Manifest Queue',
         context: 'Live',
         pageKicker: 'Kinetic Command',
@@ -336,10 +336,10 @@
       const jam = trigger.getAttribute('data-jam') || '';
       const unit = trigger.getAttribute('data-unit') || '1';
 
-      const viewRoute = document.getElementById('view_rute');
-      const viewTanggal = document.getElementById('view_tanggal');
-      const viewJam = document.getElementById('view_jam');
-      const viewUnit = document.getElementById('view_unit');
+      const viewRoute = document.getElementById('booking_detail_rute');
+      const viewTanggal = document.getElementById('booking_detail_tanggal');
+      const viewJam = document.getElementById('booking_detail_jam');
+      const viewUnit = document.getElementById('booking_detail_unit');
 
       if (!viewRoute || !viewTanggal || !viewJam || !viewUnit) {
         customAlert('Panel detail booking belum tersedia.');
@@ -349,8 +349,8 @@
       viewRoute.value = rute;
       viewTanggal.value = tanggal;
 
-      if (typeof window.refreshViewJamOptions === 'function') {
-        await window.refreshViewJamOptions();
+      if (typeof window.refreshBookingDetailJamOptions === 'function') {
+        await window.refreshBookingDetailJamOptions();
       }
 
       if (![...viewJam.options].some(opt => opt.value === jam)) {
@@ -440,3 +440,4 @@
     });
   </script>
 </section>
+

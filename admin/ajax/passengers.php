@@ -171,10 +171,10 @@ ob_start();
       <div class="view-booking-kicker">Logistics Overview</div>
       <h4 class="view-booking-title">Data Booking</h4>
     </div>
-    <button type="button" class="view-booking-cta" onclick="document.getElementById('search_name_input')?.focus();">
+    <a href="index.php" class="view-booking-cta">
       <span class="material-symbols-outlined">add</span>
       Tambah Booking
-    </button>
+    </a>
   </div>
 
   <div class="view-booking-chip-row no-scrollbar">

@@ -114,7 +114,7 @@ if (empty($rows)) {
         echo '          <div class="kinetic-trip-progress-value">' . $paidCount . '/' . $totalPax . '<span> paid</span></div>';
         echo '        </div>';
         echo '        <div class="kinetic-trip-note ' . $noteClass . '"><span class="material-symbols-outlined">badge</span>' . htmlspecialchars($noteText) . '</div>';
-        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">event_note</span>Copy data akan mengikuti format manifest pada menu View.</div>';
+        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">event_note</span>Copy data akan mengikuti format detail booking.</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         echo '        <a href="#" class="kinetic-trip-action" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); copyBookingTripManifest(this);"><span class="material-symbols-outlined">content_copy</span>Copy Data</a>';
@@ -131,3 +131,4 @@ $pag_html = render_pagination_ajax($total, $per_page, $page, 'bookings');
 header('Content-Type: application/json');
 echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total]);
 exit;
+

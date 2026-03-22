@@ -788,7 +788,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=15">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=17">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -849,7 +849,7 @@ if (!isset($_REQUEST['action'])):
 
         <!-- VIEW DETAIL -->
         <!-- VIEW DETAIL -->
-        <?php include 'includes/view.php'; ?>
+        <?php include 'includes/booking_detail.php'; ?>
 
         <!-- CANCELLATIONS -->
         <?php include 'includes/cancellations.php'; ?>
@@ -1578,9 +1578,9 @@ if (!isset($_REQUEST['action'])):
     }
     // Fungsi untuk refresh jam berdasarkan rute dan tanggal (auto-load)
     async function refreshJamOptions() {
-      const rute = document.getElementById('view_rute').value;
-      const tanggal = document.getElementById('view_tanggal').value;
-      const jamSelect = document.getElementById('view_jam');
+      const rute = document.getElementById('booking_detail_rute').value;
+      const tanggal = document.getElementById('booking_detail_tanggal').value;
+      const jamSelect = document.getElementById('booking_detail_jam');
       jamSelect.innerHTML = '<option value="">Loading...</option>';
       if (!rute || !tanggal) {
         jamSelect.innerHTML = '<option value="">-- Pilih Rute & Tanggal Dulu --</option>';
@@ -1607,7 +1607,7 @@ if (!isset($_REQUEST['action'])):
             jamSelect.innerHTML += `<option value="${sch.jam}">${sch.jam}</option>`;
             if (sch.units > maxUnits) maxUnits = sch.units;
           });
-          const unitSelect = document.getElementById('view_unit');
+          const unitSelect = document.getElementById('booking_detail_unit');
           unitSelect.innerHTML = '';
           for (let i = 1; i <= maxUnits; i++) {
             unitSelect.innerHTML += `<option value="${i}">Unit ${i}</option>`;
@@ -1615,7 +1615,7 @@ if (!isset($_REQUEST['action'])):
         } else {
           // No schedules for this route/date combination
           jamSelect.innerHTML = '<option value="">Tidak ada jadwal untuk rute & tanggal ini. Buat jadwal di menu Schedules.</option>';
-          const unitSelect = document.getElementById('view_unit');
+          const unitSelect = document.getElementById('booking_detail_unit');
           unitSelect.innerHTML = '<option value="1">Unit 1</option>';
         }
       } catch (e) {
@@ -1623,21 +1623,21 @@ if (!isset($_REQUEST['action'])):
         jamSelect.innerHTML = '<option value="">Error: ' + e.message + '</option>';
       }
     }
-    window.refreshViewJamOptions = refreshJamOptions;
+    window.refreshBookingDetailJamOptions = refreshJamOptions;
     // Auto-refresh jam ketika rute atau tanggal berubah
-    if (document.getElementById('view_rute')) {
-      document.getElementById('view_rute').onchange = refreshJamOptions;
+    if (document.getElementById('booking_detail_rute')) {
+      document.getElementById('booking_detail_rute').onchange = refreshJamOptions;
     }
-    if (document.getElementById('view_tanggal')) {
-      document.getElementById('view_tanggal').onchange = refreshJamOptions;
+    if (document.getElementById('booking_detail_tanggal')) {
+      document.getElementById('booking_detail_tanggal').onchange = refreshJamOptions;
     }
     // Fungsi tombol Lihat untuk menampilkan list penumpang
     if (document.getElementById('btnLoadPassengers')) {
       document.getElementById('btnLoadPassengers').onclick = async function () {
-        const rute = document.getElementById('view_rute').value;
-        const tanggal = document.getElementById('view_tanggal').value;
-        const jam = document.getElementById('view_jam').value;
-        const unit = document.getElementById('view_unit').value;
+        const rute = document.getElementById('booking_detail_rute').value;
+        const tanggal = document.getElementById('booking_detail_tanggal').value;
+        const jam = document.getElementById('booking_detail_jam').value;
+        const unit = document.getElementById('booking_detail_unit').value;
         const spinner = document.getElementById('passenger_spinner_wrap');
         const list = document.getElementById('passengerList');
         if (spinner) spinner.style.display = 'flex';
@@ -1702,9 +1702,9 @@ if (!isset($_REQUEST['action'])):
                 }
               });
               // Get departure info
-              const rute = document.getElementById('view_rute')?.value || '';
-              const tanggalRaw = document.getElementById('view_tanggal')?.value || '';
-              const jam = document.getElementById('view_jam')?.value || '';
+              const rute = document.getElementById('booking_detail_rute')?.value || '';
+              const tanggalRaw = document.getElementById('booking_detail_tanggal')?.value || '';
+              const jam = document.getElementById('booking_detail_jam')?.value || '';
               // Format date
               let tanggalFormatted = tanggalRaw;
               if (tanggalRaw) {
@@ -1774,9 +1774,9 @@ if (!isset($_REQUEST['action'])):
             return;
           }
           // Get departure info
-          const rute = document.getElementById('view_rute')?.value || '';
-          const tanggalRaw = document.getElementById('view_tanggal')?.value || '';
-          const jam = document.getElementById('view_jam')?.value || '';
+          const rute = document.getElementById('booking_detail_rute')?.value || '';
+          const tanggalRaw = document.getElementById('booking_detail_tanggal')?.value || '';
+          const jam = document.getElementById('booking_detail_jam')?.value || '';
           // Format date
           let tanggalFormatted = tanggalRaw;
           if (tanggalRaw) {
@@ -2180,3 +2180,4 @@ if (!isset($_REQUEST['action'])):
 </html>
 <?php endif; // End of conditional HTML rendering for non-AJAX requests
 ?>
+

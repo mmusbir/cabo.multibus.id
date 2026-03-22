@@ -4,7 +4,7 @@
       <div class="booking-detail-page-copy">
         <span class="booking-detail-page-kicker">Logistics Overview</span>
         <h3 class="booking-detail-page-title">Data Booking</h3>
-        <p class="booking-detail-page-subtitle">Buka detail booking per jadwal, lihat semua penumpang, salin manifest, lalu kelola pembayaran dan driver dari satu halaman.</p>
+        <p class="booking-detail-page-subtitle">Buka detail booking per jadwal, lihat semua penumpang, salin detail booking, lalu kelola pembayaran dan driver dari satu halaman.</p>
       </div>
 
       <div class="booking-detail-page-actions">
@@ -26,7 +26,7 @@
     <div class="booking-detail-page-panel admin-bs-panel">
       <div class="booking-detail-filter-grid">
         <div class="booking-detail-filter-field">
-          <label for="view_rute" class="booking-detail-filter-label">Rute</label>
+          <label for="booking_detail_rute" class="booking-detail-filter-label">Rute</label>
           <div class="input-group">
             <span class="input-group-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -39,7 +39,7 @@
                 <circle cx="17" cy="18" r="2"></circle>
               </svg>
             </span>
-            <select id="view_rute" class="modern-select form-select" required>
+            <select id="booking_detail_rute" class="modern-select form-select" required>
               <option value="">Pilih Rute</option>
               <?php foreach ($routes as $r): ?>
                 <option value="<?php echo htmlspecialchars($r['name']); ?>">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="booking-detail-filter-field">
-          <label for="view_tanggal" class="booking-detail-filter-label">Tanggal</label>
+          <label for="booking_detail_tanggal" class="booking-detail-filter-label">Tanggal</label>
           <div class="input-group">
             <span class="input-group-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -62,12 +62,12 @@
                 <path d="M3 10h18"></path>
               </svg>
             </span>
-            <input type="date" id="view_tanggal" class="modern-input form-control" value="<?php echo date('Y-m-d'); ?>">
+            <input type="date" id="booking_detail_tanggal" class="modern-input form-control" value="<?php echo date('Y-m-d'); ?>">
           </div>
         </div>
 
         <div class="booking-detail-filter-field">
-          <label for="view_jam" class="booking-detail-filter-label">Jam</label>
+          <label for="booking_detail_jam" class="booking-detail-filter-label">Jam</label>
           <div class="input-group">
             <span class="input-group-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -76,14 +76,14 @@
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
             </span>
-            <select id="view_jam" class="modern-select form-select">
+            <select id="booking_detail_jam" class="modern-select form-select">
               <option value="">Pilih Jam</option>
             </select>
           </div>
         </div>
 
         <div class="booking-detail-filter-field">
-          <label for="view_unit" class="booking-detail-filter-label">Unit</label>
+          <label for="booking_detail_unit" class="booking-detail-filter-label">Unit</label>
           <div class="input-group">
             <span class="input-group-icon" aria-hidden="true">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -94,7 +94,7 @@
                 <path d="M7 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"></path>
               </svg>
             </span>
-            <select id="view_unit" class="modern-select form-select">
+            <select id="booking_detail_unit" class="modern-select form-select">
               <option value="1">Unit 1</option>
             </select>
           </div>
@@ -137,3 +137,4 @@
     });
   });
 </script>
+

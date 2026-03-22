@@ -5601,3 +5601,347 @@ body.admin-bootstrap-page .charter-command-action.danger {
         padding: 0.95rem 1rem;
     }
 }
+
+/* --- Compact admin density --- */
+body.admin-bootstrap-page {
+    line-height: 1.45;
+}
+
+body.admin-bootstrap-page .admin-bootstrap-container {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+}
+
+body.admin-bootstrap-page .card,
+body.admin-bootstrap-page .modern-form-card,
+body.admin-bootstrap-page .admin-card-compact,
+body.admin-bootstrap-page .admin-bs-panel,
+body.admin-bootstrap-page .kinetic-dash-panel,
+body.admin-bootstrap-page .kinetic-insight-card,
+body.admin-bootstrap-page .kinetic-stat-card,
+body.admin-bootstrap-page .booking-detail-page-panel,
+body.admin-bootstrap-page .charter-command-card-body,
+body.admin-bootstrap-page .booking-detail-main,
+body.admin-bootstrap-page .view-trip-card,
+body.admin-bootstrap-page .summary-footer {
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .admin-section-title,
+body.admin-bootstrap-page .kinetic-command-title,
+body.admin-bootstrap-page .kinetic-dash-title,
+body.admin-bootstrap-page .view-booking-title,
+body.admin-bootstrap-page .booking-detail-page-title {
+    letter-spacing: -0.04em;
+}
+
+body.admin-bootstrap-page .admin-section-subtitle,
+body.admin-bootstrap-page .kinetic-command-subtitle,
+body.admin-bootstrap-page .booking-detail-page-subtitle,
+body.admin-bootstrap-page .kinetic-summary-text,
+body.admin-bootstrap-page .kinetic-trip-subtitle,
+body.admin-bootstrap-page .charter-command-company,
+body.admin-bootstrap-page .charter-command-caption,
+body.admin-bootstrap-page .charter-command-note,
+body.admin-bootstrap-page .charter-command-meta-end {
+    font-size: 0.83rem;
+}
+
+body.admin-bootstrap-page input,
+body.admin-bootstrap-page select,
+body.admin-bootstrap-page textarea,
+body.admin-bootstrap-page .form-control,
+body.admin-bootstrap-page .modern-input,
+body.admin-bootstrap-page .modern-select,
+body.admin-bootstrap-page .search-input-modern,
+body.admin-bootstrap-page button,
+body.admin-bootstrap-page .btn,
+body.admin-bootstrap-page .kinetic-trip-action,
+body.admin-bootstrap-page .charter-command-action {
+    font-size: 0.84rem;
+}
+
+body.admin-bootstrap-page .admin-bs-form-grid,
+body.admin-bootstrap-page .modern-form-grid,
+body.admin-bootstrap-page .booking-detail-filter-grid,
+body.admin-bootstrap-page .kinetic-dash-grid,
+body.admin-bootstrap-page .kinetic-dash-stats,
+body.admin-bootstrap-page .kinetic-dash-insights,
+body.admin-bootstrap-page .admin-list-grid,
+body.admin-bootstrap-page .booking-cards-grid,
+body.admin-bootstrap-page .booking-detail-grid {
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .admin-section-header,
+body.admin-bootstrap-page .kinetic-command-header,
+body.admin-bootstrap-page .kinetic-command-toolbar,
+body.admin-bootstrap-page .kinetic-command-summary-bar,
+body.admin-bootstrap-page .booking-detail-page-head,
+body.admin-bootstrap-page .view-booking-list-head,
+body.admin-bootstrap-page .charter-command-top,
+body.admin-bootstrap-page .charter-command-footer {
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .kinetic-metric-card,
+body.admin-bootstrap-page .kinetic-stat-card,
+body.admin-bootstrap-page .kinetic-insight-card,
+body.admin-bootstrap-page .booking-detail-page-panel,
+body.admin-bootstrap-page .view-trip-card,
+body.admin-bootstrap-page .charter-command-card-body {
+    padding: 0.9rem 0.95rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a,
+body.admin-bootstrap-page .kinetic-sidebar-links a,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
+    padding: 0.72rem 0.82rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section {
+    margin-bottom: 0.9rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-footer {
+    gap: 0.7rem;
+    padding: 0.85rem;
+}
+
+body.admin-bootstrap-page .admin-pagination-host,
+body.admin-bootstrap-page .pagination-container {
+    margin-top: 0.7rem;
+}
+
+@media (min-width: 992px) {
+    body.admin-bootstrap-page {
+        font-size: 13px;
+    }
+
+    body.admin-bootstrap-page .admin-bootstrap-container {
+        padding: 0.8rem 1rem 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-title,
+    body.admin-bootstrap-page .kinetic-dash-title,
+    body.admin-bootstrap-page .view-booking-title,
+    body.admin-bootstrap-page .booking-detail-page-title {
+        font-size: clamp(1.45rem, 1.55vw, 1.95rem);
+    }
+
+    body.admin-bootstrap-page .admin-section-title,
+    body.admin-bootstrap-page .kinetic-trip-title,
+    body.admin-bootstrap-page .charter-command-name,
+    body.admin-bootstrap-page .booking-detail-name {
+        font-size: 1.05rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-main {
+        gap: 0.9rem;
+        padding: 1rem;
+    }
+
+    body.admin-bootstrap-page .booking-detail-main {
+        padding: 0.95rem 1rem 0.95rem 1.15rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-metrics {
+        gap: 0.75rem;
+    }
+}
+
+/* Extra compact tuning for dashboard + sidebar */
+body.admin-bootstrap-page .kinetic-dash-shell {
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-head {
+    gap: 0.75rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-kicker,
+body.admin-bootstrap-page .kinetic-stat-card p,
+body.admin-bootstrap-page .kinetic-insight-card h3,
+body.admin-bootstrap-page .kinetic-dash-date,
+body.admin-bootstrap-page .kinetic-dash-chip {
+    letter-spacing: 0.1em;
+}
+
+body.admin-bootstrap-page .kinetic-dash-export {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.68rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-stats,
+body.admin-bootstrap-page .kinetic-dash-insights {
+    gap: 0.8rem;
+}
+
+body.admin-bootstrap-page .kinetic-stat-card {
+    padding: 0.9rem;
+}
+
+body.admin-bootstrap-page .kinetic-stat-card p {
+    margin-bottom: 0.6rem;
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-stat-card strong {
+    font-size: 1.55rem;
+}
+
+body.admin-bootstrap-page .kinetic-stat-card .material-symbols-outlined {
+    font-size: 1.2rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-grid {
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel {
+    padding: 1rem;
+    border-radius: 0.95rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel-head {
+    margin-bottom: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel-head h2 {
+    font-size: 0.96rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-chart-bars {
+    min-height: 13rem;
+    gap: 0.45rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-group {
+    gap: 0.5rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-group span {
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-activity-list {
+    gap: 0.9rem;
+}
+
+body.admin-bootstrap-page .kinetic-activity-item {
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .kinetic-activity-item p {
+    font-size: 0.84rem;
+}
+
+body.admin-bootstrap-page .kinetic-activity-meta {
+    margin-top: 0.25rem;
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-insight-card {
+    padding: 0.95rem;
+    border-radius: 0.95rem;
+}
+
+body.admin-bootstrap-page .kinetic-insight-card h3 {
+    margin-bottom: 0.75rem;
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-insight-body p {
+    font-size: 0.92rem;
+}
+
+body.admin-bootstrap-page .kinetic-insight-body span:not(.material-symbols-outlined) {
+    margin-top: 0.2rem;
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-insight-body .material-symbols-outlined {
+    font-size: 2rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar {
+    width: 248px;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-head {
+    gap: 0.55rem;
+    padding-right: 0.8rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-brand {
+    gap: 0.5rem;
+    padding: 1rem 1rem 0.75rem;
+}
+
+body.admin-bootstrap-page .kinetic-brand-text {
+    font-size: 0.84rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-toggle,
+body.admin-bootstrap-page .kinetic-sidebar-reveal {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.75rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-scroll {
+    padding: 0 0.75rem 0.75rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary,
+body.admin-bootstrap-page .kinetic-sidebar-links,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer {
+    gap: 0.22rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary {
+    margin-bottom: 0.85rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a,
+body.admin-bootstrap-page .kinetic-sidebar-links a,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
+    gap: 0.55rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 0.8rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a {
+    font-size: 0.7rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-links a,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
+    font-size: 0.8rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section {
+    margin-bottom: 0.75rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-title {
+    padding: 0 0.75rem 0.35rem;
+    font-size: 0.62rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-footer {
+    padding: 0.75rem;
+    gap: 0.55rem;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-profile {
+    gap: 0.65rem;
+}
+
+body.admin-bootstrap-page .kinetic-profile-name {
+    font-size: 0.82rem;
+}
+
+body.admin-bootstrap-page .kinetic-profile-role {
+    font-size: 0.64rem;
+}

@@ -19,7 +19,6 @@
       <nav class="kinetic-sidebar-primary">
         <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
-        <a href="index.php"><span class="material-symbols-outlined">add_circle</span>Booking Area</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="luggage" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
         <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
@@ -279,7 +278,7 @@
         '#search_cancellations_input',
         '#search_customer_input',
         '#search_user_input',
-        '#view_rute'
+        '#booking_detail_rute'
       ];
       for (const selector of candidates) {
         const el = document.querySelector(selector);
@@ -399,3 +398,4 @@
     syncAdminNavState(initialTarget);
   });
 </script>
+
