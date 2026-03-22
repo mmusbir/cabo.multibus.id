@@ -39,244 +39,10 @@ require_once 'Router.php';
 $auth = null;
 if (!isset($_REQUEST['action'])) {
   $auth = requireAdminAuth();
-}
-
-// ==================== TABLE SETUP ====================
-
-// Ensure charters table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS charters (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50),
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    departure_time TIME,
-    pickup_point VARCHAR(255),
-    drop_point VARCHAR(255),
-    unit_id INT,
-    driver_name VARCHAR(100),
-    price NUMERIC(15,2) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Add columns if they don't exist
-if (!db_column_exists($conn, 'charters', 'departure_time')) {
-  $conn->exec("ALTER TABLE charters ADD COLUMN departure_time TIME");
-}
-if (!db_column_exists($conn, 'charters', 'company_name')) {
-  $conn->exec("ALTER TABLE charters ADD COLUMN company_name VARCHAR(255)");
-}
-if (!db_column_exists($conn, 'charters', 'bop_status')) {
-  $conn->exec("ALTER TABLE charters ADD COLUMN bop_status VARCHAR(20) DEFAULT 'pending'");
-}
-if (!db_column_exists($conn, 'charters', 'layanan')) {
-  $conn->exec("ALTER TABLE charters ADD COLUMN layanan VARCHAR(255) DEFAULT 'Regular'");
-}
-if (!db_column_exists($conn, 'charters', 'bop_price')) {
-  $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
-}
-
-// Add segment_id, price, discount to bookings if not exists
-if (!db_column_exists($conn, 'bookings', 'segment_id')) {
-  $conn->exec("ALTER TABLE bookings ADD COLUMN segment_id INT");
-  $conn->exec("ALTER TABLE bookings ADD COLUMN price NUMERIC(15,2) DEFAULT 0");
-  $conn->exec("ALTER TABLE bookings ADD COLUMN discount NUMERIC(15,2) DEFAULT 0");
-}
-if (!db_column_exists($conn, 'segments', 'origin')) {
-  $conn->exec("ALTER TABLE segments ADD COLUMN origin VARCHAR(255)");
-  $conn->exec("ALTER TABLE segments ADD COLUMN destination VARCHAR(255)");
-}
-
-// Ensure drivers table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS drivers (
-    id SERIAL PRIMARY KEY,
-    nama VARCHAR(100) NOT NULL,
-    phone VARCHAR(50),
-    unit_id INT,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure segments table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS segments (
-    id SERIAL PRIMARY KEY,
-    route_id INT DEFAULT 0,
-    rute VARCHAR(100) NOT NULL,
-    harga NUMERIC(15,2) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-if (!db_column_exists($conn, 'segments', 'route_id')) {
-  $conn->exec("ALTER TABLE segments ADD COLUMN route_id INT DEFAULT 0");
-}
-
-// Ensure trip_assignments table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS trip_assignments (
-    id SERIAL PRIMARY KEY,
-    rute VARCHAR(100),
-    tanggal DATE,
-    jam TIME,
-    unit INT,
-    driver_id INT,
-    created_at TIMESTAMP DEFAULT NOW(),
-    UNIQUE (rute, tanggal, jam, unit)
-)");
-
-// Ensure bookings table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS bookings (
-    id SERIAL PRIMARY KEY,
-    rute VARCHAR(100) NOT NULL,
-    tanggal DATE NOT NULL,
-    jam TIME NOT NULL,
-    unit INT DEFAULT 1,
-    seat VARCHAR(20) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    pickup_point VARCHAR(255),
-    pembayaran VARCHAR(50) DEFAULT 'Belum Lunas',
-    status VARCHAR(20) DEFAULT 'active',
-    segment_id INT DEFAULT 0,
-    price NUMERIC(15,2) DEFAULT 0,
-    discount NUMERIC(15,2) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure customers table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS customers (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL UNIQUE,
-    address TEXT,
-    pickup_point VARCHAR(255),
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure schedules table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS schedules (
-    id SERIAL PRIMARY KEY,
-    rute VARCHAR(100) NOT NULL,
-    dow INT NOT NULL,
-    jam TIME NOT NULL,
-    units INT DEFAULT 1,
-    seats INT DEFAULT 8,
-    unit_id INT,
-    layout TEXT,
-    created_at TIMESTAMP DEFAULT NOW(),
-    UNIQUE(rute, dow, jam)
-)");
-
-try {
-  @$conn->exec("ALTER TABLE schedules ADD CONSTRAINT unique_schedule_combo UNIQUE (rute, dow, jam)");
-} catch (PDOException $e) { /* ignore */ }
-
-// Ensure units table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS units (
-    id SERIAL PRIMARY KEY,
-    nopol VARCHAR(50) NOT NULL UNIQUE,
-    merek VARCHAR(100),
-    type VARCHAR(100),
-    category VARCHAR(100) DEFAULT 'Big Bus',
-    tahun INT DEFAULT 0,
-    kapasitas INT DEFAULT 0,
-    status VARCHAR(20) DEFAULT 'Aktif',
-    layout TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure settings table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS settings (
-    key VARCHAR(100) PRIMARY KEY,
-    value TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure cancellations table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS cancellations (
-    id SERIAL PRIMARY KEY,
-    booking_id INT NOT NULL,
-    admin_user VARCHAR(100),
-    reason TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure luggage_services table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS luggage_services (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    price NUMERIC(15,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure luggages table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS luggages (
-    id SERIAL PRIMARY KEY,
-    sender_name VARCHAR(255) NOT NULL,
-    sender_phone VARCHAR(50) NOT NULL,
-    sender_address TEXT,
-    receiver_name VARCHAR(255) NOT NULL,
-    receiver_phone VARCHAR(50) NOT NULL,
-    receiver_address TEXT,
-    service_id INT NOT NULL,
-    quantity INT DEFAULT 1,
-    notes TEXT,
-    price NUMERIC(15,2) NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending',
-    payment_status VARCHAR(20) DEFAULT 'Belum Lunas',
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Ensure routes table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS routes (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    origin VARCHAR(255),
-    destination VARCHAR(255),
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-if (!db_column_exists($conn, 'routes', 'origin')) {
-  $conn->exec("ALTER TABLE routes ADD COLUMN origin VARCHAR(255)");
-  $conn->exec("ALTER TABLE routes ADD COLUMN destination VARCHAR(255)");
-}
-
-// Ensure master_carter table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS master_carter (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    origin VARCHAR(255),
-    destination VARCHAR(255),
-    duration VARCHAR(50),
-    rental_price NUMERIC(15,2) DEFAULT 0,
-    bop_price NUMERIC(15,2) DEFAULT 0,
-    notes TEXT,
-    created_at TIMESTAMP DEFAULT NOW(),
-    UNIQUE(origin, destination, duration)
-)");
-
-// Auto-sync charters
-try {
-  $syncSql = "UPDATE charters SET layanan = r.duration, bop_price = r.bop_price
-              FROM master_carter r
-              WHERE UPPER(TRIM(charters.pickup_point)) = UPPER(TRIM(r.origin))
-                AND UPPER(TRIM(charters.drop_point)) = UPPER(TRIM(r.destination))
-                AND (charters.layanan = 'Regular' OR charters.layanan IS NULL OR charters.layanan = '')";
-  $conn->exec($syncSql);
-} catch (PDOException $e) {
-  // Silent fail
-}
-
-// Ensure users table exists
-$conn->exec("CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    fullname VARCHAR(100),
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-
-// Create default admin if users table is empty
-$userCheck = $conn->query("SELECT id FROM users LIMIT 1");
-if ($userCheck->rowCount() === 0) {
-    $default_hash = password_hash('admin', PASSWORD_BCRYPT);
-    $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
+  // ==================== DATABASE MIGRATION ====================
+  // Only run for page loads, not for AJAX requests
+  // AJAX requests assume tables were created during initial page load
+  require_once 'db-migrate.php';
 }
 
 // ==================== HELPERS ====================
@@ -988,7 +754,8 @@ $enable_claude_haiku_4_5 = getSetting($conn, 'enable_claude_haiku_4_5', '0');
 /* UNITS LOGIC */
 include 'includes/units_logic.php';
 
-/********** RENDER HTML **********/
+/********** CONDITIONAL: ONLY RENDER HTML FOR NON-AJAX REQUESTS **********/
+if (!isset($_REQUEST['action'])): 
 ?>
 <!doctype html>
 <html lang="id">
@@ -2769,3 +2536,8 @@ Harga: ${price}`;
 
     /* Responsive styles moved to includes/navbar.php */
   </style>
+</body>
+
+</html>
+<?php endif; // End of conditional HTML rendering for non-AJAX requests
+?>
