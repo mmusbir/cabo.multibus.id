@@ -6001,3 +6001,241 @@ body.admin-bootstrap-page .booking-detail-filter-btn.secondary {
     color: #e2e8f0 !important;
     background: #282a30 !important;
 }
+
+body.admin-bootstrap-page .booking-detail-page-shell {
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .booking-detail-page-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .booking-detail-page-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    min-height: 2.65rem;
+    padding: 0.68rem 0.95rem;
+    border-radius: 0.85rem;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    background: #282a30;
+    color: #e2e8f0;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-page-ghost:hover {
+    background: #33343b;
+}
+
+body.admin-bootstrap-page .booking-detail-context {
+    display: grid;
+    gap: 0.85rem;
+    padding: 0.95rem 1rem;
+    border-radius: 0.95rem;
+}
+
+body.admin-bootstrap-page .booking-detail-context-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .booking-detail-context-kicker {
+    color: #94a3b8;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-context-title {
+    margin-top: 0.2rem;
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+body.admin-bootstrap-page .booking-detail-context-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.42rem 0.7rem;
+    border-radius: 999px;
+    background: #282a30;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    color: #cbd5e1;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+body.admin-bootstrap-page .booking-detail-context-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .booking-detail-context-item {
+    display: grid;
+    gap: 0.22rem;
+    padding: 0.75rem 0.8rem;
+    border-radius: 0.8rem;
+    background: #111319;
+    border: 1px solid rgba(88, 66, 55, 0.14);
+}
+
+body.admin-bootstrap-page .booking-detail-context-label {
+    color: #94a3b8;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-context-value {
+    color: #f8fafc;
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+body.admin-bootstrap-page .booking-detail-context-helper {
+    margin: 0;
+    color: #9aa4b5;
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+body.admin-bootstrap-page .booking-detail-page-list {
+    gap: 0.95rem;
+}
+
+body.admin-bootstrap-page .view-booking-list-shell {
+    margin-top: 1rem;
+}
+
+body.admin-bootstrap-page .view-booking-list-head {
+    margin-bottom: 0.8rem;
+}
+
+body.admin-bootstrap-page .view-booking-title {
+    font-size: 1.55rem;
+}
+
+body.admin-bootstrap-page .view-booking-cta,
+body.admin-bootstrap-page .booking-detail-page-cta {
+    min-height: 2.65rem;
+    padding: 0.68rem 0.95rem;
+    border-radius: 0.85rem;
+    font-size: 0.72rem;
+}
+
+body.admin-bootstrap-page .booking-detail-card {
+    border-radius: 0.9rem;
+}
+
+body.admin-bootstrap-page .booking-detail-main {
+    gap: 0.75rem;
+    padding: 0.95rem 1rem 0.95rem 1.18rem;
+}
+
+body.admin-bootstrap-page .booking-detail-copy {
+    gap: 0.38rem;
+}
+
+body.admin-bootstrap-page .booking-detail-meta-row {
+    gap: 0.5rem;
+}
+
+body.admin-bootstrap-page .booking-detail-code {
+    font-size: 0.74rem;
+}
+
+body.admin-bootstrap-page .booking-detail-status {
+    padding: 0.22rem 0.5rem;
+    font-size: 0.56rem;
+}
+
+body.admin-bootstrap-page .seat-badge-num {
+    font-size: 0.72rem !important;
+    padding: 0.26rem 0.5rem !important;
+}
+
+body.admin-bootstrap-page .booking-detail-name {
+    font-size: 1rem;
+}
+
+body.admin-bootstrap-page .booking-detail-route {
+    gap: 0.28rem;
+    font-size: 0.78rem;
+}
+
+body.admin-bootstrap-page .booking-detail-route .material-symbols-outlined {
+    font-size: 0.92rem;
+}
+
+body.admin-bootstrap-page .booking-detail-side {
+    min-width: 10.5rem;
+    gap: 0.55rem;
+}
+
+body.admin-bootstrap-page .booking-detail-side-label {
+    font-size: 0.56rem;
+}
+
+body.admin-bootstrap-page .booking-detail-side-value {
+    font-size: 0.76rem;
+    margin-top: 0.12rem;
+}
+
+body.admin-bootstrap-page .booking-detail-source {
+    padding: 0.28rem 0.58rem;
+    font-size: 0.56rem;
+}
+
+body.admin-bootstrap-page .booking-detail-actions {
+    gap: 0.35rem;
+}
+
+body.admin-bootstrap-page .booking-detail-actions .copy-btn,
+body.admin-bootstrap-page .booking-detail-actions .btn-action-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.65rem;
+}
+
+body.admin-bootstrap-page .booking-detail-actions .copy-btn .material-symbols-outlined,
+body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .material-symbols-outlined {
+    font-size: 0.92rem;
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .booking-detail-context-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .booking-detail-page-actions {
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .booking-detail-page-ghost,
+    body.admin-bootstrap-page .booking-detail-page-cta {
+        flex: 1 1 0;
+    }
+
+    body.admin-bootstrap-page .booking-detail-context-grid {
+        grid-template-columns: 1fr;
+    }
+}

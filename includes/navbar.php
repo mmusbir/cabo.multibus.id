@@ -25,26 +25,14 @@
       </nav>
 
       <div class="kinetic-sidebar-section">
-        <div class="kinetic-sidebar-section-title">Operasional</div>
+        <div class="kinetic-sidebar-section-title">Pengaturan</div>
         <div class="kinetic-sidebar-links">
           <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
           <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
           <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">cancel</span>Cancellations</a>
-        </div>
-      </div>
-
-      <div class="kinetic-sidebar-section">
-        <div class="kinetic-sidebar-section-title">Data Master</div>
-        <div class="kinetic-sidebar-links">
           <a href="#routes" data-target="routes"><span class="material-symbols-outlined">route</span>Rute</a>
           <a href="#segments" data-target="segments"><span class="material-symbols-outlined">conversion_path</span>Segment</a>
           <a href="#luggage_services" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span>Layanan Bagasi</a>
-        </div>
-      </div>
-
-      <div class="kinetic-sidebar-section">
-        <div class="kinetic-sidebar-section-title">Armada &amp; SDM</div>
-        <div class="kinetic-sidebar-links">
           <a href="#units" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span>Unit Kendaraan</a>
           <a href="#drivers" data-target="drivers"><span class="material-symbols-outlined">badge</span>Data Driver</a>
           <a href="#users" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span>Users</a>
@@ -152,23 +140,14 @@
     <div class="bottom-more-content">
       <div class="sheet-handle"></div>
 
-      <div class="menu-section-header">Operasional</div>
+      <div class="menu-section-header">Pengaturan</div>
       <div class="menu-grid">
         <a href="#customers" class="nav-btn" data-target="customers"><span class="material-symbols-outlined">groups</span><span class="nav-label">Customers</span></a>
         <a href="#schedules" class="nav-btn" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span><span class="nav-label">Jadwal</span></a>
         <a href="#cancellations" class="nav-btn" data-target="cancellations"><span class="material-symbols-outlined">cancel</span><span class="nav-label">Cancel</span></a>
-        <a href="#reports" class="nav-btn" data-target="reports"><span class="material-symbols-outlined">assessment</span><span class="nav-label">Laporan</span></a>
-      </div>
-
-      <div class="menu-section-header">Data Master</div>
-      <div class="menu-grid">
         <a href="#routes" class="nav-btn" data-target="routes"><span class="material-symbols-outlined">route</span><span class="nav-label">Rute</span></a>
         <a href="#segments" class="nav-btn" data-target="segments"><span class="material-symbols-outlined">conversion_path</span><span class="nav-label">Segment</span></a>
         <a href="#luggage_services" class="nav-btn" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span><span class="nav-label">Bagasi</span></a>
-      </div>
-
-      <div class="menu-section-header">Armada &amp; SDM</div>
-      <div class="menu-grid">
         <a href="#units" class="nav-btn" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span><span class="nav-label">Unit</span></a>
         <a href="#drivers" class="nav-btn" data-target="drivers"><span class="material-symbols-outlined">badge</span><span class="nav-label">Driver</span></a>
         <a href="#users" class="nav-btn" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span><span class="nav-label">Users</span></a>
@@ -277,8 +256,7 @@
         '#search_name_input',
         '#search_cancellations_input',
         '#search_customer_input',
-        '#search_user_input',
-        '#booking_detail_rute'
+        '#search_user_input'
       ];
       for (const selector of candidates) {
         const el = document.querySelector(selector);

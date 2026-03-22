@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/config/env.php';
 
 $isActionRequest = isset($_REQUEST['action']);
 if ($isActionRequest) {
@@ -1624,99 +1623,83 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    // Fungsi untuk refresh jam berdasarkan rute dan tanggal (auto-load)
-    async function refreshJamOptions() {
-      const rute = document.getElementById('booking_detail_rute').value;
-      const tanggal = document.getElementById('booking_detail_tanggal').value;
-      const jamSelect = document.getElementById('booking_detail_jam');
-      jamSelect.innerHTML = '<option value="">Loading...</option>';
-      if (!rute || !tanggal) {
-        jamSelect.innerHTML = '<option value="">-- Pilih Rute & Tanggal Dulu --</option>';
+    function formatBookingDetailDate(rawDate) {
+      if (!rawDate) return '-';
+      const parts = rawDate.split('-');
+      if (parts.length !== 3) return rawDate;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      if (monthIndex < 0 || monthIndex > 11) return rawDate;
+      return `${parts[2]} ${months[monthIndex]} ${parts[0]}`;
+    }
+
+    function syncBookingDetailContext() {
+      const rute = document.getElementById('booking_detail_rute')?.value || '';
+      const tanggal = document.getElementById('booking_detail_tanggal')?.value || '';
+      const jam = document.getElementById('booking_detail_jam')?.value || '';
+      const unit = document.getElementById('booking_detail_unit')?.value || '';
+      const routeText = document.getElementById('booking_detail_route_text');
+      const dateText = document.getElementById('booking_detail_date_text');
+      const timeText = document.getElementById('booking_detail_time_text');
+      const unitText = document.getElementById('booking_detail_unit_text');
+      const unitBadge = document.getElementById('booking_detail_unit_text_badge');
+      const helperText = document.getElementById('booking_detail_helper_text');
+
+      if (routeText) routeText.textContent = rute || 'Belum dipilih';
+      if (dateText) dateText.textContent = tanggal ? formatBookingDetailDate(tanggal) : '-';
+      if (timeText) timeText.textContent = jam || '-';
+      if (unitText) unitText.textContent = unit ? `Unit ${unit}` : '-';
+      if (unitBadge) unitBadge.textContent = unit ? `Unit ${unit}` : 'Unit -';
+      if (helperText) {
+        helperText.innerHTML = rute && tanggal && jam && unit
+          ? 'Menampilkan semua penumpang pada jadwal terpilih. Anda bisa salin data, ubah driver, tandai lunas, atau batalkan booking dari daftar ini.'
+          : 'Pilih aksi <strong>Detail Booking List</strong> dari halaman Booking untuk menampilkan semua penumpang pada jadwal tersebut.';
+      }
+    }
+
+    async function loadBookingDetailPassengers() {
+      const rute = document.getElementById('booking_detail_rute')?.value || '';
+      const tanggal = document.getElementById('booking_detail_tanggal')?.value || '';
+      const jam = document.getElementById('booking_detail_jam')?.value || '';
+      const unit = document.getElementById('booking_detail_unit')?.value || '';
+      const spinner = document.getElementById('passenger_spinner_wrap');
+      const list = document.getElementById('passengerList');
+
+      syncBookingDetailContext();
+      if (!list) return;
+
+      if (spinner) spinner.style.display = 'flex';
+      list.innerHTML = '<div class="admin-empty-state view-empty-state">Memuat detail booking...</div>';
+
+      if (!rute || !tanggal || !jam || !unit) {
+        list.innerHTML = '<div class="admin-empty-state view-empty-state">Belum ada jadwal yang dipilih. Buka menu Booking lalu tekan <strong>Detail Booking List</strong> pada trip yang ingin dilihat.</div>';
+        if (spinner) spinner.style.display = 'none';
         return;
       }
+
       try {
         const url = new URL('admin.php', window.location.origin);
-        url.searchParams.set('action', 'getSchedules');
+        url.searchParams.set('action', 'getPassengers');
         url.searchParams.set('rute', rute);
         url.searchParams.set('tanggal', tanggal);
+        url.searchParams.set('jam', jam);
+        url.searchParams.set('unit', unit);
         const res = await fetch(url.toString(), { credentials: 'same-origin' });
         const js = await parseAdminApiResponse(res);
-        
-        if (!js.success) {
-          console.error('API Error:', js);
-          jamSelect.innerHTML = '<option value="">Gagal load jam - ' + (js.message || js.error) + '</option>';
-          return;
-        }
-        
-        if (js.schedules && js.schedules.length > 0) {
-          jamSelect.innerHTML = '<option value="">-- Pilih Jam --</option>';
-          let maxUnits = 1;
-          js.schedules.forEach(sch => {
-            jamSelect.innerHTML += `<option value="${sch.jam}">${sch.jam}</option>`;
-            if (sch.units > maxUnits) maxUnits = sch.units;
-          });
-          const unitSelect = document.getElementById('booking_detail_unit');
-          unitSelect.innerHTML = '';
-          for (let i = 1; i <= maxUnits; i++) {
-            unitSelect.innerHTML += `<option value="${i}">Unit ${i}</option>`;
-          }
+        if (js.success && js.html) {
+          list.innerHTML = js.html;
         } else {
-          // No schedules for this route/date combination
-          jamSelect.innerHTML = '<option value="">Tidak ada jadwal untuk rute & tanggal ini. Buat jadwal di menu Schedules.</option>';
-          const unitSelect = document.getElementById('booking_detail_unit');
-          unitSelect.innerHTML = '<option value="1">Unit 1</option>';
+          const errMsg = js.detail || js.message || js.error || 'Data penumpang tidak ditemukan.';
+          list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak dapat memuat detail booking. ' + errMsg + '</div>';
         }
       } catch (e) {
-        console.error('Fetch Error:', e);
-        jamSelect.innerHTML = '<option value="">Error: ' + e.message + '</option>';
+        list.innerHTML = '<div class="admin-empty-state view-empty-state">Gagal memuat data penumpang. ' + (e.message || '') + '</div>';
+      } finally {
+        if (spinner) spinner.style.display = 'none';
       }
     }
-    window.refreshBookingDetailJamOptions = refreshJamOptions;
-    // Auto-refresh jam ketika rute atau tanggal berubah
-    if (document.getElementById('booking_detail_rute')) {
-      document.getElementById('booking_detail_rute').onchange = refreshJamOptions;
-    }
-    if (document.getElementById('booking_detail_tanggal')) {
-      document.getElementById('booking_detail_tanggal').onchange = refreshJamOptions;
-    }
-    // Fungsi tombol Lihat untuk menampilkan list penumpang
-    if (document.getElementById('btnLoadPassengers')) {
-      document.getElementById('btnLoadPassengers').onclick = async function () {
-        const rute = document.getElementById('booking_detail_rute').value;
-        const tanggal = document.getElementById('booking_detail_tanggal').value;
-        const jam = document.getElementById('booking_detail_jam').value;
-        const unit = document.getElementById('booking_detail_unit').value;
-        const spinner = document.getElementById('passenger_spinner_wrap');
-        const list = document.getElementById('passengerList');
-        if (spinner) spinner.style.display = 'flex';
-        list.innerHTML = '<div class="admin-empty-state view-empty-state">Memuat detail booking...</div>';
-        if (!rute || !tanggal || !jam || !unit) {
-          list.innerHTML = '<div class="admin-empty-state view-empty-state">Lengkapi rute, tanggal, jam, dan unit terlebih dahulu.</div>';
-          if (spinner) spinner.style.display = 'none';
-          return;
-        }
-        try {
-          const url = new URL('admin.php', window.location.origin);
-          url.searchParams.set('action', 'getPassengers');
-          url.searchParams.set('rute', rute);
-          url.searchParams.set('tanggal', tanggal);
-          url.searchParams.set('jam', jam);
-          url.searchParams.set('unit', unit);
-          const res = await fetch(url.toString(), { credentials: 'same-origin' });
-          const js = await parseAdminApiResponse(res);
-          if (js.success && js.html) {
-            list.innerHTML = js.html;
-          } else {
-            const errMsg = js.detail || js.message || js.error || 'Data penumpang tidak ditemukan.';
-            list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak dapat memuat detail booking. ' + errMsg + '</div>';
-          }
-        } catch (e) {
-          list.innerHTML = '<div class="admin-empty-state view-empty-state">Gagal memuat data penumpang. ' + (e.message || '') + '</div>';
-        } finally {
-          if (spinner) spinner.style.display = 'none';
-        }
-      };
-    }
+    window.loadBookingDetailPassengers = loadBookingDetailPassengers;
+    syncBookingDetailContext();
     // Optimalkan handler copy agar hanya menyalin detail penumpang yang relevan
     function attachCopyHandlers() {
       function fallbackCopy(text) {
@@ -1886,13 +1869,17 @@ if (!isset($_REQUEST['action'])):
         };
       });
     }
-    // Panggil attachCopyHandlers setiap kali list penumpang diupdate
-    const origBtnLoadPassengers = document.getElementById('btnLoadPassengers')?.onclick;
-    document.getElementById('btnLoadPassengers').onclick = async function () {
-      if (origBtnLoadPassengers) await origBtnLoadPassengers.call(this);
+    async function refreshBookingDetailInteractiveState() {
       attachCopyHandlers();
       attachCancelHandlers();
       attachSeatLayoutMarkPaidHandlers();
+    }
+    const originalLoadBookingDetailPassengers = window.loadBookingDetailPassengers;
+    window.loadBookingDetailPassengers = async function () {
+      if (typeof originalLoadBookingDetailPassengers === 'function') {
+        await originalLoadBookingDetailPassengers();
+      }
+      await refreshBookingDetailInteractiveState();
     };
     attachCopyHandlers();
     attachCancelHandlers();
@@ -1919,7 +1906,9 @@ if (!isset($_REQUEST['action'])):
             fetch('admin.php?cancel_booking=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
               if (js.success) {
                 customAlert('Penumpang dibatalkan.').then(() => {
-                  document.getElementById('btnLoadPassengers').click();
+                  if (typeof window.loadBookingDetailPassengers === 'function') {
+                    window.loadBookingDetailPassengers();
+                  }
                 });
               } else {
                 customAlert('Gagal membatalkan: ' + (js.error || 'unknown'));
@@ -1984,7 +1973,9 @@ if (!isset($_REQUEST['action'])):
             fetch('admin.php?mark_paid=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
               if (js.success) {
                 customAlert('Status pembayaran diubah ke Lunas.').then(() => {
-                  document.getElementById('btnLoadPassengers').click();
+                  if (typeof window.loadBookingDetailPassengers === 'function') {
+                    window.loadBookingDetailPassengers();
+                  }
                 });
               } else {
                 customAlert('Gagal mengubah status: ' + (js.error || 'unknown'));

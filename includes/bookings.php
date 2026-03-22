@@ -350,19 +350,7 @@
 
       viewRoute.value = rute;
       viewTanggal.value = tanggal;
-
-      if (typeof window.refreshBookingDetailJamOptions === 'function') {
-        await window.refreshBookingDetailJamOptions();
-      }
-
-      if (![...viewJam.options].some(opt => opt.value === jam)) {
-        viewJam.innerHTML += `<option value="${jam}">${jam}</option>`;
-      }
       viewJam.value = jam;
-
-      if (![...viewUnit.options].some(opt => opt.value === unit)) {
-        viewUnit.innerHTML += `<option value="${unit}">Unit ${unit}</option>`;
-      }
       viewUnit.value = unit;
 
       if (typeof window.showSectionById === 'function') {
@@ -370,7 +358,9 @@
       }
       window.location.hash = '#booking-detail';
       document.getElementById('booking-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      document.getElementById('btnLoadPassengers')?.click();
+      if (typeof window.loadBookingDetailPassengers === 'function') {
+        await window.loadBookingDetailPassengers();
+      }
     };
 
     function refreshActiveBookingMode() {

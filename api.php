@@ -5,8 +5,6 @@
  * Version: 2.0 (Router-based)
  */
 
-require_once __DIR__ . '/config/env.php';
-
 // Error reporting
 if (getenv('APP_ENV') === 'production') {
     ini_set('display_errors', 0);
