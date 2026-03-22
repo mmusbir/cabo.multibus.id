@@ -4,6 +4,8 @@
  * Assigns a driver to a trip
  */
 
+global $conn;
+
 $rute = $_POST['rute'] ?? '';
 $tanggal = $_POST['tanggal'] ?? '';
 $jam = $_POST['jam'] ?? '';

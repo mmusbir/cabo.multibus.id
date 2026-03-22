@@ -230,7 +230,7 @@ if ($isActionRequest) {
       include $ajax_dir . 'passengers.php';
     });
     
-    $router->get('assignDriver', function () use ($ajax_dir) {
+    $router->any('assignDriver', function () use ($ajax_dir) {
       include $ajax_dir . 'assign_driver.php';
     });
     
