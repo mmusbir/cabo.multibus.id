@@ -3286,3 +3286,264 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         justify-content: center;
     }
 }
+
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .kinetic-command-bookings {
+        background: #111319;
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-header {
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-kicker {
+        font-size: 0.64rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.2em;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-title {
+        font-size: 2.1rem;
+        letter-spacing: -0.05em;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-subtitle {
+        font-size: 0.88rem;
+        line-height: 1.55;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-metrics {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-metric-card {
+        border-radius: 1rem;
+        padding: 0.95rem 0.9rem;
+        background: #191b22;
+    }
+
+    body.admin-bootstrap-page .kinetic-metric-value-row {
+        align-items: flex-end;
+        gap: 0.4rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-metric-value-row strong {
+        font-size: 1.35rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar {
+        background: transparent;
+        border: 0;
+        padding: 0;
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-tabs {
+        background: #191b22;
+        border-radius: 1rem;
+        min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 0.65rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-search {
+        width: 100%;
+        border-radius: 0.95rem;
+        min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-meta {
+        min-width: 4.7rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-select {
+        min-height: 3rem;
+        border-radius: 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-refresh {
+        min-height: 3rem;
+        padding: 0.72rem 0.85rem;
+        border-radius: 0.95rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-summary-bar {
+        background: #191b22;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-summary-copy {
+        align-items: flex-start;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-summary-side {
+        display: none;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-list-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-list-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-list-title .material-symbols-outlined {
+        color: #f97316;
+        font-size: 1.1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-list-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.65rem;
+        height: 2.65rem;
+        border: 1px solid rgba(167, 139, 125, 0.18);
+        border-radius: 0.9rem;
+        background: #282a30;
+        color: #e2e2eb;
+        transition: 0.2s ease;
+    }
+
+    body.admin-bootstrap-page .kinetic-mobile-icon-btn:hover,
+    body.admin-bootstrap-page .kinetic-mobile-icon-btn:focus {
+        color: #f97316;
+        border-color: rgba(249, 115, 22, 0.35);
+        outline: none;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-list {
+        gap: 0.85rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-card {
+        border-radius: 1rem;
+        border-color: rgba(167, 139, 125, 0.08);
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-card-inner {
+        gap: 0;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-time {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 0.95rem 1rem;
+        background: #151821;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-date,
+    body.admin-bootstrap-page .kinetic-trip-zone {
+        margin: 0;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-hour {
+        font-size: 1.4rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-main {
+        padding: 1rem;
+        gap: 0.95rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-meta {
+        margin-bottom: 0.55rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-title {
+        font-size: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-subtitle {
+        font-size: 0.82rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-line {
+        font-size: 0.76rem;
+        margin-top: 0.38rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-line .material-symbols-outlined {
+        font-size: 1rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-stat {
+        background: #111319;
+        border: 1px solid rgba(167, 139, 125, 0.12);
+        border-radius: 0.9rem;
+        padding: 0.85rem 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-progress {
+        gap: 0.55rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-progress-value {
+        font-size: 0.9rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-note {
+        margin-top: 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-action {
+        justify-content: center;
+        min-height: 2.85rem;
+        padding: 0.72rem 0.85rem;
+        border-radius: 0.9rem;
+        font-size: 0.68rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-trip-action .material-symbols-outlined {
+        font-size: 1rem;
+    }
+
+    body.admin-bootstrap-page .admin-pagination-host {
+        margin-top: 1rem;
+        padding-bottom: 5.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    body.admin-bootstrap-page .kinetic-mobile-list-head {
+        display: none;
+    }
+}

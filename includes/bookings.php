@@ -77,6 +77,21 @@
     </div>
   </div>
 
+  <div class="kinetic-mobile-list-head">
+    <h4 class="kinetic-mobile-list-title">
+      <span class="material-symbols-outlined">event_note</span>
+      Jadwal Mendatang
+    </h4>
+    <div class="kinetic-mobile-list-actions">
+      <button type="button" class="kinetic-mobile-icon-btn" id="bookingMobileFocusSearch" aria-label="Fokus ke pencarian">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button type="button" class="kinetic-mobile-icon-btn" id="bookingMobileRefresh" aria-label="Refresh daftar booking">
+        <span class="material-symbols-outlined">refresh</span>
+      </button>
+    </div>
+  </div>
+
   <div id="bookings_spinner_wrap" class="spinner-wrap" style="display:none">
     <div class="ajax-spinner"></div>
   </div>
@@ -232,8 +247,18 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const refreshBtn = document.getElementById('bookingRefreshBtn');
+      const mobileRefreshBtn = document.getElementById('bookingMobileRefresh');
+      const mobileSearchBtn = document.getElementById('bookingMobileFocusSearch');
       if (refreshBtn) {
         refreshBtn.addEventListener('click', refreshActiveBookingMode);
+      }
+      if (mobileRefreshBtn) {
+        mobileRefreshBtn.addEventListener('click', refreshActiveBookingMode);
+      }
+      if (mobileSearchBtn) {
+        mobileSearchBtn.addEventListener('click', () => {
+          document.getElementById('search_name_input')?.focus();
+        });
       }
       switchAdminView('bookings');
     });
