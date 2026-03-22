@@ -6401,7 +6401,11 @@ body.admin-bootstrap-page #segments .admin-bs-form-grid .input-group,
 body.admin-bootstrap-page #luggage_services .admin-bs-form-grid .input-group,
 body.admin-bootstrap-page #drivers .admin-bs-form-grid .input-group,
 body.admin-bootstrap-page #users .admin-bs-form-grid .input-group {
+    display: grid !important;
     gap: 0.38rem;
+    align-content: start;
+    width: 100%;
+    min-width: 0;
 }
 
 body.admin-bootstrap-page #customers .admin-bs-input-label,
@@ -6419,18 +6423,36 @@ body.admin-bootstrap-page #users .admin-bs-input-label {
 
 body.admin-bootstrap-page #customers .modern-input,
 body.admin-bootstrap-page #customers .modern-select,
+body.admin-bootstrap-page #customers .form-control,
+body.admin-bootstrap-page #customers .form-select,
 body.admin-bootstrap-page #schedules .modern-input,
 body.admin-bootstrap-page #schedules .modern-select,
+body.admin-bootstrap-page #schedules .form-control,
+body.admin-bootstrap-page #schedules .form-select,
 body.admin-bootstrap-page #routes .modern-input,
 body.admin-bootstrap-page #routes .modern-select,
+body.admin-bootstrap-page #routes .form-control,
+body.admin-bootstrap-page #routes .form-select,
 body.admin-bootstrap-page #segments .modern-input,
 body.admin-bootstrap-page #segments .modern-select,
+body.admin-bootstrap-page #segments .form-control,
+body.admin-bootstrap-page #segments .form-select,
 body.admin-bootstrap-page #luggage_services .modern-input,
 body.admin-bootstrap-page #luggage_services .modern-select,
+body.admin-bootstrap-page #luggage_services .form-control,
+body.admin-bootstrap-page #luggage_services .form-select,
 body.admin-bootstrap-page #drivers .modern-input,
 body.admin-bootstrap-page #drivers .modern-select,
+body.admin-bootstrap-page #drivers .form-control,
+body.admin-bootstrap-page #drivers .form-select,
 body.admin-bootstrap-page #users .modern-input,
-body.admin-bootstrap-page #users .modern-select {
+body.admin-bootstrap-page #users .modern-select,
+body.admin-bootstrap-page #users .form-control,
+body.admin-bootstrap-page #users .form-select {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
     min-height: 3.15rem;
     padding: 0.82rem 0.95rem;
     border-radius: 0.85rem;
@@ -6438,6 +6460,8 @@ body.admin-bootstrap-page #users .modern-select {
     border-color: #d6dde8;
     color: #0f172a;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    line-height: 1.35;
+    -webkit-text-fill-color: #0f172a;
 }
 
 body.admin-bootstrap-page #customers .modern-input::placeholder,
