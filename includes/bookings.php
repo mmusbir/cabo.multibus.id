@@ -116,7 +116,7 @@
           pageSubtitle: 'Kelola semua order carter dengan tampilan list editorial yang fokus pada customer, rute, jadwal, dan status operasional.',
           searchPlaceholder: 'Cari ID carter, customer, driver, atau rute...',
           mobileTitle: 'Data Carter',
-          primaryActionHref: 'admin_charter_create.php',
+          primaryActionHref: '#charter-create',
           primaryActionText: 'Tambah Carter',
           primaryActionIcon: 'add_circle',
         };
@@ -193,7 +193,16 @@
       if (pageTitle) pageTitle.textContent = meta.pageTitle;
       if (pageSubtitle) pageSubtitle.textContent = meta.pageSubtitle;
       if (searchInput) searchInput.placeholder = meta.searchPlaceholder;
-      if (primaryAction) primaryAction.href = meta.primaryActionHref || 'index.php';
+      if (primaryAction) {
+        primaryAction.href = meta.primaryActionHref || 'index.php';
+        if (mode === 'charters') {
+          primaryAction.setAttribute('data-target', 'charter-create');
+          primaryAction.setAttribute('data-booking-mode', 'charters');
+        } else {
+          primaryAction.removeAttribute('data-target');
+          primaryAction.removeAttribute('data-booking-mode');
+        }
+      }
       if (primaryActionText) primaryActionText.textContent = meta.primaryActionText || 'Tambah Booking';
       if (primaryActionIcon) primaryActionIcon.textContent = meta.primaryActionIcon || 'add';
       if (mobileListTitle) {
@@ -407,6 +416,18 @@
       if (mobileSearchBtn) {
         mobileSearchBtn.addEventListener('click', () => {
           document.getElementById('search_name_input')?.focus();
+        });
+      }
+      const primaryActionBtn = document.getElementById('bookingPrimaryAction');
+      if (primaryActionBtn) {
+        primaryActionBtn.addEventListener('click', (event) => {
+          const target = primaryActionBtn.getAttribute('data-target');
+          if (!target) return;
+          event.preventDefault();
+          if (typeof window.showSectionById === 'function') {
+            window.showSectionById(target);
+          }
+          window.location.hash = '#' + target;
         });
       }
       const urlParams = new URLSearchParams(window.location.search);

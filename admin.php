@@ -826,6 +826,109 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   header('Location: admin.php#customers');
   exit;
 }
+if (isset($_POST['create_charter_submit'])) {
+  $charterForm = [
+    'name' => trim((string) ($_POST['name'] ?? '')),
+    'phone' => trim((string) ($_POST['phone'] ?? '')),
+    'email' => trim((string) ($_POST['email'] ?? '')),
+    'route_text' => trim((string) ($_POST['route_text'] ?? '')),
+    'start_date' => trim((string) ($_POST['start_date'] ?? date('Y-m-d'))),
+    'duration_days' => trim((string) ($_POST['duration_days'] ?? '3')),
+    'departure_time' => trim((string) ($_POST['departure_time'] ?? '08:30')),
+    'bus_type' => trim((string) ($_POST['bus_type'] ?? 'Big Bus')),
+    'unit_id' => trim((string) ($_POST['unit_id'] ?? '')),
+    'driver_name' => trim((string) ($_POST['driver_name'] ?? '')),
+    'price' => trim((string) ($_POST['price'] ?? '')),
+    'down_payment' => trim((string) ($_POST['down_payment'] ?? '')),
+    'payment_status' => trim((string) ($_POST['payment_status'] ?? 'DP')),
+  ];
+
+  $parseCurrency = function ($value) {
+    $normalized = preg_replace('/[^0-9,.-]/', '', (string) $value);
+    $normalized = str_replace('.', '', $normalized);
+    $normalized = str_replace(',', '.', $normalized);
+    return (float) $normalized;
+  };
+
+  $parseRoute = function ($value) {
+    $value = trim(preg_replace('/\s+/', ' ', (string) $value));
+    if ($value === '') {
+      return ['', ''];
+    }
+    foreach (['->', ' - ', ' -- ', ' to ', ' ke '] as $separator) {
+      if (stripos($value, $separator) !== false) {
+        $parts = preg_split('/' . preg_quote($separator, '/') . '/i', $value, 2);
+        return [trim($parts[0] ?? ''), trim($parts[1] ?? '')];
+      }
+    }
+    if (strpos($value, '-') !== false) {
+      $parts = explode('-', $value, 2);
+      return [trim($parts[0] ?? ''), trim($parts[1] ?? '')];
+    }
+    return [$value, ''];
+  };
+
+  $errors = [];
+  $name = strtoupper($charterForm['name']);
+  $phone = preg_replace('/\s+/', '', $charterForm['phone']);
+  $routeText = $charterForm['route_text'];
+  $startDate = $charterForm['start_date'];
+  $durationDays = max(1, (int) $charterForm['duration_days']);
+  $departureTime = $charterForm['departure_time'] ?: '08:30';
+  $busType = $charterForm['bus_type'] ?: 'Big Bus';
+  $unitId = (int) $charterForm['unit_id'];
+  $driverName = $charterForm['driver_name'];
+  $price = $parseCurrency($charterForm['price']);
+
+  if ($name === '')
+    $errors[] = 'Nama lengkap wajib diisi.';
+  if ($phone === '')
+    $errors[] = 'Nomor telepon wajib diisi.';
+  if ($routeText === '')
+    $errors[] = 'Rute perjalanan wajib diisi.';
+  if ($startDate === '')
+    $errors[] = 'Tanggal keberangkatan wajib diisi.';
+  if ($unitId <= 0)
+    $errors[] = 'Unit kendaraan wajib dipilih.';
+
+  if ($errors) {
+    $_SESSION['charter_create_errors'] = $errors;
+    $_SESSION['charter_create_old'] = $charterForm;
+    header('Location: admin.php#charter-create');
+    exit;
+  }
+
+  [$pickupPoint, $dropPoint] = $parseRoute($routeText);
+  $endDate = date('Y-m-d', strtotime($startDate . ' +' . max(0, $durationDays - 1) . ' days'));
+  $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+
+  try {
+    $stmt->execute([
+      $name,
+      'ADMIN',
+      $phone,
+      $startDate,
+      $endDate,
+      $departureTime,
+      $pickupPoint,
+      $dropPoint,
+      $unitId,
+      $driverName,
+      $price,
+      $busType,
+      0,
+    ]);
+    $_SESSION['booking_msg'] = 'Data carter berhasil disimpan.';
+    unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
+    header('Location: admin.php?booking_mode=charters#bookings');
+    exit;
+  } catch (PDOException $e) {
+    $_SESSION['charter_create_errors'] = ['Gagal menyimpan carter: ' . $e->getMessage()];
+    $_SESSION['charter_create_old'] = $charterForm;
+    header('Location: admin.php#charter-create');
+    exit;
+  }
+}
 
 /********** DATA FOR RENDER **********/
 $routes = [];
@@ -868,7 +971,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=27">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=28">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -904,6 +1007,9 @@ if (!isset($_REQUEST['action'])):
 
         <!-- BOOKINGS -->
         <?php include 'includes/bookings.php'; ?>
+
+        <!-- CHARTER CREATE -->
+        <?php include 'includes/charter_create.php'; ?>
 
 
         <!-- CUSTOMERS -->

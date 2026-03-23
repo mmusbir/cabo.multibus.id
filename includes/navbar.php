@@ -215,6 +215,7 @@
       if (target === 'dashboard') return 'dashboard';
       if (target === 'reports') return 'reports';
       if (target === 'booking-detail') return 'booking';
+      if (target === 'charter-create') return 'charter';
       if (target === 'bookings') {
         const bookingMode = window.bookingDashboardState && window.bookingDashboardState.active;
         if (bookingMode === 'charters') return 'charter';

@@ -6773,3 +6773,200 @@ body.admin-bootstrap-page .customers-table-empty {
         min-width: 120px;
     }
 }
+
+body.admin-bootstrap-page .charter-create-page {
+    padding: 0;
+    background: transparent !important;
+    border: 0;
+    box-shadow: none;
+}
+
+body.admin-bootstrap-page .charter-create-shell {
+    display: grid;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-create-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-create-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+body.admin-bootstrap-page .charter-create-back,
+body.admin-bootstrap-page .charter-create-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 0.8rem;
+    text-decoration: none;
+    background: #191b22;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    color: #e2e2eb;
+}
+
+body.admin-bootstrap-page .charter-create-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 1rem;
+    align-items: start;
+}
+
+body.admin-bootstrap-page .charter-create-main,
+body.admin-bootstrap-page .charter-create-summary {
+    display: grid;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .charter-create-panel,
+body.admin-bootstrap-page .charter-create-summary {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #191b22;
+    border: 1px solid rgba(88, 66, 55, 0.16);
+}
+
+body.admin-bootstrap-page .charter-create-section-title,
+body.admin-bootstrap-page .charter-create-summary-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f97316;
+    margin-bottom: 0.85rem;
+}
+
+body.admin-bootstrap-page .charter-create-grid {
+    display: grid;
+    gap: 0.85rem;
+}
+
+body.admin-bootstrap-page .charter-create-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.admin-bootstrap-page .charter-create-field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+body.admin-bootstrap-page .charter-create-field-wide {
+    grid-column: 1 / -1;
+}
+
+body.admin-bootstrap-page .charter-create-field > span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(224, 192, 177, 0.68);
+}
+
+body.admin-bootstrap-page .charter-create-field input,
+body.admin-bootstrap-page .charter-create-field select {
+    width: 100%;
+    min-height: 2.65rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(88, 66, 55, 0.16);
+    background: #0c0e14;
+    color: #e2e2eb;
+}
+
+body.admin-bootstrap-page .charter-create-presets,
+body.admin-bootstrap-page .charter-create-radio-group,
+body.admin-bootstrap-page .charter-create-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+body.admin-bootstrap-page .charter-route-preset,
+body.admin-bootstrap-page .charter-create-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 999px;
+    background: #111319;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    color: #e2e2eb;
+}
+
+body.admin-bootstrap-page .charter-route-preset {
+    cursor: pointer;
+}
+
+body.admin-bootstrap-page .charter-create-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.6rem;
+    padding: 0.6rem 1rem;
+    border: 0;
+    border-radius: 0.8rem;
+    background: #f97316;
+    color: #341100;
+    font-weight: 800;
+}
+
+body.admin-bootstrap-page .charter-create-summary {
+    position: sticky;
+    top: 5.5rem;
+}
+
+body.admin-bootstrap-page .charter-create-summary-list {
+    display: grid;
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .charter-create-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.84rem;
+}
+
+body.admin-bootstrap-page .charter-create-summary-row span {
+    color: rgba(224, 192, 177, 0.62);
+}
+
+body.admin-bootstrap-page .charter-create-summary-row strong {
+    text-align: right;
+    color: #e2e2eb;
+}
+
+body.admin-bootstrap-page .charter-create-error {
+    padding: 0.85rem 1rem;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(255, 180, 171, 0.26);
+    background: rgba(147, 0, 10, 0.14);
+    color: #ffdad6;
+}
+
+body.admin-bootstrap-page .charter-create-error ul {
+    margin: 0;
+    padding-left: 1rem;
+}
+
+@media (max-width: 991.98px) {
+    body.admin-bootstrap-page .charter-create-layout,
+    body.admin-bootstrap-page .charter-create-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    body.admin-bootstrap-page .charter-create-summary {
+        position: static;
+    }
+}
