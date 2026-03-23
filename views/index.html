@@ -1,10 +1,21 @@
-﻿<!doctype html>
-<html lang="id">
+<!doctype html>
+<html lang="id" class="dark" data-default-theme="dark">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Booking Kursi</title>
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('siteTheme');
+        var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        document.documentElement.classList.toggle('light', theme === 'light');
+      } catch (err) {}
+    })();
+  </script>
   <!--Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +26,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/seat-layout.css">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css">
   <style>
     * {
       box-sizing: border-box;
@@ -3072,19 +3084,22 @@
   </style>
 </head>
 
-<body>
+<body class="app-index">
   <header class="desktop-terminal-topbar">
     <div class="desktop-terminal-brand-wrap">
       <div class="desktop-terminal-brand-icon">
         <span class="material-symbols-outlined">directions_bus</span>
       </div>
       <div class="desktop-terminal-brand-copy">
-        <div class="desktop-terminal-brand">Kinetic Terminal</div>
+        <div class="desktop-terminal-brand">Cahaya Bone</div>
         <div class="desktop-terminal-mark">Booking Kursi</div>
       </div>
     </div>
     <div class="desktop-terminal-topbar-right">
       <div class="desktop-terminal-topbar-links">
+        <button class="desktop-terminal-settings theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
+          <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+        </button>
         <a class="desktop-terminal-settings" href="admin.php" aria-label="Admin panel">
           <span class="material-symbols-outlined">settings</span>
         </a>
@@ -3097,7 +3112,12 @@
       <span class="material-symbols-outlined">menu</span>
     </a>
     <div class="mobile-slate-topbar-title">Booking Kursi</div>
-    <a class="mobile-slate-topbar-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+    <div class="flex-center-gap">
+      <button class="mobile-slate-topbar-action theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
+        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+      </button>
+      <a class="mobile-slate-topbar-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+    </div>
   </header>
   <div class="wrap">
     <div class="toprow">
@@ -3550,7 +3570,7 @@
                 } else if (cell.type === 'bagasi-custom') {
                   const bagasiDiv = document.createElement('div');
                   bagasiDiv.className = 'bagasi-small';
-                  bagasiDiv.textContent = 'ðŸ“¦';
+                  bagasiDiv.textContent = 'Ã°Å¸â€œÂ¦';
                   rowDiv.appendChild(bagasiDiv);
                 } else {
                   // Empty cell
@@ -3989,9 +4009,9 @@ Pembayaran: ${pembayaran}`;
             <div class="rekap-item-detail">
               HP: ${r.phone || '-'}<br>
               Jemput: ${r.pickup || '-'}<br>
-              Segment: ${r.segment || '-'} · ${r.hari}, ${r.tanggal} - ${r.jam}
+              Segment: ${r.segment || '-'} Â· ${r.hari}, ${r.tanggal} - ${r.jam}
             </div>
-            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">×</button>
+            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">Ã—</button>
           </div>
         `).join('');
       }
@@ -4155,7 +4175,7 @@ Pembayaran: ${pembayaran}`;
                 const safePickup = escapeHtml(c.pickup_point || 'Tanpa titik jemput');
                 div.innerHTML = `
                   <div class="booking-suggestion-name">${safeName}</div>
-                  <div class="booking-suggestion-meta">${safePhone} • ${safePickup}</div>
+                  <div class="booking-suggestion-meta">${safePhone} â€¢ ${safePickup}</div>
                 `;
                 div.dataset.name = c.name;
                 div.dataset.phone = c.phone;
@@ -4318,6 +4338,7 @@ Pembayaran: ${pembayaran}`;
       // INIT
       loadSegments();
     </script>
+    <script src="assets/js/theme-toggle.js"></script>
 </body>
 
 </html>

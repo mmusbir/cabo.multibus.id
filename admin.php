@@ -11,7 +11,7 @@ if ($isActionRequest) {
   ini_set('display_startup_errors', 1);
 }
 error_reporting(E_ALL);
-// admin.php — Router-based ACTION handling (v2.0)
+// admin.php â€” Router-based ACTION handling (v2.0)
 // IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
 
 // Error reporting - disable in production
@@ -435,7 +435,7 @@ if (isset($_GET['delete_schedule'])) {
   exit;
 }
 
-/* BOOKINGS cancel (server) — supports AJAX (returns JSON) */
+/* BOOKINGS cancel (server) â€” supports AJAX (returns JSON) */
 if (isset($_POST['save_booking_edit'])) {
   $id = intval($_POST['booking_id']);
   $seat = trim($_POST['seat']);
@@ -486,7 +486,7 @@ if (isset($_GET['cancel_booking'])) {
   exit;
 }
 
-/* BOOKINGS mark paid (server) — supports AJAX (returns JSON) */
+/* BOOKINGS mark paid (server) â€” supports AJAX (returns JSON) */
 if (isset($_GET['mark_paid'])) {
   $id = intval($_GET['mark_paid']);
   $result = ['success' => false];
@@ -958,12 +958,23 @@ include 'includes/units_logic.php';
 if (!isset($_REQUEST['action'])): 
 ?>
 <!doctype html>
-<html lang="id">
+<html lang="id" class="dark" data-default-theme="dark">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Admin Panel — Hiace Booking</title>
+  <title>Admin Panel â€” Hiace Booking</title>
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem('siteTheme');
+        var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+        document.documentElement.classList.toggle('light', theme === 'light');
+      } catch (err) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -972,6 +983,7 @@ if (!isset($_REQUEST['action'])):
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=28">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -993,7 +1005,7 @@ if (!isset($_REQUEST['action'])):
 
 </head>
 
-<body class="admin-bootstrap-page">
+<body class="admin-bootstrap-page app-admin">
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
@@ -2407,6 +2419,7 @@ if (!isset($_REQUEST['action'])):
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>
+  <script src="assets/js/theme-toggle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

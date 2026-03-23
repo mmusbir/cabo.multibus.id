@@ -46,6 +46,9 @@
   <div class="kinetic-desktop-navbar d-none d-lg-flex">
     <div class="kinetic-desktop-navbar-inner">
       <div class="kinetic-desktop-navbar-spacer"></div>
+      <button class="kinetic-icon-btn theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
+        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+      </button>
       <div class="profile-dropdown kinetic-profile-dropdown">
         <button class="profile-btn kinetic-profile-btn" id="desktopProfileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil desktop">
           <span class="kinetic-profile-avatar"><?php echo htmlspecialchars($userInitial); ?></span>
@@ -77,6 +80,9 @@
       </a>
 
       <div class="topbar-right kinetic-topbar-right d-flex align-items-center">
+        <button class="kinetic-icon-btn theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
+          <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+        </button>
         <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
           <span class="material-symbols-outlined">search</span>
         </button>

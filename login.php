@@ -60,14 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html class="dark" lang="id">
+<html class="dark" lang="id" data-default-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Login | KINETIC COMMAND</title>
+    <script>
+        (function () {
+            try {
+                var storedTheme = localStorage.getItem('siteTheme');
+                var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.classList.toggle('dark', theme === 'dark');
+                document.documentElement.classList.toggle('light', theme === 'light');
+            } catch (err) {}
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme-toggle.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -154,7 +166,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
-<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-8 md:py-10 bg-industrial-grid">
+<body class="app-login bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-8 md:py-10 bg-industrial-grid">
+    <button class="theme-toggle-btn login-theme-toggle" type="button" data-theme-toggle aria-label="Ubah tema">
+        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+    </button>
     <div class="w-full flex flex-col items-center justify-center gap-8 md:gap-10">
         <header class="text-center">
             <div class="flex flex-col items-center gap-3">
@@ -242,5 +257,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         }
     </script>
+    <script src="assets/js/theme-toggle.js"></script>
 </body>
 </html>
