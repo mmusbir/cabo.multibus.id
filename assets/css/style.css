@@ -635,9 +635,9 @@ select,
     cursor: pointer;
     font-size: 14px;
     color: var(--neu-text-dark);
-    transition: all 0.3s ease;
+    transition: background 0.18s ease, color 0.18s ease;
     border-radius: 15px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     font-weight: 500;
 }
 
@@ -654,10 +654,8 @@ select,
 }
 
 #sugList > div:hover {
-    background: var(--neu-bg);
-    box-shadow: inset 3px 3px 6px var(--neu-dark-shadow), inset -3px -3px 6px var(--neu-light-shadow);
+    background: rgba(249, 115, 22, 0.08);
     color: var(--neu-primary);
-    font-weight: 600;
 }
 
 
