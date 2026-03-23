@@ -469,6 +469,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 0.45rem;
       padding: 12px 6px;
       background: rgba(255, 255, 255, 0.7);
       border: 1px solid rgba(203, 213, 225, 0.6);
@@ -492,8 +493,9 @@
 
     .payment-label .payment-copy {
       display: grid;
-      gap: 0.12rem;
+      gap: 0.18rem;
       justify-items: center;
+      align-content: center;
     }
 
     .payment-label .payment-title {
@@ -2363,7 +2365,7 @@
         min-height: 5.15rem;
         background: #111319;
         border: 1px solid rgba(88, 66, 55, 0.14);
-        gap: 0.35rem;
+        gap: 0.5rem;
         color: rgba(224, 192, 177, 0.72);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
       }
@@ -2384,10 +2386,12 @@
 
       .payment-label .payment-title {
         color: rgba(224, 192, 177, 0.88);
+        line-height: 1.15;
       }
 
       .payment-label .payment-caption {
         color: rgba(224, 192, 177, 0.58);
+        line-height: 1.2;
       }
 
       .payment-option input:checked + .payment-label .payment-title {
@@ -2977,7 +2981,8 @@
 
       .payment-label {
         min-height: 4.75rem;
-        padding: 0.65rem 0.4rem;
+        gap: 0.4rem;
+        padding: 0.7rem 0.45rem;
       }
 
       .payment-label .payment-title {
