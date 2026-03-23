@@ -3377,12 +3377,6 @@
           </div>
         </div>
 
-        <!-- TOTAL PAYMENT REGULER -->
-        <div class="carter-section mt-12 d-none" id="reguler_price_card">
-          <div class="carter-section-title">Total Pembayaran</div>
-          <div id="reguler_total_price" class="total-price-display">Rp 0</div>
-        </div>
-
         <div id="msg" class="msg-display"></div>
       </div>
 
@@ -3825,11 +3819,8 @@ Pembayaran: ${pembayaran}`;
       }
 
       /* ================== PRICE CALCULATION (Reguler) ================== */
-      function updateRegulerTotal() {
-        const priceCard = document.getElementById('reguler_price_card');
-        const totalPriceEl = document.getElementById('reguler_total_price');
-        if (!priceCard || !totalPriceEl || !segmentEl) return;
-
+      function getCurrentBookingTotal() {
+        if (!segmentEl) return 0;
         const segmentId = segmentEl.value;
         const discountVal = parseInt(discountEl ? discountEl.value : 0) || 0;
         const selectedCount = selected.size;
@@ -3838,25 +3829,14 @@ Pembayaran: ${pembayaran}`;
           const segment = window.currentSegments.find(s => String(s.id) === String(segmentId));
           if (segment) {
             const pricePerSeat = parseInt(segment.harga) || 0;
-            const total = (pricePerSeat * selectedCount) - discountVal;
-            const totalFormatted = new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 0
-            }).format(Math.max(0, total));
-
-            totalPriceEl.textContent = totalFormatted;
-            priceCard.classList.remove('d-none');
-            priceCard.style.background = '#f0fdf4';
-            priceCard.classList.remove('price-highlight');
-            void priceCard.offsetWidth; // trigger reflow
-            priceCard.classList.add('price-highlight');
-          } else {
-            priceCard.classList.add('d-none');
+            return Math.max(0, (pricePerSeat * selectedCount) - discountVal);
           }
-        } else {
-          priceCard.classList.add('d-none');
         }
+        return 0;
+      }
+
+      function updateRegulerTotal() {
+        updateRekapBar();
       }
 
       /* ================== VALIDATION ================== */
@@ -4069,10 +4049,12 @@ Pembayaran: ${pembayaran}`;
         const bar = document.getElementById('rekapBar');
         const countEl = document.getElementById('rekapBarCount');
         const totalEl = document.getElementById('rekapBarTotal');
-        const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
+        const totalRekap = rekapList.reduce((s, r) => s + r.finalPrice, 0);
+        const total = totalRekap + getCurrentBookingTotal();
+        const totalCount = rekapList.length + selected.size;
         if (!bar || !countEl || !totalEl) return;
         bar.style.display = 'flex';
-        countEl.textContent = String(rekapList.length).padStart(2, '0');
+        countEl.textContent = String(totalCount).padStart(2, '0');
         totalEl.textContent = formatRp(total);
       }
 
