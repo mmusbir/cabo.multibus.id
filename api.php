@@ -255,9 +255,19 @@ $router->get('searchCustomers', function () use ($conn) {
     if ($q === '') {
         apiSuccess(['customers' => []]);
     }
-    $like = '%' . $q . '%';
-    $stmt = $conn->prepare("SELECT name, phone, pickup_point, address FROM customers WHERE name LIKE ? OR phone LIKE ? ORDER BY name LIMIT 20");
-    $stmt->execute([$like, $like]);
+    $phoneQuery = preg_replace('/\D+/', '', $q);
+    $like = '%' . strtolower($q) . '%';
+    $phoneLike = $phoneQuery !== '' ? '%' . $phoneQuery . '%' : '';
+    $stmt = $conn->prepare("
+        SELECT name, phone, pickup_point, address
+        FROM customers
+        WHERE LOWER(COALESCE(name, '')) LIKE ?
+           OR phone LIKE ?
+           OR (? <> '' AND REPLACE(REPLACE(REPLACE(COALESCE(phone, ''), ' ', ''), '-', ''), '+', '') LIKE ?)
+        ORDER BY name
+        LIMIT 20
+    ");
+    $stmt->execute([$like, '%' . $q . '%', $phoneQuery, $phoneLike]);
     $customers = [];
     while ($r = $stmt->fetch()) {
         $customers[] = $r;
