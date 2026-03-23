@@ -2441,6 +2441,40 @@
       gap: 0.35rem;
     }
 
+    .mobile-slate-control-card select,
+    .mobile-slate-control-card input,
+    .mobile-slate-control-input {
+      color: #f1ebe6;
+    }
+
+    .mobile-slate-control-card select:disabled,
+    .mobile-slate-control-card input:disabled,
+    .mobile-slate-control-card input[readonly],
+    .mobile-slate-control-input:disabled,
+    .mobile-slate-control-input[readonly] {
+      opacity: 1;
+      color: rgba(224, 226, 235, 0.76);
+      -webkit-text-fill-color: rgba(224, 226, 235, 0.76);
+    }
+
+    .mobile-slate-control-card select option {
+      color: #e2e2eb;
+      background: #191b22;
+    }
+
+    #search_name,
+    #card-passenger .control-select,
+    #card-passenger select {
+      color: #f1ebe6 !important;
+      -webkit-text-fill-color: #f1ebe6;
+    }
+
+    #search_name::placeholder,
+    #card-passenger .control-select::placeholder {
+      color: rgba(224, 192, 177, 0.46);
+      -webkit-text-fill-color: rgba(224, 192, 177, 0.46);
+    }
+
     .layout {
       width: 100%;
       position: relative;
@@ -2674,7 +2708,7 @@
             <span class="material-symbols-outlined">grid_view</span>
             Seat Map
           </h3>
-          <button type="button" id="refresh" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
+          <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
             <span class="material-symbols-outlined">refresh</span>
           </button>
         </div>
@@ -2864,7 +2898,7 @@
       const tanggalEl = document.getElementById('tanggal');
       const jamEl = document.getElementById('jam');
       const unitEl = document.getElementById('unit');
-      const refreshBtn = document.getElementById('refresh');
+      const refreshBtn = document.getElementById('refreshSeatsBtn');
       const layoutEl = document.getElementById('layout');
       const nameEl = document.getElementById('name');
       const phoneEl = document.getElementById('phone');
