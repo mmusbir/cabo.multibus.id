@@ -425,6 +425,11 @@
       width: 0;
     }
 
+    .payment-option input:focus-visible + .payment-label {
+      outline: 2px solid rgba(249, 115, 22, 0.65);
+      outline-offset: 2px;
+    }
+
     .payment-label {
       display: flex;
       flex-direction: column;
@@ -449,6 +454,26 @@
       color: #4f46e5;
       box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1), 0 4px 6px -2px rgba(79, 70, 229, 0.05);
       transform: translateY(-2px);
+    }
+
+    .payment-label .payment-copy {
+      display: grid;
+      gap: 0.12rem;
+      justify-items: center;
+    }
+
+    .payment-label .payment-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .payment-label .payment-caption {
+      font-size: 0.62rem;
+      line-height: 1.1;
+      color: rgba(224, 192, 177, 0.46);
     }
 
     /* Booking Button */
@@ -2200,16 +2225,43 @@
         border: 1px solid rgba(88, 66, 55, 0.14);
         gap: 0.35rem;
         color: rgba(224, 192, 177, 0.72);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
       }
 
       .payment-option input:checked + .payment-label {
+        background: linear-gradient(180deg, rgba(249, 115, 22, 0.13), rgba(17, 19, 25, 0.96));
         border-color: rgba(249, 115, 22, 0.5);
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.08);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        transform: translateY(-1px);
+        color: #f1ebe6;
       }
 
       .payment-badge {
         background: rgba(249, 115, 22, 0.1);
         border-color: rgba(249, 115, 22, 0.15);
+        color: rgba(249, 115, 22, 0.82);
+      }
+
+      .payment-label .payment-title {
+        color: rgba(224, 192, 177, 0.72);
+      }
+
+      .payment-label .payment-caption {
+        color: rgba(224, 192, 177, 0.42);
+      }
+
+      .payment-option input:checked + .payment-label .payment-title {
+        color: #f97316;
+      }
+
+      .payment-option input:checked + .payment-label .payment-caption {
+        color: rgba(255, 182, 144, 0.72);
+      }
+
+      .payment-option input:checked + .payment-label .payment-badge {
+        background: rgba(249, 115, 22, 0.16);
+        border-color: rgba(249, 115, 22, 0.26);
+        color: #f97316;
       }
 
       #reguler_price_card {
@@ -2646,6 +2698,14 @@
         padding: 0.65rem 0.4rem;
       }
 
+      .payment-label .payment-title {
+        font-size: 0.64rem;
+      }
+
+      .payment-label .payment-caption {
+        font-size: 0.56rem;
+      }
+
       .layout-row .seat::before {
         top: 0.32rem;
         width: 34%;
@@ -2840,21 +2900,30 @@
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
               <label for="p_belum" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
-                <span>Unpaid</span>
+                <span class="payment-copy">
+                  <span class="payment-title">Unpaid</span>
+                  <span class="payment-caption">Belum Lunas</span>
+                </span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
               <label for="p_lunas" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
-                <span>Paid</span>
+                <span class="payment-copy">
+                  <span class="payment-title">Paid</span>
+                  <span class="payment-caption">Lunas</span>
+                </span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_redbus" value="Redbus">
               <label for="p_redbus" class="payment-label">
                 <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
-                <span>Redbus</span>
+                <span class="payment-copy">
+                  <span class="payment-title">Redbus</span>
+                  <span class="payment-caption">Marketplace</span>
+                </span>
               </label>
             </div>
           </div>
