@@ -181,6 +181,7 @@
       box-shadow: none !important;
       appearance: none;
       -webkit-appearance: none;
+      text-align: left !important;
     }
 
     #tanggal:focus {
@@ -2041,6 +2042,8 @@
         font-weight: 700;
         line-height: 1.3;
         min-width: 0;
+        text-align: left;
+        text-align-last: left;
       }
 
       #card-seats {
@@ -2958,13 +2961,13 @@
     <a class="mobile-slate-topbar-action" href="admin.php" aria-label="Buka admin">
       <span class="material-symbols-outlined">menu</span>
     </a>
-    <div class="mobile-slate-topbar-title">Seat Selection</div>
+    <div class="mobile-slate-topbar-title">Booking Kursi</div>
     <a class="mobile-slate-topbar-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
   </header>
   <div class="wrap">
     <div class="toprow">
       <div class="flex-center-gap">
-        <h2>Seat Selection</h2>
+        <h2>Booking Kursi</h2>
       </div>
       <a class="admin-btn" href="admin.php">Admin</a>
     </div>
@@ -2979,8 +2982,8 @@
               <span class="material-symbols-outlined">calendar_month</span>
             </div>
             <div class="mobile-slate-control-copy">
-              <div class="mobile-slate-control-label">Departure Date</div>
-              <input type="text" id="tanggal" class="mobile-slate-control-input datepicker-input" placeholder="Select Date" readonly>
+              <div class="mobile-slate-control-label">Tanggal Berangkat</div>
+              <input type="text" id="tanggal" class="mobile-slate-control-input datepicker-input" placeholder="Pilih Tanggal" readonly>
             </div>
           </div>
           <div class="mobile-slate-control-card">
@@ -2988,9 +2991,9 @@
               <span class="material-symbols-outlined">route</span>
             </div>
             <div class="mobile-slate-control-copy">
-              <div class="mobile-slate-control-label">Selected Route</div>
+              <div class="mobile-slate-control-label">Rute</div>
               <select id="route" class="mobile-slate-control-input" disabled title="Pilih Rute">
-                <option value="" disabled selected>Pick Date First</option>
+                <option value="" disabled selected>Pilih tanggal dulu</option>
               </select>
             </div>
           </div>
@@ -2999,9 +3002,9 @@
               <span class="material-symbols-outlined">schedule</span>
             </div>
             <div class="mobile-slate-control-copy">
-              <div class="mobile-slate-control-label">Departure Time</div>
+              <div class="mobile-slate-control-label">Jam Berangkat</div>
               <select id="jam" class="mobile-slate-control-input" disabled title="Pilih Jam Keberangkatan">
-                <option value="" disabled selected>Pick Time</option>
+                <option value="" disabled selected>Pilih Jam</option>
               </select>
             </div>
           </div>
@@ -3012,7 +3015,7 @@
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Unit</div>
               <select id="unit" class="mobile-slate-control-input" disabled title="Pilih Unit">
-                <option value="" disabled selected>Pick Unit</option>
+                <option value="" disabled selected>Pilih Unit</option>
               </select>
             </div>
           </div>
@@ -3025,9 +3028,9 @@
           <div class="seat-head-copy">
             <h3 class="mobile-slate-section-title">
               <span class="material-symbols-outlined">grid_view</span>
-              Seat Map
+              Peta Kursi
             </h3>
-            <div class="seat-head-meta">Live occupancy overview</div>
+            <div class="seat-head-meta">Status kursi real-time</div>
           </div>
           <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
             <span class="material-symbols-outlined">refresh</span>
@@ -3036,22 +3039,22 @@
         <div class="mobile-slate-seat-canvas">
           <div class="layout" id="layout"></div>
           <div class="legend" aria-hidden="true">
-            <div class="item"><span class="box box-empty"></span> Avail</div>
-            <div class="item"><span class="box box-selected"></span> Picked</div>
-            <div class="item"><span class="box box-booked"></span> Occ</div>
+            <div class="item"><span class="box box-empty"></span> Kosong</div>
+            <div class="item"><span class="box box-selected"></span> Dipilih</div>
+            <div class="item"><span class="box box-booked"></span> Terisi</div>
           </div>
         </div>
         <div class="small" id="seat-counters">
           <div class="seat-counter-chip">
-            <span class="seat-counter-label">Empty</span>
+            <span class="seat-counter-label">Kosong</span>
             <strong id="count-empty" class="seat-counter-value">-</strong>
           </div>
           <div class="seat-counter-chip">
-            <span class="seat-counter-label">Booked</span>
+            <span class="seat-counter-label">Terisi</span>
             <strong id="count-booked" class="seat-counter-value">-</strong>
           </div>
           <div class="seat-counter-chip seat-counter-chip--selected">
-            <span class="seat-counter-label">Picked</span>
+            <span class="seat-counter-label">Dipilih</span>
             <strong id="count-selected" class="seat-counter-value">0</strong>
           </div>
         </div>
@@ -3062,53 +3065,53 @@
         <div class="mobile-slate-passenger-head">
           <h3 class="mobile-slate-section-title">
             <span class="material-symbols-outlined">person</span>
-            Passenger Details
+            Detail Penumpang
           </h3>
           <div class="search-container-modern booking-search-shell" id="suggestions">
             <span class="material-symbols-outlined booking-search-icon">search</span>
-            <input id="search_name" placeholder="Quick Search Name...">
+            <input id="search_name" placeholder="Cari nama / nomor">
             <div id="sugList"></div>
           </div>
         </div>
 
         <div class="carter-grid">
           <div class="input-group booking-field">
-            <div class="input-label">Full Name</div>
-            <input id="name" class="control-select" placeholder="Input passenger name">
+            <div class="input-label">Nama Lengkap</div>
+            <input id="name" class="control-select" placeholder="Input nama penumpang">
           </div>
           <div class="input-group booking-field">
-            <div class="input-label">Phone Number</div>
-            <input id="phone" class="control-select" placeholder="Input phone number">
+            <div class="input-label">No. Handphone</div>
+            <input id="phone" class="control-select" placeholder="Input nomor handphone">
           </div>
         </div>
 
         <div class="carter-grid mt-12">
           <div class="input-group booking-field">
-            <div class="input-label">Pickup Point</div>
-            <input id="pickup" class="control-select" placeholder="Pickup location">
+            <div class="input-label">Titik Jemput</div>
+            <input id="pickup" class="control-select" placeholder="Input titik jemput">
           </div>
           <div class="input-group booking-field">
-            <div class="input-label">Map Link</div>
-            <input id="address" class="control-select" placeholder="Google Maps link (optional)">
+            <div class="input-label">Link Maps</div>
+            <input id="address" class="control-select" placeholder="Link Google Maps (opsional)">
           </div>
         </div>
 
         <!-- SEGMENT & DISCOUNT -->
         <div class="carter-grid mt-12">
           <div class="input-group booking-field">
-            <div class="input-label">Route Segment</div>
+            <div class="input-label">Segment Rute</div>
             <select id="segment" class="control-select" aria-label="Pilih Segment">
-              <option value="" selected>-- Pick Segment --</option>
+              <option value="" selected>-- Pilih Segment --</option>
             </select>
           </div>
           <div class="input-group booking-field">
             <div class="input-label">Discount</div>
-            <input id="discount" type="number" class="control-select" placeholder="Discount adjustment">
+            <input id="discount" type="number" class="control-select" placeholder="Input potongan harga">
           </div>
         </div>
 
         <div class="mt-16">
-          <div class="input-label mb-8">Payment Command</div>
+          <div class="input-label mb-8">Pembayaran</div>
           <div class="payment-selector-modern" id="pembayaran_radios">
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
@@ -3155,23 +3158,23 @@
       <div id="rekapBar" class="rekap-sticky-bar">
         <div class="rekap-bar-metrics">
           <div class="rekap-bar-metric">
-            <span class="rekap-bar-label">Seats Picked</span>
+            <span class="rekap-bar-label">Kursi Dipilih</span>
             <span id="rekapBarCount" class="rekap-bar-count">00</span>
           </div>
           <div class="rekap-bar-divider"></div>
           <div class="rekap-bar-metric">
-            <span class="rekap-bar-label">Total Rekap Value</span>
+            <span class="rekap-bar-label">Total Rekap</span>
             <span id="rekapBarTotal" class="rekap-bar-total">Rp 0</span>
           </div>
         </div>
         <div class="rekap-bar-actions">
           <button type="button" onclick="openRekapModal()" class="rekap-bar-btn rekap-bar-btn-secondary">
             <span class="material-symbols-outlined">list_alt</span>
-            View Rekap
+            Lihat Rekap
           </button>
           <button id="book" class="rekap-bar-btn rekap-bar-btn-primary">
             <span class="material-symbols-outlined">bolt</span>
-            Confirm Booking
+            Konfirmasi
           </button>
         </div>
       </div>
@@ -3182,7 +3185,7 @@
         <div class="modal-header">
           <div class="modal-title-wrap">
             <h3 class="modal-title">Detail Penumpang</h3>
-            <p class="modal-subtitle">Booking Snapshot</p>
+            <p class="modal-subtitle">Ringkasan Booking</p>
           </div>
           <button type="button" id="closeDetailModal" class="modal-close-btn">&times;</button>
         </div>
@@ -3190,11 +3193,11 @@
         <div class="detail-modal-actions">
           <button type="button" id="copyDetailBtn" class="detail-copy-btn">
             <span class="material-symbols-outlined">content_copy</span>
-            Copy Data
+            Salin Data
           </button>
           <button type="button" id="addToRekapBtn" class="detail-rekap-btn">
             <span class="material-symbols-outlined">playlist_add</span>
-            Add to Rekap
+            Tambah Rekap
           </button>
         </div>
       </div>
@@ -3206,7 +3209,7 @@
         <div class="modal-header">
           <div class="modal-title-wrap">
             <h3 class="modal-title">Booking Recap</h3>
-            <p class="modal-subtitle">Session Summary</p>
+            <p class="modal-subtitle">Ringkasan Sesi</p>
           </div>
           <button type="button" id="closeRekapModal" class="modal-close-btn">&times;</button>
         </div>
@@ -3218,7 +3221,7 @@
         <div class="detail-modal-actions">
           <button type="button" id="copyRekapBtn" class="detail-copy-btn">
             <span class="material-symbols-outlined">content_copy</span>
-            Copy All
+            Salin Semua
           </button>
           <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">
             <span class="material-symbols-outlined">delete</span>
@@ -3478,7 +3481,7 @@
 
                 content.innerHTML = `
                     <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} - ${jam}</div>
-                    <div><strong>Kursi:</strong> ${id} - Booked</div>
+                    <div><strong>Kursi:</strong> ${id} - Terisi</div>
                     <div><strong>Segment:</strong> ${segment}</div>
                     <div><strong>Harga:</strong> ${priceFormatted}</div>
                     <div><strong>Nama:</strong> ${info.name || '-'}</div>
