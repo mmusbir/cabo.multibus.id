@@ -2034,10 +2034,430 @@
         border: 0;
       }
     }
+
+    .desktop-terminal-topbar {
+      display: none;
+    }
+
+    @media (min-width: 992px) {
+      body {
+        background: #111319;
+        color: #e2e2eb;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .desktop-terminal-topbar {
+        position: fixed;
+        inset: 0 0 auto 0;
+        height: 4rem;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        background: rgba(17, 19, 25, 0.82);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(249, 115, 22, 0.08);
+      }
+
+      .desktop-terminal-brand,
+      .desktop-terminal-mark {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #f97316;
+      }
+
+      .desktop-terminal-brand {
+        font-size: 1.1rem;
+        letter-spacing: -0.03em;
+      }
+
+      .desktop-terminal-mark {
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+      }
+
+      .desktop-terminal-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .desktop-terminal-settings,
+      .desktop-terminal-avatar {
+        width: 2.2rem;
+        height: 2.2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: #1e1f26;
+        border: 1px solid rgba(249, 115, 22, 0.12);
+        color: #e2e2eb;
+        text-decoration: none;
+      }
+
+      .mobile-slate-topbar {
+        display: none;
+      }
+
+      .wrap {
+        max-width: 1280px;
+        padding: 6rem 2rem 9rem;
+      }
+
+      .toprow {
+        display: none;
+      }
+
+      #main-card {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 2rem;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+      }
+
+      #reguler-controls {
+        grid-column: 1 / -1;
+      }
+
+      .mobile-slate-controls-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .mobile-slate-control-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.1rem 1.15rem;
+        border-radius: 1rem;
+        background: #191b22;
+        border: 1px solid rgba(88, 66, 55, 0.16);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+      }
+
+      .mobile-slate-control-icon {
+        width: 2.8rem;
+        height: 2.8rem;
+        border-radius: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(249, 115, 22, 0.08);
+        color: #f97316;
+        flex-shrink: 0;
+      }
+
+      .mobile-slate-control-copy {
+        display: grid;
+        gap: 0.2rem;
+        width: 100%;
+      }
+
+      .mobile-slate-control-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.65);
+      }
+
+      .mobile-slate-control-input {
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none !important;
+        color: #e2e2eb;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.98rem;
+        font-weight: 700;
+      }
+
+      #card-seats {
+        grid-column: span 7;
+        padding: 2rem;
+        border-radius: 1rem;
+        background: #282a30;
+        border: 1px solid rgba(88, 66, 55, 0.16);
+        box-shadow: none;
+      }
+
+      #card-passenger {
+        grid-column: span 5;
+        display: grid;
+        gap: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        background: #282a30;
+        border: 1px solid rgba(88, 66, 55, 0.16);
+        box-shadow: none;
+        align-self: start;
+      }
+
+      .mobile-slate-seat-head,
+      .mobile-slate-passenger-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .mobile-slate-section-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #e2e2eb;
+      }
+
+      .mobile-slate-section-title .material-symbols-outlined {
+        color: #ffb690;
+      }
+
+      .mobile-slate-refresh-btn {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #1e1f26;
+        border: 1px solid rgba(88, 66, 55, 0.14);
+        color: #e2e2eb;
+      }
+
+      .mobile-slate-seat-canvas {
+        display: block;
+        max-width: 31rem;
+        margin: 0 auto;
+        padding: 2rem;
+        border-radius: 2rem;
+        background: #0c0e14;
+        border: 1px solid rgba(88, 66, 55, 0.14);
+      }
+
+      .layout {
+        max-width: 24rem;
+        margin: 0 auto;
+      }
+
+      .layout-row {
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .seat,
+      .layout-row .seat {
+        min-height: 3.5rem;
+        border-radius: 0.7rem;
+        background: #33343b;
+        border-color: transparent;
+        color: #e2e2eb;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+      }
+
+      .seat.booked,
+      .layout-row .seat.booked {
+        background: #a7b6cc;
+        color: #233143;
+        opacity: 1;
+      }
+
+      .seat.selected,
+      .layout-row .seat.selected {
+        background: #f97316;
+        color: #341100;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.14);
+      }
+
+      .driver,
+      .layout-row .driver {
+        min-height: 3.5rem;
+        border-radius: 0.8rem;
+        background: #191b22;
+        border: 1px dashed rgba(88, 66, 55, 0.28);
+      }
+
+      .legend {
+        margin-top: 1.6rem;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+
+      .legend .item {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.72);
+      }
+
+      #seat-counters {
+        margin: 1.2rem 0 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: rgba(224, 192, 177, 0.78);
+      }
+
+      .search-container-modern {
+        margin: 0;
+        width: 100%;
+      }
+
+      .search-container-modern input,
+      #card-passenger .control-select,
+      #card-passenger select {
+        background: #111319 !important;
+        border: 1px solid rgba(88, 66, 55, 0.14) !important;
+        color: #e2e2eb !important;
+        border-radius: 0.75rem !important;
+        box-shadow: none;
+      }
+
+      #card-passenger .input-group {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      #card-passenger .carter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .payment-selector-modern {
+        gap: 0.85rem;
+      }
+
+      .payment-label {
+        min-height: 5.4rem;
+        background: #111319;
+        border: 1px solid rgba(88, 66, 55, 0.14);
+      }
+
+      .payment-option input:checked + .payment-label {
+        border-color: rgba(249, 115, 22, 0.5);
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.08);
+      }
+
+      .payment-badge {
+        background: rgba(249, 115, 22, 0.1);
+        border-color: rgba(249, 115, 22, 0.15);
+      }
+
+      #reguler_price_card {
+        background: #111319 !important;
+        border-left: 4px solid #f97316;
+      }
+
+      .rekap-sticky-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        padding: 1.15rem 2rem;
+        background: rgba(12, 14, 20, 0.9);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(14px);
+      }
+
+      .rekap-bar-metrics,
+      .rekap-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .rekap-bar-metric {
+        display: grid;
+        gap: 0.25rem;
+      }
+
+      .rekap-bar-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.6);
+      }
+
+      .rekap-bar-count,
+      .rekap-bar-total {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #e2e2eb;
+      }
+
+      .rekap-bar-count {
+        color: #f97316;
+      }
+
+      .rekap-bar-divider {
+        width: 1px;
+        height: 2.75rem;
+        background: rgba(88, 66, 55, 0.28);
+      }
+
+      .rekap-bar-btn {
+        min-height: 3.25rem;
+        padding: 0 1.25rem;
+        border-radius: 0.8rem;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .rekap-bar-btn-secondary {
+        background: #191b22;
+        color: rgba(224, 192, 177, 0.84);
+        border: 1px solid rgba(88, 66, 55, 0.16);
+      }
+
+      .rekap-bar-btn-primary {
+        background: #f97316;
+        color: #341100;
+        border: 0;
+        box-shadow: 0 0 20px rgba(249, 115, 22, 0.24);
+      }
+    }
   </style>
 </head>
 
 <body>
+  <header class="desktop-terminal-topbar">
+    <div class="desktop-terminal-brand">Kinetic Terminal</div>
+    <div class="desktop-terminal-topbar-right">
+      <div class="desktop-terminal-mark">Seat Booking</div>
+      <a class="desktop-terminal-settings" href="admin.php" aria-label="Admin panel">
+        <span class="material-symbols-outlined">settings</span>
+      </a>
+      <a class="desktop-terminal-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+    </div>
+  </header>
   <header class="mobile-slate-topbar">
     <a class="mobile-slate-topbar-action" href="admin.php" aria-label="Buka admin">
       <span class="material-symbols-outlined">menu</span>
