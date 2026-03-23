@@ -59,7 +59,7 @@ try {
         $allDrivers[] = $rd;
     }
 
-    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, c.address AS gmaps,\n         s.rute AS segment_route, s.origin AS segment_origin, s.destination AS segment_destination\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  LEFT JOIN segments s ON b.segment_id = s.id\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
+    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, b.segment_id, c.address AS gmaps,\n         s.rute AS segment_route, s.origin AS segment_origin, s.destination AS segment_destination\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  LEFT JOIN segments s ON b.segment_id = s.id\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
     if (!$stmt) {
         echo json_encode(['success' => false, 'error' => 'db_error']);
         exit;
@@ -261,6 +261,23 @@ try {
               </div>
               <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
               <div class="seat-actions booking-detail-actions">
+                <button
+                  type="button"
+                  class="edit-booking-btn btn-action-icon edit"
+                  data-id="<?php echo h($p['id']); ?>"
+                  data-unit="<?php echo intval($unit); ?>"
+                  data-rute="<?php echo h($rute); ?>"
+                  data-tanggal="<?php echo h($tanggal); ?>"
+                  data-jam="<?php echo h($jam); ?>"
+                  data-seat="<?php echo h($p['seat'] ?? ''); ?>"
+                  data-pickup="<?php echo h($p['pickup_point'] ?? ''); ?>"
+                  data-segment-id="<?php echo h($p['segment_id'] ?? '0'); ?>"
+                  data-price="<?php echo h($p['price'] ?? '0'); ?>"
+                  data-discount="<?php echo h($p['discount'] ?? '0'); ?>"
+                  data-pembayaran="<?php echo h($payStatus); ?>"
+                  title="Edit Penumpang">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
                 <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
                   <span class="material-symbols-outlined">content_copy</span>
                 </button>

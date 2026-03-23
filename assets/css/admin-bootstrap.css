@@ -4886,6 +4886,10 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.pay {
     color: #34d399;
 }
 
+body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.edit {
+    color: #60a5fa;
+}
+
 body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.cancel {
     color: #fda4af;
 }

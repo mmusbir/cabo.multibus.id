@@ -864,7 +864,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=26">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=27">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1940,6 +1940,7 @@ if (!isset($_REQUEST['action'])):
     }
     async function refreshBookingDetailInteractiveState() {
       attachCopyHandlers();
+      attachEditBookingHandlers();
       attachCancelHandlers();
       attachSeatLayoutMarkPaidHandlers();
     }
@@ -1951,6 +1952,7 @@ if (!isset($_REQUEST['action'])):
       await refreshBookingDetailInteractiveState();
     };
     attachCopyHandlers();
+    attachEditBookingHandlers();
     attachCancelHandlers();
     attachSeatLayoutMarkPaidHandlers();
     if (document.getElementById('closeCopyAllModal')) {
@@ -2078,7 +2080,9 @@ if (!isset($_REQUEST['action'])):
           const segmentId = this.getAttribute('data-segment-id') || '0';
           const price = this.getAttribute('data-price') || '0';
           const discount = this.getAttribute('data-discount') || '0';
-          const pembayaran = this.closest('.admin-card-compact') ? this.closest('.admin-card-compact').querySelector('.status-tag')?.textContent.trim() : 'Belum Lunas';
+          const pembayaran = this.getAttribute('data-pembayaran')
+            || (this.closest('.admin-card-compact') ? this.closest('.admin-card-compact').querySelector('.status-tag')?.textContent.trim() : '')
+            || 'Belum Lunas';
 
           document.getElementById('edit_booking_id').value = id;
           document.getElementById('edit_seat').value = seat;
