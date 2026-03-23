@@ -144,13 +144,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body {
             min-height: max(884px, 100dvh);
         }
+        @media (max-width: 480px) {
+            body {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-10 bg-industrial-grid">
-    <div class="w-full flex flex-col items-center justify-center gap-10">
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-8 md:py-10 bg-industrial-grid">
+    <div class="w-full flex flex-col items-center justify-center gap-8 md:gap-10">
         <header class="text-center">
-            <div class="flex flex-col items-center gap-4">
-                <h1 class="font-headline font-black text-3xl tracking-[0.2em] uppercase text-primary-container">Cahaya Bone</h1>
+            <div class="flex flex-col items-center gap-3">
+                <h1 class="font-headline font-black text-[1.7rem] md:text-3xl tracking-[0.18em] uppercase text-primary-container">Cahaya Bone</h1>
                 <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Portal Akses Operator</p>
             </div>
         </header>
@@ -158,26 +166,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <main class="w-full max-w-md">
             <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-2xl relative">
                 <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
-                <div class="p-8 md:p-10">
-                    <div class="mb-10 text-center">
-                        <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Masuk</h2>
-                        <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk mengakses panel kendali.</p>
+                <div class="p-6 md:p-8">
+                    <div class="mb-7 md:mb-8 text-center">
+                        <h2 class="font-headline font-bold text-[1.65rem] md:text-2xl text-on-surface tracking-tight">Masuk</h2>
+                        <p class="text-on-surface-variant text-sm mt-1.5">Masukkan akun operator untuk mengakses panel kendali.</p>
                     </div>
 
                     <?php if ($error_msg): ?>
-                        <div class="mb-6 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
+                        <div class="mb-5 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
                             <?php echo htmlspecialchars($error_msg); ?>
                         </div>
                     <?php endif; ?>
 
-                    <form class="space-y-6" method="POST">
+                    <form class="space-y-5" method="POST">
                         <div class="space-y-2">
                             <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline ml-1" for="username">Username atau Email</label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                     <span class="material-symbols-outlined text-lg">person</span>
                                 </div>
-                                <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+                                <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-3.5 md:py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
                             </div>
                         </div>
 
@@ -187,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                     <span class="material-symbols-outlined text-lg">lock</span>
                                 </div>
-                                <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
+                                <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-3.5 md:py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
                                 <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
                                     <span class="material-symbols-outlined text-lg">visibility</span>
                                 </button>
@@ -201,8 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Ingat perangkat ini</label>
                         </div>
 
-                        <div class="pt-4">
-                            <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
+                        <div class="pt-2">
+                            <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-4.5 md:py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
                                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span class="relative">Masuk</span>
                             </button>
@@ -212,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </main>
 
-        <div class="flex flex-col items-center gap-3 opacity-40">
+        <div class="flex flex-col items-center gap-2.5 opacity-40">
             <div class="flex items-center gap-6">
                 <span class="material-symbols-outlined text-2xl">encrypted</span>
                 <span class="material-symbols-outlined text-2xl">verified_user</span>
