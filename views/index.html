@@ -204,93 +204,6 @@
       }
     }
 
-    /* iOS-Style Segmented Control - Harmonized with Admin */
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      margin: 0 auto 24px auto;
-      background: rgba(118, 118, 128, 0.12);
-      padding: 2px;
-      border-radius: 10px;
-      width: fit-content;
-      position: relative;
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: calc(33.333% - 2px);
-      height: calc(100% - 4px);
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
-      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1;
-    }
-
-    /* Move slider based on active mode */
-    .toggle-container.mode-carter .toggle-slider {
-      transform: translateX(100%);
-    }
-
-    .toggle-container.mode-bagasi .toggle-slider {
-      transform: translateX(200%);
-    }
-
-    .toggle-btn {
-      position: relative;
-      z-index: 2;
-      padding: 6px 32px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.15s ease, opacity 0.15s ease;
-      color: #3a3a3c;
-      font-size: 14px;
-      border: none;
-      background: transparent !important;
-      box-shadow: none !important;
-      transform: none !important;
-      min-width: 120px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .toggle-btn.active {
-      color: #000;
-      background: transparent !important;
-      box-shadow: none !important;
-      transform: none !important;
-    }
-
-    .toggle-btn:not(.active) {
-      color: #3a3a3c;
-      opacity: 0.7;
-    }
-
-    .toggle-btn:hover {
-      background: transparent !important;
-      box-shadow: none !important;
-      transform: none !important;
-      opacity: 1;
-    }
-
-    /* Glassmorphism & Compact Styles */
-    .carter-form {
-      display: none;
-      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .carter-form.active {
-      display: block;
-    }
-
     .carter-section {
       background: rgba(255, 255, 255, 0.6);
       -webkit-backdrop-filter: blur(12px);
@@ -367,42 +280,6 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
     }
 
-    /* Distinct Departure Time */
-    .time-input-container {
-      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid #bae6fd;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .time-input-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #0284c7;
-    }
-
-    .time-input {
-      border: none !important;
-      background: transparent !important;
-      font-weight: 700 !important;
-      color: #0369a1 !important;
-      padding: 4px 0 !important;
-      font-size: 16px !important;
-    }
-
-    .price-input {
-      font-size: 20px !important;
-      font-weight: 800 !important;
-      color: #059669 !important;
-      text-align: center;
-      background: rgba(236, 253, 245, 0.6) !important;
-      border-color: #6ee7b7 !important;
-      transition: all 0.3s ease;
-    }
-
     /* Price Pulse Animation */
     @keyframes pricePulse {
       0% {
@@ -437,98 +314,6 @@
       animation: pricePulse 0.6s ease-out;
       border-color: #10b981 !important;
       background: #ecfdf5 !important;
-    }
-
-    /* Route Details Card */
-    .route-details-card {
-      display: none;
-      background: white;
-      border-radius: 14px;
-      padding: 12px;
-      margin-top: 10px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      animation: slideDown 0.3s ease-out;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .rd-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .rd-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .rd-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-    }
-
-    .rd-value {
-      font-size: 13px;
-      font-weight: 600;
-      color: #1e293b;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-    }
-
-    .rd-icon {
-      font-size: 14px;
-    }
-
-    .btn-carter-submit {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 15px;
-      margin-top: 4px;
-      background: rgba(255, 255, 255, 0.7);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      color: #059669;
-      border: 1px solid #6ee7b7;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-carter-submit:hover {
-      background: #10b981;
-      color: white;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-      border-color: #10b981;
-    }
-
-    .btn-carter-submit:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
     }
 
     /* Modern Passenger Data Styles */
@@ -698,11 +483,6 @@
     }
 
     @media (max-width: 600px) {
-      .input-row {
-        flex-direction: column;
-        gap: 12px;
-      }
-
       .carter-section {
         padding: 14px;
         margin-bottom: 12px;
@@ -724,13 +504,7 @@
       select,
       textarea,
       .control-select,
-      .time-input,
-      .price-input,
-      #search_name,
-      .ss-search input,
-      .ss-single-selected,
-      .ss-multi-selected,
-      .ss-content .ss-list .ss-option {
+      #search_name {
         font-size: 16px !important;
       }
     }
@@ -742,21 +516,6 @@
       gap: 12px;
     }
 
-    .toggle-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .slider-width {
-      width: calc(33.333% - 2px);
-    }
-
-    .mt-10 {
-      margin-top: 10px;
-    }
-
     .mt-12 {
       margin-top: 12px;
     }
@@ -765,30 +524,12 @@
       margin-top: 16px;
     }
 
-    .mb-0 {
-      margin-bottom: 0;
-    }
-
     .mb-8 {
       margin-bottom: 8px;
     }
 
-    .gap-8 {
-      gap: 8px;
-    }
-
-    .op-7 {
-      opacity: 0.7;
-    }
-
     .d-none {
       display: none;
-    }
-
-    .flex-between-center {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     #seat-counters {
@@ -806,59 +547,12 @@
       color: #431407;
     }
 
-    .rd-item-full {
-      grid-column: 1/-1;
-      border-top: 1px dashed #e2e8f0;
-      padding-top: 8px;
-      margin-top: 4px;
-    }
-
-    .btn-add-route {
-      padding: 6px 12px;
-      font-size: 12px;
-      margin-top: 0;
-      width: auto;
-    }
-
-    .new-route-form-container {
-      display: none;
-      margin-top: 12px;
-      padding: 12px;
-      border: 1px dashed #6ee7b7;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .fs-11 {
-      font-size: 11px;
-    }
-
-    .price-bop-group {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-save-route {
-      padding: 10px;
-    }
-
-    .textarea-notes {
-      resize: vertical;
-      min-height: 40px;
-    }
-
     .total-price-display {
       font-size: 22px;
       font-weight: 800;
       color: #059669;
       text-align: center;
       padding: 8px 0;
-    }
-
-    .btn-submit-bagasi {
-      margin-top: 12px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
 
     .mt-8 {
@@ -1332,23 +1026,6 @@
       width: 100%;
     }
 
-    .max-w-400 {
-      max-width: 400px;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .px-20 {
-      padding: 0 20px;
-    }
-
-    .luggage-notes-textarea {
-      resize: vertical;
-      min-height: 40px;
-    }
-
     /* ================= LIQUID GLASS THEME OVERRIDES ================= */
     :root {
       --glass-bg: rgba(255, 255, 255, 0.14);
@@ -1588,11 +1265,6 @@
       .admin-btn {
         padding: 9px 12px;
         font-size: 13px;
-      }
-
-      #card-seats .flex-between-center {
-        gap: 10px;
-        align-items: flex-start;
       }
 
       #seat-counters {
