@@ -441,6 +441,11 @@
       gap: 8px;
     }
 
+    .payment-section-stack {
+      display: grid;
+      gap: 0.8rem;
+    }
+
     .payment-option {
       flex: 1;
       position: relative;
@@ -2350,6 +2355,10 @@
         gap: 0.85rem;
       }
 
+      .payment-section-stack {
+        gap: 0.95rem;
+      }
+
       .payment-label {
         min-height: 5.15rem;
         background: #111319;
@@ -2962,6 +2971,10 @@
         gap: 0.65rem;
       }
 
+      .payment-section-stack {
+        gap: 0.75rem;
+      }
+
       .payment-label {
         min-height: 4.75rem;
         padding: 0.65rem 0.4rem;
@@ -3207,8 +3220,8 @@
             </div>
         </div>
 
-        <div class="mt-16">
-          <div class="input-label mb-8">Pembayaran</div>
+        <div class="mt-16 payment-section-stack">
+          <div class="input-label">Pembayaran</div>
           <div class="payment-selector-modern" id="pembayaran_radios">
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
