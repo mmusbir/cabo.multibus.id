@@ -629,44 +629,38 @@ select,
     padding: 8px;
 }
 
-#sugList div {
+#sugList > div {
     padding: 14px 18px;
     border-bottom: none;
     cursor: pointer;
     font-size: 14px;
     color: var(--neu-text-dark);
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     border-radius: 15px;
     margin-bottom: 4px;
     font-weight: 500;
 }
 
-#sugList div:first-child {
+#sugList > div:first-child {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
 
-#sugList div:last-child {
+#sugList > div:last-child {
     border-bottom: none;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     margin-bottom: 0;
 }
 
-#sugList div:hover {
+#sugList > div:hover {
     background: var(--neu-bg);
     box-shadow: inset 3px 3px 6px var(--neu-dark-shadow), inset -3px -3px 6px var(--neu-light-shadow);
     color: var(--neu-primary);
     font-weight: 600;
 }
 
-#sugList div::before {
-    content: '👤';
-    font-size: 16px;
-}
+
 
 /* ===== FLATPICKER CUSTOM STYLING ===== */
 .flatpickr-calendar {
@@ -937,3 +931,4 @@ select,
     color: #9ca3af;
     box-shadow: inset 4px 4px 8px var(--neu-dark-shadow), inset -4px -4px 8px var(--neu-light-shadow);
 }
+
