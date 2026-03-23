@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Seat Booking</title>
+  <title>Booking Kursi</title>
   <!--Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1722,13 +1722,14 @@
       }
 
       #card-passenger .carter-grid {
-        gap: 0.75rem;
+        gap: 0.9rem;
       }
 
       #card-passenger .input-label,
       #card-passenger .carter-section-title {
         font-size: 0.66rem;
         letter-spacing: 0.12em;
+        color: rgba(224, 192, 177, 0.8);
       }
 
       .payment-selector-modern {
@@ -1912,10 +1913,10 @@
       letter-spacing: -0.03em;
     }
 
-      .desktop-terminal-mark {
-        font-size: 0.72rem;
-        letter-spacing: 0.18em;
-      }
+    .desktop-terminal-mark {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+    }
 
     .desktop-terminal-topbar-right {
       display: flex;
@@ -1929,32 +1930,32 @@
       gap: 0.65rem;
     }
 
-      .desktop-terminal-settings,
-      .desktop-terminal-avatar {
-        width: 2.2rem;
-        height: 2.2rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 999px;
-        background: #1e1f26;
-        border: 1px solid rgba(249, 115, 22, 0.12);
-        color: #e2e2eb;
-        text-decoration: none;
-      }
+    .desktop-terminal-settings,
+    .desktop-terminal-avatar {
+      width: 2.2rem;
+      height: 2.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #1e1f26;
+      border: 1px solid rgba(249, 115, 22, 0.12);
+      color: #e2e2eb;
+      text-decoration: none;
+    }
 
-      .mobile-slate-topbar {
-        display: none;
-      }
+    .mobile-slate-topbar {
+      display: none;
+    }
 
-      .wrap {
-        max-width: 1360px;
-        padding: 5.4rem 1.6rem 8.8rem;
-      }
+    .wrap {
+      max-width: 1360px;
+      padding: 5.4rem 1.6rem 8.8rem;
+    }
 
-      .toprow {
-        display: none;
-      }
+    .toprow {
+      display: none;
+    }
 
       #main-card {
         display: grid;
@@ -2060,7 +2061,7 @@
       #card-passenger {
         grid-column: span 5;
         display: grid;
-        gap: 1.2rem;
+        gap: 1rem;
         padding: 1.45rem;
         border-radius: 1rem;
         background: #282a30;
@@ -2273,12 +2274,12 @@
       #card-passenger .input-group {
         background: transparent;
         box-shadow: none;
-        gap: 0.45rem;
+        gap: 0.5rem;
       }
 
       #card-passenger .carter-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1.15rem;
+        gap: 1rem;
       }
 
       #card-passenger .input-label {
@@ -2288,16 +2289,16 @@
         font-weight: 800;
         letter-spacing: 0.17em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.74);
+        color: rgba(224, 192, 177, 0.82);
       }
 
       .booking-field {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.45rem;
       }
 
       .booking-search-shell {
-        min-width: 13rem;
+        min-width: 14rem;
         padding: 0;
         background: transparent;
         border: 0;
@@ -2314,6 +2315,7 @@
 
       .booking-search-shell input {
         padding-left: 2.75rem !important;
+        font-size: 0.95rem !important;
       }
 
       .payment-selector-modern {
@@ -2344,11 +2346,11 @@
       }
 
       .payment-label .payment-title {
-        color: rgba(224, 192, 177, 0.72);
+        color: rgba(224, 192, 177, 0.88);
       }
 
       .payment-label .payment-caption {
-        color: rgba(224, 192, 177, 0.42);
+        color: rgba(224, 192, 177, 0.58);
       }
 
       .payment-option input:checked + .payment-label .payment-title {
@@ -2699,11 +2701,11 @@
       -webkit-text-fill-color: #f1ebe6;
     }
 
-    #search_name::placeholder,
-    #card-passenger .control-select::placeholder {
-      color: rgba(224, 192, 177, 0.54);
-      -webkit-text-fill-color: rgba(224, 192, 177, 0.54);
-    }
+      #search_name::placeholder,
+      #card-passenger .control-select::placeholder {
+      color: rgba(224, 192, 177, 0.68);
+      -webkit-text-fill-color: rgba(224, 192, 177, 0.68);
+      }
 
     #card-passenger select:disabled,
     #card-passenger select option {
@@ -2846,11 +2848,11 @@
       }
 
       #card-passenger .carter-grid {
-        gap: 0.9rem;
+        gap: 0.85rem;
       }
 
       #card-passenger .input-group {
-        gap: 0.4rem;
+        gap: 0.45rem;
       }
 
       #card-passenger .control-select,
@@ -2945,7 +2947,7 @@
       </div>
       <div class="desktop-terminal-brand-copy">
         <div class="desktop-terminal-brand">Kinetic Terminal</div>
-        <div class="desktop-terminal-mark">Seat Booking</div>
+        <div class="desktop-terminal-mark">Booking Kursi</div>
       </div>
     </div>
     <div class="desktop-terminal-topbar-right">
@@ -3032,7 +3034,7 @@
             </h3>
             <div class="seat-head-meta">Status kursi real-time</div>
           </div>
-          <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
+          <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Muat ulang kursi" onclick="refreshSeats()">
             <span class="material-symbols-outlined">refresh</span>
           </button>
         </div>
@@ -3067,10 +3069,10 @@
             <span class="material-symbols-outlined">person</span>
             Detail Penumpang
           </h3>
-          <div class="search-container-modern booking-search-shell" id="suggestions">
-            <span class="material-symbols-outlined booking-search-icon">search</span>
-            <input id="search_name" placeholder="Cari nama / nomor">
-            <div id="sugList"></div>
+            <div class="search-container-modern booking-search-shell" id="suggestions">
+              <span class="material-symbols-outlined booking-search-icon">search</span>
+              <input id="search_name" placeholder="Cari nama / nomor">
+              <div id="sugList"></div>
           </div>
         </div>
 
@@ -3104,10 +3106,10 @@
               <option value="" selected>-- Pilih Segment --</option>
             </select>
           </div>
-          <div class="input-group booking-field">
-            <div class="input-label">Discount</div>
-            <input id="discount" type="number" class="control-select" placeholder="Input potongan harga">
-          </div>
+            <div class="input-group booking-field">
+              <div class="input-label">Potongan Harga</div>
+              <input id="discount" type="number" class="control-select" placeholder="Input potongan harga">
+            </div>
         </div>
 
         <div class="mt-16">
@@ -3118,8 +3120,8 @@
               <label for="p_belum" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Unpaid</span>
-                  <span class="payment-caption">Belum Lunas</span>
+                  <span class="payment-title">Belum Lunas</span>
+                  <span class="payment-caption">Tunai / Transfer</span>
                 </span>
               </label>
             </div>
@@ -3128,18 +3130,18 @@
               <label for="p_lunas" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Paid</span>
-                  <span class="payment-caption">Lunas</span>
+                  <span class="payment-title">Lunas</span>
+                  <span class="payment-caption">Pembayaran penuh</span>
                 </span>
               </label>
             </div>
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_redbus" value="Redbus">
+              <input type="radio" name="pembayaran" id="p_redbus" value="RedBus">
               <label for="p_redbus" class="payment-label">
                 <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Redbus</span>
-                  <span class="payment-caption">Marketplace</span>
+                  <span class="payment-title">RedBus</span>
+                  <span class="payment-caption">Mitra online</span>
                 </span>
               </label>
             </div>
@@ -3148,7 +3150,7 @@
 
         <!-- TOTAL PAYMENT REGULER -->
         <div class="carter-section mt-12 d-none" id="reguler_price_card">
-          <div class="carter-section-title">Total Command Value</div>
+          <div class="carter-section-title">Total Pembayaran</div>
           <div id="reguler_total_price" class="total-price-display">Rp 0</div>
         </div>
 
@@ -3208,7 +3210,7 @@
       <div class="modal-content-box modal-rekap-box">
         <div class="modal-header">
           <div class="modal-title-wrap">
-            <h3 class="modal-title">Booking Recap</h3>
+            <h3 class="modal-title">Rekap Booking</h3>
             <p class="modal-subtitle">Ringkasan Sesi</p>
           </div>
           <button type="button" id="closeRekapModal" class="modal-close-btn">&times;</button>
@@ -3235,7 +3237,7 @@
     <div id="confirmResetPopup" class="confirm-popup-overlay">
       <div class="confirm-popup-box">
         <div class="confirm-popup-icon"><span class="material-symbols-outlined">warning</span></div>
-        <div class="confirm-popup-title">Reset Rekap?</div>
+        <div class="confirm-popup-title">Reset Rekap</div>
         <div class="confirm-popup-msg">Semua penumpang dalam daftar rekap akan dihapus.</div>
         <div class="confirm-popup-actions">
           <button type="button" id="confirmResetNo" class="confirm-popup-btn confirm-popup-no">Batal</button>
@@ -3284,7 +3286,7 @@
       /* ================== HELPERS ================== */
       function setMsg(msg, isSuccess = false) {
         msgEl.textContent = msg;
-        msgEl.style.color = isSuccess ? 'green' : 'red';
+        msgEl.style.color = isSuccess ? '#ffb690' : '#ffb4ab';
       }
 
       function isValidDate(d) {
@@ -3335,8 +3337,8 @@
           })
           .catch(err => {
             console.error('loadRoutesByDate error', err);
-            setMsg('Gagal ambil rute');
-            routeEl.innerHTML = '<option value="" disabled selected>Error memuat rute</option>';
+            setMsg('Gagal memuat rute');
+            routeEl.innerHTML = '<option value="" disabled selected>Gagal memuat rute</option>';
           });
       }
 
@@ -3474,6 +3476,7 @@
                 const jam = jamEl.value || '-';
                 const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
                 const segment = info.segment_name || '-';
+                const pembayaran = info.pembayaran || 'Belum Lunas';
                 const price = info.price || 0;
                 const disc = info.discount || 0;
                 const finalPrice = price - disc;
@@ -3487,7 +3490,7 @@
                     <div><strong>Nama:</strong> ${info.name || '-'}</div>
                     <div><strong>No. HP:</strong> ${info.phone || '-'}</div>
                     <div><strong>Titik Jemput:</strong> ${info.pickup_point || '-'}</div>
-                    <div><strong>Pembayaran?</strong> Tunai / Transfer / QRIS</div>
+                    <div><strong>Pembayaran:</strong> ${pembayaran}</div>
                   `;
 
                 modal.style.display = 'flex';
@@ -3518,7 +3521,7 @@ Harga: ${priceFormatted}
 Nama: ${info.name || '-'}
 No. HP: ${info.phone || '-'}
 Titik Jemput: ${info.pickup_point || '-'}
-Pembayaran: Tunai / Transfer / QRIS`;
+Pembayaran: ${pembayaran}`;
 
                   // Fallback function
                   const fallbackCopy = (txt) => {
@@ -3530,7 +3533,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
                     ta.select();
                     try {
                       document.execCommand('copy');
-                      alert('Detail tersalin');
+                      alert('Detail berhasil disalin');
                       modal.style.display = 'none';
                     } catch (err) {
                       alert('Gagal menyalin (manual copy diperlukan)');
@@ -3540,14 +3543,14 @@ Pembayaran: Tunai / Transfer / QRIS`;
 
                   if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text)
-                      .then(() => { alert('Detail tersalin'); modal.style.display = 'none'; })
+                      .then(() => { alert('Detail berhasil disalin'); modal.style.display = 'none'; })
                       .catch(() => fallbackCopy(text));
                   } else {
                     fallbackCopy(text);
                   }
                 };
               } else {
-                alert('Kursi ' + id + ' â€” terisi');
+                alert('Kursi ' + id + ' sudah terisi');
               }
               return;
             }
@@ -3569,7 +3572,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
           el.classList.remove('booked', 'selected');
           if (booked.has(id)) el.classList.add('booked');
           else if (selected.has(id)) el.classList.add('selected');
-          if (seatDetails[id]) el.setAttribute('aria-label', (seatDetails[id].name || '') + ' â€” ' + (seatDetails[id].phone || ''));
+          if (seatDetails[id]) el.setAttribute('aria-label', (seatDetails[id].name || '') + ' - ' + (seatDetails[id].phone || ''));
           else el.removeAttribute('aria-label');
         });
         const bookedCount = booked.size;
@@ -3682,8 +3685,8 @@ Pembayaran: Tunai / Transfer / QRIS`;
             if (jamEl.options.length > 1) { jamEl.selectedIndex = 1; jamChanged(); }
           }).catch(err => {
             console.error('fillTimes error', err);
-            setMsg('Gagal ambil jadwal');
-            jamEl.innerHTML = '<option value="" disabled selected>Error memuat jadwal</option>';
+            setMsg('Gagal memuat jadwal');
+            jamEl.innerHTML = '<option value="" disabled selected>Gagal memuat jadwal</option>';
           });
       }
 
@@ -3742,11 +3745,11 @@ Pembayaran: Tunai / Transfer / QRIS`;
             } else {
               // API returned success:false
               console.warn('API error:', js);
-              setMsg('Gagal: ' + (js && js.error ? js.error : 'Respon tidak valid'));
+              setMsg('Gagal memuat kursi: ' + (js && js.error ? js.error : 'Respons tidak valid'));
               return;
             }
           } else {
-            setMsg('Server Error: ' + res.status);
+            setMsg('Error server: ' + res.status);
             return;
           }
         } catch (err) {
@@ -3785,11 +3788,11 @@ Pembayaran: Tunai / Transfer / QRIS`;
           });
           const js = await res.json();
           if (js.success) { setMsg('Booking berhasil', true); selected.clear(); nameEl.value = ''; phoneEl.value = ''; pickupEl.value = ''; addressEl.value = ''; searchNameEl.value = ''; refreshSeats(); }
-          else if (js.error === 'conflict') { setMsg('Conflict: ' + (js.conflict || []).join(', ')); refreshSeats(); }
+          else if (js.error === 'conflict') { setMsg('Kursi bentrok: ' + (js.conflict || []).join(', ')); refreshSeats(); }
           else { 
-            let errorMsg = js.error || 'unknown';
-            if (js.detail) errorMsg += ' â€” ' + js.detail;
-            setMsg('Booking gagal â€” ' + errorMsg); 
+            let errorMsg = js.error || 'tidak diketahui';
+            if (js.detail) errorMsg += ' - ' + js.detail;
+            setMsg('Booking gagal - ' + errorMsg); 
           }
         } catch (err) {
           setMsg('Gagal koneksi saat booking');
@@ -3842,8 +3845,8 @@ Pembayaran: Tunai / Transfer / QRIS`;
             </div>
             <div class="rekap-item-name">${r.name || '-'}</div>
             <div class="rekap-item-detail">
-              Tel: ${r.phone || '-'}<br>
-              Pickup: ${r.pickup || '-'}<br>
+              HP: ${r.phone || '-'}<br>
+              Jemput: ${r.pickup || '-'}<br>
               Segment: ${r.segment || '-'} · ${r.hari}, ${r.tanggal} - ${r.jam}
             </div>
             <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">×</button>
@@ -3862,7 +3865,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
         }
         rekapList.push({ ..._currentRekapItem });
         updateRekapBar();
-        showRekapToast('âœ“ Kursi ' + seatId + ' ditambahkan ke rekap');
+        showRekapToast('Kursi ' + seatId + ' ditambahkan ke rekap');
         document.getElementById('detailModal').style.display = 'none';
         _currentRekapItem = null;
       };
@@ -3904,9 +3907,9 @@ Pembayaran: Tunai / Transfer / QRIS`;
         }
         const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
         const lines = rekapList.map((r, i) =>
-          `${i + 1}. Kursi ${r.seatId} - ${r.name || 'â€”'}\n` +
-          `   HP: ${r.phone || 'â€”'}\n` +
-          `   Jemput: ${r.pickup || 'â€”'}\n` +
+          `${i + 1}. Kursi ${r.seatId} - ${r.name || '-'}\n` +
+          `   HP: ${r.phone || '-'}\n` +
+          `   Jemput: ${r.pickup || '-'}\n` +
           `   Segment: ${r.segment || '-'}\n` +
           `   Harga: ${formatRp(r.finalPrice)}`
         ).join('\n\n');
@@ -3921,14 +3924,14 @@ Pembayaran: Tunai / Transfer / QRIS`;
           const ta = document.createElement('textarea');
           ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
           document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); showRekapToast('âœ“ Rekap tersalin!'); }
+          try { document.execCommand('copy'); showRekapToast('Rekap berhasil disalin'); }
           catch (e) { showRekapToast('Gagal menyalin'); }
           document.body.removeChild(ta);
         };
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text)
-            .then(() => showRekapToast('âœ“ Rekap tersalin!'))
+            .then(() => showRekapToast('Rekap berhasil disalin'))
             .catch(() => doFallback(text));
         } else {
           doFallback(text);
@@ -4004,7 +4007,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
               sugList.innerHTML = '';
               js.customers.forEach(c => {
                 const div = document.createElement('div');
-                div.textContent = c.name + ' â€” ' + c.phone + (c.pickup_point ? ' â€” ' + c.pickup_point : '');
+                div.textContent = c.name + ' - ' + c.phone + (c.pickup_point ? ' - ' + c.pickup_point : '');
                 div.dataset.name = c.name;
                 div.dataset.phone = c.phone;
                 div.dataset.pickup = c.pickup_point || '';
@@ -4094,8 +4097,8 @@ Pembayaran: Tunai / Transfer / QRIS`;
           todayBtn: true,
           todayBtnMode: 1,
           clearBtn: false,
-          prevArrow: 'â€¹',
-          nextArrow: 'â€º',
+          prevArrow: '&lsaquo;',
+          nextArrow: '&rsaquo;',
           container: 'body'
         });
 
