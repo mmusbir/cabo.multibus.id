@@ -19,18 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if ($username && $password) {
-        // 1. Find user by username using PDO (PostgreSQL/MySQL compatible)
         $stmt = $conn->prepare("SELECT id, username, password_hash FROM users WHERE username = ? LIMIT 1");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
-        // 2. Verify password with password_verify()
         if ($user && password_verify($password, $user['password_hash'])) {
-            
-            // 3. Issue JWT Token (payload: sub = user ID, iat = issued at, exp = expiration)
             $issuedAt = time();
-            $expire = $issuedAt + EXPIRE_TIME; // 1 Hour from config
-            
+            $expire = $issuedAt + EXPIRE_TIME;
+
             $payload = [
                 'iat'  => $issuedAt,
                 'exp'  => $expire,
@@ -38,25 +34,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'user' => $user['username']
             ];
 
-            // 4. Encode token with Secret from config
             $jwt = JWT::encode($payload, JWT_SECRET, JWT_ALGO);
 
-            // 5. Set HttpOnly cookie for security (Stateless)
-            // setcookie($name, $value, $expire, $path, $domain, $secure, $httponly)
             setcookie(
-                COOKIE_NAME, 
-                $jwt, 
+                COOKIE_NAME,
+                $jwt,
                 [
                     'expires' => $expire,
                     'path' => '/',
-                    'domain' => '', // Default to current
-                    'secure' => isset($_SERVER['HTTPS']), // True on Vercel
-                    'httponly' => true, // Prevents XSS stealing
-                    'samesite' => 'Strict' // Prevents CSRF
+                    'domain' => '',
+                    'secure' => isset($_SERVER['HTTPS']),
+                    'httponly' => true,
+                    'samesite' => 'Strict'
                 ]
             );
 
-            // 6. Redirect to Booking Page after successful login
             header('Location: index.php');
             exit;
         } else {
@@ -67,204 +59,199 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="id">
+<html class="dark" lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Seat | CahayaBone</title>
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.14);
-            --glass-border: rgba(255, 255, 255, 0.28);
-            --glass-shadow: 0 22px 54px rgba(15, 23, 42, 0.35);
-            --glass-blur: blur(22px);
-            --accent-1: #7c3aed;
-            --accent-2: #22c55e;
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Login | KINETIC COMMAND</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#690005",
+                        "surface-bright": "#373940",
+                        "primary-container": "#f97316",
+                        "primary-fixed-dim": "#ffb690",
+                        "primary-fixed": "#ffdbca",
+                        "surface-variant": "#33343b",
+                        "on-tertiary-container": "#003554",
+                        "on-secondary": "#233143",
+                        "on-tertiary-fixed-variant": "#004b74",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "background": "#111319",
+                        "tertiary-fixed": "#cde5ff",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e2e2eb",
+                        "secondary-container": "#39485a",
+                        "inverse-on-surface": "#2e3037",
+                        "surface-container-highest": "#33343b",
+                        "primary": "#ffb690",
+                        "on-primary-fixed": "#341100",
+                        "surface-container": "#1e1f26",
+                        "tertiary-fixed-dim": "#93ccff",
+                        "on-surface": "#e2e2eb",
+                        "on-surface-variant": "#e0c0b1",
+                        "outline": "#a78b7d",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#0c0e14",
+                        "on-tertiary-fixed": "#001d32",
+                        "on-tertiary": "#003351",
+                        "on-primary": "#552100",
+                        "surface-container-high": "#282a30",
+                        "on-primary-fixed-variant": "#783200",
+                        "inverse-primary": "#9d4300",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#a7b6cc",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "tertiary": "#93ccff",
+                        "tertiary-container": "#00a2f4",
+                        "surface": "#111319",
+                        "surface-container-low": "#191b22",
+                        "secondary-fixed": "#d4e4fa",
+                        "surface-tint": "#ffb690",
+                        "outline-variant": "#584237",
+                        "surface-dim": "#111319",
+                        "secondary": "#b9c8de",
+                        "on-primary-container": "#582200",
+                        "inverse-surface": "#e2e2eb"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Space Grotesk"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
         }
-
-        * { box-sizing: border-box; }
-
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bg-industrial-grid {
+            background-image: radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
         body {
-            font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            min-height: 100dvh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fb923c;
-            padding: 20px 14px;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-
-        body::before, body::after {
-            content: none;
-        }
-
-        .login-card {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 420px;
-            padding: 36px 32px 32px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            backdrop-filter: var(--glass-blur);
-            border-radius: 20px;
-            color: #e5e7eb;
-        }
-
-        .login-card h2 {
-            margin: 0 0 18px;
-            text-align: center;
-            color: #fff;
-            letter-spacing: -0.02em;
-            font-weight: 700;
-        }
-
-        .error-box {
-            background: rgba(248, 113, 113, 0.16);
-            border: 1px solid rgba(248, 113, 113, 0.55);
-            color: #fecdd3;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            font-size: 14px;
-        }
-
-        .form-group { margin-bottom: 14px; }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: rgba(226, 232, 240, 0.92);
-            font-size: 13px;
-            letter-spacing: 0.02em;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            font-size: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            box-sizing: border-box;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
-            transition: border 0.2s ease, background 0.2s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: rgba(124, 58, 237, 0.7);
-            background: rgba(255, 255, 255, 0.12);
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            background: #c2410c;
-            border: none;
-            color: white;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 700;
-            margin-top: 12px;
-            letter-spacing: 0.01em;
-            box-shadow: 0 16px 30px rgba(124, 45, 18, 0.3);
-            transition: transform 0.15s ease, box-shadow 0.2s ease;
-        }
-        button:hover { transform: translateY(-1px); box-shadow: 0 20px 36px rgba(124, 45, 18, 0.35); }
-        button:active { transform: translateY(0); }
-
-        @media (max-width: 640px) {
-            body {
-                align-items: flex-start;
-                padding: 18px 12px;
-            }
-
-            .login-card {
-                max-width: 100%;
-                padding: 24px 18px 20px;
-                border-radius: 16px;
-                margin: auto 0;
-            }
-
-            .login-card h2 {
-                margin-bottom: 12px;
-                font-size: 28px;
-            }
-
-            .error-box {
-                padding: 11px;
-                margin-bottom: 16px;
-                font-size: 13px;
-            }
-
-            .form-group {
-                margin-bottom: 12px;
-            }
-
-            label {
-                font-size: 12px;
-                margin-bottom: 5px;
-            }
-
-            input {
-                padding: 13px 14px;
-                border-radius: 10px;
-            }
-
-            button {
-                margin-top: 10px;
-                padding: 13px 14px;
-                border-radius: 10px;
-            }
-        }
-
-        @media (max-width: 420px) {
-            body {
-                padding: 14px 10px;
-            }
-
-            .login-card {
-                padding: 20px 14px 16px;
-                border-radius: 14px;
-            }
-
-            .login-card h2 {
-                font-size: 24px;
-            }
+            min-height: max(884px, 100dvh);
         }
     </style>
 </head>
-<body>
-    <div class="login-card">
-        <h2>Login Panel</h2>
-                
-        <?php if ($error_msg): ?>
-            <div class="error-box">‚ö†Ô∏è <?php echo htmlspecialchars($error_msg); ?></div>
-        <?php endif; ?>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center p-6 bg-industrial-grid">
+    <header class="mb-12 text-center">
+        <div class="flex flex-col items-center gap-4">
+            <h1 class="font-headline font-black text-3xl tracking-[0.2em] uppercase text-primary-container">Cahaya Bone</h1>
+            <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Operator Access Portal</p>
+        </div>
+    </header>
 
-        <form method="POST">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" required placeholder="admin">
+    <main class="w-full max-w-md pb-28 md:pb-0">
+        <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-2xl relative">
+            <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
+            <div class="p-8 md:p-10">
+                <div class="mb-10 text-center">
+                    <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Sign In</h2>
+                    <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk masuk ke command deck.</p>
+                </div>
+
+                <?php if ($error_msg): ?>
+                    <div class="mb-6 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
+                        <?php echo htmlspecialchars($error_msg); ?>
+                    </div>
+                <?php endif; ?>
+
+                <form class="space-y-6" method="POST">
+                    <div class="space-y-2">
+                        <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline ml-1" for="username">Username atau Email</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
+                                <span class="material-symbols-outlined text-lg">person</span>
+                            </div>
+                            <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="operator_id / email@kinetic.com" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label>
+                            <a class="font-label text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary-container transition-colors" href="#">Forgot Password?</a>
+                        </div>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
+                                <span class="material-symbols-outlined text-lg">lock</span>
+                            </div>
+                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="ïïïïïïïïïïïï" required type="password">
+                            <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
+                                <span class="material-symbols-outlined text-lg">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 px-1">
+                        <div class="relative flex items-center">
+                            <input class="w-5 h-5 rounded border-outline-variant bg-surface-container-highest text-primary-container focus:ring-primary-container/20 focus:ring-offset-surface-container-low" id="remember" type="checkbox">
+                        </div>
+                        <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Remember this workstation</label>
+                    </div>
+
+                    <div class="pt-4">
+                        <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
+                            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <span class="relative">Login</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required placeholder="password">
+
+            <div class="bg-surface-container-highest/30 px-8 py-6 flex justify-center border-t border-outline-variant/10">
+                <a class="font-label text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-all flex items-center gap-2" href="#">
+                    <span class="material-symbols-outlined text-sm">support_agent</span>
+                    Contact Support
+                </a>
             </div>
-            <button type="submit">LOGIN</button>
-        </form>
-    </div>
+        </div>
+
+        <div class="mt-12 flex flex-col items-center gap-3 opacity-40">
+            <div class="flex items-center gap-6">
+                <span class="material-symbols-outlined text-2xl">encrypted</span>
+                <span class="material-symbols-outlined text-2xl">verified_user</span>
+                <span class="material-symbols-outlined text-2xl">shield</span>
+            </div>
+            <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Secure Multi-Vector Authentication Required</p>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-4 border-t border-orange-900/20 bg-slate-950 dark:bg-[#111319]">
+        <div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500">
+            © 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
+        </div>
+        <div class="flex gap-8">
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">System Status</a>
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Privacy Policy</a>
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Support</a>
+        </div>
+    </footer>
+
+    <script>
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const isHidden = passwordInput.type === 'password';
+                passwordInput.type = isHidden ? 'text' : 'password';
+                togglePasswordBtn.querySelector('.material-symbols-outlined').textContent = isHidden ? 'visibility_off' : 'visibility';
+            });
+        }
+    </script>
 </body>
 </html>
