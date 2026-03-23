@@ -146,70 +146,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
-<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center p-6 bg-industrial-grid">
-    <header class="mb-12 text-center">
-        <div class="flex flex-col items-center gap-4">
-            <h1 class="font-headline font-black text-3xl tracking-[0.2em] uppercase text-primary-container">Cahaya Bone</h1>
-            <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Portal Akses Operator</p>
-        </div>
-    </header>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-10 bg-industrial-grid">
+    <div class="w-full flex flex-col items-center justify-center gap-10">
+        <header class="text-center">
+            <div class="flex flex-col items-center gap-4">
+                <h1 class="font-headline font-black text-3xl tracking-[0.2em] uppercase text-primary-container">Cahaya Bone</h1>
+                <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Portal Akses Operator</p>
+            </div>
+        </header>
 
-    <main class="w-full max-w-md pb-10 md:pb-0">
-        <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-2xl relative">
-            <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
-            <div class="p-8 md:p-10">
-                <div class="mb-10 text-center">
-                    <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Masuk</h2>
-                    <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk mengakses panel kendali.</p>
-                </div>
-
-                <?php if ($error_msg): ?>
-                    <div class="mb-6 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
-                        <?php echo htmlspecialchars($error_msg); ?>
+        <main class="w-full max-w-md">
+            <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-2xl relative">
+                <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
+                <div class="p-8 md:p-10">
+                    <div class="mb-10 text-center">
+                        <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Masuk</h2>
+                        <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk mengakses panel kendali.</p>
                     </div>
-                <?php endif; ?>
 
-                <form class="space-y-6" method="POST">
-                    <div class="space-y-2">
-                        <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline ml-1" for="username">Username atau Email</label>
-                        <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
-                                <span class="material-symbols-outlined text-lg">person</span>
-                            </div>
-                            <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+                    <?php if ($error_msg): ?>
+                        <div class="mb-6 rounded-lg border border-error/30 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
+                            <?php echo htmlspecialchars($error_msg); ?>
                         </div>
-                    </div>
+                    <?php endif; ?>
 
-                    <div class="space-y-2">
-                        <div class="px-1"><label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label></div>
-                        <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
-                                <span class="material-symbols-outlined text-lg">lock</span>
+                    <form class="space-y-6" method="POST">
+                        <div class="space-y-2">
+                            <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline ml-1" for="username">Username atau Email</label>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
+                                    <span class="material-symbols-outlined text-lg">person</span>
+                                </div>
+                                <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
                             </div>
-                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
-                            <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
-                                <span class="material-symbols-outlined text-lg">visibility</span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="px-1"><label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label></div>
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
+                                    <span class="material-symbols-outlined text-lg">lock</span>
+                                </div>
+                                <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
+                                <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 px-1">
+                            <div class="relative flex items-center">
+                                <input class="w-5 h-5 rounded border-outline-variant bg-surface-container-highest text-primary-container focus:ring-primary-container/20 focus:ring-offset-surface-container-low" id="remember" type="checkbox">
+                            </div>
+                            <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Ingat perangkat ini</label>
+                        </div>
+
+                        <div class="pt-4">
+                            <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
+                                <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <span class="relative">Masuk</span>
                             </button>
                         </div>
-                    </div>
+                    </form>
+                </div>
+            </div>
+        </main>
 
-                    <div class="flex items-center gap-3 px-1">
-                        <div class="relative flex items-center">
-                            <input class="w-5 h-5 rounded border-outline-variant bg-surface-container-highest text-primary-container focus:ring-primary-container/20 focus:ring-offset-surface-container-low" id="remember" type="checkbox">
-                        </div>
-                        <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Ingat perangkat ini</label>
-                    </div>
-
-                    <div class="pt-4">
-                        <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
-                            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span class="relative">Masuk</span>
-                        </button>
-                    </div>
-                </form>
-            </div>`r`n        </div>
-
-        <div class="mt-12 flex flex-col items-center gap-3 opacity-40">
+        <div class="flex flex-col items-center gap-3 opacity-40">
             <div class="flex items-center gap-6">
                 <span class="material-symbols-outlined text-2xl">encrypted</span>
                 <span class="material-symbols-outlined text-2xl">verified_user</span>
@@ -217,7 +220,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Autentikasi Berlapis Diperlukan</p>
         </div>
-    </main>`r`n<script>
+    </div>
+
+    <script>
         const togglePasswordBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
 
