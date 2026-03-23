@@ -887,6 +887,12 @@
       align-items: center;
     }
 
+    .modal-overlay .material-symbols-outlined,
+    .confirm-popup-icon .material-symbols-outlined {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
     .modal-content-box {
       background: var(--neu-bg);
       padding: 24px;
@@ -945,6 +951,14 @@
     .detail-modal-actions {
       display: flex;
       gap: 10px;
+    }
+
+    .detail-copy-btn,
+    .detail-rekap-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .detail-copy-btn {
@@ -2443,6 +2457,149 @@
         border: 0;
         box-shadow: 0 0 20px rgba(249, 115, 22, 0.24);
       }
+
+      .modal-overlay {
+        background: rgba(5, 6, 10, 0.78);
+        backdrop-filter: blur(10px);
+        z-index: 80;
+      }
+
+      .modal-content-box,
+      .confirm-popup-box {
+        width: min(100%, 34rem);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        background: #191b22;
+        border: 1px solid rgba(88, 66, 55, 0.16);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-rekap-box {
+        width: min(100%, 42rem);
+        max-height: 84vh;
+      }
+
+      .modal-header {
+        margin-bottom: 1rem;
+      }
+
+      .modal-title,
+      .confirm-popup-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #e2e2eb;
+      }
+
+      .modal-close-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0;
+        background: #111319;
+        color: rgba(224, 192, 177, 0.72);
+        box-shadow: none;
+        border: 1px solid rgba(88, 66, 55, 0.16);
+      }
+
+      .modal-body,
+      .confirm-popup-msg {
+        color: rgba(224, 192, 177, 0.8);
+      }
+
+      #detailContent {
+        padding: 1rem;
+        border-radius: 0.9rem;
+        background: #111319;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      #detailContent p {
+        color: rgba(224, 192, 177, 0.8);
+      }
+
+      #detailContent .text-primary-container,
+      #detailContent .text-on-surface {
+        color: #e2e2eb !important;
+      }
+
+      .rekap-item-card {
+        background: #111319;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+        box-shadow: none;
+      }
+
+      .rekap-total-bar {
+        padding: 1rem 1.1rem;
+        border-radius: 0.9rem;
+        background: #111319;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .rekap-total-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.62);
+      }
+
+      .rekap-total-amount {
+        color: #e2e2eb;
+      }
+
+      .detail-modal-actions,
+      .confirm-popup-actions {
+        gap: 0.75rem;
+      }
+
+      .detail-copy-btn,
+      .detail-rekap-btn,
+      .confirm-popup-btn {
+        min-height: 2.9rem;
+        border-radius: 0.8rem;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        box-shadow: none;
+      }
+
+      .detail-copy-btn,
+      .confirm-popup-no {
+        background: #111319;
+        color: rgba(224, 192, 177, 0.88);
+        border: 1px solid rgba(88, 66, 55, 0.16);
+      }
+
+      .detail-rekap-btn {
+        background: #f97316;
+        color: #341100;
+      }
+
+      .detail-rekap-btn.rekap-clear-btn,
+      .confirm-popup-yes {
+        background: #93000a;
+        color: #ffdad6;
+        border: 1px solid rgba(255, 180, 171, 0.2);
+      }
+
+      .confirm-popup-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        margin: 0 auto 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+      }
+
+      .confirm-popup-icon .material-symbols-outlined {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
@@ -2832,8 +2989,14 @@
         </div>
         <div id="detailContent" class="modal-body"></div>
         <div class="detail-modal-actions">
-          <button type="button" id="copyDetailBtn" class="detail-copy-btn">ðŸ“‹ Copy</button>
-          <button type="button" id="addToRekapBtn" class="detail-rekap-btn">+ Tambah ke Rekap</button>
+          <button type="button" id="copyDetailBtn" class="detail-copy-btn">
+            <span class="material-symbols-outlined">content_copy</span>
+            Copy Data
+          </button>
+          <button type="button" id="addToRekapBtn" class="detail-rekap-btn">
+            <span class="material-symbols-outlined">playlist_add</span>
+            Add to Rekap
+          </button>
         </div>
       </div>
     </div>
@@ -2842,7 +3005,7 @@
     <div id="rekapModal" class="modal-overlay">
       <div class="modal-content-box modal-rekap-box">
         <div class="modal-header">
-          <h3 class="modal-title">ðŸ“‹ Rekap Booking</h3>
+          <h3 class="modal-title">Booking Recap</h3>
           <button type="button" id="closeRekapModal" class="modal-close-btn">&times;</button>
         </div>
         <div id="rekapContent" class="modal-body rekap-body"></div>
@@ -2851,8 +3014,14 @@
           <div id="rekapTotalAmount" class="rekap-total-amount">Rp 0</div>
         </div>
         <div class="detail-modal-actions">
-          <button type="button" id="copyRekapBtn" class="detail-copy-btn">ðŸ“‹ Copy Semua</button>
-          <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">ðŸ—‘ï¸ Reset Rekap</button>
+          <button type="button" id="copyRekapBtn" class="detail-copy-btn">
+            <span class="material-symbols-outlined">content_copy</span>
+            Copy All
+          </button>
+          <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">
+            <span class="material-symbols-outlined">delete</span>
+            Reset Rekap
+          </button>
         </div>
       </div>
     </div>
@@ -2860,7 +3029,7 @@
     <!-- Confirm Reset Popup -->
     <div id="confirmResetPopup" class="confirm-popup-overlay">
       <div class="confirm-popup-box">
-        <div class="confirm-popup-icon">ðŸ—‘ï¸</div>
+        <div class="confirm-popup-icon"><span class="material-symbols-outlined">warning</span></div>
         <div class="confirm-popup-title">Reset Rekap?</div>
         <div class="confirm-popup-msg">Semua penumpang dalam daftar rekap akan dihapus.</div>
         <div class="confirm-popup-actions">
@@ -3101,22 +3270,22 @@
                 const modal = document.getElementById('detailModal');
                 const content = document.getElementById('detailContent');
                 const tanggal = tanggalEl.value;
-                const jam = jamEl.value || 'â€”';
-                const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : 'â€”';
-                const segment = info.segment_name || 'â€”';
+                const jam = jamEl.value || '-';
+                const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
+                const segment = info.segment_name || '-';
                 const price = info.price || 0;
                 const disc = info.discount || 0;
                 const finalPrice = price - disc;
                 const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(finalPrice);
 
                 content.innerHTML = `
-                    <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} â€” ${jam}</div>
-                    <div><strong>Kursi:</strong> ${id} â€” Booked âœ…</div>
+                    <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} - ${jam}</div>
+                    <div><strong>Kursi:</strong> ${id} - Booked</div>
                     <div><strong>Segment:</strong> ${segment}</div>
                     <div><strong>Harga:</strong> ${priceFormatted}</div>
-                    <div><strong>Nama:</strong> ${info.name || 'â€”'}</div>
-                    <div><strong>No. HP:</strong> ${info.phone || 'â€”'}</div>
-                    <div><strong>Titik Jemput:</strong> ${info.pickup_point || 'â€”'}</div>
+                    <div><strong>Nama:</strong> ${info.name || '-'}</div>
+                    <div><strong>No. HP:</strong> ${info.phone || '-'}</div>
+                    <div><strong>Titik Jemput:</strong> ${info.pickup_point || '-'}</div>
                     <div><strong>Pembayaran?</strong> Tunai / Transfer / QRIS</div>
                   `;
 
@@ -3126,9 +3295,9 @@
                 if (typeof _currentRekapItem !== 'undefined') {
                   _currentRekapItem = {
                     seatId: id,
-                    name: info.name || 'â€”',
-                    phone: info.phone || 'â€”',
-                    pickup: info.pickup_point || 'â€”',
+                    name: info.name || '-',
+                    phone: info.phone || '-',
+                    pickup: info.pickup_point || '-',
                     segment: segment,
                     price: price,
                     disc: disc,
@@ -3141,13 +3310,13 @@
 
                 document.getElementById('copyDetailBtn').onclick = () => {
                   const text = `Detail Booking
-Keberangkatan: ${hari}, ${tanggal} â€” ${jam}
+Keberangkatan: ${hari}, ${tanggal} - ${jam}
 Kursi: ${id}
 Segment: ${segment}
 Harga: ${priceFormatted}
-Nama: ${info.name || 'â€”'}
-No. HP: ${info.phone || 'â€”'}
-Titik Jemput: ${info.pickup_point || 'â€”'}
+Nama: ${info.name || '-'}
+No. HP: ${info.phone || '-'}
+Titik Jemput: ${info.pickup_point || '-'}
 Pembayaran: Tunai / Transfer / QRIS`;
 
                   // Fallback function
@@ -3708,7 +3877,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
         if (rekapList.length === 0) {
           content.innerHTML = `
             <div class="rekap-empty-state">
-              <span class="rekap-empty-icon">ðŸ“‹</span>
+              <span class="rekap-empty-icon"><span class="material-symbols-outlined">receipt_long</span></span>
               Belum ada penumpang di rekap.<br>Klik kursi yang terisi, lalu tekan "+ Tambah ke Rekap".
             </div>`;
           return;
@@ -3720,13 +3889,13 @@ Pembayaran: Tunai / Transfer / QRIS`;
               <span class="rekap-item-seat">Kursi ${r.seatId}</span>
               <span class="rekap-item-price">${formatRp(r.finalPrice)}</span>
             </div>
-            <div class="rekap-item-name">${r.name || 'â€”'}</div>
+            <div class="rekap-item-name">${r.name || '-'}</div>
             <div class="rekap-item-detail">
-              ðŸ“ž ${r.phone || 'â€”'}<br>
-              ðŸ“ ${r.pickup || 'â€”'}<br>
-              ðŸ—‚ï¸ ${r.segment || 'â€”'} Â· ${r.hari}, ${r.tanggal} â€” ${r.jam}
+              Tel: ${r.phone || '-'}<br>
+              Pickup: ${r.pickup || '-'}<br>
+              Segment: ${r.segment || '-'} · ${r.hari}, ${r.tanggal} - ${r.jam}
             </div>
-            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">âœ•</button>
+            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">×</button>
           </div>
         `).join('');
       }
@@ -3787,13 +3956,14 @@ Pembayaran: Tunai / Transfer / QRIS`;
           `${i + 1}. Kursi ${r.seatId} - ${r.name || 'â€”'}\n` +
           `   HP: ${r.phone || 'â€”'}\n` +
           `   Jemput: ${r.pickup || 'â€”'}\n` +
-          `   Segment: ${r.segment || 'â€”'}\n` +
+          `   Segment: ${r.segment || '-'}\n` +
           `   Harga: ${formatRp(r.finalPrice)}`
         ).join('\n\n');
 
         const firstItem = rekapList[0];
-        const header = `ðŸ“‹ REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} â€” ${firstItem.jam}\n${'â”€'.repeat(30)}`;
-        const footer = `${'â”€'.repeat(30)}\nTotal: ${rekapList.length} Penumpang\nðŸ’° TOTAL: ${formatRp(total)}`;
+        const divider = '-'.repeat(30);
+        const header = `REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} - ${firstItem.jam}\n${divider}`;
+        const footer = `${divider}\nTotal: ${rekapList.length} Penumpang\nTOTAL: ${formatRp(total)}`;
         const text = `${header}\n\n${lines}\n\n${footer}`;
 
         const doFallback = (t) => {
