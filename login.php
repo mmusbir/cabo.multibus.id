@@ -217,20 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Autentikasi Berlapis Diperlukan</p>
         </div>
-    </main>
-
-    <footer class="w-full mt-10 flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-4 border-t border-orange-900/20 bg-slate-950 dark:bg-[#111319] md:fixed md:bottom-0 md:left-0">
-        <div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 text-center md:text-left">
-            &copy; 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
-        </div>
-        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Status Sistem</a>
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Kebijakan Privasi</a>
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Dukungan</a>
-        </div>
-    </footer>
-
-    <script>
+    </main>`r`n<script>
         const togglePasswordBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
 
