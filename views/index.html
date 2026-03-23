@@ -636,11 +636,25 @@
       margin-bottom: 18px;
     }
 
+    .modal-title-wrap {
+      display: grid;
+      gap: 4px;
+    }
+
     .modal-title {
       margin: 0;
       font-size: 19px;
       color: var(--neu-text-dark);
       font-weight: 700;
+    }
+
+    .modal-subtitle {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(224, 192, 177, 0.56);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .modal-close-btn {
@@ -1572,6 +1586,11 @@
         margin-bottom: 0.85rem;
       }
 
+      .seat-head-copy {
+        display: grid;
+        gap: 0.28rem;
+      }
+
       .mobile-slate-section-title {
         display: inline-flex;
         align-items: center;
@@ -1581,6 +1600,15 @@
         font-size: 1rem;
         font-weight: 800;
         color: #e2e2eb;
+      }
+
+      .seat-head-meta {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.54);
       }
 
       .mobile-slate-section-title .material-symbols-outlined,
@@ -1618,10 +1646,38 @@
       #seat-counters {
         margin: 0.9rem 0 0;
         padding: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.55rem;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.75rem;
+      }
+
+      .seat-counter-chip {
+        display: grid;
+        gap: 0.22rem;
+        padding: 0.7rem 0.75rem;
+        border-radius: 0.8rem;
+        background: rgba(17, 19, 25, 0.78);
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .seat-counter-label {
+        font-size: 0.56rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.52);
+      }
+
+      .seat-counter-value {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.95rem;
         font-weight: 700;
-        color: rgba(224, 192, 177, 0.75);
+        color: #f1ebe6;
+      }
+
+      .seat-counter-chip--selected .seat-counter-value {
+        color: #f97316;
       }
 
       .legend {
@@ -2019,6 +2075,11 @@
         margin-bottom: 1.25rem;
       }
 
+      .seat-head-copy {
+        display: grid;
+        gap: 0.32rem;
+      }
+
       .mobile-slate-section-title {
         display: inline-flex;
         align-items: center;
@@ -2028,6 +2089,15 @@
         font-size: 1.1rem;
         font-weight: 800;
         color: #e2e2eb;
+      }
+
+      .seat-head-meta {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.56);
       }
 
       .mobile-slate-section-title .material-symbols-outlined {
@@ -2143,10 +2213,38 @@
       #seat-counters {
         margin: 1.2rem 0 0;
         padding: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.72rem;
+      }
+
+      .seat-counter-chip {
+        display: grid;
+        gap: 0.24rem;
+        padding: 0.8rem 0.9rem;
+        border-radius: 0.85rem;
+        background: #111319;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .seat-counter-label {
+        font-size: 0.58rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.54);
+      }
+
+      .seat-counter-value {
+        font-family: 'DM Mono', monospace;
+        font-size: 1rem;
         font-weight: 700;
-        color: rgba(224, 192, 177, 0.78);
+        color: #f1ebe6;
+      }
+
+      .seat-counter-chip--selected .seat-counter-value {
+        color: #f97316;
       }
 
       .search-container-modern {
@@ -2403,6 +2501,10 @@
       }
 
       .modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
         margin-bottom: 1rem;
       }
 
@@ -2412,6 +2514,16 @@
         font-size: 1.15rem;
         font-weight: 800;
         color: #e2e2eb;
+      }
+
+      .modal-subtitle {
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.54);
       }
 
       .modal-close-btn {
@@ -2430,10 +2542,12 @@
       }
 
       #detailContent {
-        padding: 1rem;
+        padding: 1rem 1.05rem;
         border-radius: 0.9rem;
         background: #111319;
         border: 1px solid rgba(88, 66, 55, 0.12);
+        display: grid;
+        gap: 0.8rem;
       }
 
       #detailContent p {
@@ -2449,6 +2563,8 @@
         background: #111319;
         border: 1px solid rgba(88, 66, 55, 0.12);
         box-shadow: none;
+        border-radius: 0.95rem;
+        padding: 1rem 1rem 0.95rem;
       }
 
       .rekap-total-bar {
@@ -2487,6 +2603,10 @@
         letter-spacing: 0.12em;
         text-transform: uppercase;
         box-shadow: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
 
       .detail-copy-btn,
@@ -2648,6 +2768,22 @@
         padding: 1rem;
       }
 
+      #seat-counters {
+        gap: 0.55rem;
+      }
+
+      .seat-counter-chip {
+        padding: 0.72rem 0.7rem;
+      }
+
+      .seat-counter-label {
+        font-size: 0.52rem;
+      }
+
+      .seat-counter-value {
+        font-size: 0.9rem;
+      }
+
       .mobile-slate-passenger-head {
         flex-direction: column;
         align-items: stretch;
@@ -2786,6 +2922,14 @@
       .rekap-bar-divider {
         height: 2.1rem;
       }
+
+      .modal-header {
+        margin-bottom: 0.9rem;
+      }
+
+      .modal-subtitle {
+        font-size: 0.58rem;
+      }
     }
   </style>
 </head>
@@ -2878,10 +3022,13 @@
       <!-- Seats card -->
       <div class="card" id="card-seats">
         <div class="mobile-slate-seat-head">
-          <h3 class="mobile-slate-section-title">
-            <span class="material-symbols-outlined">grid_view</span>
-            Seat Map
-          </h3>
+          <div class="seat-head-copy">
+            <h3 class="mobile-slate-section-title">
+              <span class="material-symbols-outlined">grid_view</span>
+              Seat Map
+            </h3>
+            <div class="seat-head-meta">Live occupancy overview</div>
+          </div>
           <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
             <span class="material-symbols-outlined">refresh</span>
           </button>
@@ -2894,7 +3041,20 @@
             <div class="item"><span class="box box-booked"></span> Occ</div>
           </div>
         </div>
-        <div class="small" id="seat-counters">Empty: <strong id="count-empty">-</strong> • Booked: <strong id="count-booked">-</strong> • Picked: <strong id="count-selected">0</strong></div>
+        <div class="small" id="seat-counters">
+          <div class="seat-counter-chip">
+            <span class="seat-counter-label">Empty</span>
+            <strong id="count-empty" class="seat-counter-value">-</strong>
+          </div>
+          <div class="seat-counter-chip">
+            <span class="seat-counter-label">Booked</span>
+            <strong id="count-booked" class="seat-counter-value">-</strong>
+          </div>
+          <div class="seat-counter-chip seat-counter-chip--selected">
+            <span class="seat-counter-label">Picked</span>
+            <strong id="count-selected" class="seat-counter-value">0</strong>
+          </div>
+        </div>
       </div>
 
       <!-- Passenger form card -->
@@ -3020,7 +3180,10 @@
     <div id="detailModal" class="modal-overlay">
       <div class="modal-content-box">
         <div class="modal-header">
-          <h3 class="modal-title">Detail Penumpang</h3>
+          <div class="modal-title-wrap">
+            <h3 class="modal-title">Detail Penumpang</h3>
+            <p class="modal-subtitle">Booking Snapshot</p>
+          </div>
           <button type="button" id="closeDetailModal" class="modal-close-btn">&times;</button>
         </div>
         <div id="detailContent" class="modal-body"></div>
@@ -3041,7 +3204,10 @@
     <div id="rekapModal" class="modal-overlay">
       <div class="modal-content-box modal-rekap-box">
         <div class="modal-header">
-          <h3 class="modal-title">Booking Recap</h3>
+          <div class="modal-title-wrap">
+            <h3 class="modal-title">Booking Recap</h3>
+            <p class="modal-subtitle">Session Summary</p>
+          </div>
           <button type="button" id="closeRekapModal" class="modal-close-btn">&times;</button>
         </div>
         <div id="rekapContent" class="modal-body rekap-body"></div>
