@@ -515,12 +515,127 @@ html[data-theme="dark"] body.admin-bootstrap-page .bottom-more-content,
 html[data-theme="dark"] body.admin-bootstrap-page .profile-menu,
 html[data-theme="dark"] body.admin-bootstrap-page .customers-table-wrap,
 html[data-theme="dark"] body.admin-bootstrap-page .dashboard-shell,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-bs-panel,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-bs-toolbar,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-bs-meta,
+html[data-theme="dark"] body.admin-bootstrap-page .import-row,
+html[data-theme="dark"] body.admin-bootstrap-page .modern-form-card,
+html[data-theme="dark"] body.admin-bootstrap-page .report-filter-panel,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-panel,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-toolbar,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-summary-bar,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-search,
+html[data-theme="dark"] body.admin-bootstrap-page .search-bar-modern,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-card,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-card,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-card-body,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-filters,
 html[data-theme="dark"] body.admin-bootstrap-page .admin-bootstrap-container section,
 html[data-theme="dark"] body.admin-bootstrap-page .admin-bootstrap-container .card,
 html[data-theme="dark"] body.admin-bootstrap-page .admin-bootstrap-container .section-card {
   background: #191b22 !important;
   color: #e2e2eb !important;
   border-color: rgba(88, 66, 55, 0.16) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody td {
+  color: #e2e2eb !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table thead th,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table thead th,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-time,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-select,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-tabs,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-filter-chip,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-route-preset,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-create-radio,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-route-stop,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-schedule-box,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-side-stack,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-date-split,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-detail-grid,
+html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-side-item,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-toolbar-meta {
+  background: #111319 !important;
+  color: #dbe4ee !important;
+  border-color: rgba(88, 66, 55, 0.18) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {
+  border-bottom-color: rgba(88, 66, 55, 0.14) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-name,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-title,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-hour,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-line strong,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-name,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-route-stop strong,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-schedule-box strong,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-inline-row strong,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-detail-grid strong,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-date-split strong,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-head,
+html[data-theme="dark"] body.admin-bootstrap-page .report-cell-base,
+html[data-theme="dark"] body.admin-bootstrap-page .report-cell-strong,
+html[data-theme="dark"] body.admin-bootstrap-page .report-cell-amount {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-phone,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-pickup,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-muted,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-line,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-zone,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-id,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-subtitle,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-company,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-caption,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-note,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-meta-end,
+html[data-theme="dark"] body.admin-bootstrap-page .charter-command-age,
+html[data-theme="dark"] body.admin-bootstrap-page .report-cell-muted,
+html[data-theme="dark"] body.admin-bootstrap-page .report-table-empty,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-empty {
+  color: rgba(224, 192, 177, 0.78) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-id {
+  background: rgba(249, 115, 22, 0.12) !important;
+  color: #ffb690 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-link {
+  color: #93ccff !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-link:hover {
+  color: #cde5ff !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-actions .acc-btn,
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-action,
+html[data-theme="dark"] body.admin-bootstrap-page .btn-modern.secondary,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-toolbar-btn,
+html[data-theme="dark"] body.admin-bootstrap-page .file-upload-btn,
+html[data-theme="dark"] body.admin-bootstrap-page .report-action-btn.secondary {
+  background: #111319 !important;
+  color: #dbe4ee !important;
+  border-color: rgba(88, 66, 55, 0.2) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-table-actions .acc-btn.danger {
+  background: rgba(127, 29, 29, 0.18) !important;
+  color: #fecaca !important;
+  border-color: rgba(248, 113, 113, 0.22) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page input,
