@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <main class="w-full max-w-md pb-28 md:pb-0">
+    <main class="w-full max-w-md pb-10 md:pb-0">
         <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-2xl relative">
             <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
             <div class="p-8 md:p-10">
@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                 <span class="material-symbols-outlined text-lg">person</span>
                             </div>
-                            <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="operator_id / email@kinetic.com" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+                            <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
                         </div>
                     </div>
 
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                 <span class="material-symbols-outlined text-lg">lock</span>
                             </div>
-                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="••••••••••••" required type="password">
+                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
                             <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
                                 <span class="material-symbols-outlined text-lg">visibility</span>
                             </button>
@@ -230,11 +230,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </main>
 
-    <footer class="fixed bottom-0 w-full flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-4 border-t border-orange-900/20 bg-slate-950 dark:bg-[#111319]">
-        <div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500">
-            © 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
+    <footer class="w-full mt-10 flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-4 border-t border-orange-900/20 bg-slate-950 dark:bg-[#111319] md:fixed md:bottom-0 md:left-0">
+        <div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 text-center md:text-left">
+            &copy; 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
         </div>
-        <div class="flex gap-8">
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
             <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Status Sistem</a>
             <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Kebijakan Privasi</a>
             <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Dukungan</a>
