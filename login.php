@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="mb-12 text-center">
         <div class="flex flex-col items-center gap-4">
             <h1 class="font-headline font-black text-3xl tracking-[0.2em] uppercase text-primary-container">Cahaya Bone</h1>
-            <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Operator Access Portal</p>
+            <p class="font-label text-[10px] tracking-[0.4em] text-outline uppercase opacity-60">Portal Akses Operator</p>
         </div>
     </header>
 
@@ -159,8 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="h-1 w-full bg-gradient-to-r from-primary-container to-primary"></div>
             <div class="p-8 md:p-10">
                 <div class="mb-10 text-center">
-                    <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Sign In</h2>
-                    <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk masuk ke command deck.</p>
+                    <h2 class="font-headline font-bold text-2xl text-on-surface tracking-tight">Masuk</h2>
+                    <p class="text-on-surface-variant text-sm mt-2">Masukkan akun operator untuk mengakses panel kendali.</p>
                 </div>
 
                 <?php if ($error_msg): ?>
@@ -183,13 +183,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="space-y-2">
                         <div class="flex justify-between items-center px-1">
                             <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label>
-                            <a class="font-label text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary-container transition-colors" href="#">Forgot Password?</a>
+                            <a class="font-label text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary-container transition-colors" href="#">Lupa Password?</a>
                         </div>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                 <span class="material-symbols-outlined text-lg">lock</span>
                             </div>
-                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="••••••••••••" required type="password">
+                            <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required type="password">
                             <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
                                 <span class="material-symbols-outlined text-lg">visibility</span>
                             </button>
@@ -200,13 +200,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="relative flex items-center">
                             <input class="w-5 h-5 rounded border-outline-variant bg-surface-container-highest text-primary-container focus:ring-primary-container/20 focus:ring-offset-surface-container-low" id="remember" type="checkbox">
                         </div>
-                        <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Remember this workstation</label>
+                        <label class="text-sm text-on-surface-variant font-medium select-none cursor-pointer" for="remember">Ingat perangkat ini</label>
                     </div>
 
                     <div class="pt-4">
                         <button class="w-full bg-primary-container text-on-primary-fixed font-headline font-extrabold text-sm tracking-widest uppercase py-5 rounded-lg shadow-lg hover:bg-primary transition-all active:scale-[0.98] relative overflow-hidden group" type="submit">
                             <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span class="relative">Login</span>
+                            <span class="relative">Masuk</span>
                         </button>
                     </div>
                 </form>
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="bg-surface-container-highest/30 px-8 py-6 flex justify-center border-t border-outline-variant/10">
                 <a class="font-label text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-all flex items-center gap-2" href="#">
                     <span class="material-symbols-outlined text-sm">support_agent</span>
-                    Contact Support
+                    Hubungi Dukungan
                 </a>
             </div>
         </div>
@@ -226,18 +226,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="material-symbols-outlined text-2xl">verified_user</span>
                 <span class="material-symbols-outlined text-2xl">shield</span>
             </div>
-            <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Secure Multi-Vector Authentication Required</p>
+            <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Autentikasi Berlapis Diperlukan</p>
         </div>
     </main>
 
     <footer class="fixed bottom-0 w-full flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-4 border-t border-orange-900/20 bg-slate-950 dark:bg-[#111319]">
         <div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500">
-            © 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
+            Â© 2024 KINETIC COMMAND LOGISTICS. ALL RIGHTS RESERVED.
         </div>
         <div class="flex gap-8">
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">System Status</a>
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Privacy Policy</a>
-            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Support</a>
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Status Sistem</a>
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Kebijakan Privasi</a>
+            <a class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-slate-500 hover:text-orange-500 transition-all" href="#">Dukungan</a>
         </div>
     </footer>
 
