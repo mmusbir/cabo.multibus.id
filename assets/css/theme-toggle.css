@@ -230,6 +230,10 @@ html[data-theme="light"] body.admin-bootstrap-page .bottom-more-content,
 html[data-theme="light"] body.admin-bootstrap-page .profile-menu,
 html[data-theme="light"] body.admin-bootstrap-page .customers-table-wrap,
 html[data-theme="light"] body.admin-bootstrap-page .dashboard-shell,
+html[data-theme="light"] body.admin-bootstrap-page .admin-bs-panel,
+html[data-theme="light"] body.admin-bootstrap-page .admin-bs-toolbar,
+html[data-theme="light"] body.admin-bootstrap-page .admin-bs-meta,
+html[data-theme="light"] body.admin-bootstrap-page .import-row,
 html[data-theme="light"] body.admin-bootstrap-page .modern-form-card,
 html[data-theme="light"] body.admin-bootstrap-page .section-card {
   background: #ffffff !important;
@@ -248,7 +252,11 @@ html[data-theme="light"] body.admin-bootstrap-page .charter-command-card,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-card-body,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-filters,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-search,
-html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card {
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card,
+html[data-theme="light"] body.admin-bootstrap-page .report-filter-panel,
+html[data-theme="light"] body.admin-bootstrap-page .report-details-panel,
+html[data-theme="light"] body.admin-bootstrap-page .search-bar-modern,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-card {
   background: #ffffff !important;
   color: #0f172a !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
@@ -263,10 +271,79 @@ html[data-theme="light"] body.admin-bootstrap-page .charter-command-route-stop,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-schedule-box,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-side-stack,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-date-split,
-html[data-theme="light"] body.admin-bootstrap-page .charter-command-detail-grid {
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-detail-grid,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-time,
+html[data-theme="light"] body.admin-bootstrap-page .customers-admin-table thead th,
+html[data-theme="light"] body.admin-bootstrap-page .report-details-table thead th,
+html[data-theme="light"] body.admin-bootstrap-page .charter-filter-chip,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-tabs,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-select {
   background: #f8fafc !important;
   color: #334155 !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-card:hover,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-card:hover {
+  background: #ffffff !important;
+  border-color: rgba(249, 115, 22, 0.22) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-main,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-title,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-line,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-line strong,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-hour,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-name,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-route-stop strong,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-schedule-box strong,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-inline-row strong,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-detail-grid strong,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-date-split strong,
+html[data-theme="light"] body.admin-bootstrap-page .report-details-head,
+html[data-theme="light"] body.admin-bootstrap-page .report-cell-base,
+html[data-theme="light"] body.admin-bootstrap-page .report-cell-strong,
+html[data-theme="light"] body.admin-bootstrap-page .report-cell-amount {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-zone,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-id,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-subtitle,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-company,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-caption,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-note,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-meta-end,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-age,
+html[data-theme="light"] body.admin-bootstrap-page .report-cell-muted,
+html[data-theme="light"] body.admin-bootstrap-page .report-table-empty,
+html[data-theme="light"] body.admin-bootstrap-page .customers-table-empty {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-action {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-action.primary {
+  background: #f97316 !important;
+  color: #341100 !important;
+  border-color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .btn-modern.secondary,
+html[data-theme="light"] body.admin-bootstrap-page .admin-toolbar-btn,
+html[data-theme="light"] body.admin-bootstrap-page .file-upload-btn,
+html[data-theme="light"] body.admin-bootstrap-page .report-action-btn.secondary {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .customers-admin-table tbody tr:hover {
+  background: #f8fafc !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-sidebar {
