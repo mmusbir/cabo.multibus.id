@@ -2,6 +2,21 @@ html[data-theme="dark"] {
   color-scheme: dark;
 }
 
+/* ===== DARK MODE: SEAT COLORS (ALWAYS CONSISTENT) ===== */
+html[data-theme="dark"] .app-index .seat.booked {
+  background: #f59e0b !important;
+  color: #78350f !important;
+  border-color: rgba(251, 191, 36, 0.4) !important;
+  box-shadow: inset 2px 2px 4px rgba(180, 83, 9, 0.2), inset -2px -2px 4px rgba(252, 211, 77, 0.3) !important;
+}
+
+html[data-theme="dark"] .app-index .seat.selected {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4) !important;
+}
+
 html[data-theme="light"] {
   color-scheme: light;
 }
@@ -212,10 +227,20 @@ html[data-theme="light"] .app-index .seat {
   color: #0f172a;
 }
 
+/* Seats yang sudah terisi - Orange (konsisten di semua mode) */
 html[data-theme="light"] .app-index .seat.booked {
-  background: #cbd5e1;
-  color: #64748b;
-  border-color: #cbd5e1;
+  background: #f59e0b !important;
+  color: #78350f !important;
+  border-color: rgba(251, 191, 36, 0.4) !important;
+  box-shadow: inset 2px 2px 4px rgba(180, 83, 9, 0.2), inset -2px -2px 4px rgba(252, 211, 77, 0.3) !important;
+}
+
+/* Seats yang dipilih - Hijau (konsisten di semua mode) */
+html[data-theme="light"] .app-index .seat.selected {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.4) !important;
 }
 
 html[data-theme="light"] .app-index .driver,
