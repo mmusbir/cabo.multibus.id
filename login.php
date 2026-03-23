@@ -181,10 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="space-y-2">
-                        <div class="flex justify-between items-center px-1">
-                            <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label>
-                            <a class="font-label text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary-container transition-colors" href="#">Lupa Password?</a>
-                        </div>
+                        <div class="px-1"><label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label></div>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
                                 <span class="material-symbols-outlined text-lg">lock</span>
@@ -210,15 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </button>
                     </div>
                 </form>
-            </div>
-
-            <div class="bg-surface-container-highest/30 px-8 py-6 flex justify-center border-t border-outline-variant/10">
-                <a class="font-label text-[10px] font-bold uppercase tracking-widest text-outline hover:text-primary transition-all flex items-center gap-2" href="#">
-                    <span class="material-symbols-outlined text-sm">support_agent</span>
-                    Hubungi Dukungan
-                </a>
-            </div>
-        </div>
+            </div>`r`n        </div>
 
         <div class="mt-12 flex flex-col items-center gap-3 opacity-40">
             <div class="flex items-center gap-6">
