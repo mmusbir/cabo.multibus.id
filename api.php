@@ -264,10 +264,27 @@ $router->get('searchCustomers', function () use ($conn) {
         WHERE LOWER(COALESCE(name, '')) LIKE ?
            OR phone LIKE ?
            OR (? <> '' AND REPLACE(REPLACE(REPLACE(COALESCE(phone, ''), ' ', ''), '-', ''), '+', '') LIKE ?)
-        ORDER BY name
+           OR LOWER(COALESCE(pickup_point, '')) LIKE ?
+        ORDER BY
+            CASE
+                WHEN LOWER(COALESCE(name, '')) LIKE ? THEN 0
+                WHEN phone LIKE ? THEN 1
+                WHEN LOWER(COALESCE(pickup_point, '')) LIKE ? THEN 2
+                ELSE 3
+            END,
+            name
         LIMIT 20
     ");
-    $stmt->execute([$like, '%' . $q . '%', $phoneQuery, $phoneLike]);
+    $stmt->execute([
+        $like,
+        '%' . $q . '%',
+        $phoneQuery,
+        $phoneLike,
+        $like,
+        strtolower($q) . '%',
+        $q . '%',
+        strtolower($q) . '%'
+    ]);
     $customers = [];
     while ($r = $stmt->fetch()) {
         $customers[] = $r;
