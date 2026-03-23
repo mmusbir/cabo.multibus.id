@@ -176,6 +176,31 @@ html[data-theme="light"] .app-index #tanggal::placeholder {
   -webkit-text-fill-color: #94a3b8 !important;
 }
 
+html[data-theme="light"] .app-index #sugList {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme="light"] .app-index #sugList > div {
+  color: #0f172a !important;
+  border-bottom-color: rgba(148, 163, 184, 0.12) !important;
+  background: transparent !important;
+}
+
+html[data-theme="light"] .app-index #sugList > div:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .app-index .booking-suggestion-name {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .app-index .booking-suggestion-meta {
+  color: #64748b !important;
+}
+
 html[data-theme="light"] .app-index .seat {
   background: #eef2f7;
   border-color: rgba(148, 163, 184, 0.26);
@@ -542,6 +567,11 @@ html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table,
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td,
 html[data-theme="dark"] body.admin-bootstrap-page .report-details-table,
 html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody td {
+  --bs-table-bg: #191b22 !important;
+  --bs-table-color: #e2e2eb !important;
+  --bs-table-border-color: rgba(88, 66, 55, 0.14) !important;
+  --bs-table-striped-bg: #1e1f26 !important;
+  --bs-table-hover-bg: #1e1f26 !important;
   color: #e2e2eb !important;
 }
 
