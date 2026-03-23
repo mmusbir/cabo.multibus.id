@@ -65,6 +65,9 @@ $form = [
 ];
 
 $errors = [];
+if (!empty($_GET['error'])) {
+    $errors[] = trim((string) $_GET['error']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($form as $key => $default) {
@@ -746,7 +749,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <div class="content-shell">
-    <form method="post" class="content-stack" novalidate>
+    <form method="post" action="admin.php?action=create_charter" class="content-stack" novalidate>
       <section>
         <div class="section-head">
           <div class="section-head-line"></div>

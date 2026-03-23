@@ -262,6 +262,10 @@ if ($isActionRequest) {
     $router->any('update_charter', function () use ($ajax_dir) {
       include $ajax_dir . 'charter_crud.php';
     });
+
+    $router->any('create_charter', function () use ($ajax_dir) {
+      include $ajax_dir . 'charter_crud.php';
+    });
     
     $router->any('toggle_bop', function () use ($ajax_dir) {
       include $ajax_dir . 'charter_crud.php';
