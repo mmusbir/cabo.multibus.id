@@ -545,6 +545,17 @@ html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody td
   color: #e2e2eb !important;
 }
 
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table thead,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table thead tr,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr,
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table thead,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table thead tr,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody tr,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody td {
+  background: #191b22 !important;
+}
+
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table thead th,
 html[data-theme="dark"] body.admin-bootstrap-page .report-details-table thead th,
 html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-time,
@@ -636,6 +647,11 @@ html[data-theme="dark"] body.admin-bootstrap-page .customers-table-actions .acc-
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr:hover {
   background: rgba(255, 255, 255, 0.02) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr:hover td,
+html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody tr:hover td {
+  background: #1e1f26 !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page input,
