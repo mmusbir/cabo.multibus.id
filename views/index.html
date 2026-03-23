@@ -2279,15 +2279,29 @@
       }
 
       .mobile-slate-refresh-btn {
-        width: 2.4rem;
-        height: 2.4rem;
+        width: 1.95rem;
+        height: 1.95rem;
+        min-width: 1.95rem;
+        padding: 0;
         border-radius: 999px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: #1e1f26;
-        border: 1px solid rgba(88, 66, 55, 0.14);
-        color: #e2e2eb;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        color: #a78b7d;
+        transition: color 0.18s ease, transform 0.18s ease;
+      }
+
+      .mobile-slate-refresh-btn:hover {
+        color: #f97316;
+        transform: translateY(-1px);
+      }
+
+      .mobile-slate-refresh-btn .material-symbols-outlined {
+        font-size: 1rem;
+        line-height: 1;
       }
 
       .mobile-slate-seat-canvas {
