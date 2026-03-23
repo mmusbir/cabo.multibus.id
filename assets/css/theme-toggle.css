@@ -200,6 +200,15 @@ html[data-theme="light"] body.admin-bootstrap-page {
   color: #0f172a !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .admin-bootstrap-container,
+html[data-theme="light"] body.admin-bootstrap-page .admin-bootstrap-grid,
+html[data-theme="light"] body.admin-bootstrap-page .admin-main-column,
+html[data-theme="light"] body.admin-bootstrap-page .layout,
+html[data-theme="light"] body.admin-bootstrap-page .left,
+html[data-theme="light"] body.admin-bootstrap-page main {
+  background: transparent !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .small,
 html[data-theme="light"] body.admin-bootstrap-page .muted,
 html[data-theme="light"] body.admin-bootstrap-page .text-muted,
@@ -227,6 +236,37 @@ html[data-theme="light"] body.admin-bootstrap-page .section-card {
   color: #0f172a !important;
   border-color: rgba(148, 163, 184, 0.18) !important;
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.07) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-header,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-toolbar,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-summary-bar,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-page-panel,
+html[data-theme="light"] body.admin-bootstrap-page .view-trip-card,
+html[data-theme="light"] body.admin-bootstrap-page .summary-footer,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-card,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-card-body,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-filters,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-search,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .charter-route-preset,
+html[data-theme="light"] body.admin-bootstrap-page .charter-create-radio,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-toolbar-meta,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-side-item,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-route-stop,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-schedule-box,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-side-stack,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-date-split,
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-detail-grid {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-sidebar {
