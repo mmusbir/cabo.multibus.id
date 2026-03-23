@@ -2836,7 +2836,7 @@
 
     .booking-suggestion-item {
       display: grid;
-      gap: 0.28rem;
+      gap: 0.22rem;
       align-items: start;
       background: transparent !important;
       background-image: none !important;
@@ -2854,10 +2854,11 @@
       word-break: break-word;
       line-height: 1.35;
       background: transparent !important;
+      margin: 0;
     }
 
     .booking-suggestion-meta {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: rgba(224, 192, 177, 0.72);
       white-space: nowrap;
       overflow: visible;
@@ -2865,6 +2866,7 @@
       word-break: normal;
       line-height: 1.3;
       background: transparent !important;
+      margin: 0;
     }
 
     #card-passenger select:disabled,
@@ -3244,7 +3246,7 @@
           </h3>
             <div class="search-container-modern booking-search-shell" id="suggestions">
               <span class="material-symbols-outlined booking-search-icon">search</span>
-              <input id="search_name" placeholder="Cari nama / nomor" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
+              <input id="search_name" name="customer_lookup_temp" type="text" placeholder="Cari nama / nomor" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" aria-autocomplete="list">
               <div id="sugList"></div>
           </div>
         </div>
