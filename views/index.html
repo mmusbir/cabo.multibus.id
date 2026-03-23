@@ -22,13 +22,14 @@
 
     /* Vanilla Datepicker Custom Styling */
     .datepicker {
-      font-family: 'Inter', sans-serif;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      border: none;
+      font-family: 'Space Grotesk', sans-serif;
+      border-radius: 18px;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(88, 66, 55, 0.2);
       overflow: hidden;
-      background: var(--neu-bg, #e0e5ec);
-      padding: 8px;
+      background: #191b22;
+      color: #e2e2eb;
+      padding: 10px;
     }
 
     .datepicker-picker {
@@ -37,16 +38,16 @@
 
     /* Header */
     .datepicker-header {
-      background: var(--neu-bg, #e0e5ec);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 8px;
-      box-shadow: inset 4px 4px 8px var(--neu-dark-shadow, #a3b1c6), inset -4px -4px 8px var(--neu-light-shadow, #ffffff);
+      background: #111319;
+      border-radius: 14px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
     .datepicker-title {
-      color: #22c55e;
-      font-weight: 600;
+      color: #f97316;
+      font-weight: 700;
       font-size: 14px;
     }
 
@@ -57,21 +58,21 @@
     }
 
     .datepicker-controls .button {
-      background: var(--neu-bg, #e0e5ec);
-      border: none;
-      color: #22c55e;
-      border-radius: 8px;
+      background: #282a30;
+      border: 1px solid rgba(88, 66, 55, 0.16);
+      color: #f97316;
+      border-radius: 10px;
       padding: 6px 10px;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 4px 4px 8px var(--neu-dark-shadow, #a3b1c6), -4px -4px 8px var(--neu-light-shadow, #ffffff);
+      box-shadow: none;
     }
 
     .datepicker-controls .button:hover {
-      box-shadow: 2px 2px 4px var(--neu-dark-shadow, #a3b1c6), -2px -2px 4px var(--neu-light-shadow, #ffffff);
-      color: #16a34a;
+      background: #33343b;
+      color: #ffb690;
     }
 
     .datepicker-controls .prev-button,
@@ -85,14 +86,14 @@
 
     /* Days of week */
     .datepicker-view .days-of-week {
-      background: rgba(99, 102, 241, 0.08);
-      border-radius: 8px;
-      margin-bottom: 4px;
+      background: #282a30;
+      border-radius: 10px;
+      margin-bottom: 6px;
     }
 
     .datepicker-view .dow {
-      color: #64748b;
-      font-weight: 600;
+      color: rgba(224, 192, 177, 0.7);
+      font-weight: 700;
       font-size: 11px;
       text-transform: uppercase;
       padding: 8px 0;
@@ -109,50 +110,50 @@
 
     .datepicker-cell {
       border-radius: 10px;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 13px;
       transition: all 0.15s ease;
       padding: 8px;
-      color: var(--neu-text-dark, #2d3748);
+      color: #e2e2eb;
     }
 
     .datepicker-cell:hover {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: #fff;
-      transform: scale(1.05);
+      background: rgba(249, 115, 22, 0.12);
+      color: #ffb690;
+      transform: none;
     }
 
     .datepicker-cell.selected {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff;
-      box-shadow: 0 3px 10px rgba(34, 197, 94, 0.35);
+      background: rgba(249, 115, 22, 0.16);
+      color: #f97316;
+      box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.35);
     }
 
     .datepicker-cell.today {
       border: 2px solid #f59e0b;
-      color: #f59e0b;
-      background: rgba(245, 158, 11, 0.1);
+      color: #ffb690;
+      background: rgba(249, 115, 22, 0.08);
     }
 
     .datepicker-cell.today:hover {
-      color: #fff;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      border-color: transparent;
+      color: #f97316;
+      background: rgba(249, 115, 22, 0.12);
+      border-color: #f97316;
     }
 
     .datepicker-cell.disabled {
-      color: #9ca3af;
+      color: rgba(224, 192, 177, 0.25);
       opacity: 0.4;
     }
 
     .datepicker-cell.prev,
     .datepicker-cell.next {
-      color: #9ca3af;
-      opacity: 0.5;
+      color: rgba(224, 192, 177, 0.42);
+      opacity: 0.7;
     }
 
     .datepicker-cell.focused:not(.selected) {
-      background: rgba(99, 102, 241, 0.15);
+      background: rgba(249, 115, 22, 0.08);
     }
 
     /* Months and Years view */
@@ -167,7 +168,7 @@
       cursor: pointer;
       display: block;
       width: 100%;
-      min-width: 0;
+      min-width: 9.75rem;
       height: auto !important;
       border: 0 !important;
       border-radius: 0 !important;
@@ -1497,6 +1498,8 @@
         display: grid;
         gap: 0.15rem;
         width: 100%;
+        min-width: 0;
+        flex: 1 1 auto;
       }
 
       .mobile-slate-control-label {
@@ -1888,8 +1891,12 @@
 
       .mobile-slate-controls-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: minmax(15rem, 1.2fr) minmax(16rem, 1.25fr) minmax(13rem, 1fr) minmax(12rem, 0.9fr);
         gap: 0.9rem;
+      }
+
+      .control-date-card {
+        grid-column: span 1;
       }
 
       .mobile-slate-control-card {
@@ -1928,6 +1935,8 @@
         display: grid;
         gap: 0.2rem;
         width: 100%;
+        min-width: 0;
+        flex: 1 1 auto;
       }
 
       .mobile-slate-control-label {
@@ -1950,6 +1959,7 @@
         font-size: 0.98rem;
         font-weight: 700;
         line-height: 1.3;
+        min-width: 0;
       }
 
       #card-seats {
@@ -2666,7 +2676,7 @@
       <!-- REGULER CONTROLS -->
       <div id="reguler-controls" class="active">
         <div class="mobile-slate-controls-grid">
-          <div class="mobile-slate-control-card">
+          <div class="mobile-slate-control-card control-date-card">
             <div class="mobile-slate-control-icon">
               <span class="material-symbols-outlined">calendar_month</span>
             </div>
