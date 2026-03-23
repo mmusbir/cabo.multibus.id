@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 
 <head>
@@ -8,7 +8,8 @@
   <!--Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <!-- Vanilla Datepicker CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
@@ -1687,10 +1688,363 @@
         font-size: 14px;
       }
     }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .mobile-slate-topbar,
+    .mobile-slate-seat-head,
+    .mobile-slate-passenger-head,
+    .mobile-slate-controls-grid,
+    .mobile-slate-control-card,
+    .mobile-slate-control-copy,
+    .mobile-slate-seat-canvas,
+    .rekap-bar-metrics,
+    .rekap-bar-metric,
+    .rekap-bar-actions {
+      display: none;
+    }
+
+    @media (max-width: 991.98px) {
+      body {
+        background: #111319;
+        color: #e2e2eb;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .wrap {
+        max-width: 100%;
+        padding: 5rem 1rem 8rem;
+        background: transparent;
+      }
+
+      .toprow {
+        display: none;
+      }
+
+      .mobile-slate-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1rem 0.9rem;
+        border-bottom: 1px solid rgba(88, 66, 55, 0.12);
+        background: rgba(17, 19, 25, 0.96);
+        backdrop-filter: blur(12px);
+      }
+
+      .mobile-slate-topbar-action,
+      .mobile-slate-topbar-avatar {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #1e1f26;
+        border: 1px solid rgba(88, 66, 55, 0.18);
+        color: #f97316;
+        font-weight: 800;
+      }
+
+      .mobile-slate-topbar-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #f97316;
+        text-transform: uppercase;
+      }
+
+      #main-card {
+        border: 0;
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+      }
+
+      .mobile-slate-controls-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .mobile-slate-control-card {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        padding: 1rem;
+        border-radius: 0.85rem;
+        background: #191b22;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .mobile-slate-control-icon {
+        width: 2.7rem;
+        height: 2.7rem;
+        border-radius: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+        flex-shrink: 0;
+      }
+
+      .mobile-slate-control-copy {
+        display: grid;
+        gap: 0.15rem;
+        width: 100%;
+      }
+
+      .mobile-slate-control-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.65);
+      }
+
+      .mobile-slate-control-input,
+      .mobile-slate-control-card select,
+      .mobile-slate-control-card input {
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #e2e2eb;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        box-shadow: none !important;
+      }
+
+      #card-seats,
+      #card-passenger {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 0.95rem;
+        background: #191b22;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+        box-shadow: none;
+      }
+
+      .mobile-slate-seat-head,
+      .mobile-slate-passenger-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .mobile-slate-section-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #e2e2eb;
+      }
+
+      .mobile-slate-section-title .material-symbols-outlined,
+      .mobile-slate-refresh-btn,
+      .payment-badge .material-symbols-outlined {
+        color: #f97316;
+      }
+
+      .mobile-slate-refresh-btn {
+        width: 2.2rem;
+        height: 2.2rem;
+        border-radius: 999px;
+        border: 1px solid rgba(88, 66, 55, 0.14);
+        background: #1e1f26;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .mobile-slate-seat-canvas {
+        display: block;
+        padding: 1rem;
+        border-radius: 0.9rem;
+        background: rgba(12, 14, 20, 0.6);
+        border: 1px solid rgba(88, 66, 55, 0.1);
+      }
+
+      #seat-counters {
+        margin: 0.9rem 0 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: rgba(224, 192, 177, 0.75);
+      }
+
+      .legend {
+        justify-content: center;
+        margin-top: 1rem;
+        gap: 0.9rem;
+      }
+
+      .legend .item {
+        color: rgba(224, 192, 177, 0.72);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .search-container-modern {
+        margin: 0;
+        width: min(100%, 13rem);
+      }
+
+      .search-container-modern input,
+      #card-passenger .control-select,
+      #card-passenger select {
+        background: #282a30 !important;
+        border: 1px solid rgba(88, 66, 55, 0.12) !important;
+        color: #e2e2eb !important;
+        border-radius: 0.8rem !important;
+      }
+
+      #card-passenger .input-group {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .payment-selector-modern {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .payment-label {
+        min-height: 5rem;
+        padding: 0.8rem 0.45rem;
+        background: #282a30;
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .payment-badge {
+        background: rgba(249, 115, 22, 0.08);
+        border-color: rgba(249, 115, 22, 0.12);
+      }
+
+      #reguler_price_card {
+        background: #0c0e14 !important;
+        border-left: 4px solid #f97316;
+      }
+
+      #msg {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.82rem;
+      }
+
+      .rekap-sticky-bar {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        z-index: 60;
+        display: flex !important;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        background: rgba(51, 52, 59, 0.92);
+        border: 1px solid rgba(88, 66, 55, 0.12);
+        backdrop-filter: blur(14px);
+      }
+
+      .rekap-bar-metrics,
+      .rekap-bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+      }
+
+      .rekap-bar-metrics {
+        justify-content: space-between;
+      }
+
+      .rekap-bar-metric {
+        display: grid;
+        gap: 0.2rem;
+        min-width: 0;
+      }
+
+      .rekap-bar-label {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.58rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(224, 192, 177, 0.62);
+      }
+
+      .rekap-bar-count,
+      .rekap-bar-total {
+        font-family: 'DM Mono', monospace;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #e2e2eb;
+      }
+
+      .rekap-bar-count {
+        color: #f97316;
+      }
+
+      .rekap-bar-divider {
+        width: 1px;
+        align-self: stretch;
+        background: rgba(88, 66, 55, 0.3);
+      }
+
+      .rekap-bar-btn {
+        flex: 1 1 0;
+        min-height: 2.9rem;
+        border-radius: 0.85rem;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .rekap-bar-btn-secondary {
+        background: #282a30;
+        color: rgba(224, 192, 177, 0.88);
+        border: 1px solid rgba(88, 66, 55, 0.12);
+      }
+
+      .rekap-bar-btn-primary {
+        background: #f97316;
+        color: #341100;
+        border: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <header class="mobile-slate-topbar">
+    <a class="mobile-slate-topbar-action" href="admin.php" aria-label="Buka admin">
+      <span class="material-symbols-outlined">menu</span>
+    </a>
+    <div class="mobile-slate-topbar-title">Seat Selection</div>
+    <a class="mobile-slate-topbar-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+  </header>
   <div class="wrap">
     <div class="toprow">
       <div class="flex-center-gap">
@@ -1703,30 +2057,49 @@
     <div class="card" id="main-card">
       <!-- REGULER CONTROLS -->
       <div id="reguler-controls" class="active">
-        <div class="carter-section">
-          <div class="carter-grid">
-            <div class="input-group">
-              <input type="text" id="tanggal" class="control-select" placeholder="Tanggal Berangkat" readonly>
+        <div class="mobile-slate-controls-grid">
+          <div class="mobile-slate-control-card">
+            <div class="mobile-slate-control-icon">
+              <span class="material-symbols-outlined">calendar_month</span>
             </div>
-            <div class="input-group">
-              <select id="route" class="control-select" disabled title="Pilih Rute">
-                <option value="" disabled selected>Pilih Tanggal Dulu</option>
+            <div class="mobile-slate-control-copy">
+              <div class="mobile-slate-control-label">Departure Date</div>
+              <input type="text" id="tanggal" class="mobile-slate-control-input datepicker-input" placeholder="Select Date" readonly>
+            </div>
+          </div>
+          <div class="mobile-slate-control-card">
+            <div class="mobile-slate-control-icon">
+              <span class="material-symbols-outlined">route</span>
+            </div>
+            <div class="mobile-slate-control-copy">
+              <div class="mobile-slate-control-label">Selected Route</div>
+              <select id="route" class="mobile-slate-control-input" disabled title="Pilih Rute">
+                <option value="" disabled selected>Pick Date First</option>
               </select>
             </div>
           </div>
-          <div class="carter-grid mt-10">
-            <div class="input-group">
-              <select id="jam" class="control-select" disabled title="Pilih Jam Keberangkatan">
-                <option value="" disabled selected>Pilih Jam Keberangkatan</option>
-              </select>
+          <div class="mobile-slate-control-card">
+            <div class="mobile-slate-control-icon">
+              <span class="material-symbols-outlined">schedule</span>
             </div>
-            <div class="input-group unit-wrapper-state" id="unit-wrapper">
-              <select id="unit" class="control-select" disabled title="Pilih Unit">
-                <option value="" disabled selected>Pilih Unit</option>
+            <div class="mobile-slate-control-copy">
+              <div class="mobile-slate-control-label">Departure Time</div>
+              <select id="jam" class="mobile-slate-control-input" disabled title="Pilih Jam Keberangkatan">
+                <option value="" disabled selected>Pick Time</option>
               </select>
             </div>
           </div>
-          <div class="small mt-12 op-7">Pilih tanggal untuk melihat rute yang tersedia.</div>
+          <div class="mobile-slate-control-card unit-wrapper-state" id="unit-wrapper">
+            <div class="mobile-slate-control-icon">
+              <span class="material-symbols-outlined">directions_bus</span>
+            </div>
+            <div class="mobile-slate-control-copy">
+              <div class="mobile-slate-control-label">Unit</div>
+              <select id="unit" class="mobile-slate-control-input" disabled title="Pilih Unit">
+                <option value="" disabled selected>Pick Unit</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1736,7 +2109,7 @@
         <div class="carter-grid">
           <!-- Customer Info -->
           <div class="carter-section mb-0">
-            <div class="carter-section-title">👤 Data Pemesan</div>
+            <div class="carter-section-title">ðŸ‘¤ Data Pemesan</div>
             <div class="input-group">
               <input type="text" id="carter_company" class="control-select" placeholder="Nama Perusahaan (Opsional)">
               <input type="text" id="carter_name" class="control-select" placeholder="Nama Lengkap">
@@ -1746,14 +2119,14 @@
 
           <!-- Schedule -->
           <div class="carter-section mb-0">
-            <div class="carter-section-title">📅 Jadwal</div>
+            <div class="carter-section-title">ðŸ“… Jadwal</div>
             <div class="carter-grid full gap-8">
               <input type="text" id="carter_start" class="control-select" placeholder="Tgl Mulai" readonly>
               <input type="text" id="carter_end" class="control-select" placeholder="Tgl Selesai" readonly>
             </div>
             <!-- Distinct Time Input -->
             <div class="time-input-container mt-8">
-              <div class="time-input-label">⏰ JAM BERANGKAT</div>
+              <div class="time-input-label">â° JAM BERANGKAT</div>
               <input type="time" id="carter_time" class="time-input">
             </div>
           </div>
@@ -1775,15 +2148,15 @@
               <div class="rd-grid">
                 <div class="rd-item">
                   <span class="rd-label">Asal</span>
-                  <span class="rd-value"><span class="rd-icon">🏠</span> <span id="rd_origin">-</span></span>
+                  <span class="rd-value"><span class="rd-icon">ðŸ </span> <span id="rd_origin">-</span></span>
                 </div>
                 <div class="rd-item">
                   <span class="rd-label">Tujuan</span>
-                  <span class="rd-value"><span class="rd-icon">📍</span> <span id="rd_destination">-</span></span>
+                  <span class="rd-value"><span class="rd-icon">ðŸ“</span> <span id="rd_destination">-</span></span>
                 </div>
                 <div class="rd-item rd-item-full">
                   <span class="rd-label">Layanan</span>
-                  <span class="rd-value"><span class="rd-icon">⏱️</span> <span id="rd_duration">-</span></span>
+                  <span class="rd-value"><span class="rd-icon">â±ï¸</span> <span id="rd_duration">-</span></span>
                 </div>
               </div>
             </div>
@@ -1828,7 +2201,7 @@
 
           <!-- Vehicle -->
           <div class="carter-section mb-0">
-            <div class="carter-section-title">🚌 Unit & Driver</div>
+            <div class="carter-section-title">ðŸšŒ Unit & Driver</div>
             <div class="input-group">
               <select id="carter_unit" class="control-select">
                 <option value="" disabled selected>Pilih Kendaraan</option>
@@ -1842,13 +2215,13 @@
 
         <!-- 3. Price & Submit -->
         <div class="carter-section mt-12">
-          <div class="carter-section-title">💰 Biaya Sewa</div>
+          <div class="carter-section-title">ðŸ’° Biaya Sewa</div>
           <input type="text" id="carter_price" class="control-select price-input" placeholder="Rp 0"
             oninput="formatRupiah(this)">
         </div>
 
         <button id="btn-submit-carter" class="btn-carter-submit">
-          <span>✓</span> Submit Carter
+          <span>âœ“</span> Submit Carter
         </button>
       </div>
 
@@ -1858,7 +2231,7 @@
         <div class="carter-grid">
           <!-- Pengirim -->
           <div class="carter-section mb-0">
-            <div class="carter-section-title">📦 Data Pengirim</div>
+            <div class="carter-section-title">ðŸ“¦ Data Pengirim</div>
             <div class="input-group">
               <input type="text" id="luggage_sender_name" class="control-select" placeholder="Nama Pengirim">
               <input type="tel" id="luggage_sender_phone" class="control-select" placeholder="No. HP Pengirim">
@@ -1868,7 +2241,7 @@
 
           <!-- Penerima -->
           <div class="carter-section mb-0">
-            <div class="carter-section-title">📬 Data Penerima</div>
+            <div class="carter-section-title">ðŸ“¬ Data Penerima</div>
             <div class="input-group">
               <input type="text" id="luggage_receiver_name" class="control-select" placeholder="Nama Penerima">
               <input type="tel" id="luggage_receiver_phone" class="control-select" placeholder="No. HP Penerima">
@@ -1880,7 +2253,7 @@
         <!-- 2. Layanan & Jumlah -->
         <div class="carter-grid mt-12">
           <div class="carter-section mb-0">
-            <div class="carter-section-title">🏷️ Jenis Layanan</div>
+            <div class="carter-section-title">ðŸ·ï¸ Jenis Layanan</div>
             <div class="input-group">
               <select id="luggage_service_select" class="control-select" onchange="calculateLuggagePrice()"
                 aria-label="Pilih Jenis Layanan">
@@ -1890,7 +2263,7 @@
           </div>
 
           <div class="carter-section mb-0">
-            <div class="carter-section-title">📊 Jumlah & Catatan</div>
+            <div class="carter-section-title">ðŸ“Š Jumlah & Catatan</div>
             <div class="input-group">
               <input type="number" id="luggage_quantity" class="control-select" value="1" min="1" placeholder="Jumlah"
                 onchange="calculateLuggagePrice()" oninput="calculateLuggagePrice()">
@@ -1902,64 +2275,65 @@
 
         <!-- 3. Total Harga -->
         <div class="carter-section mt-12" id="luggage_price_card">
-          <div class="carter-section-title">💰 Total Biaya</div>
+          <div class="carter-section-title">ðŸ’° Total Biaya</div>
           <div id="luggage_total_price" class="total-price-display">Rp 0</div>
         </div>
 
         <button class="btn-booking-modern btn-kirim-bagasi" onclick="submitLuggage()">
-          🚀 Kirim Bagasi
+          ðŸš€ Kirim Bagasi
         </button>
       </div>
 
       <!-- Seats card -->
       <div class="card" id="card-seats">
-        <span id="refresh" class="refresh-icon-action" title="Refresh layout" onclick="refreshSeats()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <polyline points="1 20 1 14 7 14"></polyline>
-            <path
-              d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15">
-            </path>
-          </svg>
-        </span>
-        <div class="flex-between-center">
-          <div class="small" id="seat-counters">Kosong: <strong id="count-empty">-</strong> · Terisi: <strong
-              id="count-booked">-</strong> · Dipilih: <strong id="count-selected">0</strong></div>
+        <div class="mobile-slate-seat-head">
+          <h3 class="mobile-slate-section-title">
+            <span class="material-symbols-outlined">grid_view</span>
+            Seat Map
+          </h3>
+          <button type="button" id="refresh" class="mobile-slate-refresh-btn" title="Refresh layout" onclick="refreshSeats()">
+            <span class="material-symbols-outlined">refresh</span>
+          </button>
         </div>
-
-        <div class="layout" id="layout"></div>
-
-        <div class="legend" aria-hidden="true">
-          <div class="item"><span class="box box-empty"></span> Kosong</div>
-          <div class="item"><span class="box box-booked"></span> Terisi</div>
-          <div class="item"><span class="box box-selected"></span> Sementara Dipilih</div>
+        <div class="mobile-slate-seat-canvas">
+          <div class="layout" id="layout"></div>
+          <div class="legend" aria-hidden="true">
+            <div class="item"><span class="box box-empty"></span> Avail</div>
+            <div class="item"><span class="box box-selected"></span> Picked</div>
+            <div class="item"><span class="box box-booked"></span> Occ</div>
+          </div>
         </div>
-      </div>
-
-      <!-- Search Passenger section -->
-      <div class="search-container-modern" id="suggestions">
-        <input id="search_name" placeholder="Cari nama penumpang...">
-        <div id="sugList"></div>
+        <div class="small" id="seat-counters">Empty: <strong id="count-empty">-</strong> • Booked: <strong id="count-booked">-</strong> • Picked: <strong id="count-selected">0</strong></div>
       </div>
 
       <!-- Passenger form card -->
       <div class="carter-section" id="card-passenger">
+        <div class="mobile-slate-passenger-head">
+          <h3 class="mobile-slate-section-title">
+            <span class="material-symbols-outlined">person</span>
+            Passenger Details
+          </h3>
+          <div class="search-container-modern" id="suggestions">
+            <input id="search_name" placeholder="Quick Search Name...">
+            <div id="sugList"></div>
+          </div>
+        </div>
+
         <div class="carter-grid">
           <div class="input-group">
-            <input id="name" class="control-select" placeholder="Nama Penumpang">
+            <input id="name" class="control-select" placeholder="Full Name">
           </div>
           <div class="input-group">
-            <input id="phone" class="control-select" placeholder="Nomor Handphone">
+            <input id="phone" class="control-select" placeholder="Phone Number">
           </div>
         </div>
 
         <div class="carter-grid mt-12">
           <div class="input-group">
-            <input id="pickup" class="control-select" placeholder="Alamat / Titik Penjemputan">
+            <input id="pickup" class="control-select" placeholder="Pickup Point">
           </div>
           <div class="input-group">
-            <input id="address" class="control-select" placeholder="Link Google Maps (Opsional)">
+            <input id="address" class="control-select" placeholder="Map Link (Optional)">
           </div>
         </div>
 
@@ -1967,53 +2341,35 @@
         <div class="carter-grid mt-12">
           <div class="input-group">
             <select id="segment" class="control-select" aria-label="Pilih Segment">
-              <option value="" selected>-- Pilih Segment --</option>
+              <option value="" selected>-- Pick Segment --</option>
             </select>
           </div>
           <div class="input-group">
-            <input id="discount" type="number" class="control-select" placeholder="Potongan Harga (Rp)">
+            <input id="discount" type="number" class="control-select" placeholder="Discount Adjustment">
           </div>
         </div>
 
         <div class="mt-16">
-          <div class="input-label mb-8">Metode Pembayaran</div>
+          <div class="input-label mb-8">Payment Command</div>
           <div class="payment-selector-modern" id="pembayaran_radios">
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
               <label for="p_belum" class="payment-label">
-                <span class="payment-badge">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M18 6L6 18"></path>
-                    <path d="M6 6l12 12"></path>
-                  </svg>
-                </span>
-                <span>Belum Lunas</span>
+                <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
+                <span>Unpaid</span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
               <label for="p_lunas" class="payment-label">
-                <span class="payment-badge">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 6L9 17l-5-5"></path>
-                  </svg>
-                </span>
-                <span>Lunas</span>
+                <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
+                <span>Paid</span>
               </label>
             </div>
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_redbus" value="Redbus">
               <label for="p_redbus" class="payment-label">
-                <span class="payment-badge bus">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="12" rx="2"></rect>
-                    <path d="M7 17v2"></path>
-                    <path d="M17 17v2"></path>
-                    <path d="M3 11h18"></path>
-                    <circle cx="8" cy="15" r="1"></circle>
-                    <circle cx="16" cy="15" r="1"></circle>
-                  </svg>
-                </span>
+                <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
                 <span>Redbus</span>
               </label>
             </div>
@@ -2022,17 +2378,30 @@
 
         <!-- TOTAL PAYMENT REGULER -->
         <div class="carter-section mt-12 d-none" id="reguler_price_card">
-          <div class="carter-section-title">💰 Total Pembayaran</div>
+          <div class="carter-section-title">Total Command Value</div>
           <div id="reguler_total_price" class="total-price-display">Rp 0</div>
         </div>
 
         <div id="msg" class="msg-display"></div>
       </div>
 
-      <div class="mt-8">
-        <button id="book" class="btn-booking-modern">Konfirmasi Booking Kursi</button>
+      <div id="rekapBar" class="rekap-sticky-bar">
+        <div class="rekap-bar-metrics">
+          <div class="rekap-bar-metric">
+            <span class="rekap-bar-label">Seats Picked</span>
+            <span id="rekapBarCount" class="rekap-bar-count">00</span>
+          </div>
+          <div class="rekap-bar-divider"></div>
+          <div class="rekap-bar-metric">
+            <span class="rekap-bar-label">Total Rekap Value</span>
+            <span id="rekapBarTotal" class="rekap-bar-total">Rp 0</span>
+          </div>
+        </div>
+        <div class="rekap-bar-actions">
+          <button type="button" onclick="openRekapModal()" class="rekap-bar-btn rekap-bar-btn-secondary">View Rekap</button>
+          <button id="book" class="rekap-bar-btn rekap-bar-btn-primary">Confirm Booking</button>
+        </div>
       </div>
-    </div>
 
     <!-- Detail Passenger Modal -->
     <div id="detailModal" class="modal-overlay">
@@ -2043,7 +2412,7 @@
         </div>
         <div id="detailContent" class="modal-body"></div>
         <div class="detail-modal-actions">
-          <button type="button" id="copyDetailBtn" class="detail-copy-btn">📋 Copy</button>
+          <button type="button" id="copyDetailBtn" class="detail-copy-btn">ðŸ“‹ Copy</button>
           <button type="button" id="addToRekapBtn" class="detail-rekap-btn">+ Tambah ke Rekap</button>
         </div>
       </div>
@@ -2053,7 +2422,7 @@
     <div id="rekapModal" class="modal-overlay">
       <div class="modal-content-box modal-rekap-box">
         <div class="modal-header">
-          <h3 class="modal-title">📋 Rekap Booking</h3>
+          <h3 class="modal-title">ðŸ“‹ Rekap Booking</h3>
           <button type="button" id="closeRekapModal" class="modal-close-btn">&times;</button>
         </div>
         <div id="rekapContent" class="modal-body rekap-body"></div>
@@ -2062,23 +2431,16 @@
           <div id="rekapTotalAmount" class="rekap-total-amount">Rp 0</div>
         </div>
         <div class="detail-modal-actions">
-          <button type="button" id="copyRekapBtn" class="detail-copy-btn">📋 Copy Semua</button>
-          <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">🗑️ Reset Rekap</button>
+          <button type="button" id="copyRekapBtn" class="detail-copy-btn">ðŸ“‹ Copy Semua</button>
+          <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">ðŸ—‘ï¸ Reset Rekap</button>
         </div>
       </div>
-    </div>
-
-    <!-- Rekap Sticky Bottom Bar -->
-    <div id="rekapBar" class="rekap-sticky-bar" style="display:none;">
-      <span id="rekapBarCount" class="rekap-bar-count">0 penumpang</span>
-      <span id="rekapBarTotal" class="rekap-bar-total">Rp 0</span>
-      <button type="button" onclick="openRekapModal()" class="rekap-bar-btn">Lihat Rekap →</button>
     </div>
 
     <!-- Confirm Reset Popup -->
     <div id="confirmResetPopup" class="confirm-popup-overlay">
       <div class="confirm-popup-box">
-        <div class="confirm-popup-icon">🗑️</div>
+        <div class="confirm-popup-icon">ðŸ—‘ï¸</div>
         <div class="confirm-popup-title">Reset Rekap?</div>
         <div class="confirm-popup-msg">Semua penumpang dalam daftar rekap akan dihapus.</div>
         <div class="confirm-popup-actions">
@@ -2254,7 +2616,7 @@
                 } else if (cell.type === 'bagasi-custom') {
                   const bagasiDiv = document.createElement('div');
                   bagasiDiv.className = 'bagasi-small';
-                  bagasiDiv.textContent = '📦';
+                  bagasiDiv.textContent = 'ðŸ“¦';
                   rowDiv.appendChild(bagasiDiv);
                 } else {
                   // Empty cell
@@ -2319,22 +2681,22 @@
                 const modal = document.getElementById('detailModal');
                 const content = document.getElementById('detailContent');
                 const tanggal = tanggalEl.value;
-                const jam = jamEl.value || '—';
-                const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : '—';
-                const segment = info.segment_name || '—';
+                const jam = jamEl.value || 'â€”';
+                const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : 'â€”';
+                const segment = info.segment_name || 'â€”';
                 const price = info.price || 0;
                 const disc = info.discount || 0;
                 const finalPrice = price - disc;
                 const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(finalPrice);
 
                 content.innerHTML = `
-                    <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} — ${jam}</div>
-                    <div><strong>Kursi:</strong> ${id} — Booked ✅</div>
+                    <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} â€” ${jam}</div>
+                    <div><strong>Kursi:</strong> ${id} â€” Booked âœ…</div>
                     <div><strong>Segment:</strong> ${segment}</div>
                     <div><strong>Harga:</strong> ${priceFormatted}</div>
-                    <div><strong>Nama:</strong> ${info.name || '—'}</div>
-                    <div><strong>No. HP:</strong> ${info.phone || '—'}</div>
-                    <div><strong>Titik Jemput:</strong> ${info.pickup_point || '—'}</div>
+                    <div><strong>Nama:</strong> ${info.name || 'â€”'}</div>
+                    <div><strong>No. HP:</strong> ${info.phone || 'â€”'}</div>
+                    <div><strong>Titik Jemput:</strong> ${info.pickup_point || 'â€”'}</div>
                     <div><strong>Pembayaran?</strong> Tunai / Transfer / QRIS</div>
                   `;
 
@@ -2344,9 +2706,9 @@
                 if (typeof _currentRekapItem !== 'undefined') {
                   _currentRekapItem = {
                     seatId: id,
-                    name: info.name || '—',
-                    phone: info.phone || '—',
-                    pickup: info.pickup_point || '—',
+                    name: info.name || 'â€”',
+                    phone: info.phone || 'â€”',
+                    pickup: info.pickup_point || 'â€”',
                     segment: segment,
                     price: price,
                     disc: disc,
@@ -2359,13 +2721,13 @@
 
                 document.getElementById('copyDetailBtn').onclick = () => {
                   const text = `Detail Booking
-Keberangkatan: ${hari}, ${tanggal} — ${jam}
+Keberangkatan: ${hari}, ${tanggal} â€” ${jam}
 Kursi: ${id}
 Segment: ${segment}
 Harga: ${priceFormatted}
-Nama: ${info.name || '—'}
-No. HP: ${info.phone || '—'}
-Titik Jemput: ${info.pickup_point || '—'}
+Nama: ${info.name || 'â€”'}
+No. HP: ${info.phone || 'â€”'}
+Titik Jemput: ${info.pickup_point || 'â€”'}
 Pembayaran: Tunai / Transfer / QRIS`;
 
                   // Fallback function
@@ -2395,7 +2757,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
                   }
                 };
               } else {
-                alert('Kursi ' + id + ' — terisi');
+                alert('Kursi ' + id + ' â€” terisi');
               }
               return;
             }
@@ -2417,7 +2779,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
           el.classList.remove('booked', 'selected');
           if (booked.has(id)) el.classList.add('booked');
           else if (selected.has(id)) el.classList.add('selected');
-          if (seatDetails[id]) el.setAttribute('aria-label', (seatDetails[id].name || '') + ' — ' + (seatDetails[id].phone || ''));
+          if (seatDetails[id]) el.setAttribute('aria-label', (seatDetails[id].name || '') + ' â€” ' + (seatDetails[id].phone || ''));
           else el.removeAttribute('aria-label');
         });
         const bookedCount = booked.size;
@@ -2643,8 +3005,8 @@ Pembayaran: Tunai / Transfer / QRIS`;
           else if (js.error === 'conflict') { setMsg('Conflict: ' + (js.conflict || []).join(', ')); refreshSeats(); }
           else { 
             let errorMsg = js.error || 'unknown';
-            if (js.detail) errorMsg += ' — ' + js.detail;
-            setMsg('Booking gagal — ' + errorMsg); 
+            if (js.detail) errorMsg += ' â€” ' + js.detail;
+            setMsg('Booking gagal â€” ' + errorMsg); 
           }
         } catch (err) {
           setMsg('Gagal koneksi saat booking');
@@ -2910,14 +3272,10 @@ Pembayaran: Tunai / Transfer / QRIS`;
         const countEl = document.getElementById('rekapBarCount');
         const totalEl = document.getElementById('rekapBarTotal');
         const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
-
-        if (rekapList.length === 0) {
-          bar.style.display = 'none';
-        } else {
-          bar.style.display = 'flex';
-          countEl.textContent = rekapList.length + ' penumpang';
-          totalEl.textContent = formatRp(total);
-        }
+        if (!bar || !countEl || !totalEl) return;
+        bar.style.display = 'flex';
+        countEl.textContent = String(rekapList.length).padStart(2, '0');
+        totalEl.textContent = formatRp(total);
       }
 
       // Render isi modal rekap
@@ -2930,7 +3288,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
         if (rekapList.length === 0) {
           content.innerHTML = `
             <div class="rekap-empty-state">
-              <span class="rekap-empty-icon">📋</span>
+              <span class="rekap-empty-icon">ðŸ“‹</span>
               Belum ada penumpang di rekap.<br>Klik kursi yang terisi, lalu tekan "+ Tambah ke Rekap".
             </div>`;
           return;
@@ -2942,13 +3300,13 @@ Pembayaran: Tunai / Transfer / QRIS`;
               <span class="rekap-item-seat">Kursi ${r.seatId}</span>
               <span class="rekap-item-price">${formatRp(r.finalPrice)}</span>
             </div>
-            <div class="rekap-item-name">${r.name || '—'}</div>
+            <div class="rekap-item-name">${r.name || 'â€”'}</div>
             <div class="rekap-item-detail">
-              📞 ${r.phone || '—'}<br>
-              📍 ${r.pickup || '—'}<br>
-              🗂️ ${r.segment || '—'} · ${r.hari}, ${r.tanggal} — ${r.jam}
+              ðŸ“ž ${r.phone || 'â€”'}<br>
+              ðŸ“ ${r.pickup || 'â€”'}<br>
+              ðŸ—‚ï¸ ${r.segment || 'â€”'} Â· ${r.hari}, ${r.tanggal} â€” ${r.jam}
             </div>
-            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">✕</button>
+            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">âœ•</button>
           </div>
         `).join('');
       }
@@ -2964,7 +3322,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
         }
         rekapList.push({ ..._currentRekapItem });
         updateRekapBar();
-        showRekapToast('✓ Kursi ' + seatId + ' ditambahkan ke rekap');
+        showRekapToast('âœ“ Kursi ' + seatId + ' ditambahkan ke rekap');
         document.getElementById('detailModal').style.display = 'none';
         _currentRekapItem = null;
       };
@@ -3006,30 +3364,30 @@ Pembayaran: Tunai / Transfer / QRIS`;
         }
         const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
         const lines = rekapList.map((r, i) =>
-          `${i + 1}. Kursi ${r.seatId} - ${r.name || '—'}\n` +
-          `   HP: ${r.phone || '—'}\n` +
-          `   Jemput: ${r.pickup || '—'}\n` +
-          `   Segment: ${r.segment || '—'}\n` +
+          `${i + 1}. Kursi ${r.seatId} - ${r.name || 'â€”'}\n` +
+          `   HP: ${r.phone || 'â€”'}\n` +
+          `   Jemput: ${r.pickup || 'â€”'}\n` +
+          `   Segment: ${r.segment || 'â€”'}\n` +
           `   Harga: ${formatRp(r.finalPrice)}`
         ).join('\n\n');
 
         const firstItem = rekapList[0];
-        const header = `📋 REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} — ${firstItem.jam}\n${'─'.repeat(30)}`;
-        const footer = `${'─'.repeat(30)}\nTotal: ${rekapList.length} Penumpang\n💰 TOTAL: ${formatRp(total)}`;
+        const header = `ðŸ“‹ REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} â€” ${firstItem.jam}\n${'â”€'.repeat(30)}`;
+        const footer = `${'â”€'.repeat(30)}\nTotal: ${rekapList.length} Penumpang\nðŸ’° TOTAL: ${formatRp(total)}`;
         const text = `${header}\n\n${lines}\n\n${footer}`;
 
         const doFallback = (t) => {
           const ta = document.createElement('textarea');
           ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
           document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); showRekapToast('✓ Rekap tersalin!'); }
+          try { document.execCommand('copy'); showRekapToast('âœ“ Rekap tersalin!'); }
           catch (e) { showRekapToast('Gagal menyalin'); }
           document.body.removeChild(ta);
         };
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text)
-            .then(() => showRekapToast('✓ Rekap tersalin!'))
+            .then(() => showRekapToast('âœ“ Rekap tersalin!'))
             .catch(() => doFallback(text));
         } else {
           doFallback(text);
@@ -3150,7 +3508,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
           alert('Gagal koneksi server');
         } finally {
           btn.disabled = false;
-          btn.textContent = '🚀 Kirim Bagasi';
+          btn.textContent = 'ðŸš€ Kirim Bagasi';
         }
       }
 
@@ -3277,7 +3635,7 @@ Pembayaran: Tunai / Transfer / QRIS`;
               sugList.innerHTML = '';
               js.customers.forEach(c => {
                 const div = document.createElement('div');
-                div.textContent = c.name + ' — ' + c.phone + (c.pickup_point ? ' — ' + c.pickup_point : '');
+                div.textContent = c.name + ' â€” ' + c.phone + (c.pickup_point ? ' â€” ' + c.pickup_point : '');
                 div.dataset.name = c.name;
                 div.dataset.phone = c.phone;
                 div.dataset.pickup = c.pickup_point || '';
@@ -3367,8 +3725,8 @@ Pembayaran: Tunai / Transfer / QRIS`;
           todayBtn: true,
           todayBtnMode: 1,
           clearBtn: false,
-          prevArrow: '‹',
-          nextArrow: '›',
+          prevArrow: 'â€¹',
+          nextArrow: 'â€º',
           container: 'body'
         });
 
