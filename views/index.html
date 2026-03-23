@@ -2738,6 +2738,24 @@
       isolation: isolate;
     }
 
+    .booking-search-trap {
+      position: absolute;
+      inset: 0;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .booking-search-trap input {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .booking-search-shell input {
       width: 100%;
     }
@@ -3246,7 +3264,11 @@
           </h3>
             <div class="search-container-modern booking-search-shell" id="suggestions">
               <span class="material-symbols-outlined booking-search-icon">search</span>
-              <input id="search_name" name="customer_lookup_temp" type="text" placeholder="Cari nama / nomor" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" aria-autocomplete="list">
+              <div class="booking-search-trap" aria-hidden="true">
+                <input type="text" tabindex="-1" autocomplete="username">
+                <input type="password" tabindex="-1" autocomplete="new-password">
+              </div>
+              <input id="search_name" name="customer_lookup_temp" type="text" placeholder="Cari nama / nomor" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" aria-autocomplete="list" inputmode="search" readonly>
               <div id="sugList"></div>
           </div>
         </div>
@@ -3988,6 +4010,18 @@ Pembayaran: ${pembayaran}`;
       let rekapList = []; // Array of { seatId, name, phone, pickup, segment, price, disc, finalPrice, tanggal, jam, hari }
       let _currentRekapItem = null; // temp store for "addToRekap" button context
 
+      function unlockSearchLookupField() {
+        if (!searchNameEl) return;
+        if (searchNameEl.hasAttribute('readonly')) {
+          searchNameEl.removeAttribute('readonly');
+        }
+        if (!searchNameEl.dataset.dynamicNameApplied) {
+          searchNameEl.name = 'customer_lookup_' + Date.now();
+          searchNameEl.setAttribute('autocomplete', 'off');
+          searchNameEl.dataset.dynamicNameApplied = '1';
+        }
+      }
+
       // Formatters
       function formatRp(amount) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
@@ -4177,6 +4211,9 @@ Pembayaran: ${pembayaran}`;
 
       /* ================== SUGGESTIONS ================== */
       let sugTimer = null;
+      searchNameEl.addEventListener('focus', unlockSearchLookupField);
+      searchNameEl.addEventListener('pointerdown', unlockSearchLookupField);
+      searchNameEl.addEventListener('click', unlockSearchLookupField);
       searchNameEl.addEventListener('input', function () {
         const q = this.value.trim();
         if (sugTimer) clearTimeout(sugTimer);
