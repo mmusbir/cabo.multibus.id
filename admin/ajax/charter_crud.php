@@ -67,7 +67,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($errors) {
-        header('Location: admin_charter_create.php?error=' . urlencode(implode(' ', $errors)));
+        header('Location: admin.php?open=charter-create#charter-create');
         exit;
     }
 
@@ -95,7 +95,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: admin.php?booking_mode=charters#bookings');
         exit;
     } catch (PDOException $e) {
-        header('Location: admin_charter_create.php?error=' . urlencode('Gagal menyimpan carter: ' . $e->getMessage()));
+        header('Location: admin.php?open=charter-create#charter-create');
         exit;
     }
 }

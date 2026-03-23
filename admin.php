@@ -1417,6 +1417,9 @@ if (!isset($_REQUEST['action'])):
         document.querySelectorAll('.card').forEach(function (card) {
           card.style.display = 'none';
         });
+        if (id === 'charter-create' && window.bookingDashboardState) {
+          window.bookingDashboardState.active = 'charters';
+        }
         var active = document.getElementById(id);
         if (active) active.style.display = '';
         if (typeof window.syncAdminNavState === 'function') {
@@ -1435,8 +1438,17 @@ if (!isset($_REQUEST['action'])):
       window.showSectionById = showSection;
       function updateSectionFromHash() {
         var hash = window.location.hash.replace('#', '');
-        if (hash) showSection(hash);
-        else showSection('dashboard');
+        if (hash) {
+          showSection(hash);
+          return;
+        }
+        var params = new URLSearchParams(window.location.search);
+        var open = params.get('open');
+        if (open) {
+          showSection(open);
+          return;
+        }
+        showSection('dashboard');
       }
       window.addEventListener('hashchange', updateSectionFromHash);
       updateSectionFromHash();

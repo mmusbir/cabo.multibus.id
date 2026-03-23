@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Legacy charter create URL now lives inside /admin as a panel section.
+RewriteRule ^admin_charter_create\.php$ admin.php?open=charter-create [R=302,L,QSA]
+</IfModule>
