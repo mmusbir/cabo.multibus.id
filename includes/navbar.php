@@ -20,7 +20,7 @@
         <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
-        <a href="admin_bagasi.php" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
+        <a href="#luggage" data-target="luggage" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
         <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
       </nav>
 
@@ -142,7 +142,7 @@
       <span class="material-symbols-outlined">airport_shuttle</span>
       <span class="nav-label">Carter</span>
     </a>
-    <a href="admin_bagasi.php" class="nav-btn" data-nav-key="luggage" id="navLuggage">
+    <a href="#luggage" class="nav-btn" data-target="luggage" data-nav-key="luggage" id="navLuggage">
       <span class="material-symbols-outlined">inventory_2</span>
       <span class="nav-label">Bagasi</span>
     </a>
@@ -218,9 +218,9 @@
     }
 
     function getPrimaryNavKey(target) {
-      if (window.location.pathname.endsWith('admin_bagasi.php')) return 'luggage';
       if (target === 'dashboard') return 'dashboard';
       if (target === 'reports') return 'reports';
+      if (target === 'luggage') return 'luggage';
       if (target === 'booking-detail') return 'booking';
       if (target === 'charter-create') return 'charter';
       if (target === 'bookings') {

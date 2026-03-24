@@ -1061,6 +1061,9 @@ if (!isset($_REQUEST['action'])):
         <!-- LUGGAGE SERVICES -->
         <?php include 'includes/luggage_services.php'; ?>
 
+        <!-- LUGGAGE DATA (Bagasi) -->
+        <?php include 'includes/luggage.php'; ?>
+
       </div>
 
       <!-- RIGHT column -->
@@ -1448,6 +1451,7 @@ if (!isset($_REQUEST['action'])):
         if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: 999 });
         if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 999 });
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
+        if (id === 'luggage' && typeof window.loadLuggageData === 'function') window.loadLuggageData();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
       }
       window.showSectionById = showSection;

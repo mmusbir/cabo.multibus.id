@@ -69,6 +69,10 @@ switch ($action) {
         include __DIR__ . '/ajax/luggage_page.php';
         break;
 
+    case 'luggageDataPage':
+        include __DIR__ . '/ajax/luggage_data_page.php';
+        break;
+
     case 'reportsPage':
         include __DIR__ . '/ajax/reports.php';
         break;
