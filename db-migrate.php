@@ -244,6 +244,23 @@ if ($userCheck->rowCount() === 0) {
     $conn->exec("INSERT INTO users (username, password_hash, fullname) VALUES ('admin', '$default_hash', 'Administrator')");
 }
 
+// ==================== AUTO-SYNC SEQUENCES ====================
+// Fix PostgreSQL SERIAL sequences to prevent "duplicate key" errors
+// This runs on every migration to keep sequences in sync with actual data.
+$seq_tables = ['charters','drivers','segments','trip_assignments','bookings',
+               'customers','schedules','units','cancellations','luggage_services',
+               'luggages','routes','master_carter','users','settings'];
+foreach ($seq_tables as $tbl) {
+    try {
+        $max = (int) $conn->query("SELECT COALESCE(MAX(id), 0) FROM $tbl")->fetchColumn();
+        if ($max > 0) {
+            $conn->exec("SELECT setval('{$tbl}_id_seq', $max)");
+        }
+    } catch (PDOException $e) {
+        // Table or sequence may not exist yet, skip silently
+    }
+}
+
 // If this file is run directly via CLI
 if (php_sapi_name() === 'cli' && !empty($argv) && basename($argv[0]) === 'db-migrate.php') {
   echo "✓ Database migration completed successfully\n";
