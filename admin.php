@@ -1100,10 +1100,16 @@ if (!isset($_REQUEST['action'])):
           </div>
         </div>
 
-        <div class="admin-modal-field">
-          <label class="admin-modal-label">Titik Jemput</label>
-          <input type="text" id="edit_pickup" name="pickup_point" class="form-control admin-modal-control"
+        <div class="admin-modal-grid admin-modal-grid-2">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Tanggal Berangkat</label>
+            <input type="date" id="edit_tanggal" name="edit_tanggal" class="form-control admin-modal-control" required>
+          </div>
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Titik Jemput</label>
+            <input type="text" id="edit_pickup" name="pickup_point"class="form-control admin-modal-control"
             placeholder="Lokasi jemput">
+          </div>
         </div>
 
         <div class="admin-modal-field">
@@ -2229,56 +2235,59 @@ if (!isset($_REQUEST['action'])):
           document.getElementById('edit_seat').value = seat;
           document.getElementById('edit_pickup').value = pickup;
 
-          // Fetch Available Units from Schedule
+                    let currentTanggal = tanggal;
+          const dateInput = document.getElementById('edit_tanggal');
+          if (dateInput) {
+             dateInput.value = tanggal;
+             dateInput.onchange = function() {
+                 currentTanggal = this.value;
+                 fetchAvailableUnits();
+             };
+          }
+
           const unitSelect = document.getElementById('edit_unit');
-          if (unitSelect) {
-            unitSelect.innerHTML = '<option value="">Memuat...</option>';
-            try {
-              const res = await fetch(`admin.php?action=getAvailableUnits&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}`);
-              const js = await res.json();
-              if (js.success) {
-                unitSelect.innerHTML = '';
-                const maxUnits = js.units || 1;
-                for (let i = 1; i <= maxUnits; i++) {
-                  const opt = document.createElement('option');
-                  opt.value = i;
-                  opt.textContent = 'Unit ' + i;
-                  if (String(i) === String(unit)) opt.selected = true;
-                  unitSelect.appendChild(opt);
+          async function fetchAvailableUnits() {
+            if (unitSelect) {
+              unitSelect.innerHTML = '<option value="">Memuat...</option>';
+              try {
+                const res = await fetch(`admin.php?action=getAvailableUnits&rute=${encodeURIComponent(rute)}&tanggal=${currentTanggal}&jam=${jam}`);
+                const js = await res.json();
+                if (js.success) {
+                  unitSelect.innerHTML = '';
+                  const maxUnits = js.units || 1;
+                  for (let i = 1; i <= maxUnits; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = 'Unit ' + i;
+                    if (String(i) === String(unit) && currentTanggal === tanggal) opt.selected = true;
+                    unitSelect.appendChild(opt);
+                  }
+                  updateSeats(unitSelect.value, currentTanggal === tanggal ? seat : null);
+                } else {
+                  unitSelect.innerHTML = `<option value="${unit}">Unit ${unit}</option>`;
+                  updateSeats(unit, seat);
                 }
+              } catch (err) {
+                unitSelect.innerHTML = `<option value="${unit}">Unit ${unit}</option>`;
+                updateSeats(unit, seat);
               }
-            } catch (err) {
-              unitSelect.innerHTML = `<option value="${unit}">Unit ${unit}</option>`;
             }
           }
 
-          // Fetch Available & Occupied Seats
           async function updateSeats(curUnit, curSeat) {
             const seatSelect = document.getElementById('edit_seat');
             if (!seatSelect) return;
             seatSelect.innerHTML = '<option value="">Memuat kursi...</option>';
             try {
-              const res = await fetch(`admin.php?action=getScheduleSeats&rute=${encodeURIComponent(rute)}&tanggal=${tanggal}&jam=${jam}&unit=${curUnit}`);
+              const res = await fetch(`admin.php?action=getScheduleSeats&rute=${encodeURIComponent(rute)}&tanggal=${currentTanggal}&jam=${jam}&unit=${curUnit}`);
               const js = await res.json();
               if (js.success) {
                 seatSelect.innerHTML = '<option value="">Pilih Kursi</option>';
                 const occupied = js.occupied || [];
                 const layout = js.layout || [];
-
-                // Flat list of seat labels from layout
                 let seats = [];
-                layout.forEach(row => {
-                  row.forEach(cell => {
-                    if (cell && cell.type === 'seat' && cell.label) {
-                      seats.push(cell.label);
-                    }
-                  });
-                });
-
-                if (seats.length === 0) {
-                  // Fallback to 1-8 if layout missing
-                  for (let i = 1; i <= 8; i++) seats.push(String(i));
-                }
+                layout.forEach(row => { row.forEach(cell => { if (cell && cell.type === 'seat' && cell.label) seats.push(cell.label); }); });
+                if (seats.length === 0) { for (let i = 1; i <= 8; i++) seats.push(String(i)); }
 
                 seats.forEach(s => {
                   const isTaken = occupied.includes(String(s));
@@ -2291,18 +2300,20 @@ if (!isset($_REQUEST['action'])):
                     seatSelect.appendChild(opt);
                   }
                 });
+              } else {
+                seatSelect.innerHTML = `<option value="${curSeat || ''}">${curSeat || 'Semua kursi penuh/gagal'}</option>`;
               }
             } catch (err) {
-              seatSelect.innerHTML = `<option value="${curSeat}">${curSeat}</option>`;
+              seatSelect.innerHTML = `<option value="${curSeat || ''}">${curSeat || 'Kursi Default'}</option>`;
             }
           }
 
           if (unitSelect) {
             unitSelect.onchange = function () {
-              updateSeats(this.value, seat);
+              updateSeats(this.value, currentTanggal === tanggal ? seat : null);
             };
           }
-          updateSeats(unit, seat);
+          fetchAvailableUnits();
 
           // Handle Segment
           const segSelect = document.getElementById('edit_segment_id');
