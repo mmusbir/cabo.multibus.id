@@ -75,15 +75,6 @@
 
   <div class="admin-bs-meta">
     <div class="small" id="users_info">Memuat users...</div>
-    <div class="d-flex gap-2 align-items-center">
-      <label class="small" for="users_per_page">Per page</label>
-      <select id="users_per_page" class="form-select form-select-sm">
-        <option>10</option>
-        <option selected>25</option>
-        <option>50</option>
-        <option>100</option>
-      </select>
-    </div>
   </div>
 
   <div id="users_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -92,7 +83,5 @@
   <div id="users_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
     <div class="small admin-grid-message">Loading...</div>
   </div>
-  <div class="table-wrapper" style="display:none"></div>
-  <div id="users_pagination" class="admin-pagination-host"></div>
 </section>
 

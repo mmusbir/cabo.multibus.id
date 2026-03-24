@@ -42,30 +42,65 @@ try {
         $dashboard['trend_counts'][] = $trendMap[$dateKey] ?? 0;
     }
 
-    $recentStmt = $conn->query("SELECT name, rute, pembayaran, created_at FROM bookings ORDER BY created_at DESC LIMIT 3");
-    if ($recentStmt) {
-        while ($row = $recentStmt->fetch(PDO::FETCH_ASSOC)) {
-            $payment = $row['pembayaran'] ?? 'Belum Lunas';
-            $tone = 'primary';
-            $icon = 'confirmation_number';
-            if ($payment === 'Lunas') {
-                $tone = 'success';
-                $icon = 'check_circle';
-            } elseif ($payment === 'Belum Lunas') {
-                $tone = 'warning';
-                $icon = 'schedule';
-            }
+    $activities = [];
 
-            $dashboard['recent_activity'][] = [
-                'title' => 'Booking baru dari ' . ($row['name'] ?: 'Customer'),
-                'meta' => $row['rute'] ?: '-',
-                'time' => !empty($row['created_at']) ? date('H:i', strtotime($row['created_at'])) . ' WIB' : '-',
-                'tone' => $tone,
-                'icon' => $icon,
-                'tag' => strtoupper($payment),
-            ];
-        }
+    // 1. Recent Regular Bookings
+    $stmt1 = $conn->query("SELECT name, rute, pembayaran, created_at, 'booking' as type FROM bookings ORDER BY created_at DESC LIMIT 10");
+    while ($r = $stmt1->fetch(PDO::FETCH_ASSOC)) {
+        $payment = $r['pembayaran'] ?? 'Belum Lunas';
+        $tone = ($payment === 'Lunas') ? 'success' : 'warning';
+        $activities[] = [
+            'title' => 'Booking: ' . ($r['name'] ?: 'Customer'),
+            'meta' => $r['rute'] ?: '-',
+            'time' => $r['created_at'],
+            'tone' => $tone,
+            'tag' => strtoupper($payment),
+            'sort' => strtotime($r['created_at'])
+        ];
     }
+
+    // 2. Recent Charters
+    $stmt2 = $conn->query("SELECT name, pickup_point, drop_point, created_at, 'charter' as type FROM charters ORDER BY created_at DESC LIMIT 10");
+    while ($r = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+        $activities[] = [
+            'title' => 'Charter: ' . ($r['name'] ?: 'Customer'),
+            'meta' => ($r['pickup_point'] ?: '?') . ' -> ' . ($r['drop_point'] ?: '?'),
+            'time' => $r['created_at'],
+            'tone' => 'primary',
+            'tag' => 'CHARTER',
+            'sort' => strtotime($r['created_at'])
+        ];
+    }
+
+    // 3. Recent Luggages
+    $stmt3 = $conn->query("SELECT sender_name, created_at, 'luggage' as type FROM luggages ORDER BY created_at DESC LIMIT 10");
+    while ($r = $stmt3->fetch(PDO::FETCH_ASSOC)) {
+        $activities[] = [
+            'title' => 'Paket: ' . ($r['sender_name'] ?: 'Sender'),
+            'meta' => 'Pengiriman Barang/Dokumen',
+            'time' => $r['created_at'],
+            'tone' => 'info',
+            'tag' => 'BAGASI',
+            'sort' => strtotime($r['created_at'])
+        ];
+    }
+
+    // Sort all and limit to 10
+    usort($activities, function($a, $b) {
+        return $b['sort'] - $a['sort'];
+    });
+    $activities = array_slice($activities, 0, 10);
+
+    foreach ($activities as $act) {
+        $dashboard['recent_activity'][] = [
+            'title' => $act['title'],
+            'meta' => $act['meta'],
+            'time' => !empty($act['time']) ? date('H:i', strtotime($act['time'])) . ' WITA' : '-',
+            'tone' => $act['tone'],
+            'tag' => $act['tag']
+        ];
+    }
+
 } catch (Throwable $e) {
     // Keep dashboard resilient even if a query fails.
 }

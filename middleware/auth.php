@@ -3,8 +3,6 @@
  * middleware/auth.php - Verify JWT Access Token in Cookie
  */
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 // Ensure Composer Autoload is included (Relative to this file)
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -25,7 +23,7 @@ function requireAdminAuth() {
 
     try {
         // Decode JWT using Secret from config
-        $decoded = JWT::decode($token, new Key(JWT_SECRET, JWT_ALGO));
+        $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET, JWT_ALGO));
         
         // Return decoded data (sub = ID User)
         return (array)$decoded;
@@ -45,7 +43,7 @@ function getAuthenticatedUser() {
     if (!$token) return null;
 
     try {
-        return (array)JWT::decode($token, new Key(JWT_SECRET, JWT_ALGO));
+        return (array)\Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET, JWT_ALGO));
     } catch (Exception $e) {
         return null;
     }

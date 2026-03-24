@@ -92,15 +92,6 @@
   </div>
   <div class="admin-bs-meta">
     <div id="customers_info" class="small">Memuat data...</div>
-    <div class="d-flex gap-2 align-items-center">
-      <label class="small" for="customers_per_page">Per page</label>
-      <select id="customers_per_page" class="form-select form-select-sm">
-        <option>10</option>
-        <option selected>25</option>
-        <option>50</option>
-        <option>100</option>
-      </select>
-    </div>
   </div>
 
   <div id="customers_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -126,6 +117,6 @@
       </tbody>
     </table>
   </div>
-  <div id="customers_pagination" class="admin-pagination-host"></div>
+
 </section>
 

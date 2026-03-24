@@ -99,7 +99,7 @@ try {
     ob_start();
     ?>
 <div id="departureInfoCard" class="info-card view-trip-card admin-bs-panel" data-driver-name="<?php echo h($assignedDriverName); ?>">
-  <div class="view-trip-head">
+  <div class="view-trip-head" style="display:none;" aria-hidden="true">
     <div>
       <div class="view-trip-kicker">Booking Detail</div>
       <div class="view-trip-title">Info Pemberangkatan</div>
@@ -107,7 +107,7 @@ try {
     <div class="view-trip-badge">Unit <?php echo intval($unit); ?></div>
   </div>
 
-  <div class="view-trip-meta-grid">
+  <div class="view-trip-meta-grid" style="display:none;" aria-hidden="true">
     <div class="view-trip-meta-item">
       <div class="view-trip-meta-label">Rute</div>
       <div class="view-trip-meta-value"><?php echo h($rute); ?></div>

@@ -23,15 +23,6 @@
 
   <div class="admin-bs-meta">
     <div class="small" id="cancellations_info">Memuat cancellations...</div>
-    <div class="d-flex gap-2 align-items-center">
-      <label class="small" for="cancellations_per_page">Per page</label>
-      <select id="cancellations_per_page" class="form-select form-select-sm">
-        <option>10</option>
-        <option selected>25</option>
-        <option>50</option>
-        <option>100</option>
-      </select>
-    </div>
   </div>
 
   <div id="cancellations_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -46,5 +37,5 @@
   <div class="table-wrapper" style="display:none">
     <!-- Hidden legacy table wrapper for backwards compatibility -->
   </div>
-  <div id="cancellations_pagination" class="admin-pagination-host"></div>
+
 </section>

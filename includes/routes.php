@@ -130,15 +130,6 @@
 
   <div class="admin-bs-meta">
     <div class="small" id="routes_info">Memuat rute...</div>
-    <div class="d-flex gap-2 align-items-center">
-      <label class="small" for="routes_per_page">Per page</label>
-      <select id="routes_per_page" class="form-select form-select-sm">
-        <option>10</option>
-        <option selected>25</option>
-        <option>50</option>
-        <option>100</option>
-      </select>
-    </div>
   </div>
 
   <div id="routes_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -148,10 +139,6 @@
   <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
     <div class="small admin-grid-message">Loading...</div>
   </div>
-  <div class="table-wrapper" style="display:none">
-    <!-- Hidden legacy table wrapper just in case scripts need it, but we use div above. -->
-  </div>
-  <div id="routes_pagination" class="admin-pagination-host"></div>
 
   <script>
     function switchRouteTab(type) {
@@ -172,12 +159,11 @@
     function loadRoutes(page, type) {
       if (type) window.currentRouteType = type;
       const currentType = window.currentRouteType || 'reguler';
-      const perPage = parseInt(document.getElementById('routes_per_page')?.value || '25', 10);
       const search = document.getElementById('search_route_input')?.value || '';
 
       ajaxListLoad('routes', {
-        page: page || 1,
-        per_page: perPage,
+        page: 1,
+        per_page: 999,
         type: currentType,
         search: search
       });

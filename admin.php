@@ -103,6 +103,7 @@ function buildQueryString($overrides = []) {
 }
 
 function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2) {
+  return '';
   if ($total <= $per_page)
     return '';
   $total_pages = (int) ceil($total / $per_page);
@@ -123,7 +124,7 @@ function render_pagination_ajax($total, $per_page, $current_page, $param_prefix,
     $html .= '<span class="small dots">...</span>';
   $next = min($total_pages, $current_page + 1);
   $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $next]) . '" data-target="' . $param_prefix . '" data-page="' . $next . '">Next</a>';
-  $html .= '<div class="small pagination-summary">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
+
   $html .= '</div>';
   return $html;
 }
@@ -958,7 +959,8 @@ include 'includes/units_logic.php';
 if (!isset($_REQUEST['action'])): 
 ?>
 <!doctype html>
-<html lang="id" class="dark" data-default-theme="dark">
+<html lang="id" class="light" data-default-theme="light">
+
 
 <head>
   <meta charset="utf-8">
@@ -968,7 +970,8 @@ if (!isset($_REQUEST['action'])):
     (function () {
       try {
         var storedTheme = localStorage.getItem('siteTheme');
-        var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+        var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light';
+
         document.documentElement.setAttribute('data-theme', theme);
         document.documentElement.classList.toggle('dark', theme === 'dark');
         document.documentElement.classList.toggle('light', theme === 'light');
@@ -983,7 +986,7 @@ if (!isset($_REQUEST['action'])):
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=28">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=9">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=<?= time() ?>">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1438,12 +1441,12 @@ if (!isset($_REQUEST['action'])):
           window.syncAdminNavState(id);
         }
         // Auto-load data for each section
-        if (id === 'bookings') ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
-        if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
-        if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
-        if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
-        if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10) });
-        if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 25 });
+        if (id === 'bookings') ajaxListLoad('bookings', { page: 1, per_page: 999, search: '' });
+        if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: 999 });
+        if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: 999 });
+        if (id === 'users') ajaxListLoad('users', { page: 1, per_page: 999 });
+        if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: 999 });
+        if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 999 });
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
       }
@@ -1556,7 +1559,7 @@ if (!isset($_REQUEST['action'])):
       }
       return 'bookings';
     }
-    if (document.getElementById('searchBtn')) {
+    if (false && document.getElementById('searchBtn')) {
       document.getElementById('searchBtn').onclick = function () {
         const search = document.getElementById('search_name_input').value;
         const target = getActiveBookingTarget();
@@ -1564,7 +1567,7 @@ if (!isset($_REQUEST['action'])):
       };
     }
     // Auto-search on typing with debounce
-    if (document.getElementById('search_name_input')) {
+    if (false && document.getElementById('search_name_input')) {
       document.getElementById('search_name_input').addEventListener('input', function () {
         clearTimeout(searchDebounceTimer);
         const search = this.value;
@@ -1596,7 +1599,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('customers_per_page')) {
+    if (false && document.getElementById('customers_per_page')) {
       document.getElementById('customers_per_page').onchange = function () {
         ajaxListLoad('customers', {
           page: 1,
@@ -1605,7 +1608,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('bookings_per_page')) {
+    if (false && document.getElementById('bookings_per_page')) {
       document.getElementById('bookings_per_page').onchange = function () {
         const target = getActiveBookingTarget();
         ajaxListLoad(target, {
@@ -1615,7 +1618,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('routes_per_page')) {
+    if (false && document.getElementById('routes_per_page')) {
       document.getElementById('routes_per_page').onchange = function () {
         ajaxListLoad('routes', {
           page: 1,
@@ -1625,7 +1628,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('schedules_per_page')) {
+    if (false && document.getElementById('schedules_per_page')) {
       document.getElementById('schedules_per_page').onchange = function () {
         ajaxListLoad('schedules', {
           page: 1,
@@ -1633,7 +1636,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('users_per_page')) {
+    if (false && document.getElementById('users_per_page')) {
       document.getElementById('users_per_page').onchange = function () {
         ajaxListLoad('users', {
           page: 1,
@@ -1641,7 +1644,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (document.getElementById('cancellations_per_page')) {
+    if (false && document.getElementById('cancellations_per_page')) {
       document.getElementById('cancellations_per_page').onchange = function () {
         ajaxListLoad('cancellations', {
           page: 1,
@@ -2419,7 +2422,7 @@ if (!isset($_REQUEST['action'])):
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>
-  <script src="assets/js/theme-toggle.js"></script>
+  <script src="assets/js/theme-toggle.js?v=<?= time() ?>"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

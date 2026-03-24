@@ -96,7 +96,7 @@ if (empty($rows)) {
         echo '    <div class="kinetic-trip-time">';
         echo '      <span class="kinetic-trip-date">' . htmlspecialchars($tripDate) . '</span>';
         echo '      <span class="kinetic-trip-hour">' . htmlspecialchars($tripHour) . '</span>';
-        echo '      <span class="kinetic-trip-zone">WIB</span>';
+        echo '      <span class="kinetic-trip-zone">WITA</span>';
         echo '    </div>';
         echo '    <div class="kinetic-trip-main">';
         echo '      <div>';

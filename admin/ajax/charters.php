@@ -183,7 +183,7 @@ if (empty($rows)) {
             echo '      <div class="charter-command-schedule-box">';
             echo '        <span class="charter-command-label">Date &amp; Time</span>';
             echo '        <strong>' . charter_h($tripDate) . '</strong>';
-            echo '        <em>' . charter_h($tripHour . ' WIB') . '</em>';
+            echo '        <em>' . charter_h($tripHour . ' WITA') . '</em>';
             echo '      </div>';
         } elseif ($cardVariantClass === 'is-side') {
             echo '      <div class="charter-command-side-stack">';

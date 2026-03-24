@@ -543,6 +543,216 @@ html[data-theme="light"] body.admin-bootstrap-page h6 {
   color: #0f172a !important;
 }
 
+/* --- DASHBOARD LIGHT MODE --- */
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-title {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-date,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-chip {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-export {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-export:hover {
+  background: #f8fafc !important;
+  color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card strong {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card.is-primary { background: #fffcf8 !important; border-left-color: #f97316 !important; }
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card.is-warning { background: #fffdf5 !important; border-left-color: #eab308 !important; }
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card.is-success { background: #fdfdfd !important; border-left-color: #22c55e !important; }
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-stat-card.is-danger { background: #fffdfd !important; border-left-color: #ef4444 !important; }
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-panel {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-panel-head h2 {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar {
+  background: #f1f5f9 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar-group.is-active .kinetic-dash-bar,
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar-group:hover .kinetic-dash-bar {
+  background: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar-group span {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar-group.is-active span {
+  color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-activity-item p {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-activity-meta {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-activity-dot {
+  box-shadow: 0 0 0 6px rgba(15, 23, 42, 0.03) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-card {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-card h3 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-body p {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-body span:not(.material-symbols-outlined) {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-body .material-symbols-outlined {
+  color: rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body p {
+  color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-empty-state {
+  color: #94a3b8 !important;
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+}
+
+/* --- BOOKING DETAIL LIGHT MODE --- */
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-page-title {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-page-subtitle,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-kicker,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-side-label {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-page-ghost {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-page-ghost:hover {
+  background: #f8fafc !important;
+  color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-title {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-value {
+  color: #1e293b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-badge {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-helper {
+  color: #64748b !important;
+  background: #fffcf8 !important;
+  border-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-name {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-code {
+  color: #c2410c !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-side-value,
+html[data-theme="light"] body.admin-bootstrap-page .sum-val {
+  color: #1e293b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .sum-label {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .summary-footer,
+html[data-theme="light"] body.admin-bootstrap-page .view-booking-list-shell,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-item {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .view-passenger-list {
+  background: transparent !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .view-booking-title,
+html[data-theme="light"] body.admin-bootstrap-page .view-trip-title {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .view-booking-kicker,
+html[data-theme="light"] body.admin-bootstrap-page .view-trip-meta-label {
+  color: #64748b !important;
+}
+
+
+
+
+
+
+
 html[data-theme="dark"] body.admin-bootstrap-page {
   background: #111319 !important;
   color: #e2e2eb !important;

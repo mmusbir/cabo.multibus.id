@@ -2098,8 +2098,10 @@
       }
 
       .mobile-slate-control-copy {
-        display: grid;
-        gap: 0.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.1rem;
         width: 100%;
         min-width: 0;
         flex: 1 1 auto;
@@ -2442,16 +2444,6 @@
         line-height: 1.2;
       }
 
-      .control-date-card .mobile-slate-control-copy {
-        align-items: center;
-        justify-items: center;
-        text-align: center;
-      }
-
-      .control-date-card .mobile-slate-control-label {
-        width: 100%;
-        text-align: center;
-      }
 
       .payment-option input:checked + .payment-label .payment-title {
         color: #f97316;
@@ -3044,7 +3036,7 @@
       }
 
       .layout {
-        max-width: 18rem;
+        max-width: 18rem; margin: 0 auto;
       }
 
       .layout-row {
@@ -3157,7 +3149,55 @@
         font-size: 0.58rem;
       }
     }
+    /* Profile Dropdown & Password Modal Styles */
+    .profile-dropdown { position: relative; }
+    .profile-menu {
+      position: absolute; top: calc(100% + 0.75rem); right: 0; width: 220px;
+      background: rgba(25, 27, 34, 0.98) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.5); padding: 0.7rem; display: none; z-index: 1000;
+      animation: profileFadeIn 0.2s ease-out;
+    }
+    @keyframes profileFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .profile-menu.show { display: block; }
+    .profile-meta { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 0.5rem; text-align: left; }
+    .profile-name { font-weight: 800; font-size: 0.95rem; color: #f1ebe6; margin-bottom: 0.1rem; }
+    .profile-role { font-size: 0.65rem; font-weight: 700; color: rgba(224, 192, 177, 0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+    .profile-menu a {
+      display: flex; align-items: center; gap: 0.9rem; padding: 0.8rem 1rem; border-radius: 12px;
+      color: rgba(241, 235, 230, 0.82) !important; text-decoration: none !important; font-size: 0.88rem; font-weight: 600;
+    }
+    .profile-menu a:hover { background: rgba(249, 115, 22, 0.1) !important; color: #f97316 !important; }
+    .profile-menu .material-symbols-outlined { color: #f97316; font-size: 1.2rem; }
+    .menu-divider-line { height: 1px; background: rgba(255, 255, 255, 0.06); margin: 0.5rem 0; }
+    .logout-link:hover { background: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
+    .logout-link:hover .material-symbols-outlined { color: #ef4444 !important; }
+    .profile-trigger { cursor: pointer; border: 1px solid rgba(249, 115, 22, 0.18) !important; font-family: inherit; font-weight: 800; }
+    
+    .admin-modal-overlay-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 10000;
+      justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .admin-modal-overlay-bg.show { display: flex; }
+    .admin-modal-card-box {
+      background: #191b22; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 28px;
+      padding: 2.2rem; width: 90%; max-width: 400px; box-shadow: 0 42px 94px rgba(0, 0, 0, 0.6);
+      animation: modalUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalUp { from { opacity: 0; transform: translateY(32px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .admin-modal-heading-text { margin-top: 0; color: #f1ebe6; font-size: 1.4rem; font-weight: 800; margin-bottom: 1.6rem; text-align: left; }
+    .admin-modal-field-wrap { margin-bottom: 1.4rem; text-align: left; }
+    .admin-modal-label-text { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: rgba(224, 192, 177, 0.6); margin-bottom: 0.5rem; }
+    .admin-modal-input-field {
+      background: rgba(25, 27, 34, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 14px !important; color: #f1ebe6 !important; padding: 0.9rem 1.1rem !important; width: 100%; outline: none;
+    }
+    .modal-action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.8rem; }
+    .modal-action-btn { padding: 1rem !important; border-radius: 16px !important; font-weight: 800 !important; cursor: pointer; border: 0 !important; }
+    .modal-action-btn-primary { background: #f97316 !important; color: #341100 !important; }
+    .modal-action-btn-secondary { background: rgba(255, 255, 255, 0.08) !important; color: #e2e2eb !important; }
   </style>
+
 </head>
 
 <body class="app-index">
@@ -3179,7 +3219,27 @@
         <a class="desktop-terminal-settings" href="admin.php" aria-label="Admin panel">
           <span class="material-symbols-outlined">settings</span>
         </a>
-        <a class="desktop-terminal-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+        <div class="profile-dropdown">
+          <button class="desktop-terminal-avatar profile-trigger" id="desktopProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+            {{USER_INITIAL}}
+          </button>
+          <div class="profile-menu" id="desktopProfileMenu">
+            <div class="profile-meta">
+              <div class="profile-name">{{USER_NAME}}</div>
+              <div class="profile-role">Booking Agent</div>
+            </div>
+            <a href="javascript:void(0)" class="open-pass-btn">
+              <span class="material-symbols-outlined">lock</span>
+              Ganti Password
+            </a>
+            <div class="menu-divider-line"></div>
+            <a href="logout.php" class="logout-link">
+              <span class="material-symbols-outlined">logout</span>
+              Logout
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   </header>
@@ -3192,7 +3252,27 @@
       <button class="mobile-slate-topbar-action theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
         <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
       </button>
-      <a class="mobile-slate-topbar-avatar" href="admin.php" aria-label="Buka admin panel">A</a>
+      <div class="profile-dropdown">
+        <button class="mobile-slate-topbar-avatar profile-trigger" id="mobileProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+          {{USER_INITIAL}}
+        </button>
+        <div class="profile-menu" id="mobileProfileMenu">
+          <div class="profile-meta">
+            <div class="profile-name">{{USER_NAME}}</div>
+            <div class="profile-role">Booking Agent</div>
+          </div>
+          <a href="javascript:void(0)" class="open-pass-btn">
+            <span class="material-symbols-outlined">lock</span>
+            Ganti Password
+          </a>
+          <div class="menu-divider-line"></div>
+          <a href="logout.php" class="logout-link">
+            <span class="material-symbols-outlined">logout</span>
+            Logout
+          </a>
+        </div>
+      </div>
+
     </div>
   </header>
   <div class="wrap">
@@ -4421,6 +4501,98 @@ Pembayaran: ${pembayaran}`;
       loadSegments();
     </script>
     <script src="assets/js/theme-toggle.js"></script>
+    <!-- Change Password Modal -->
+    <div class="admin-modal-overlay-bg" id="changePasswordModal">
+      <div class="admin-modal-card-box">
+        <h3 class="admin-modal-heading-text">Ganti Password</h3>
+        <form id="changePasswordForm">
+          <div class="admin-modal-field-wrap">
+            <label class="admin-modal-label-text">Password Lama</label>
+            <input type="password" name="old_password" required class="admin-modal-input-field">
+          </div>
+          <div class="admin-modal-field-wrap">
+            <label class="admin-modal-label-text">Password Baru</label>
+            <input type="password" name="new_password" required class="admin-modal-input-field">
+          </div>
+          <div class="admin-modal-field-wrap">
+            <label class="admin-modal-label-text">Konfirmasi Baru</label>
+            <input type="password" name="confirm_password" required class="admin-modal-input-field">
+          </div>
+          <div class="modal-action-btns">
+            <button type="submit" class="modal-action-btn modal-action-btn-primary">Update</button>
+            <button type="button" id="closePassModal" class="modal-action-btn modal-action-btn-secondary">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const dTrigger = document.getElementById('desktopProfileTrigger');
+        const dMenu = document.getElementById('desktopProfileMenu');
+        const mTrigger = document.getElementById('mobileProfileTrigger');
+        const mMenu = document.getElementById('mobileProfileMenu');
+        const passModal = document.getElementById('changePasswordModal');
+        const passForm = document.getElementById('changePasswordForm');
+
+        function closeAllMenus() {
+          if (dMenu) dMenu.classList.remove('show');
+          if (mMenu) mMenu.classList.remove('show');
+        }
+
+        [dTrigger, mTrigger].forEach(btn => {
+          if (!btn) return;
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = (btn === dTrigger) ? dMenu : mMenu;
+            const wasShown = menu.classList.contains('show');
+            closeAllMenus();
+            if (!wasShown) menu.classList.add('show');
+          });
+        });
+
+        document.addEventListener('click', () => closeAllMenus());
+
+        document.querySelectorAll('.open-pass-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAllMenus();
+            passModal.classList.add('show');
+          });
+        });
+
+        const closeBtn = document.getElementById('closePassModal');
+        if (closeBtn) closeBtn.onclick = () => passModal.classList.remove('show');
+        
+        if (passModal) {
+          passModal.onclick = (e) => { if (e.target === passModal) passModal.classList.remove('show'); };
+        }
+
+        if (passForm) {
+          passForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(passForm);
+            formData.append('action', 'changePassword');
+            try {
+              const res = await fetch('admin.php?action=changePassword', { method: 'POST', body: formData });
+              const js = await res.json();
+              if (js.success) {
+                if (typeof setMsg === 'function') setMsg(js.message || 'Password berhasil diubah', true);
+                else alert(js.message || 'Password berhasil diubah');
+                passModal.classList.remove('show');
+                passForm.reset();
+              } else {
+                if (typeof setMsg === 'function') setMsg(js.error || 'Gagal mengubah password');
+                else alert(js.error || 'Gagal mengubah password');
+              }
+            } catch (err) {
+              if (typeof setMsg === 'function') setMsg('Kesalahan koneksi saat mengubah password');
+              else alert('Kesalahan koneksi');
+            }
+          };
+        }
+      });
+    </script>
 </body>
 
 </html>

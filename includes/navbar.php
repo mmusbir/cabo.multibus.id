@@ -8,8 +8,11 @@
     <div class="kinetic-sidebar-head">
       <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-        <span class="kinetic-brand-text">KINETIC COMMAND</span>
+        <span class="kinetic-brand-text">CAHAYA BONE</span>
       </a>
+      <button class="kinetic-sidebar-floating-toggle d-none d-lg-inline-flex" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
+        <span class="material-symbols-outlined">left_panel_close</span>
+      </button>
     </div>
 
     <div class="kinetic-sidebar-scroll">
@@ -17,7 +20,7 @@
         <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="luggage" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
+        <a href="admin_bagasi.php" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
         <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
       </nav>
 
@@ -39,9 +42,6 @@
 
   </aside>
 
-  <button class="kinetic-sidebar-floating-toggle d-none d-lg-inline-flex" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
-    <span class="material-symbols-outlined">left_panel_close</span>
-  </button>
 
   <div class="kinetic-desktop-navbar d-none d-lg-flex">
     <div class="kinetic-desktop-navbar-inner">
@@ -76,7 +76,7 @@
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
       <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-        <span class="kinetic-brand-text">KINETIC COMMAND</span>
+        <span class="kinetic-brand-text">CAHAYA BONE</span>
       </a>
 
       <div class="topbar-right kinetic-topbar-right d-flex align-items-center">
@@ -121,7 +121,7 @@
     <div class="topbar-inner topbar-public kinetic-topbar-inner">
       <a href="login.php" class="kinetic-topbar-brand public-brand">
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-        <span class="kinetic-brand-text">KINETIC COMMAND</span>
+        <span class="kinetic-brand-text">CAHAYA BONE</span>
       </a>
       <a href="index.php" class="inline-small btn-booking kinetic-public-booking">Buat Booking</a>
     </div>
@@ -142,7 +142,7 @@
       <span class="material-symbols-outlined">airport_shuttle</span>
       <span class="nav-label">Carter</span>
     </a>
-    <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="luggage" data-nav-key="luggage" id="navLuggage">
+    <a href="admin_bagasi.php" class="nav-btn" data-nav-key="luggage" id="navLuggage">
       <span class="material-symbols-outlined">inventory_2</span>
       <span class="nav-label">Bagasi</span>
     </a>
@@ -218,6 +218,7 @@
     }
 
     function getPrimaryNavKey(target) {
+      if (window.location.pathname.endsWith('admin_bagasi.php')) return 'luggage';
       if (target === 'dashboard') return 'dashboard';
       if (target === 'reports') return 'reports';
       if (target === 'booking-detail') return 'booking';
@@ -360,17 +361,20 @@
 
       if (typeof window.showSectionById === 'function') {
         window.showSectionById(target);
-      }
-      if (window.location.hash.replace('#', '') !== target) {
-        window.location.hash = target;
-      }
-      if (target === 'bookings') {
-        setTimeout(function () {
-          applyBookingMode(bookingMode || 'bookings');
-          syncAdminNavState('bookings');
-        }, 0);
+        if (window.location.hash.replace('#', '') !== target) {
+          window.location.hash = target;
+        }
+        if (target === 'bookings') {
+          setTimeout(function () {
+            applyBookingMode(bookingMode || 'bookings');
+            syncAdminNavState('bookings');
+          }, 0);
+        } else {
+          syncAdminNavState(target);
+        }
       } else {
-        syncAdminNavState(target);
+        // Redirection for standalone pages back to admin Dashboard
+        window.location.href = 'admin.php' + (bookingMode ? '?booking_mode=' + bookingMode : '') + '#' + target;
       }
     }
 

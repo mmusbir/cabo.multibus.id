@@ -7,7 +7,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/config/auth_config.php';
 
-use Firebase\JWT\JWT;
 
 $error = $_GET['error'] ?? null;
 $error_msg = "";
@@ -34,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'user' => $user['username']
             ];
 
-            $jwt = JWT::encode($payload, JWT_SECRET, JWT_ALGO);
+            $jwt = \Firebase\JWT\JWT::encode($payload, JWT_SECRET, JWT_ALGO);
 
             setcookie(
                 COOKIE_NAME,
@@ -60,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html class="dark" lang="id" data-default-theme="dark">
+<html class="light" lang="id" data-default-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -69,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         (function () {
             try {
                 var storedTheme = localStorage.getItem('siteTheme');
-                var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
+                var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light';
+
                 document.documentElement.setAttribute('data-theme', theme);
                 document.documentElement.classList.toggle('dark', theme === 'dark');
                 document.documentElement.classList.toggle('light', theme === 'light');

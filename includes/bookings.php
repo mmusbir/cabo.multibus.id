@@ -8,47 +8,17 @@
   </div>
 
   <div class="kinetic-command-toolbar">
-    <div class="kinetic-command-toolbar-actions">
+    <div class="kinetic-command-toolbar-start">
       <a href="index.php" id="bookingPrimaryAction" class="kinetic-command-add-btn">
         <span id="bookingPrimaryActionIcon" class="material-symbols-outlined">add</span>
         <span id="bookingPrimaryActionText">Tambah Booking</span>
       </a>
+    </div>
 
-      <div class="search-bar-modern admin-bs-search kinetic-command-search">
-        <input type="text" id="search_name_input" class="search-input-modern" placeholder="Cari rute, driver, penumpang, atau jam...">
-        <button type="button" id="searchBtn" class="search-btn-icon" aria-label="Cari booking">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </button>
-      </div>
-
-      <div class="kinetic-command-toolbar-meta">
-        <label class="small" for="bookings_per_page">Per page</label>
-        <select id="bookings_per_page" class="form-select form-select-sm kinetic-command-select">
-          <option>10</option>
-          <option selected>25</option>
-          <option>50</option>
-          <option>100</option>
-        </select>
-      </div>
-
-      <button type="button" id="bookingRefreshBtn" class="kinetic-command-refresh">
-        <span class="material-symbols-outlined">refresh</span>
-        Refresh
-      </button>
+    <div class="kinetic-command-toolbar-actions">
     </div>
   </div>
 
-  <div class="kinetic-command-summary-bar">
-    <div class="kinetic-command-summary-copy">
-      <div>
-        <div id="bookingSummaryHeadline" class="kinetic-summary-headline">Data Booking</div>
-        <div id="bookings_info" class="small kinetic-summary-text">Memuat data keberangkatan hari ini...</div>
-      </div>
-    </div>
-  </div>
 
   <div class="kinetic-mobile-list-head">
     <h4 class="kinetic-mobile-list-title" id="bookingMobileListTitle">
@@ -56,9 +26,6 @@
       Jadwal Mendatang
     </h4>
     <div class="kinetic-mobile-list-actions">
-      <button type="button" class="kinetic-mobile-icon-btn" id="bookingMobileFocusSearch" aria-label="Fokus ke pencarian">
-        <span class="material-symbols-outlined">search</span>
-      </button>
       <button type="button" class="kinetic-mobile-icon-btn" id="bookingMobileRefresh" aria-label="Refresh daftar booking">
         <span class="material-symbols-outlined">refresh</span>
       </button>
@@ -78,17 +45,14 @@
   <div id="bookings_tbody" class="booking-cards-grid admin-bs-card-grid kinetic-command-list">
     <div class="small admin-grid-message">Loading...</div>
   </div>
-  <div id="bookings_pagination" class="admin-pagination-host"></div>
 
   <div id="charters_tbody" class="booking-cards-grid admin-bs-card-grid kinetic-command-list" style="display:none">
     <div class="small admin-grid-message">Loading Charters...</div>
   </div>
-  <div id="charters_pagination" class="admin-pagination-host" style="display:none"></div>
 
   <div id="luggage_tbody" class="booking-cards-grid admin-bs-card-grid kinetic-command-list" style="display:none">
     <div class="small admin-grid-message">Loading Luggage...</div>
   </div>
-  <div id="luggage_pagination" class="admin-pagination-host" style="display:none"></div>
 
   <script>
     window.bookingDashboardState = window.bookingDashboardState || {
@@ -173,7 +137,6 @@
       const pageKicker = document.getElementById('bookingPageKicker');
       const pageTitle = document.getElementById('bookingPageTitle');
       const pageSubtitle = document.getElementById('bookingPageSubtitle');
-      const searchInput = document.getElementById('search_name_input');
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
       const bookingsSection = document.getElementById('bookings');
       const charterFilterRow = document.getElementById('charterFilterRow');
@@ -192,7 +155,6 @@
       if (pageKicker) pageKicker.textContent = meta.pageKicker;
       if (pageTitle) pageTitle.textContent = meta.pageTitle;
       if (pageSubtitle) pageSubtitle.textContent = meta.pageSubtitle;
-      if (searchInput) searchInput.placeholder = meta.searchPlaceholder;
       if (primaryAction) {
         primaryAction.href = meta.primaryActionHref || 'index.php';
         if (mode === 'charters') {
@@ -357,8 +319,8 @@
       const target = window.bookingDashboardState.active || 'bookings';
       ajaxListLoad(target, {
         page: 1,
-        per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-        search: document.getElementById('search_name_input')?.value || ''
+        per_page: 999,
+        search: ''
       });
     }
 
@@ -366,29 +328,23 @@
       window.bookingDashboardState.active = mode;
 
       document.getElementById('bookings_tbody').style.display = 'none';
-      document.getElementById('bookings_pagination').style.display = 'none';
       document.getElementById('charters_tbody').style.display = 'none';
-      document.getElementById('charters_pagination').style.display = 'none';
       document.getElementById('luggage_tbody').style.display = 'none';
-      document.getElementById('luggage_pagination').style.display = 'none';
 
       updateBookingModeMeta(mode);
 
       if (mode === 'charters') {
         document.getElementById('charters_tbody').style.display = 'grid';
-        document.getElementById('charters_pagination').style.display = 'block';
         if (document.getElementById('charters_tbody').children.length <= 1) {
-          ajaxListLoad('charters', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+          ajaxListLoad('charters', { page: 1, per_page: 999, search: '' });
         }
       } else if (mode === 'luggage') {
         document.getElementById('luggage_tbody').style.display = 'grid';
-        document.getElementById('luggage_pagination').style.display = 'block';
         if (document.getElementById('luggage_tbody').children.length <= 1) {
-          ajaxListLoad('luggage', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+          ajaxListLoad('luggage', { page: 1, per_page: 999, search: '' });
         }
       } else {
         document.getElementById('bookings_tbody').style.display = 'grid';
-        document.getElementById('bookings_pagination').style.display = 'block';
       }
 
       if (typeof window.syncAdminNavState === 'function') {
@@ -404,19 +360,8 @@
         });
       });
 
-      const refreshBtn = document.getElementById('bookingRefreshBtn');
-      const mobileRefreshBtn = document.getElementById('bookingMobileRefresh');
-      const mobileSearchBtn = document.getElementById('bookingMobileFocusSearch');
-      if (refreshBtn) {
-        refreshBtn.addEventListener('click', refreshActiveBookingMode);
-      }
       if (mobileRefreshBtn) {
         mobileRefreshBtn.addEventListener('click', refreshActiveBookingMode);
-      }
-      if (mobileSearchBtn) {
-        mobileSearchBtn.addEventListener('click', () => {
-          document.getElementById('search_name_input')?.focus();
-        });
       }
       const primaryActionBtn = document.getElementById('bookingPrimaryAction');
       if (primaryActionBtn) {

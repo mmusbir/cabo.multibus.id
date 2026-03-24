@@ -14,5 +14,14 @@ if (!file_exists($htmlPath)) {
 }
 
 header('Content-Type: text/html; charset=UTF-8');
-readfile($htmlPath);
+$html = file_get_contents($htmlPath);
+if ($auth) {
+    $html = str_replace(
+        ['{{USER_NAME}}', '{{USER_INITIAL}}'], 
+        [htmlspecialchars($auth['user']), htmlspecialchars(strtoupper(substr($auth['user'], 0, 1)))], 
+        $html
+    );
+}
+echo $html;
 exit;
+

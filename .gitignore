@@ -5,3 +5,13 @@ node_modules/
 vendor/
 debug_actions.log
 .vercel/
+*.log
+*.sql
+*.sqlite
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+.vscode/
+temp/
+tmp/

@@ -127,6 +127,7 @@ function buildQueryString($overrides = [])
 
 function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2)
 {
+    return '';
     if ($total <= $per_page)
         return '';
     $total_pages = (int) ceil($total / $per_page);
@@ -147,7 +148,7 @@ function render_pagination_ajax($total, $per_page, $current_page, $param_prefix,
         $html .= '<span class="small dots">...</span>';
     $next = min($total_pages, $current_page + 1);
     $html .= '<a class="badge ajax-page" href="?' . buildQueryString([$param_prefix . '_page' => $next]) . '" data-target="' . $param_prefix . '" data-page="' . $next . '">Next</a>';
-    $html .= '<div class="small" style="margin-left:12px">Halaman ' . $current_page . ' dari ' . $total_pages . ' (Total: ' . $total . ')</div>';
+
     $html .= '</div>';
     return $html;
 }
