@@ -8,12 +8,23 @@
   </div>
   <?php
   $edit_route = null;
+  $edit_carter = null;
+
   if (isset($_GET['edit_route'])) {
     $id = intval($_GET['edit_route']);
     if ($id > 0) {
       $stmt = $conn->prepare("SELECT id, name, origin, destination FROM routes WHERE id=? LIMIT 1");
       $stmt->execute([$id]);
       $edit_route = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+  }
+
+  if (isset($_GET['edit_carter'])) {
+    $id = intval($_GET['edit_carter']);
+    if ($id > 0) {
+      $stmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+      $stmt->execute([$id]);
+      $edit_carter = $stmt->fetch(PDO::FETCH_ASSOC);
     }
   }
 
@@ -139,6 +150,14 @@
   <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
     <div class="small admin-grid-message">Loading...</div>
   </div>
+
+  <script>
+    <?php if ($route_type === 'carter'): ?>
+      window.addEventListener('DOMContentLoaded', () => {
+        if (typeof switchRouteTab === 'function') switchRouteTab('carter');
+      });
+    <?php endif; ?>
+  </script>
 
   <script>
     function switchRouteTab(type) {
