@@ -52,7 +52,10 @@ try {
     $revTrendMap = [];
     if ($revTrendStmt) {
         while ($row = $revTrendStmt->fetch(PDO::FETCH_ASSOC)) {
-            $revTrendMap[$row['tanggal']] = (float) ($row['revenue'] ?? 0);
+            $dateKey = !empty($row['tanggal']) ? date('Y-m-d', strtotime((string) $row['tanggal'])) : '';
+            if ($dateKey !== '') {
+                $revTrendMap[$dateKey] = (float) ($row['revenue'] ?? 0);
+            }
         }
     }
 
@@ -127,12 +130,12 @@ try {
 }
 
 $todayLabel = strtoupper(date('l, d F Y'));
-$maxRevenue = max($dashboard['trend_revenues'] ?: [1]);
+$maxRevenue = max($dashboard['trend_revenues'] ?: [0]);
 $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
-    if ($maxRevenue <= 0) {
-        return 12;
+    if ($maxRevenue <= 0 || $rev <= 0) {
+        return 0;
     }
-    return max(12, (int) round(($rev / $maxRevenue) * 100));
+    return round(($rev / $maxRevenue) * 100, 2);
 }, $dashboard['trend_revenues']);
 ?>
 <section id="dashboard" class="card kinetic-admin-dashboard">
@@ -183,7 +186,9 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
                 <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
                 <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
               </div>
-              <div class="kinetic-dash-bar" style="height: <?php echo (int) $trendHeights[$idx]; ?>%;"></div>
+              <div class="kinetic-dash-bar-shell">
+                <div class="kinetic-dash-bar <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? 'is-zero' : ''; ?>" style="height: max(<?php echo htmlspecialchars((string) $trendHeights[$idx]); ?>%, 0.35rem);"></div>
+              </div>
               <span><?php echo htmlspecialchars($label); ?></span>
             </div>
           <?php endforeach; ?>

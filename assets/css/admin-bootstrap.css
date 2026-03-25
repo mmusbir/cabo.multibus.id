@@ -4349,12 +4349,29 @@ body.admin-bootstrap-page .kinetic-dash-bar-group {
     cursor: pointer;
 }
 
+body.admin-bootstrap-page .kinetic-dash-bar-shell {
+    width: 100%;
+    min-height: 13rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-top: 0.5rem;
+    border-radius: 0.8rem;
+    background:
+        linear-gradient(to top, rgba(148, 163, 184, 0.05) 1px, transparent 1px) 0 0 / 100% 25%,
+        transparent;
+}
+
 body.admin-bootstrap-page .kinetic-dash-bar {
     width: 100%;
-    min-height: 1.2rem;
-    border-radius: 0.3rem 0.3rem 0 0;
+    min-height: 0.35rem;
+    border-radius: 0.7rem 0.7rem 0.22rem 0.22rem;
     background: #33343b;
     transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar.is-zero {
+    opacity: 0.48;
 }
 
 body.admin-bootstrap-page .kinetic-dash-bar-group.is-active .kinetic-dash-bar,
