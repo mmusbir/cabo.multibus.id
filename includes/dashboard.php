@@ -88,11 +88,11 @@ try {
         ];
     }
 
-    // Sort all and limit to 10
+    // Sort all and limit on dashboard so the card stays concise
     usort($activities, function($a, $b) {
         return $b['sort'] - $a['sort'];
     });
-    $activities = array_slice($activities, 0, 10);
+    $activities = array_slice($activities, 0, 5);
 
     foreach ($activities as $act) {
         $dashboard['recent_activity'][] = [
@@ -175,6 +175,9 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
       <section class="kinetic-dash-panel kinetic-dash-activity">
         <div class="kinetic-dash-panel-head">
           <h2>Recent Activity</h2>
+          <button type="button" class="kinetic-dash-panel-link" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('cancellations');window.location.hash='#cancellations';}">
+            Lihat Semua Activity
+          </button>
         </div>
         <div class="kinetic-dash-activity-list">
           <?php if (empty($dashboard['recent_activity'])): ?>

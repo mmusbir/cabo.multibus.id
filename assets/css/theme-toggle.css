@@ -637,6 +637,10 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-panel-head h2 {
   color: #0f172a !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-panel-link {
+  color: #ea580c !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar {
   background: #f1f5f9 !important;
 }
@@ -905,6 +909,10 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-dash-panel-link {
+  color: #f97316 !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-history-note {

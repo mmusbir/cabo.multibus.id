@@ -4307,6 +4307,22 @@ body.admin-bootstrap-page .kinetic-dash-panel-head h2 {
     font-weight: 700;
 }
 
+body.admin-bootstrap-page .kinetic-dash-panel-link {
+    border: 0;
+    background: transparent;
+    color: #f97316;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel-link:hover {
+    color: #fb923c;
+}
+
 body.admin-bootstrap-page .kinetic-dash-chip {
     color: #94a3b8;
     font-size: 0.64rem;

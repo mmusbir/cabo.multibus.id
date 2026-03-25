@@ -1,17 +1,17 @@
-<!-- CANCELLATIONS -->
+<!-- LOGS -->
 <section id="cancellations" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
-      <h3 class="admin-section-title">Cancellation Log</h3>
-      <p class="admin-section-subtitle">Riwayat pembatalan booking beserta admin dan alasan yang dicatat.</p>
+      <h3 class="admin-section-title">Logs Activity</h3>
+      <p class="admin-section-subtitle">Riwayat aktivitas terbaru booking, carter, dan bagasi dalam satu halaman.</p>
     </div>
   </div>
 
   <div class="admin-bs-toolbar">
     <div class="search-bar-modern admin-bs-search">
       <input type="text" id="search_cancellations_input" class="search-input-modern"
-        placeholder="Cari nama atau no. HP...">
-      <button type="button" id="searchCancellationsBtn" class="search-btn-icon" aria-label="Cari pembatalan">
+        placeholder="Cari aktivitas, nama, tag, atau rute...">
+      <button type="button" id="searchCancellationsBtn" class="search-btn-icon" aria-label="Cari logs activity">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"></circle>
@@ -22,7 +22,7 @@
   </div>
 
   <div class="admin-bs-meta">
-    <div class="small" id="cancellations_info">Memuat cancellations...</div>
+    <div class="small" id="cancellations_info">Memuat logs activity...</div>
   </div>
 
   <div id="cancellations_spinner_wrap" class="spinner-wrap" style="display:none">

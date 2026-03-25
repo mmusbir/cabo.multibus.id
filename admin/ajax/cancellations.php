@@ -1,6 +1,6 @@
 <?php
 /**
- * admin/ajax/cancellations.php - Handle cancellations page data
+ * admin/ajax/cancellations.php - Logs activity feed for admin
  */
 
 global $conn;
@@ -10,48 +10,95 @@ $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
+$activitySql = "
+    SELECT *
+    FROM (
+        SELECT
+            b.created_at,
+            'booking' AS type,
+            'Booking: ' || COALESCE(NULLIF(b.name, ''), 'Customer') AS title,
+            COALESCE(NULLIF(b.rute, ''), '-') AS meta,
+            CASE
+                WHEN COALESCE(b.pembayaran, 'Belum Lunas') IN ('Lunas', 'Redbus', 'Traveloka') THEN 'success'
+                ELSE 'warning'
+            END AS tone,
+            UPPER(COALESCE(NULLIF(b.pembayaran, ''), 'Belum Lunas')) AS tag
+        FROM bookings b
+
+        UNION ALL
+
+        SELECT
+            c.created_at,
+            'charter' AS type,
+            'Charter: ' || COALESCE(NULLIF(c.name, ''), 'Customer') AS title,
+            COALESCE(NULLIF(c.pickup_point, ''), '?') || ' -> ' || COALESCE(NULLIF(c.drop_point, ''), '?') AS meta,
+            'primary' AS tone,
+            'CHARTER' AS tag
+        FROM charters c
+
+        UNION ALL
+
+        SELECT
+            l.created_at,
+            'luggage' AS type,
+            'Paket: ' || COALESCE(NULLIF(l.sender_name, ''), 'Sender') AS title,
+            'Pengiriman Barang/Dokumen' AS meta,
+            'info' AS tone,
+            'BAGASI' AS tag
+        FROM luggages l
+    ) logs
+";
+
+$params = [];
 if ($search !== '') {
+    $activitySql .= " WHERE title ILIKE ? OR meta ILIKE ? OR tag ILIKE ? ";
     $like = '%' . $search . '%';
-    $stmtc = $conn->prepare("SELECT COUNT(*) AS cnt FROM cancellations c JOIN bookings b ON c.booking_id = b.id WHERE b.name LIKE ? OR b.phone LIKE ?");
-    $stmtc->execute([$like, $like]);
-    $rc = $stmtc->fetch(PDO::FETCH_ASSOC);
-    $total = intval($rc['cnt'] ?? 0);
-    $stmt = $conn->prepare("SELECT c.id, c.booking_id, c.admin_user, c.reason, c.created_at, b.name, b.phone, b.created_at AS booking_created_at FROM cancellations c JOIN bookings b ON c.booking_id = b.id WHERE b.name LIKE ? OR b.phone LIKE ? ORDER BY c.created_at DESC LIMIT ? OFFSET ?");
-    $params = [$like, $like, $per_page, $offset];
-} else {
-    $resCount = $conn->query("SELECT COUNT(*) AS cnt FROM cancellations");
-    $total = ($resCount && $rc = $resCount->fetch(PDO::FETCH_ASSOC)) ? intval($rc['cnt']) : 0;
-    $stmt = $conn->prepare("SELECT c.id, c.booking_id, c.admin_user, c.reason, c.created_at, b.name, b.phone, b.created_at AS booking_created_at FROM cancellations c JOIN bookings b ON c.booking_id = b.id ORDER BY c.created_at DESC LIMIT ? OFFSET ?");
-    $params = [$per_page, $offset];
+    $params = [$like, $like, $like];
 }
 
-ob_start();
-$stmt->execute($params ?? []);
+$countSql = "SELECT COUNT(*) AS cnt FROM (" . $activitySql . ") activity_count";
+$stmtCount = $conn->prepare($countSql);
+$stmtCount->execute($params);
+$total = intval(($stmtCount->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
+
+$sql = $activitySql . " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+$stmt = $conn->prepare($sql);
+$queryParams = $params;
+$queryParams[] = $per_page;
+$queryParams[] = $offset;
+$stmt->execute($queryParams);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+ob_start();
 if (empty($rows)) {
-    echo '<div class="small admin-empty-state admin-grid-message">Belum ada log pembatalan</div>';
+    echo '<div class="small admin-empty-state admin-grid-message">Belum ada logs activity.</div>';
 } else {
-    foreach ($rows as $c) {
-        $fmtId = formatBookingId($c['booking_id'], $c['booking_created_at']);
-        $reason = trim($c['reason'] ?? '');
+    foreach ($rows as $log) {
+        $type = strtolower(trim((string) ($log['type'] ?? 'activity')));
+        $tone = trim((string) ($log['tone'] ?? 'warning')) ?: 'warning';
+        $typeLabel = strtoupper($type);
+        $icon = 'history';
+        if ($type === 'booking') $icon = 'confirmation_number';
+        if ($type === 'charter') $icon = 'airport_shuttle';
+        if ($type === 'luggage') $icon = 'inventory_2';
+
+        $createdAt = trim((string) ($log['created_at'] ?? ''));
+        $timeLabel = $createdAt !== '' ? date('d M Y - H:i', strtotime($createdAt)) . ' WITA' : '-';
 
         echo '<div class="admin-card-compact">';
         echo '  <div class="acc-header">';
         echo '    <div>';
-        echo '      <div class="acc-title">' . htmlspecialchars($c['name']) . '</div>';
-        echo '      <div class="admin-card-subtitle">Log pembatalan booking</div>';
+        echo '      <div class="acc-title">' . htmlspecialchars($log['title'] ?? '-') . '</div>';
+        echo '      <div class="admin-card-subtitle">' . htmlspecialchars($log['meta'] ?? '-') . '</div>';
         echo '    </div>';
         echo '    <div class="admin-card-tags">';
-        echo '      <div class="acc-id">' . $fmtId . '</div>';
-        echo '      <span class="admin-status-pill danger">Canceled</span>';
+        echo '      <div class="acc-id"><span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">' . htmlspecialchars($icon) . '</span> ' . htmlspecialchars($typeLabel) . '</div>';
+        echo '      <span class="admin-status-pill ' . htmlspecialchars($tone) . '">' . htmlspecialchars($log['tag'] ?? '-') . '</span>';
         echo '    </div>';
         echo '  </div>';
         echo '  <div class="acc-body">';
-        echo '    <div class="acc-row"><div class="acc-label">Telepon</div><div class="acc-val">' . htmlspecialchars($c['phone']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Admin</div><div class="acc-val">' . htmlspecialchars($c['admin_user']) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Alasan</div><div class="acc-val">' . htmlspecialchars($reason !== '' ? $reason : '-') . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Waktu</div><div class="acc-val">' . htmlspecialchars($c['created_at']) . '</div></div>';
+        echo '    <div class="acc-row"><div class="acc-label">Kategori</div><div class="acc-val">' . htmlspecialchars($typeLabel) . '</div></div>';
+        echo '    <div class="acc-row"><div class="acc-label">Waktu</div><div class="acc-val">' . htmlspecialchars($timeLabel) . '</div></div>';
         echo '  </div>';
         echo '</div>';
     }
