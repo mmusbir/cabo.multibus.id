@@ -641,6 +641,10 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-panel-link {
   color: #ea580c !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar-value {
+  color: #475569 !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-dash-bar {
   background: #f1f5f9 !important;
 }
