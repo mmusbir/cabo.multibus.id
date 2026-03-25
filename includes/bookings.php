@@ -30,7 +30,7 @@
           Reset
         </button>
       </div>
-      <div class="kinetic-command-toolbar-meta">
+      <div class="kinetic-command-toolbar-meta booking-per-page-meta">
         <label class="small" for="bookings_per_page">Per Page</label>
         <select id="bookings_per_page" class="form-control kinetic-command-select">
           <option value="10">10</option>
