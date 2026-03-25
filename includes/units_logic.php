@@ -1,6 +1,8 @@
 <?php
 // includes/units_logic.php
 
+require_once __DIR__ . '/../config/activity_log.php';
+
 // --- Ambil data unit kendaraan dari database ---
 $units = [];
 if (isset($conn)) {
@@ -14,6 +16,7 @@ if (isset($conn)) {
 
 // --- Proses tambah unit kendaraan ---
 if (isset($_POST['save_unit'])) {
+  $actor = activity_log_current_actor();
   $nopol = trim($_POST['nopol'] ?? '');
   $merek = trim($_POST['merek'] ?? '');
   $type = trim($_POST['type'] ?? '');
@@ -24,6 +27,9 @@ if (isset($_POST['save_unit'])) {
   if ($nopol && $merek && $type && $category && $tahun && $kapasitas && $status) {
     $stmt = $conn->prepare("INSERT INTO units (nopol, merek, type, category, tahun, kapasitas, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$nopol, $merek, $type, $category, $tahun, $kapasitas, $status]);
+    if ($stmt->rowCount() > 0) {
+      activity_log_write($conn, 'settings', 'unit', $conn->lastInsertId(), 'create', 'Unit kendaraan ditambahkan: ' . $nopol, $merek . ' ' . $type, $actor);
+    }
     header('Location: admin.php#units');
     exit;
   }
@@ -31,6 +37,7 @@ if (isset($_POST['save_unit'])) {
 
 // --- Proses update unit kendaraan ---
 if (isset($_POST['update_unit'])) {
+  $actor = activity_log_current_actor();
   $unit_id = intval($_POST['unit_id'] ?? 0);
   $nopol = trim($_POST['nopol'] ?? '');
   $merek = trim($_POST['merek'] ?? '');
@@ -40,8 +47,12 @@ if (isset($_POST['update_unit'])) {
   $kapasitas = intval($_POST['kapasitas'] ?? 0);
   $status = trim($_POST['status'] ?? 'Aktif');
   if ($unit_id && $nopol && $merek && $type && $category && $tahun && $kapasitas && $status) {
+    $oldStmt = $conn->prepare("SELECT nopol FROM units WHERE id=? LIMIT 1");
+    $oldStmt->execute([$unit_id]);
+    $oldNopol = (string) ($oldStmt->fetchColumn() ?: '');
     $stmt = $conn->prepare("UPDATE units SET nopol=?, merek=?, type=?, category=?, tahun=?, kapasitas=?, status=? WHERE id=?");
     $stmt->execute([$nopol, $merek, $type, $category, $tahun, $kapasitas, $status, $unit_id]);
+    activity_log_write($conn, 'settings', 'unit', $unit_id, 'update', 'Unit kendaraan diperbarui: ' . $nopol, 'Sebelumnya: ' . ($oldNopol ?: '-'), $actor);
     header('Location: admin.php#units');
     exit;
   }
@@ -49,10 +60,17 @@ if (isset($_POST['update_unit'])) {
 
 // --- Proses hapus unit kendaraan ---
 if (isset($_POST['delete_unit'])) {
+  $actor = activity_log_current_actor();
   $unit_id = intval($_POST['unit_id'] ?? 0);
   if ($unit_id) {
+    $infoStmt = $conn->prepare("SELECT nopol FROM units WHERE id=? LIMIT 1");
+    $infoStmt->execute([$unit_id]);
+    $nopol = (string) ($infoStmt->fetchColumn() ?: '');
     $stmt = $conn->prepare("DELETE FROM units WHERE id=?");
     $stmt->execute([$unit_id]);
+    if ($stmt->rowCount() > 0) {
+      activity_log_write($conn, 'settings', 'unit', $unit_id, 'delete', 'Unit kendaraan dihapus: ' . ($nopol ?: ('ID ' . $unit_id)), '', $actor);
+    }
     header('Location: admin.php#units');
     exit;
   }
@@ -104,6 +122,7 @@ if (isset($_GET['get_layout'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
   $input = json_decode(file_get_contents('php://input'), true);
   if (isset($input['save_layout'], $input['unit_id'], $input['layout'])) {
+    $actor = activity_log_current_actor();
     $unit_id = intval($input['unit_id']);
     $layout_json = json_encode($input['layout']);
 
@@ -118,6 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['CONTENT_TYPE'], 'a
     }
 
     header('Content-Type: application/json');
+    if ($success) {
+      activity_log_write($conn, 'settings', 'unit_layout', $unit_id, 'update', 'Layout kursi unit diperbarui', 'Unit ID ' . $unit_id, $actor);
+    }
     echo json_encode(['success' => $success]);
     exit;
   }

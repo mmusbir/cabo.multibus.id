@@ -1,91 +1,47 @@
 <?php
 /**
- * admin/ajax/cancellations.php - Logs activity feed for admin
+ * admin/ajax/cancellations.php - Audit logs table for admin
  */
 
 global $conn;
+require_once __DIR__ . '/../../config/activity_log.php';
 
-if (!function_exists('format_admin_relative_time')) {
-    function format_admin_relative_time($datetime)
-    {
-        if (empty($datetime)) return '-';
-        $timestamp = strtotime((string) $datetime);
-        if (!$timestamp) return '-';
-
-        $diff = time() - $timestamp;
-        if ($diff < 60) return 'Baru saja';
-        if ($diff < 3600) return floor($diff / 60) . ' menit lalu';
-        if ($diff < 86400) return floor($diff / 3600) . ' jam lalu';
-        if ($diff < 172800) return 'Kemarin';
-        if ($diff < 2592000) return floor($diff / 86400) . ' hari lalu';
-
-        return date('d M Y - H:i', $timestamp) . ' WITA';
-    }
-}
+activity_log_ensure_table($conn);
 
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$type = isset($_GET['type']) ? trim($_GET['type']) : '';
+$search = isset($_GET['search']) ? trim((string) $_GET['search']) : '';
+$type = isset($_GET['type']) ? trim((string) $_GET['type']) : '';
 
-$activitySql = "
-    SELECT *
-    FROM (
-        SELECT
-            b.created_at,
-            'booking' AS type,
-            'Booking: ' || COALESCE(NULLIF(b.name, ''), 'Customer') AS title,
-            COALESCE(NULLIF(b.rute, ''), '-') AS meta,
-            CASE
-                WHEN COALESCE(b.pembayaran, 'Belum Lunas') IN ('Lunas', 'Redbus', 'Traveloka') THEN 'success'
-                ELSE 'warning'
-            END AS tone,
-            UPPER(COALESCE(NULLIF(b.pembayaran, ''), 'Belum Lunas')) AS tag
-        FROM bookings b
-
-        UNION ALL
-
-        SELECT
-            c.created_at,
-            'charter' AS type,
-            'Charter: ' || COALESCE(NULLIF(c.name, ''), 'Customer') AS title,
-            COALESCE(NULLIF(c.pickup_point, ''), '?') || ' -> ' || COALESCE(NULLIF(c.drop_point, ''), '?') AS meta,
-            'primary' AS tone,
-            'CHARTER' AS tag
-        FROM charters c
-
-        UNION ALL
-
-        SELECT
-            l.created_at,
-            'luggage' AS type,
-            'Paket: ' || COALESCE(NULLIF(l.sender_name, ''), 'Sender') AS title,
-            'Pengiriman Barang/Dokumen' AS meta,
-            'info' AS tone,
-            'BAGASI' AS tag
-        FROM luggages l
-    ) logs
-";
-
+$allowedTypes = ['booking', 'charter', 'luggage', 'settings'];
+$where = [];
 $params = [];
+
 if ($search !== '') {
-    $activitySql .= " WHERE title ILIKE ? OR meta ILIKE ? OR tag ILIKE ? ";
+    $where[] = "(summary ILIKE ? OR details ILIKE ? OR actor ILIKE ? OR action ILIKE ? OR category ILIKE ?)";
     $like = '%' . $search . '%';
-    $params = [$like, $like, $like];
+    array_push($params, $like, $like, $like, $like, $like);
 }
 
-if ($type !== '' && in_array($type, ['booking', 'charter', 'luggage'], true)) {
-    $activitySql .= ($search !== '' ? " AND " : " WHERE ") . " type = ? ";
+if ($type !== '' && in_array($type, $allowedTypes, true)) {
+    $where[] = "category = ?";
     $params[] = $type;
 }
 
-$countSql = "SELECT COUNT(*) AS cnt FROM (" . $activitySql . ") activity_count";
-$stmtCount = $conn->prepare($countSql);
-$stmtCount->execute($params);
-$total = intval(($stmtCount->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
+$whereSql = $where ? (' WHERE ' . implode(' AND ', $where)) : '';
 
-$sql = $activitySql . " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+$countStmt = $conn->prepare("SELECT COUNT(*) AS cnt FROM activity_logs" . $whereSql);
+$countStmt->execute($params);
+$total = intval(($countStmt->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
+
+$sql = "
+    SELECT id, category, entity_type, entity_id, action, summary, details, actor, created_at
+    FROM activity_logs
+    {$whereSql}
+    ORDER BY created_at DESC, id DESC
+    LIMIT ? OFFSET ?
+";
 $stmt = $conn->prepare($sql);
 $queryParams = $params;
 $queryParams[] = $per_page;
@@ -93,38 +49,53 @@ $queryParams[] = $offset;
 $stmt->execute($queryParams);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$categoryLabels = [
+    'booking' => 'Booking',
+    'charter' => 'Carter',
+    'luggage' => 'Bagasi',
+    'settings' => 'Pengaturan',
+];
+
+$actionLabels = [
+    'create' => 'Tambah',
+    'update' => 'Ubah',
+    'delete' => 'Hapus',
+    'cancel' => 'Batal',
+    'mark_paid' => 'Lunas',
+    'mark_all_paid' => 'Lunas Semua',
+    'bop_done' => 'BOP Selesai',
+    'import' => 'Import',
+    'activate' => 'Aktif',
+];
+
 ob_start();
 if (empty($rows)) {
-    echo '<div class="small admin-empty-state admin-grid-message">Belum ada logs activity.</div>';
+    echo '<tr><td colspan="5" class="report-table-empty">Belum ada logs yang tercatat.</td></tr>';
 } else {
-    foreach ($rows as $log) {
-        $type = strtolower(trim((string) ($log['type'] ?? 'activity')));
-        $tone = trim((string) ($log['tone'] ?? 'warning')) ?: 'warning';
-        $typeLabel = strtoupper($type);
-        $icon = 'history';
-        if ($type === 'booking') $icon = 'confirmation_number';
-        if ($type === 'charter') $icon = 'airport_shuttle';
-        if ($type === 'luggage') $icon = 'inventory_2';
+    foreach ($rows as $row) {
+        $category = strtolower(trim((string) ($row['category'] ?? '')));
+        $action = strtolower(trim((string) ($row['action'] ?? '')));
+        $tone = activity_log_tone($category, $action);
+        $summary = trim((string) ($row['summary'] ?? '-'));
+        $details = trim((string) ($row['details'] ?? ''));
+        $actor = trim((string) ($row['actor'] ?? 'system'));
+        $absoluteTime = !empty($row['created_at']) ? date('d M Y H:i', strtotime((string) $row['created_at'])) . ' WITA' : '-';
 
-        $createdAt = trim((string) ($log['created_at'] ?? ''));
-        $timeLabel = format_admin_relative_time($createdAt);
-
-        echo '<div class="admin-card-compact">';
-        echo '  <div class="acc-header">';
-        echo '    <div>';
-        echo '      <div class="acc-title">' . htmlspecialchars($log['title'] ?? '-') . '</div>';
-        echo '      <div class="admin-card-subtitle">' . htmlspecialchars($log['meta'] ?? '-') . '</div>';
-        echo '    </div>';
-        echo '    <div class="admin-card-tags">';
-        echo '      <div class="acc-id"><span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">' . htmlspecialchars($icon) . '</span> ' . htmlspecialchars($typeLabel) . '</div>';
-        echo '      <span class="admin-status-pill ' . htmlspecialchars($tone) . '">' . htmlspecialchars($log['tag'] ?? '-') . '</span>';
-        echo '    </div>';
-        echo '  </div>';
-        echo '  <div class="acc-body">';
-        echo '    <div class="acc-row"><div class="acc-label">Kategori</div><div class="acc-val">' . htmlspecialchars($typeLabel) . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Waktu</div><div class="acc-val">' . htmlspecialchars($timeLabel) . '</div></div>';
-        echo '  </div>';
-        echo '</div>';
+        echo '<tr class="admin-log-row tone-' . htmlspecialchars($tone) . '">';
+        echo '  <td class="admin-log-time-cell">';
+        echo '    <div class="admin-log-time-main">' . htmlspecialchars(activity_log_relative_time($row['created_at'] ?? '')) . '</div>';
+        echo '    <div class="admin-log-time-sub">' . htmlspecialchars($absoluteTime) . '</div>';
+        echo '  </td>';
+        echo '  <td><span class="admin-log-badge category-' . htmlspecialchars($category) . '">' . htmlspecialchars($categoryLabels[$category] ?? ucfirst($category)) . '</span></td>';
+        echo '  <td><span class="admin-log-badge action-' . htmlspecialchars($tone) . '">' . htmlspecialchars($actionLabels[$action] ?? ucwords(str_replace('_', ' ', $action))) . '</span></td>';
+        echo '  <td class="admin-log-summary-cell">';
+        echo '    <div class="admin-log-summary">' . htmlspecialchars($summary) . '</div>';
+        if ($details !== '') {
+            echo '    <div class="admin-log-details">' . htmlspecialchars($details) . '</div>';
+        }
+        echo '  </td>';
+        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($actor) . '</td>';
+        echo '</tr>';
     }
 }
 $rows_html = ob_get_clean();

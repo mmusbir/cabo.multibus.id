@@ -4,6 +4,7 @@
  */
 
 global $conn;
+require_once __DIR__ . '/../../config/activity_log.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'error' => 'Invalid request method']);
@@ -50,6 +51,7 @@ $new_hash = password_hash($new_pass, PASSWORD_DEFAULT);
 $stmt = $conn->prepare("UPDATE users SET password_hash=? WHERE id=?");
 
 if ($stmt->execute([$new_hash, $res['id']])) {
+    activity_log_write($conn, 'settings', 'user_password', (string) $res['id'], 'update', 'Password user diperbarui', 'Username: ' . $admin_user, $admin_user);
     echo json_encode(['success' => true, 'message' => 'Password berhasil diubah']);
 } else {
     echo json_encode(['success' => false, 'error' => 'Gagal mengubah password di database']);

@@ -488,6 +488,50 @@ html[data-theme="light"] body.admin-bootstrap-page .customers-table-actions .acc
   background: #fff1f2 !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .admin-logs-table .admin-log-time-main,
+html[data-theme="light"] body.admin-bootstrap-page .admin-logs-table .admin-log-summary {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-logs-table .admin-log-time-sub,
+html[data-theme="light"] body.admin-bootstrap-page .admin-logs-table .admin-log-details,
+html[data-theme="light"] body.admin-bootstrap-page .admin-logs-table .admin-log-actor-cell {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.category-booking,
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.action-warning {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.category-charter,
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.action-primary {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.category-luggage,
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.action-info {
+  background: #ecfeff !important;
+  color: #0f766e !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.category-settings {
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.action-success {
+  background: #ecfdf5 !important;
+  color: #15803d !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-log-badge.action-danger {
+  background: #fff1f2 !important;
+  color: #be123c !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .btn-modern.secondary,
 html[data-theme="light"] body.admin-bootstrap-page .admin-toolbar-btn,
 html[data-theme="light"] body.admin-bootstrap-page .file-upload-btn,
@@ -1009,6 +1053,17 @@ html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody t
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr:hover td,
 html[data-theme="dark"] body.admin-bootstrap-page .report-details-table tbody tr:hover td {
   background: #1e1f26 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .admin-logs-table .admin-log-time-main,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-logs-table .admin-log-summary {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .admin-logs-table .admin-log-time-sub,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-logs-table .admin-log-details,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-logs-table .admin-log-actor-cell {
+  color: rgba(224, 192, 177, 0.78) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page input,

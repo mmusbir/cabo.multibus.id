@@ -4,8 +4,10 @@
  */
 
 global $conn;
+require_once __DIR__ . '/../../config/activity_log.php';
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
+$actor = activity_log_current_actor();
 
 function charter_parse_currency_input(string $value): float
 {
@@ -92,6 +94,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $busType,
             0,
         ]);
+        activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
         header('Location: admin.php?booking_mode=charters#bookings');
         exit;
     } catch (PDOException $e) {
@@ -108,9 +111,15 @@ if ($action === 'delete_charter') {
         echo json_encode(['success' => false, 'error' => 'Invalid ID']);
         exit;
     }
+    $infoStmt = $conn->prepare("SELECT name, pickup_point, drop_point FROM charters WHERE id = ? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $charterInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("DELETE FROM charters WHERE id = ?");
     try {
         $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'charter', 'charter', $id, 'delete', 'Carter dihapus: ' . ($charterInfo['name'] ?? ('ID ' . $id)), ($charterInfo['pickup_point'] ?? '-') . ' -> ' . ($charterInfo['drop_point'] ?? '-'), $actor);
+        }
         header('Content-Type: application/json');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
@@ -163,9 +172,13 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $layanan = trim($_POST['layanan'] ?? 'Regular');
     $bop_price = floatval($_POST['bop_price'] ?? 0);
 
+    $oldStmt = $conn->prepare("SELECT name, pickup_point, drop_point FROM charters WHERE id=? LIMIT 1");
+    $oldStmt->execute([$id]);
+    $oldCharter = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE charters SET name=?, company_name=?, phone=?, start_date=?, end_date=?, departure_time=?, pickup_point=?, drop_point=?, unit_id=?, driver_name=?, price=?, layanan=?, bop_price=? WHERE id=?");
     try {
         $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $id]);
+        activity_log_write($conn, 'charter', 'charter', $id, 'update', 'Carter diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCharter['name'] ?? '-') . ' | ' . ($oldCharter['pickup_point'] ?? '-') . ' -> ' . ($oldCharter['drop_point'] ?? '-'), $actor);
         header('Content-Type: application/json');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
@@ -222,6 +235,9 @@ if ($action === 'toggle_bop') {
     $stmt = $conn->prepare("UPDATE charters SET bop_status = 'done' WHERE id = ?");
     try {
         $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'charter', 'charter', $id, 'bop_done', 'Status BOP carter ditandai selesai', 'Charter ID ' . $id, $actor);
+        }
         header('Content-Type: application/json');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {

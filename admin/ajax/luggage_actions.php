@@ -4,9 +4,11 @@
  */
 
 global $conn;
+require_once __DIR__ . '/../../config/activity_log.php';
 
 $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 $action = $_GET['action'] ?? '';
+$actor = activity_log_current_actor();
 
 // Temporary Debug Log
 file_put_contents(__DIR__ . '/../../debug_actions.log', date('Y-m-d H:i:s') . " - Action: $action, ID: $id\n", FILE_APPEND);
@@ -22,9 +24,15 @@ if ($id <= 0) {
 }
 
 if ($action === 'markLuggagePaid') {
+    $infoStmt = $conn->prepare("SELECT sender_name, receiver_name FROM luggages WHERE id = ? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $luggageInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE luggages SET payment_status = 'Lunas' WHERE id = ?");
     try {
         $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'luggage', 'luggage', $id, 'mark_paid', 'Pembayaran bagasi ditandai lunas', ($luggageInfo['sender_name'] ?? 'Pengirim') . ' -> ' . ($luggageInfo['receiver_name'] ?? 'Penerima'), $actor);
+        }
         echo json_encode(['success' => true, 'message' => 'Pembayaran lunas']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -33,9 +41,15 @@ if ($action === 'markLuggagePaid') {
 }
 
 if ($action === 'inputLuggage') {
+    $infoStmt = $conn->prepare("SELECT sender_name, receiver_name FROM luggages WHERE id = ? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $luggageInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE luggages SET status = 'active' WHERE id = ?");
     try {
         $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'luggage', 'luggage', $id, 'activate', 'Status bagasi diinput sebagai aktif', ($luggageInfo['sender_name'] ?? 'Pengirim') . ' -> ' . ($luggageInfo['receiver_name'] ?? 'Penerima'), $actor);
+        }
         echo json_encode(['success' => true, 'message' => 'Status barang sampai']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -44,9 +58,15 @@ if ($action === 'inputLuggage') {
 }
 
 if ($action === 'cancelLuggage') {
+    $infoStmt = $conn->prepare("SELECT sender_name, receiver_name FROM luggages WHERE id = ? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $luggageInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE luggages SET status = 'canceled' WHERE id = ?");
     try {
         $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'luggage', 'luggage', $id, 'cancel', 'Pengiriman bagasi dibatalkan', ($luggageInfo['sender_name'] ?? 'Pengirim') . ' -> ' . ($luggageInfo['receiver_name'] ?? 'Penerima'), $actor);
+        }
         echo json_encode(['success' => true, 'message' => 'Pengiriman dibatalkan']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -74,6 +94,7 @@ if ($action === 'inputLuggageRaw') {
     try {
         $stmt = $conn->prepare("INSERT INTO luggages (sender_name, sender_phone, sender_address, receiver_name, receiver_phone, receiver_address, service_id, quantity, notes, price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
         $stmt->execute([$sender_name, $sender_phone, $sender_address, $receiver_name, $receiver_phone, $receiver_address, $service_id, $quantity, $notes, $price]);
+        activity_log_write($conn, 'luggage', 'luggage', $conn->lastInsertId(), 'create', 'Bagasi ditambahkan: ' . $sender_name, $sender_name . ' -> ' . $receiver_name . ' | Qty ' . $quantity, $actor);
         echo json_encode(['success' => true, 'message' => 'Bagasi berhasil ditambahkan']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -90,6 +111,9 @@ if ($action === 'updateLuggageSimple') {
     $stmt = $conn->prepare("UPDATE luggages SET status = ? WHERE id = ?");
     try {
         $stmt->execute([$status, $id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'luggage', 'luggage', $id, 'update', 'Status bagasi diperbarui menjadi ' . $status, 'Bagasi ID ' . $id, $actor);
+        }
         echo json_encode(['success' => true, 'message' => 'Status berhasil diupdate']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);

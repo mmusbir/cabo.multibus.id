@@ -1,22 +1,4 @@
 <?php
-if (!function_exists('format_admin_relative_time_dashboard')) {
-    function format_admin_relative_time_dashboard($datetime)
-    {
-        if (empty($datetime)) return '-';
-        $timestamp = strtotime((string) $datetime);
-        if (!$timestamp) return '-';
-
-        $diff = time() - $timestamp;
-        if ($diff < 60) return 'Baru saja';
-        if ($diff < 3600) return floor($diff / 60) . ' menit lalu';
-        if ($diff < 86400) return floor($diff / 3600) . ' jam lalu';
-        if ($diff < 172800) return 'Kemarin';
-        if ($diff < 2592000) return floor($diff / 86400) . ' hari lalu';
-
-        return date('d M Y - H:i', $timestamp) . ' WITA';
-    }
-}
-
 $dashboard = [
     'total_bookings' => 0,
     'pending' => 0,
@@ -66,62 +48,17 @@ try {
         $dashboard['trend_dates'][] = date('d M', strtotime($dateKey));
     }
 
-    $activities = [];
-
-    // 1. Recent Regular Bookings
-    $stmt1 = $conn->query("SELECT name, rute, pembayaran, created_at, 'booking' as type FROM bookings ORDER BY created_at DESC LIMIT 10");
-    while ($r = $stmt1->fetch(PDO::FETCH_ASSOC)) {
-        $payment = $r['pembayaran'] ?? 'Belum Lunas';
-        $tone = ($payment === 'Lunas') ? 'success' : 'warning';
-        $activities[] = [
-            'title' => 'Booking: ' . ($r['name'] ?: 'Customer'),
-            'meta' => $r['rute'] ?: '-',
-            'time' => $r['created_at'],
-            'tone' => $tone,
-            'tag' => strtoupper($payment),
-            'sort' => strtotime($r['created_at'])
-        ];
-    }
-
-    // 2. Recent Charters
-    $stmt2 = $conn->query("SELECT name, pickup_point, drop_point, created_at, 'charter' as type FROM charters ORDER BY created_at DESC LIMIT 10");
-    while ($r = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-        $activities[] = [
-            'title' => 'Charter: ' . ($r['name'] ?: 'Customer'),
-            'meta' => ($r['pickup_point'] ?: '?') . ' -> ' . ($r['drop_point'] ?: '?'),
-            'time' => $r['created_at'],
-            'tone' => 'primary',
-            'tag' => 'CHARTER',
-            'sort' => strtotime($r['created_at'])
-        ];
-    }
-
-    // 3. Recent Luggages
-    $stmt3 = $conn->query("SELECT sender_name, created_at, 'luggage' as type FROM luggages ORDER BY created_at DESC LIMIT 10");
-    while ($r = $stmt3->fetch(PDO::FETCH_ASSOC)) {
-        $activities[] = [
-            'title' => 'Paket: ' . ($r['sender_name'] ?: 'Sender'),
-            'meta' => 'Pengiriman Barang/Dokumen',
-            'time' => $r['created_at'],
-            'tone' => 'info',
-            'tag' => 'BAGASI',
-            'sort' => strtotime($r['created_at'])
-        ];
-    }
-
-    // Sort all and limit on dashboard so the card stays concise
-    usort($activities, function($a, $b) {
-        return $b['sort'] - $a['sort'];
-    });
-    $activities = array_slice($activities, 0, 5);
-
-    foreach ($activities as $act) {
+    activity_log_ensure_table($conn);
+    $activityStmt = $conn->query("SELECT category, action, summary, details, actor, created_at FROM activity_logs ORDER BY created_at DESC, id DESC LIMIT 5");
+    while ($act = $activityStmt->fetch(PDO::FETCH_ASSOC)) {
+        $category = strtolower(trim((string) ($act['category'] ?? 'settings')));
+        $action = strtolower(trim((string) ($act['action'] ?? 'update')));
         $dashboard['recent_activity'][] = [
-            'title' => $act['title'],
-            'meta' => $act['meta'],
-            'time' => format_admin_relative_time_dashboard($act['time'] ?? ''),
-            'tone' => $act['tone'],
-            'tag' => $act['tag']
+            'title' => (string) ($act['summary'] ?? '-'),
+            'meta' => trim((string) ($act['details'] ?? '')) ?: ('Admin: ' . trim((string) ($act['actor'] ?? 'system'))),
+            'time' => activity_log_relative_time($act['created_at'] ?? ''),
+            'tone' => activity_log_tone($category, $action),
+            'tag' => strtoupper($category)
         ];
     }
 

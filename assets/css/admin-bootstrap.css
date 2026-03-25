@@ -7078,6 +7078,74 @@ body.admin-bootstrap-page .customers-table-link {
     text-decoration: none;
 }
 
+body.admin-bootstrap-page .admin-logs-table .admin-log-time-main {
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+body.admin-bootstrap-page .admin-logs-table .admin-log-time-sub,
+body.admin-bootstrap-page .admin-logs-table .admin-log-details,
+body.admin-bootstrap-page .admin-logs-table .admin-log-actor-cell {
+    color: rgba(224, 192, 177, 0.78);
+    font-size: 0.78rem;
+}
+
+body.admin-bootstrap-page .admin-logs-table .admin-log-summary {
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 0.18rem;
+}
+
+body.admin-bootstrap-page .admin-logs-table .admin-log-summary-cell {
+    min-width: 20rem;
+}
+
+body.admin-bootstrap-page .admin-log-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.62rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(88, 66, 55, 0.18);
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .admin-log-badge.category-booking,
+body.admin-bootstrap-page .admin-log-badge.action-warning {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+body.admin-bootstrap-page .admin-log-badge.category-charter,
+body.admin-bootstrap-page .admin-log-badge.action-primary {
+    background: rgba(59, 130, 246, 0.12);
+    color: #93c5fd;
+}
+
+body.admin-bootstrap-page .admin-log-badge.category-luggage,
+body.admin-bootstrap-page .admin-log-badge.action-info {
+    background: rgba(14, 165, 233, 0.12);
+    color: #7dd3fc;
+}
+
+body.admin-bootstrap-page .admin-log-badge.category-settings {
+    background: rgba(148, 163, 184, 0.14);
+    color: #cbd5e1;
+}
+
+body.admin-bootstrap-page .admin-log-badge.action-success {
+    background: rgba(34, 197, 94, 0.14);
+    color: #86efac;
+}
+
+body.admin-bootstrap-page .admin-log-badge.action-danger {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fca5a5;
+}
+
 body.admin-bootstrap-page .customers-table-link:hover {
     color: #cde5ff;
     text-decoration: underline;

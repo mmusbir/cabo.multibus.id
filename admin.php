@@ -44,6 +44,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once 'middleware/auth.php';
 require_once 'config/db.php';
 require_once 'config/auth_config.php';
+require_once 'config/activity_log.php';
 require_once 'Router.php';
 
 // Check Auth immediately BEFORE any HTML output
@@ -344,6 +345,7 @@ while ($rs = $resSeg->fetch()) {
 if (isset($_POST['save_route'])) {
   $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
   $type = isset($_POST['route_type']) && $_POST['route_type'] === 'carter' ? 'carter' : 'reguler';
+  $actor = activity_log_current_actor($auth ?? null);
 
   $name = trim($_POST['route_name'] ?? '');
   $origin = trim($_POST['origin'] ?? '');
@@ -359,11 +361,27 @@ if (isset($_POST['save_route'])) {
     }
     if ($name) {
       if ($route_id > 0) {
+        $oldStmt = $conn->prepare("SELECT name, origin, destination FROM master_carter WHERE id=? LIMIT 1");
+        $oldStmt->execute([$route_id]);
+        $oldRoute = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
         $stmt = $conn->prepare("UPDATE master_carter SET name=?, origin=?, destination=?, duration=?, rental_price=?, bop_price=?, notes=? WHERE id=?");
         $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes, $route_id]);
+        activity_log_write(
+          $conn,
+          'settings',
+          'master_carter',
+          $route_id,
+          'update',
+          'Master carter diperbarui: ' . $name,
+          'Sebelumnya: ' . trim(($oldRoute['name'] ?? '-') . ' | ' . ($oldRoute['origin'] ?? '-') . ' -> ' . ($oldRoute['destination'] ?? '-')),
+          $actor
+        );
       } else {
         $stmt = $conn->prepare("INSERT INTO master_carter(name, origin, destination, duration, rental_price, bop_price, notes) VALUES(?,?,?,?,?,?,?) ON CONFLICT (origin, destination, duration) DO NOTHING");
         $stmt->execute([$name, $origin, $destination, $duration, $rental, $bop, $notes]);
+        if ($stmt->rowCount() > 0) {
+          activity_log_write($conn, 'settings', 'master_carter', $conn->lastInsertId(), 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
+        }
       }
     }
       } else {
@@ -378,6 +396,7 @@ if (isset($_POST['save_route'])) {
         
         $stmt = $conn->prepare("UPDATE routes SET name=?, origin=?, destination=? WHERE id=?");
         $stmt->execute([$name, $origin, $destination, $route_id]);
+        activity_log_write($conn, 'settings', 'route', $route_id, 'update', 'Rute diperbarui: ' . $name, 'Sebelumnya: ' . ($oldName ?: '-'), $actor);
         
         if ($oldName && $oldName !== $name) {
           $conn->prepare("UPDATE bookings SET rute=? WHERE rute=?")->execute([$name, $oldName]);
@@ -386,6 +405,9 @@ if (isset($_POST['save_route'])) {
       } else {
         $stmt = $conn->prepare("INSERT INTO routes(name, origin, destination) VALUES(?,?,?)");
         $stmt->execute([$name, $origin, $destination]);
+        if ($stmt->rowCount() > 0) {
+          activity_log_write($conn, 'settings', 'route', $conn->lastInsertId(), 'create', 'Rute ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
+        }
       }
     }
   }
@@ -394,15 +416,29 @@ if (isset($_POST['save_route'])) {
 }
 if (isset($_GET['delete_route'])) {
   $id = intval($_GET['delete_route']);
+  $actor = activity_log_current_actor($auth ?? null);
+  $stmtInfo = $conn->prepare("SELECT name FROM routes WHERE id=? LIMIT 1");
+  $stmtInfo->execute([$id]);
+  $routeName = (string) ($stmtInfo->fetchColumn() ?: '');
   $stmt = $conn->prepare("DELETE FROM routes WHERE id=?");
   $stmt->execute([$id]);
+  if ($stmt->rowCount() > 0) {
+    activity_log_write($conn, 'settings', 'route', $id, 'delete', 'Rute dihapus: ' . ($routeName ?: ('ID ' . $id)), '', $actor);
+  }
   header('Location: admin.php#routes');
   exit;
 }
 if (isset($_GET['delete_carter'])) {
   $id = intval($_GET['delete_carter']);
+  $actor = activity_log_current_actor($auth ?? null);
+  $stmtInfo = $conn->prepare("SELECT name FROM master_carter WHERE id=? LIMIT 1");
+  $stmtInfo->execute([$id]);
+  $routeName = (string) ($stmtInfo->fetchColumn() ?: '');
   $stmt = $conn->prepare("DELETE FROM master_carter WHERE id=?");
   $stmt->execute([$id]);
+  if ($stmt->rowCount() > 0) {
+    activity_log_write($conn, 'settings', 'master_carter', $id, 'delete', 'Master carter dihapus: ' . ($routeName ?: ('ID ' . $id)), '', $actor);
+  }
   header('Location: admin.php#routes');
   exit;
 }
@@ -410,6 +446,7 @@ if (isset($_GET['delete_carter'])) {
 /* SCHEDULES */
 if (isset($_POST['save_schedule'])) {
   $schedule_id = isset($_POST['schedule_id']) ? intval($_POST['schedule_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
   $rute = trim($_POST['sch_rute'] ?? '');
   $dow = intval($_POST['sch_dow'] ?? 0);
   $jam = $_POST['sch_jam'] ?? '';
@@ -418,11 +455,16 @@ if (isset($_POST['save_schedule'])) {
   $unit_id = isset($_POST['sch_unit_id']) && $_POST['sch_unit_id'] !== '' ? intval($_POST['sch_unit_id']) : null;
   if ($rute && $jam) {
     if ($schedule_id > 0) {
+      $oldStmt = $conn->prepare("SELECT rute, jam, units, seats FROM schedules WHERE id=? LIMIT 1");
+      $oldStmt->execute([$schedule_id]);
+      $oldSchedule = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
       $stmt = $conn->prepare("UPDATE schedules SET rute=?, dow=?, jam=?, units=?, seats=?, unit_id=? WHERE id=?");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id, $schedule_id]);
+      activity_log_write($conn, 'settings', 'schedule', $schedule_id, 'update', 'Jadwal diperbarui: ' . $rute . ' @ ' . $jam, 'Sebelumnya: ' . ($oldSchedule['rute'] ?? '-') . ' @ ' . ($oldSchedule['jam'] ?? '-'), $actor);
     } else {
       $stmt = $conn->prepare("INSERT INTO schedules (rute,dow,jam,units,seats,unit_id) VALUES (?,?,?,?,?,?) ON CONFLICT (rute, dow, jam) DO UPDATE SET units=EXCLUDED.units, seats=EXCLUDED.seats, unit_id=EXCLUDED.unit_id");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id]);
+      activity_log_write($conn, 'settings', 'schedule', $conn->lastInsertId(), 'create', 'Jadwal disimpan: ' . $rute . ' @ ' . $jam, 'Unit: ' . $units . ' | Seat: ' . $seats, $actor);
     }
   }
   header('Location: admin.php#schedules');
@@ -430,8 +472,15 @@ if (isset($_POST['save_schedule'])) {
 }
 if (isset($_GET['delete_schedule'])) {
   $id = intval($_GET['delete_schedule']);
+  $actor = activity_log_current_actor($auth ?? null);
+  $stmtInfo = $conn->prepare("SELECT rute, jam FROM schedules WHERE id=? LIMIT 1");
+  $stmtInfo->execute([$id]);
+  $scheduleInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: [];
   $stmt = $conn->prepare("DELETE FROM schedules WHERE id=?");
   $stmt->execute([$id]);
+  if ($stmt->rowCount() > 0) {
+    activity_log_write($conn, 'settings', 'schedule', $id, 'delete', 'Jadwal dihapus: ' . (($scheduleInfo['rute'] ?? 'Jadwal') . ' @ ' . ($scheduleInfo['jam'] ?? '-')), '', $actor);
+  }
   header('Location: admin.php#schedules');
   exit;
 }
@@ -439,6 +488,7 @@ if (isset($_GET['delete_schedule'])) {
 /* BOOKINGS cancel (server) â€” supports AJAX (returns JSON) */
 if (isset($_POST['save_booking_edit'])) {
   $id = intval($_POST['booking_id']);
+  $actor = activity_log_current_actor($auth ?? null);
   $seat = trim($_POST['seat']);
   $unit = intval($_POST['unit'] ?? 1);
   $pickup = trim($_POST['pickup_point']);
@@ -452,8 +502,23 @@ if (isset($_POST['save_booking_edit'])) {
   }
 
   if ($id > 0) {
+    $oldStmt = $conn->prepare("SELECT pembayaran, name, rute, tanggal, jam, unit FROM bookings WHERE id=? LIMIT 1");
+    $oldStmt->execute([$id]);
+    $oldBooking = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE bookings SET seat=?, unit=?, pickup_point=?, pembayaran=?, segment_id=?, price=?, discount=? WHERE id=?");
     $stmt->execute([$seat, $unit, $pickup, $pembayaran, $segment_id, $price, $discount, $id]);
+    if (($oldBooking['pembayaran'] ?? '') !== $pembayaran) {
+      activity_log_write(
+        $conn,
+        'booking',
+        'payment',
+        $id,
+        'update',
+        'Status pembayaran booking diperbarui menjadi ' . $pembayaran,
+        ($oldBooking['name'] ?? 'Customer') . ' | ' . ($oldBooking['rute'] ?? '-') . ' | ' . ($oldBooking['tanggal'] ?? '-') . ' ' . ($oldBooking['jam'] ?? '-') . ' | Unit ' . ($oldBooking['unit'] ?? $unit),
+        $actor
+      );
+    }
   }
   header('Location: admin.php');
   exit;
@@ -461,15 +526,28 @@ if (isset($_POST['save_booking_edit'])) {
 if (isset($_GET['cancel_booking'])) {
   $id = intval($_GET['cancel_booking']);
   $reason = trim($_GET['reason'] ?? '');
-  $admin_user = $_SESSION['admin_user'] ?? 'unknown';
+  $admin_user = activity_log_current_actor($auth ?? null);
   $result = ['success' => false];
   if ($id > 0) {
+    $infoStmt = $conn->prepare("SELECT name, rute, tanggal, jam, unit FROM bookings WHERE id=? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $bookingInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE bookings SET status='canceled' WHERE id=? AND status!='canceled'");
     $stmt->execute([$id]);
     $affected = $stmt->rowCount();
     if ($affected > 0) {
       $stmt2 = $conn->prepare("INSERT INTO cancellations (booking_id, admin_user, reason) VALUES (?,?,?)");
       $stmt2->execute([$id, $admin_user, $reason]);
+      activity_log_write(
+        $conn,
+        'booking',
+        'booking',
+        $id,
+        'cancel',
+        'Booking dibatalkan: ' . ($bookingInfo['name'] ?? ('ID ' . $id)),
+        trim(($bookingInfo['rute'] ?? '-') . ' | ' . ($bookingInfo['tanggal'] ?? '-') . ' ' . ($bookingInfo['jam'] ?? '-') . ' | Unit ' . ($bookingInfo['unit'] ?? '-') . ($reason !== '' ? ' | Alasan: ' . $reason : '')),
+        $admin_user
+      );
       $result['success'] = true;
     } else {
       $result['error'] = 'nothing_changed';
@@ -492,10 +570,24 @@ if (isset($_GET['mark_paid'])) {
   $id = intval($_GET['mark_paid']);
   $result = ['success' => false];
   if ($id > 0) {
+    $actor = activity_log_current_actor($auth ?? null);
+    $infoStmt = $conn->prepare("SELECT name, rute, tanggal, jam, unit, pembayaran FROM bookings WHERE id=? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $bookingInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     $stmt = $conn->prepare("UPDATE bookings SET pembayaran='Lunas' WHERE id=?");
     $stmt->execute([$id]);
     $affected = $stmt->rowCount();
     if ($affected > 0) {
+      activity_log_write(
+        $conn,
+        'booking',
+        'payment',
+        $id,
+        'mark_paid',
+        'Status pembayaran booking diubah menjadi Lunas',
+        ($bookingInfo['name'] ?? ('ID ' . $id)) . ' | ' . ($bookingInfo['rute'] ?? '-') . ' | ' . ($bookingInfo['tanggal'] ?? '-') . ' ' . ($bookingInfo['jam'] ?? '-') . ' | Unit ' . ($bookingInfo['unit'] ?? '-'),
+        $actor
+      );
       $result['success'] = true;
     } else {
       $result['error'] = 'nothing_changed';
@@ -521,6 +613,7 @@ if (isset($_GET['mark_all_paid'])) {
   $unit    = intval($_GET['unit'] ?? 0);
   $result  = ['success' => false];
   if ($rute && $tanggal && $jam && $unit > 0) {
+    $actor = activity_log_current_actor($auth ?? null);
     $stmt = $conn->prepare(
       "UPDATE bookings SET pembayaran='Lunas'
        WHERE rute=? AND tanggal=? AND jam=? AND unit=?
@@ -530,6 +623,18 @@ if (isset($_GET['mark_all_paid'])) {
     $stmt->execute([$rute, $tanggal, $jam, $unit]);
     $result['success'] = true;
     $result['updated'] = $stmt->rowCount();
+    if (($result['updated'] ?? 0) > 0) {
+      activity_log_write(
+        $conn,
+        'booking',
+        'departure_payment',
+        $rute . '|' . $tanggal . '|' . $jam . '|' . $unit,
+        'mark_all_paid',
+        'Lunas Semua dijalankan untuk keberangkatan ' . $rute,
+        $tanggal . ' ' . $jam . ' | Unit ' . $unit . ' | Booking diperbarui: ' . $result['updated'],
+        $actor
+      );
+    }
   } else {
     $result['error'] = 'invalid_params';
   }
@@ -541,10 +646,14 @@ if (isset($_GET['mark_all_paid'])) {
 /* USERS create/update */
 if (isset($_POST['add_user'])) {
   $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
   $username = trim($_POST['username'] ?? '');
   $password = $_POST['password'] ?? '';
   $fullname = trim($_POST['fullname'] ?? '');
   if ($user_id > 0 && $username) {
+    $oldStmt = $conn->prepare("SELECT username, fullname FROM users WHERE id=? LIMIT 1");
+    $oldStmt->execute([$user_id]);
+    $oldUser = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
     if ($password !== '') {
       $hash = password_hash($password, PASSWORD_BCRYPT);
       $stmt = $conn->prepare("UPDATE users SET username=?, password_hash=?, fullname=? WHERE id=?");
@@ -553,18 +662,29 @@ if (isset($_POST['add_user'])) {
       $stmt = $conn->prepare("UPDATE users SET username=?, fullname=? WHERE id=?");
       $stmt->execute([$username, $fullname, $user_id]);
     }
+    activity_log_write($conn, 'settings', 'user', $user_id, 'update', 'User diperbarui: ' . $username, 'Sebelumnya: ' . ($oldUser['username'] ?? '-'), $actor);
   } elseif ($username && $password) {
     $hash = password_hash($password, PASSWORD_BCRYPT);
     $stmt = $conn->prepare("INSERT INTO users(username,password_hash,fullname) VALUES(?,?,?)");
     $stmt->execute([$username, $hash, $fullname]);
+    if ($stmt->rowCount() > 0) {
+      activity_log_write($conn, 'settings', 'user', $conn->lastInsertId(), 'create', 'User ditambahkan: ' . $username, $fullname, $actor);
+    }
   }
   header('Location: admin.php#users');
   exit;
 }
 if (isset($_GET['delete_user'])) {
   $id = intval($_GET['delete_user']);
+  $actor = activity_log_current_actor($auth ?? null);
+  $stmtInfo = $conn->prepare("SELECT username FROM users WHERE id=? LIMIT 1");
+  $stmtInfo->execute([$id]);
+  $username = (string) ($stmtInfo->fetchColumn() ?: '');
   $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
   $stmt->execute([$id]);
+  if ($stmt->rowCount() > 0) {
+    activity_log_write($conn, 'settings', 'user', $id, 'delete', 'User dihapus: ' . ($username ?: ('ID ' . $id)), '', $actor);
+  }
   header('Location: admin.php#users');
   exit;
 }
@@ -573,6 +693,7 @@ if (isset($_GET['delete_user'])) {
 if (isset($_POST['save_settings'])) {
   $enable_claude = isset($_POST['enable_claude_haiku_4_5']) ? '1' : '0';
   updateSetting($conn, 'enable_claude_haiku_4_5', $enable_claude);
+  activity_log_write($conn, 'settings', 'system_setting', 'enable_claude_haiku_4_5', 'update', 'Pengaturan sistem diperbarui', 'enable_claude_haiku_4_5 = ' . $enable_claude, activity_log_current_actor($auth ?? null));
   $_SESSION['settings_saved'] = true;
   header('Location: admin.php#settings');
   exit;
@@ -581,6 +702,7 @@ if (isset($_POST['save_settings'])) {
 /* CUSTOMERS save/delete/import */
 if (isset($_POST['save_customer'])) {
   $cid = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
   $name = trim($_POST['cust_name'] ?? '');
   $name = strtoupper($name); // Force Uppercase
 
@@ -615,11 +737,16 @@ if (isset($_POST['save_customer'])) {
     }
 
     if ($cid > 0) {
+      $oldStmt = $conn->prepare("SELECT name, phone FROM customers WHERE id=? LIMIT 1");
+      $oldStmt->execute([$cid]);
+      $oldCustomer = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
       $stmt = $conn->prepare("UPDATE customers SET name=?, phone=?, pickup_point=?, address=? WHERE id=?");
       $stmt->execute([$name, $phone, $pickup, $address, $cid]);
+      activity_log_write($conn, 'settings', 'customer', $cid, 'update', 'Customer diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCustomer['name'] ?? '-') . ' | ' . ($oldCustomer['phone'] ?? '-'), $actor);
     } else {
       $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
       $stmt->execute([$name, $phone, $address, $pickup]);
+      activity_log_write($conn, 'settings', 'customer', $conn->lastInsertId(), 'create', 'Customer disimpan: ' . $name, $phone, $actor);
     }
   }
   header('Location: admin.php');
@@ -653,8 +780,15 @@ if (isset($_POST['export_customers'])) {
 
 if (isset($_GET['delete_customer'])) {
   $id = intval($_GET['delete_customer']);
+  $actor = activity_log_current_actor($auth ?? null);
+  $stmtInfo = $conn->prepare("SELECT name, phone FROM customers WHERE id=? LIMIT 1");
+  $stmtInfo->execute([$id]);
+  $customerInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: [];
   $stmt = $conn->prepare("DELETE FROM customers WHERE id=?");
   $stmt->execute([$id]);
+  if ($stmt->rowCount() > 0) {
+    activity_log_write($conn, 'settings', 'customer', $id, 'delete', 'Customer dihapus: ' . ($customerInfo['name'] ?? ('ID ' . $id)), $customerInfo['phone'] ?? '', $actor);
+  }
   header('Location: admin.php');
   exit;
 }
@@ -662,17 +796,25 @@ if (isset($_GET['delete_customer'])) {
 /* DRIVERS save/delete */
 if (isset($_POST['save_driver'])) {
   $id = isset($_POST['driver_id']) ? intval($_POST['driver_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
   $nama = trim($_POST['driver_nama'] ?? '');
   $phone = trim($_POST['driver_phone'] ?? '');
   $unit_id = intval($_POST['driver_unit_id'] ?? 0);
 
   if ($nama && $phone && $unit_id > 0) {
     if ($id > 0) {
+      $oldStmt = $conn->prepare("SELECT nama FROM drivers WHERE id=? LIMIT 1");
+      $oldStmt->execute([$id]);
+      $oldName = (string) ($oldStmt->fetchColumn() ?: '');
       $stmt = $conn->prepare("UPDATE drivers SET nama=?, phone=?, unit_id=? WHERE id=?");
       $stmt->execute([$nama, $phone, $unit_id, $id]);
+      activity_log_write($conn, 'settings', 'driver', $id, 'update', 'Driver diperbarui: ' . $nama, 'Sebelumnya: ' . ($oldName ?: '-'), $actor);
     } else {
       $stmt = $conn->prepare("INSERT INTO drivers (nama, phone, unit_id) VALUES (?,?,?)");
       $stmt->execute([$nama, $phone, $unit_id]);
+      if ($stmt->rowCount() > 0) {
+        activity_log_write($conn, 'settings', 'driver', $conn->lastInsertId(), 'create', 'Driver ditambahkan: ' . $nama, $phone, $actor);
+      }
     }
   }
   header('Location: admin.php#drivers');
@@ -681,8 +823,15 @@ if (isset($_POST['save_driver'])) {
 if (isset($_GET['delete_driver'])) {
   $id = intval($_GET['delete_driver']);
   if ($id > 0) {
+    $actor = activity_log_current_actor($auth ?? null);
+    $stmtInfo = $conn->prepare("SELECT nama FROM drivers WHERE id=? LIMIT 1");
+    $stmtInfo->execute([$id]);
+    $driverName = (string) ($stmtInfo->fetchColumn() ?: '');
     $stmt = $conn->prepare("DELETE FROM drivers WHERE id=?");
     $stmt->execute([$id]);
+    if ($stmt->rowCount() > 0) {
+      activity_log_write($conn, 'settings', 'driver', $id, 'delete', 'Driver dihapus: ' . ($driverName ?: ('ID ' . $id)), '', $actor);
+    }
   }
   header('Location: admin.php#drivers');
   exit;
@@ -691,6 +840,7 @@ if (isset($_GET['delete_driver'])) {
 /* SEGMENTS save/delete */
 if (isset($_POST['save_segment'])) {
   $id = isset($_POST['segment_id']) ? intval($_POST['segment_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
   $route_id = isset($_POST['segment_route_id']) ? intval($_POST['segment_route_id']) : 0;
   $origin = trim($_POST['segment_origin'] ?? '');
   $destination = trim($_POST['segment_destination'] ?? '');
@@ -704,11 +854,18 @@ if (isset($_POST['save_segment'])) {
 
   if ($origin && $destination) {
     if ($id > 0) {
+      $oldStmt = $conn->prepare("SELECT rute FROM segments WHERE id=? LIMIT 1");
+      $oldStmt->execute([$id]);
+      $oldRoute = (string) ($oldStmt->fetchColumn() ?: '');
       $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, origin=?, destination=?, pickup_time=?, harga=? WHERE id=?");
       $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga, $id]);
+      activity_log_write($conn, 'settings', 'segment', $id, 'update', 'Segment diperbarui: ' . $rute, 'Sebelumnya: ' . ($oldRoute ?: '-'), $actor);
     } else {
       $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, origin, destination, pickup_time, harga) VALUES (?,?,?,?,?,?)");
       $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga]);
+      if ($stmt->rowCount() > 0) {
+        activity_log_write($conn, 'settings', 'segment', $conn->lastInsertId(), 'create', 'Segment ditambahkan: ' . $rute, $pickup_time !== '' ? ('Pickup ' . $pickup_time) : '', $actor);
+      }
     }
   }
   header('Location: admin.php#segments');
@@ -717,13 +874,21 @@ if (isset($_POST['save_segment'])) {
 if (isset($_GET['delete_segment'])) {
   $id = intval($_GET['delete_segment']);
   if ($id > 0) {
+    $actor = activity_log_current_actor($auth ?? null);
+    $stmtInfo = $conn->prepare("SELECT rute FROM segments WHERE id=? LIMIT 1");
+    $stmtInfo->execute([$id]);
+    $segmentName = (string) ($stmtInfo->fetchColumn() ?: '');
     $stmt = $conn->prepare("DELETE FROM segments WHERE id=?");
     $stmt->execute([$id]);
+    if ($stmt->rowCount() > 0) {
+      activity_log_write($conn, 'settings', 'segment', $id, 'delete', 'Segment dihapus: ' . ($segmentName ?: ('ID ' . $id)), '', $actor);
+    }
   }
   header('Location: admin.php#segments');
   exit;
 }
 if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
+  $actor = activity_log_current_actor($auth ?? null);
   @set_time_limit(0);
   @ini_set('max_execution_time', '0');
   @ini_set('memory_limit', '512M');
@@ -849,10 +1014,12 @@ if (isset($_POST['import_csv']) || isset($_POST['import_customers'])) {
   $flushCustomerImportBatch($rowsBuffer);
   fclose($f);
   $_SESSION['import_msg'] = "Import selesai - berhasil: $ok, error: $err";
+  activity_log_write($conn, 'settings', 'customer_import', 'csv', 'import', 'Import CSV customers selesai', 'Berhasil: ' . $ok . ' | Error: ' . $err, $actor);
   header('Location: admin.php#customers');
   exit;
 }
 if (isset($_POST['create_charter_submit'])) {
+  $actor = activity_log_current_actor($auth ?? null);
   $charterForm = [
     'name' => trim((string) ($_POST['name'] ?? '')),
     'phone' => trim((string) ($_POST['phone'] ?? '')),
@@ -944,6 +1111,7 @@ if (isset($_POST['create_charter_submit'])) {
       $busType,
       0,
     ]);
+    activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
     $_SESSION['booking_msg'] = 'Data carter berhasil disimpan.';
     unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
     header('Location: admin.php?booking_mode=charters#bookings');
@@ -1010,7 +1178,7 @@ if (!isset($_REQUEST['action'])):
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=38">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=39">
   <link rel="stylesheet" href="assets/css/theme-toggle.css?v=<?= time() ?>">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
