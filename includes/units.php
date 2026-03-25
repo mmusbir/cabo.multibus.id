@@ -1,5 +1,5 @@
 <!-- UNITS -->
-<section id="units" class="card">
+<section id="units" class="card" style="display:none;">
     <div class="admin-section-header">
         <div>
             <h3 class="admin-section-title">Manajemen Unit Kendaraan</h3>

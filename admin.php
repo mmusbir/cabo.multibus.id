@@ -208,7 +208,7 @@ if ($isActionRequest) {
     });
     
     $router->get('luggagePage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_page.php';
+      include $ajax_dir . 'luggage_data_page.php';
     });
     
     $router->get('reportsPage', function () use ($ajax_dir) {
@@ -1445,7 +1445,7 @@ if (!isset($_REQUEST['action'])):
           window.bookingDashboardState.active = 'charters';
         }
         var active = document.getElementById(id);
-        if (active) active.style.display = '';
+        if (active) active.style.display = 'block';
         if (typeof window.syncAdminNavState === 'function') {
           window.syncAdminNavState(id);
         }
@@ -1550,6 +1550,7 @@ if (!isset($_REQUEST['action'])):
           window.updateBookingCommandSummary(target, js.total);
         }
         if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
+        if (target === 'charters') { attachCharterHandlers(); }
         if (target === 'luggage') { attachLuggageHandlers(); }
       } catch (e) {
         if (tbody) {
@@ -1569,7 +1570,7 @@ if (!isset($_REQUEST['action'])):
       }
       return 'bookings';
     }
-    if (false && document.getElementById('searchBtn')) {
+    if (document.getElementById('searchBtn')) {
       document.getElementById('searchBtn').onclick = function () {
         const search = document.getElementById('search_name_input').value;
         const target = getActiveBookingTarget();
@@ -1577,7 +1578,7 @@ if (!isset($_REQUEST['action'])):
       };
     }
     // Auto-search on typing with debounce
-    if (false && document.getElementById('search_name_input')) {
+    if (document.getElementById('search_name_input')) {
       document.getElementById('search_name_input').addEventListener('input', function () {
         clearTimeout(searchDebounceTimer);
         const search = this.value;
@@ -1609,7 +1610,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('customers_per_page')) {
+    if (document.getElementById('customers_per_page')) {
       document.getElementById('customers_per_page').onchange = function () {
         ajaxListLoad('customers', {
           page: 1,
@@ -1618,7 +1619,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('bookings_per_page')) {
+    if (document.getElementById('bookings_per_page')) {
       document.getElementById('bookings_per_page').onchange = function () {
         const target = getActiveBookingTarget();
         ajaxListLoad(target, {
@@ -1628,7 +1629,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('routes_per_page')) {
+    if (document.getElementById('routes_per_page')) {
       document.getElementById('routes_per_page').onchange = function () {
         ajaxListLoad('routes', {
           page: 1,
@@ -1638,7 +1639,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('schedules_per_page')) {
+    if (document.getElementById('schedules_per_page')) {
       document.getElementById('schedules_per_page').onchange = function () {
         ajaxListLoad('schedules', {
           page: 1,
@@ -1646,7 +1647,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('users_per_page')) {
+    if (document.getElementById('users_per_page')) {
       document.getElementById('users_per_page').onchange = function () {
         ajaxListLoad('users', {
           page: 1,
@@ -1654,7 +1655,7 @@ if (!isset($_REQUEST['action'])):
         });
       };
     }
-    if (false && document.getElementById('cancellations_per_page')) {
+    if (document.getElementById('cancellations_per_page')) {
       document.getElementById('cancellations_per_page').onchange = function () {
         ajaxListLoad('cancellations', {
           page: 1,
@@ -2398,6 +2399,198 @@ if (!isset($_REQUEST['action'])):
     }
 
     // Save Driver Assignment
+    function attachCharterHandlers() {
+      document.querySelectorAll('.edit-charter-btn').forEach(btn => {
+        btn.onclick = async function (e) {
+          e.preventDefault();
+          const id = this.getAttribute('data-id');
+          try {
+            const res = await fetch('admin.php?action=get_charter&id=' + id);
+            const js = await parseAdminApiResponse(res);
+            if (js.success) {
+              const d = js.data;
+              document.getElementById('edit_charter_id').value = d.id;
+              document.getElementById('edit_charter_name').value = d.name || '';
+              document.getElementById('edit_charter_company').value = d.company_name || '';
+              document.getElementById('edit_charter_phone').value = d.phone || '';
+              document.getElementById('edit_charter_price').value = d.price || 0;
+              document.getElementById('edit_charter_start').value = d.start_date || '';
+              document.getElementById('edit_charter_end').value = d.end_date || '';
+              document.getElementById('edit_charter_time').value = (d.departure_time || '08:00').substring(0, 5);
+              document.getElementById('edit_charter_pickup').value = d.pickup_point || '';
+              document.getElementById('edit_charter_drop').value = d.drop_point || '';
+              document.getElementById('edit_charter_layanan').value = d.layanan || '';
+              document.getElementById('edit_charter_bop_val').value = d.bop_price || 0;
+
+              // Populate Unit Select
+              const unitRes = await fetch('admin.php?action=get_units');
+              const unitJs = await parseAdminApiResponse(unitRes);
+              const uSelect = document.getElementById('edit_charter_unit');
+              if (unitJs.success && uSelect) {
+                uSelect.innerHTML = '<option value="">-- Unit --</option>';
+                unitJs.units.forEach(u => {
+                  const opt = document.createElement('option');
+                  opt.value = u.id;
+                  opt.textContent = (u.nopol || '-') + ' - ' + (u.merek || 'Unit');
+                  if (String(u.id) === String(d.unit_id)) opt.selected = true;
+                  uSelect.appendChild(opt);
+                });
+              }
+
+              // Populate Driver Select
+              const driverRes = await fetch('admin.php?action=get_drivers');
+              const driverJs = await parseAdminApiResponse(driverRes);
+              const drSelect = document.getElementById('edit_charter_driver');
+              if (driverJs.success && drSelect) {
+                drSelect.innerHTML = '<option value="">-- Pilih Driver --</option>';
+                driverJs.drivers.forEach(dr => {
+                  const opt = document.createElement('option');
+                  opt.value = dr.nama;
+                  opt.textContent = dr.nama;
+                  if (dr.nama === d.driver_name) opt.selected = true;
+                  drSelect.appendChild(opt);
+                });
+              }
+
+              // Master Routes
+              const routeRes = await fetch('admin.php?action=get_charter_routes');
+              const routeJs = await parseAdminApiResponse(routeRes);
+              const rSelect = document.getElementById('edit_charter_route_id');
+              if (routeJs.success && rSelect) {
+                rSelect.innerHTML = '<option value="">-- Master Rute Carter --</option>';
+                routeJs.routes.forEach(r => {
+                  const opt = document.createElement('option');
+                  opt.value = r.id;
+                  opt.textContent = r.name || (r.origin + ' - ' + r.destination);
+                  opt.dataset.pickup = r.origin;
+                  opt.dataset.drop = r.destination;
+                  opt.dataset.price = r.rental_price;
+                  opt.dataset.bop = r.bop_price;
+                  rSelect.appendChild(opt);
+                });
+                rSelect.onchange = function() {
+                  const sel = this.options[this.selectedIndex];
+                  if (!sel.value) return;
+                  document.getElementById('edit_charter_pickup').value = sel.dataset.pickup || '';
+                  document.getElementById('edit_charter_drop').value = sel.dataset.drop || '';
+                  document.getElementById('edit_charter_price').value = sel.dataset.price || 0;
+                  document.getElementById('edit_charter_bop_val').value = sel.dataset.bop || 0;
+                };
+              }
+
+              const modal = document.getElementById('editCharterModal');
+              modal.style.display = 'flex';
+              setTimeout(() => modal.classList.add('show'), 10);
+            }
+          } catch (err) {
+            customAlert('Gagal mengambil data carter.');
+          }
+        };
+      });
+
+      document.querySelectorAll('.delete-charter-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const id = this.getAttribute('data-id');
+          customConfirm('Hapus data carter ini?', async () => {
+            try {
+              const res = await fetch('admin.php?action=delete_charter&id=' + id);
+              const js = await parseAdminApiResponse(res);
+              if (js.success) {
+                ajaxListLoad('charters', { page: 1 });
+              } else {
+                customAlert('Gagal menghapus: ' + (js.error || 'unknown'));
+              }
+            } catch (err) {
+              customAlert('Kesalahan koneksi.');
+            }
+          });
+        };
+      });
+
+      document.querySelectorAll('.bop-done-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const id = this.getAttribute('data-id');
+          customConfirm('Tandai BOP sebagai LUNAS SEMUA?', async () => {
+            try {
+              const res = await fetch('admin.php?action=toggle_bop&id=' + id);
+              const js = await parseAdminApiResponse(res);
+              if (js.success) {
+                ajaxListLoad('charters', { page: 1 });
+              }
+            } catch (err) {
+              customAlert('Kesalahan koneksi.');
+            }
+          }, 'Konfirmasi Pembayaran', 'success');
+        };
+      });
+
+      document.querySelectorAll('.copy-charter-btn').forEach(btn => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const card = this.closest('.admin-card-compact');
+          if (!card) return;
+          const name = card.querySelector('.ac-title')?.innerText || '';
+          const phone = card.querySelector('.ac-stat:nth-child(2) span')?.innerText || '';
+          const route = card.querySelector('.ac-stat:nth-child(3) span')?.innerText || '';
+          const date = card.querySelector('.ac-stat:nth-child(1) span')?.innerText || '';
+          
+          const text = `DETAIL CARTER\nNama: ${name}\nHP: ${phone}\nRute: ${route}\nTanggal: ${date}`;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => customAlert('Detail carter disalin!'));
+          } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            customAlert('Detail carter disalin!');
+          }
+        };
+      });
+    }
+
+    if (document.getElementById('closeEditCharterModal')) {
+      document.getElementById('closeEditCharterModal').onclick = function () {
+        const modal = document.getElementById('editCharterModal');
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+    }
+    if (document.getElementById('editCharterModal')) {
+      document.getElementById('editCharterModal').onclick = function (e) {
+        if (e.target === this) {
+          this.classList.remove('show');
+          setTimeout(() => { this.style.display = 'none'; }, 300);
+        }
+      };
+    }
+
+    if (document.getElementById('editCharterForm')) {
+      document.getElementById('editCharterForm').onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('action', 'update_charter');
+        try {
+          const res = await fetch('admin.php?action=update_charter', {
+            method: 'POST',
+            body: formData
+          });
+          const js = await parseAdminApiResponse(res);
+          if (js.success) {
+            document.getElementById('closeEditCharterModal').click();
+            ajaxListLoad('charters', { page: 1 });
+          } else {
+            customAlert('Gagal menyimpan: ' + (js.error || 'unknown'));
+          }
+        } catch (err) {
+          customAlert('Kesalahan koneksi saat update charter.');
+        }
+      };
+    }
+
     window.saveDriverAssignment = async function (rute, tanggal, jam, unit) {
       const driverId = document.getElementById('driverSelect').value;
       const driverName = document.getElementById('driverSelect').options[document.getElementById('driverSelect').selectedIndex].text;
@@ -2414,7 +2607,7 @@ if (!isset($_REQUEST['action'])):
           method: 'POST',
           body: formData
         });
-        const js = await res.json();
+        const js = await parseAdminApiResponse(res); // using my helper
 
         if (js.success) {
           // Update UI
@@ -2431,9 +2624,9 @@ if (!isset($_REQUEST['action'])):
       } catch (e) {
         customAlert('Error: ' + e, 'Network Error');
       }
-
     };
-  </script>
+
+</script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>

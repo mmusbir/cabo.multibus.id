@@ -1,5 +1,5 @@
 <!-- SCHEDULES -->
-<section id="schedules" class="card">
+<section id="schedules" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Jadwal</h3>

@@ -9,7 +9,8 @@ $dashboard = [
     'live_fleet' => 0,
     'revenue_today' => 0,
     'trend_labels' => [],
-    'trend_counts' => [],
+    'trend_revenues' => [],
+    'trend_dates' => [],
     'recent_activity' => [],
 ];
 
@@ -25,21 +26,23 @@ try {
         $dashboard['top_route_count'] = (int) ($topRoute['total'] ?? 0);
     }
 
-    $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT CONCAT(tanggal, '|', jam, '|', unit)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
+    $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT (tanggal::text || '|' || jam::text || '|' || unit::text)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
+    $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
 
-    $trendStmt = $conn->query("SELECT tanggal, COUNT(*) AS total FROM bookings WHERE status != 'canceled' AND tanggal BETWEEN DATE_SUB(CURRENT_DATE, INTERVAL 6 DAY) AND CURRENT_DATE GROUP BY tanggal ORDER BY tanggal ASC");
-    $trendMap = [];
-    if ($trendStmt) {
-        while ($row = $trendStmt->fetch(PDO::FETCH_ASSOC)) {
-            $trendMap[$row['tanggal']] = (int) ($row['total'] ?? 0);
+    // Revenue trend per day (last 7 days), only counting paid bookings
+    $revTrendStmt = $conn->query("SELECT tanggal, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY tanggal ORDER BY tanggal ASC");
+    $revTrendMap = [];
+    if ($revTrendStmt) {
+        while ($row = $revTrendStmt->fetch(PDO::FETCH_ASSOC)) {
+            $revTrendMap[$row['tanggal']] = (float) ($row['revenue'] ?? 0);
         }
     }
 
     for ($i = 6; $i >= 0; $i--) {
         $dateKey = date('Y-m-d', strtotime('-' . $i . ' days'));
         $dashboard['trend_labels'][] = strtoupper(date('D', strtotime($dateKey)));
-        $dashboard['trend_counts'][] = $trendMap[$dateKey] ?? 0;
+        $dashboard['trend_revenues'][] = $revTrendMap[$dateKey] ?? 0;
+        $dashboard['trend_dates'][] = date('d M', strtotime($dateKey));
     }
 
     $activities = [];
@@ -106,13 +109,13 @@ try {
 }
 
 $todayLabel = strtoupper(date('l, d F Y'));
-$maxTrend = max($dashboard['trend_counts'] ?: [1]);
-$trendHeights = array_map(static function ($count) use ($maxTrend) {
-    if ($maxTrend <= 0) {
-        return 18;
+$maxRevenue = max($dashboard['trend_revenues'] ?: [1]);
+$trendHeights = array_map(static function ($rev) use ($maxRevenue) {
+    if ($maxRevenue <= 0) {
+        return 12;
     }
-    return max(18, (int) round(($count / $maxTrend) * 100));
-}, $dashboard['trend_counts']);
+    return max(12, (int) round(($rev / $maxRevenue) * 100));
+}, $dashboard['trend_revenues']);
 ?>
 <section id="dashboard" class="card kinetic-admin-dashboard">
   <div class="kinetic-dash-shell">
@@ -134,11 +137,11 @@ $trendHeights = array_map(static function ($count) use ($maxTrend) {
         <div><strong><?php echo number_format($dashboard['total_bookings'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">trending_up</span></div>
       </div>
       <div class="kinetic-stat-card is-warning">
-        <p>Pending</p>
+        <p>Belum Lunas</p>
         <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">schedule</span></div>
       </div>
       <div class="kinetic-stat-card is-success">
-        <p>Confirmed</p>
+        <p>Lunas Semua</p>
         <div><strong><?php echo number_format($dashboard['confirmed'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">check_circle</span></div>
       </div>
       <div class="kinetic-stat-card is-danger">
@@ -150,12 +153,18 @@ $trendHeights = array_map(static function ($count) use ($maxTrend) {
     <div class="kinetic-dash-grid">
       <section class="kinetic-dash-panel kinetic-dash-chart">
         <div class="kinetic-dash-panel-head">
-          <h2>Booking Trends</h2>
-          <span class="kinetic-dash-chip">Last 7 Days</span>
+          <h2>Tren Revenue Harian</h2>
+          <span class="kinetic-dash-chip">7 Hari Terakhir</span>
         </div>
         <div class="kinetic-dash-chart-bars">
           <?php foreach ($dashboard['trend_labels'] as $idx => $label): ?>
-            <div class="kinetic-dash-bar-group <?php echo $idx === array_key_last($dashboard['trend_labels']) ? 'is-active' : ''; ?>">
+            <div class="kinetic-dash-bar-group <?php echo $idx === array_key_last($dashboard['trend_labels']) ? 'is-active' : ''; ?>"
+                 data-revenue="<?php echo (int) $dashboard['trend_revenues'][$idx]; ?>"
+                 data-date="<?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?>">
+              <div class="kinetic-dash-bar-tooltip">
+                <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
+                <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
+              </div>
               <div class="kinetic-dash-bar" style="height: <?php echo (int) $trendHeights[$idx]; ?>%;"></div>
               <span><?php echo htmlspecialchars($label); ?></span>
             </div>

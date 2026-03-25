@@ -1,4 +1,4 @@
-<section id="booking-detail" class="card booking-detail-page">
+<section id="booking-detail" class="card booking-detail-page" style="display:none;">
   <div class="booking-detail-page-shell">
     <div class="booking-detail-page-head">
       <div class="booking-detail-page-copy">

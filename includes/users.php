@@ -1,5 +1,5 @@
 <!-- USERS -->
-<section id="users" class="card">
+<section id="users" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Users</h3>

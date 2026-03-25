@@ -1,5 +1,5 @@
 <!-- SEGMENTS -->
-<section id="segments" class="card">
+<section id="segments" class="card" style="display:none;">
     <div class="admin-section-header">
         <div>
             <h3 class="admin-section-title">Manajemen Segment</h3>

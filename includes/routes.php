@@ -1,5 +1,5 @@
 <!-- ROUTES -->
-<section id="routes" class="card">
+<section id="routes" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Rute</h3>

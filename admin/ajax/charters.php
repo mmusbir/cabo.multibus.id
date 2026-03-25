@@ -113,8 +113,8 @@ if (empty($rows)) {
         $durationDays = $interval->days + 1;
 
         $bopStatus = $r['bop_status'] ?? 'pending';
-        $bopLabel = ($bopStatus === 'done') ? 'Confirmed' : 'Pending';
-        $stateClass = ($bopStatus === 'done') ? 'confirmed' : 'pending';
+        $bopLabel = ($bopStatus === 'done') ? 'Lunas Semua' : 'Belum Lunas';
+        $stateClass = ($bopStatus === 'done') ? 'ready' : 'warning';
         $layanan = $r['layanan'] ?? 'Regular';
         $routeLine = trim(($r['pickup_point'] ?? '-') . ' - ' . ($r['drop_point'] ?? '-'));
         $driverName = trim($r['driver_name'] ?? '-') !== '' ? $r['driver_name'] : '-';

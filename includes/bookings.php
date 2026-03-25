@@ -1,5 +1,5 @@
 <!-- BOOKINGS -->
-<section id="bookings" class="card kinetic-command-bookings" data-active-mode="bookings">
+<section id="bookings" class="card kinetic-command-bookings" data-active-mode="bookings" style="display:none;">
   <div class="kinetic-command-header">
     <div>
       <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
@@ -34,8 +34,8 @@
 
   <div id="charterFilterRow" class="charter-command-filters no-scrollbar" style="display:none">
     <button type="button" class="charter-filter-chip active">Semua</button>
-    <button type="button" class="charter-filter-chip">Pending</button>
-    <button type="button" class="charter-filter-chip">Confirmed</button>
+    <button type="button" class="charter-filter-chip">Belum Lunas</button>
+    <button type="button" class="charter-filter-chip">Lunas Semua</button>
   </div>
 
   <div id="bookings_spinner_wrap" class="spinner-wrap" style="display:none">

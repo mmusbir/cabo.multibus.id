@@ -88,8 +88,8 @@ if (empty($rows)) {
         $totalPax = intval($trip['total_pax'] ?? 0);
         $paidCount = intval($trip['paid_count'] ?? 0);
         $unpaidCount = intval($trip['unpaid_count'] ?? 0);
-        $statusLabel = $driverName !== '-' ? 'CONFIRMED' : 'PENDING';
-        $stateClass = $driverName !== '-' ? 'ready' : 'warning';
+        $statusLabel = ($unpaidCount === 0) ? 'Lunas Semua' : 'Belum Lunas';
+        $stateClass = ($unpaidCount === 0) ? 'ready' : 'warning';
 
         echo '<div class="admin-card-compact kinetic-trip-card">';
         echo '  <div class="kinetic-trip-card-inner">';

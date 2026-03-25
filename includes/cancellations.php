@@ -1,5 +1,5 @@
 <!-- CANCELLATIONS -->
-<section id="cancellations" class="card">
+<section id="cancellations" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Cancellation Log</h3>

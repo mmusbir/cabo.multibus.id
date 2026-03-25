@@ -4140,6 +4140,8 @@ body.admin-bootstrap-page .kinetic-dash-bar-group {
     align-items: center;
     gap: 0.7rem;
     min-width: 0;
+    position: relative;
+    cursor: pointer;
 }
 
 body.admin-bootstrap-page .kinetic-dash-bar {
@@ -4155,15 +4157,66 @@ body.admin-bootstrap-page .kinetic-dash-bar-group:hover .kinetic-dash-bar {
     background: #f97316;
 }
 
-body.admin-bootstrap-page .kinetic-dash-bar-group span {
+body.admin-bootstrap-page .kinetic-dash-bar-group > span {
     color: #7c8798;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
 }
 
-body.admin-bootstrap-page .kinetic-dash-bar-group.is-active span {
+body.admin-bootstrap-page .kinetic-dash-bar-group.is-active > span {
     color: #f97316;
+}
+
+/* Revenue Tooltip */
+body.admin-bootstrap-page .kinetic-dash-bar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.5rem 0.75rem;
+    background: #1e293b;
+    border-radius: 0.55rem;
+    box-shadow: 0 0.6rem 1.5rem rgba(15, 23, 42, 0.3);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 20;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1e293b;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-group:hover .kinetic-dash-bar-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-tooltip .tooltip-date {
+    color: #94a3b8;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-dash-bar-tooltip .tooltip-amount {
+    color: #f97316;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 body.admin-bootstrap-page .kinetic-dash-activity-list {

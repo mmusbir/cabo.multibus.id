@@ -188,8 +188,8 @@ try {
         <?php
           $payStatus = trim((string) ($p['pembayaran'] ?? 'Belum Lunas')) ?: 'Belum Lunas';
           $isPaid = $payStatus === 'Lunas';
-          $statusLabel = $isPaid ? 'CONFIRMED' : 'PENDING';
-          $statusTone = $isPaid ? 'confirmed' : 'pending';
+          $statusLabel = $isPaid ? 'LUNAS' : 'BELUM LUNAS';
+          $statusTone = $isPaid ? 'ready' : 'warning';
           $lineTone = $isPaid ? 'emerald' : 'amber';
           if (in_array($payStatus, ['Redbus', 'Traveloka'], true)) {
               $statusLabel = 'ON-TRIP';

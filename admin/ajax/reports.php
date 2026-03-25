@@ -9,7 +9,7 @@ $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01');
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-t');
 
 // 1. REGULER INCOME
-$sqlRegTotal = "SELECT COUNT(*) as cnt, SUM(price - COALESCE(discount, 0)) as total, SUM(COALESCE(discount, 0)) as total_discount FROM bookings WHERE status != 'canceled' AND tanggal BETWEEN ? AND ?";
+$sqlRegTotal = "SELECT COUNT(*) as cnt, SUM(price - COALESCE(discount, 0)) as total, SUM(COALESCE(discount, 0)) as total_discount FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN ? AND ?";
 $stmtRegTotal = $conn->prepare($sqlRegTotal);
 $stmtRegTotal->execute([$start_date, $end_date]);
 $regTotalData = $stmtRegTotal->fetch() ?: [];
@@ -19,14 +19,14 @@ $regCount = intval($regTotalData['cnt'] ?? 0);
 $regDiscount = floatval($regTotalData['total_discount'] ?? 0);
 
 // Detailed Reguler per Route
-$sqlRegDetails = "SELECT rute, COUNT(*) as cnt, SUM(price - COALESCE(discount, 0)) as total FROM bookings WHERE status != 'canceled' AND tanggal BETWEEN ? AND ? GROUP BY rute ORDER BY total DESC";
+$sqlRegDetails = "SELECT rute, COUNT(*) as cnt, SUM(price - COALESCE(discount, 0)) as total FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN ? AND ? GROUP BY rute ORDER BY total DESC";
 $stmtRegDetails = $conn->prepare($sqlRegDetails);
 $stmtRegDetails->execute([$start_date, $end_date]);
 $resRegDetails = $stmtRegDetails->fetchAll(PDO::FETCH_ASSOC);
 $regDetails = $resRegDetails ?: [];
 
 // 2. CARTER INCOME
-$sqlCarTotal = "SELECT COUNT(*) as cnt, SUM(price) as total FROM charters WHERE start_date BETWEEN ? AND ?";
+$sqlCarTotal = "SELECT COUNT(*) as cnt, SUM(price) as total FROM charters WHERE bop_status = 'done' AND start_date BETWEEN ? AND ?";
 $stmtCarTotal = $conn->prepare($sqlCarTotal);
 $stmtCarTotal->execute([$start_date, $end_date]);
 $carTotalData = $stmtCarTotal->fetch() ?: [];
@@ -48,7 +48,7 @@ $type = isset($_GET['type']) ? $_GET['type'] : 'reguler';
 $details = [];
 
 if ($type === 'reguler') {
-    $sqlDetails = "SELECT b.name, b.phone, b.rute, b.tanggal, COALESCE(b.discount, 0) as discount, (b.price - COALESCE(b.discount, 0)) as final_price FROM bookings b WHERE b.status != 'canceled' AND b.tanggal BETWEEN ? AND ? ORDER BY b.tanggal DESC";
+    $sqlDetails = "SELECT b.name, b.phone, b.rute, b.tanggal, COALESCE(b.discount, 0) as discount, (b.price - COALESCE(b.discount, 0)) as final_price FROM bookings b WHERE b.status != 'canceled' AND b.pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND b.tanggal BETWEEN ? AND ? ORDER BY b.tanggal DESC";
     $stmtDetails = $conn->prepare($sqlDetails);
     $stmtDetails->execute([$start_date, $end_date]);
     $details = $stmtDetails->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -62,7 +62,7 @@ if ($type === 'reguler') {
     $stmtDetails->execute([$start_date, $end_date]);
     $details = $stmtDetails->fetchAll(PDO::FETCH_ASSOC) ?: [];
 } else {
-    $sqlDetails = "SELECT name, phone, CONCAT(pickup_point, ' - ', drop_point) as rute, start_date as tanggal, price as final_price FROM charters WHERE start_date BETWEEN ? AND ? ORDER BY start_date DESC";
+    $sqlDetails = "SELECT name, phone, CONCAT(pickup_point, ' - ', drop_point) as rute, start_date as tanggal, price as final_price FROM charters WHERE bop_status = 'done' AND start_date BETWEEN ? AND ? ORDER BY start_date DESC";
     $stmtDetails = $conn->prepare($sqlDetails);
     $stmtDetails->execute([$start_date, $end_date]);
     $details = $stmtDetails->fetchAll(PDO::FETCH_ASSOC) ?: [];

@@ -1,5 +1,5 @@
 <!-- DRIVERS -->
-<section id="drivers" class="card">
+<section id="drivers" class="card" style="display:none;">
     <div class="admin-section-header">
         <div>
             <h3 class="admin-section-title">Manajemen Data Driver</h3>

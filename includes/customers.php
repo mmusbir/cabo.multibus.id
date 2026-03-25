@@ -1,5 +1,5 @@
 <!-- CUSTOMERS -->
-<section id="customers" class="card">
+<section id="customers" class="card" style="display:none;">
   <div class="admin-section-header">
     <div>
       <h3 class="admin-section-title">Data Penumpang</h3>

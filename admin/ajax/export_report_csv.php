@@ -26,7 +26,7 @@ if ($type === 'reguler') {
 
     $sqlDetails = "SELECT b.tanggal, b.name, b.phone, b.rute, COALESCE(b.discount, 0) as discount, (b.price - COALESCE(b.discount, 0)) as final_price 
                    FROM bookings b 
-                   WHERE b.status != 'canceled' AND b.tanggal BETWEEN ? AND ? 
+                   WHERE b.status != 'canceled' AND b.pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND b.tanggal BETWEEN ? AND ? 
                    ORDER BY b.tanggal DESC";
 } elseif ($type === 'bagasi') {
     fputcsv($output, ['Tanggal', 'Pengirim', 'Penerima', 'Layanan', 'Total (Rp)']);
@@ -41,7 +41,7 @@ if ($type === 'reguler') {
 
     $sqlDetails = "SELECT start_date as tanggal, name, phone, CONCAT(pickup_point, ' - ', drop_point) as rute, price as final_price 
                    FROM charters 
-                   WHERE start_date BETWEEN ? AND ? 
+                   WHERE bop_status = 'done' AND start_date BETWEEN ? AND ? 
                    ORDER BY start_date DESC";
 }
 
