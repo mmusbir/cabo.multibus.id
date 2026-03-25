@@ -3267,6 +3267,16 @@ body.admin-bootstrap-page .kinetic-trip-action.success:hover {
     background: rgba(16, 185, 129, 0.16);
 }
 
+body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action {
+    padding-inline: 0.78rem;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action .material-symbols-outlined {
+    font-size: 0.88rem;
+}
+
 body.admin-bootstrap-page .kinetic-trip-action.danger {
     color: #fecaca;
     border-color: rgba(248, 113, 113, 0.24);

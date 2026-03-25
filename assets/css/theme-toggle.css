@@ -351,6 +351,10 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #64748b !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action {
+  box-shadow: none !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-filter-controls {
   background: rgba(255, 255, 255, 0.94) !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
@@ -876,6 +880,10 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action {
+  box-shadow: none !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-filter-controls {
