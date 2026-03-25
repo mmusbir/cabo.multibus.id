@@ -3424,7 +3424,16 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
 
     body.admin-bootstrap-page .booking-filter-controls {
         gap: 0.7rem;
-        padding: 0.1rem 0 0.2rem;
+        padding: 0.55rem 0.65rem 0.7rem;
+        position: sticky;
+        top: 0.55rem;
+        z-index: 24;
+        border-radius: 1.1rem;
+        background: rgba(17, 19, 25, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(88, 66, 55, 0.14);
+        box-shadow: 0 10px 22px rgba(12, 14, 20, 0.16);
     }
 
     body.admin-bootstrap-page .booking-scope-toggle {

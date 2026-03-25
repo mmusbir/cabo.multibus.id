@@ -351,6 +351,12 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #64748b !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-filter-controls {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 12px 24px rgba(148, 163, 184, 0.16) !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-card:hover,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-card:hover {
   background: #ffffff !important;
@@ -870,6 +876,12 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-filter-controls {
+  background: rgba(17, 19, 25, 0.92) !important;
+  border-color: rgba(88, 66, 55, 0.18) !important;
+  box-shadow: 0 12px 24px rgba(12, 14, 20, 0.28) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {
