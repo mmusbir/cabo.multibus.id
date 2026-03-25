@@ -4,6 +4,7 @@
     <div>
       <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
       <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
+      <div class="booking-history-note" id="bookingHistoryNote" style="display:none;">Riwayat keberangkatan yang sudah lewat pada bulan ini.</div>
     </div>
   </div>
 
@@ -22,7 +23,6 @@
           <button type="button" class="booking-scope-chip" data-booking-scope="history">History</button>
         </div>
         <label class="booking-date-filter" for="booking_date_filter">
-          <span class="small">Filter Tanggal</span>
           <input type="date" id="booking_date_filter" class="form-control kinetic-command-select">
         </label>
         <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
@@ -31,7 +31,6 @@
         </button>
       </div>
       <div class="kinetic-command-toolbar-meta booking-per-page-meta">
-        <label class="small" for="bookings_per_page">Per Page</label>
         <select id="bookings_per_page" class="form-control kinetic-command-select">
           <option value="10">10</option>
           <option value="25" selected>25</option>
@@ -114,6 +113,7 @@
       const dateInput = document.getElementById('booking_date_filter');
       const pageTitle = document.getElementById('bookingPageTitle');
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
+      const historyNote = document.getElementById('bookingHistoryNote');
 
       if (filterControls) {
         filterControls.style.display = bookingsMode ? 'flex' : 'none';
@@ -126,6 +126,9 @@
       }
       if (bookingsMode && pageTitle) {
         pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
+      }
+      if (historyNote) {
+        historyNote.style.display = bookingsMode && filters.scope === 'history' ? 'block' : 'none';
       }
       if (bookingsMode && mobileListTitle) {
         const titleText = filters.scope === 'history' ? 'History Bulan Ini' : 'Jadwal Mendatang';
