@@ -3425,32 +3425,32 @@
           <div class="input-label">Pembayaran</div>
           <div class="payment-selector-modern" id="pembayaran_radios">
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
+              <input type="radio" name="pembayaran" id="p_belum" value="QRIS" checked>
               <label for="p_belum" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Belum Lunas</span>
-                  <span class="payment-caption">Tunai / Transfer</span>
+                  <span class="payment-title">QRIS</span>
+                  <span class="payment-caption">Scan pembayaran cepat</span>
                 </span>
               </label>
             </div>
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
+              <input type="radio" name="pembayaran" id="p_lunas" value="Transfer">
               <label for="p_lunas" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Lunas</span>
-                  <span class="payment-caption">Pembayaran penuh</span>
+                  <span class="payment-title">Transfer</span>
+                  <span class="payment-caption">Transfer bank</span>
                 </span>
               </label>
             </div>
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_redbus" value="RedBus">
+              <input type="radio" name="pembayaran" id="p_redbus" value="Tunai">
               <label for="p_redbus" class="payment-label">
                 <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">RedBus</span>
-                  <span class="payment-caption">Mitra online</span>
+                  <span class="payment-title">Tunai</span>
+                  <span class="payment-caption">Bayar di tempat</span>
                 </span>
               </label>
             </div>
@@ -3789,6 +3789,7 @@
                 const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
                 const segment = info.segment_name || '-';
                 const pembayaran = info.pembayaran || 'Belum Lunas';
+                const paymentInfo = formatPaymentLabel(pembayaran);
                 const price = info.price || 0;
                 const disc = info.discount || 0;
                 const finalPrice = price - disc;
@@ -3802,7 +3803,7 @@
                     <div><strong>Nama:</strong> ${info.name || '-'}</div>
                     <div><strong>No. HP:</strong> ${info.phone || '-'}</div>
                     <div><strong>Titik Jemput:</strong> ${info.pickup_point || '-'}</div>
-                    <div><strong>Pembayaran:</strong> ${pembayaran}</div>
+                    <div><strong>${paymentInfo.label}:</strong> ${paymentInfo.value}</div>
                   `;
 
                 modal.style.display = 'flex';
@@ -3818,6 +3819,7 @@
                     price: price,
                     disc: disc,
                     finalPrice: finalPrice,
+                    pembayaran: pembayaran,
                     tanggal: tanggal,
                     jam: jam,
                     hari: hari
@@ -3833,7 +3835,7 @@ Harga: ${priceFormatted}
 Nama: ${info.name || '-'}
 No. HP: ${info.phone || '-'}
 Titik Jemput: ${info.pickup_point || '-'}
-Pembayaran: ${pembayaran}`;
+${paymentInfo.label}: ${paymentInfo.value}`;
 
                   // Fallback function
                   const fallbackCopy = (txt) => {
@@ -4124,6 +4126,22 @@ Pembayaran: ${pembayaran}`;
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
       }
 
+      function isPaymentMethodValue(value) {
+        return ['QRIS', 'Transfer', 'Tunai'].includes(String(value || '').trim());
+      }
+
+      function formatPaymentLabel(value) {
+        const normalized = String(value || '').trim();
+        if (!normalized) return { label: 'Pembayaran', value: '-' };
+        if (isPaymentMethodValue(normalized)) {
+          return { label: 'Metode Pembayaran', value: normalized };
+        }
+        if (normalized === 'Belum Lunas') {
+          return { label: 'Metode Pembayaran', value: 'Belum dipilih' };
+        }
+        return { label: 'Status Pembayaran', value: normalized };
+      }
+
       // Update sticky bottom bar
       function updateRekapBar() {
         const bar = document.getElementById('rekapBar');
@@ -4154,7 +4172,9 @@ Pembayaran: ${pembayaran}`;
           return;
         }
 
-        content.innerHTML = rekapList.map((r, idx) => `
+        content.innerHTML = rekapList.map((r, idx) => {
+          const paymentInfo = formatPaymentLabel(r.pembayaran || '');
+          return `
           <div class="rekap-item-card">
             <div class="rekap-item-header">
               <span class="rekap-item-seat">Kursi ${r.seatId}</span>
@@ -4164,13 +4184,14 @@ Pembayaran: ${pembayaran}`;
             <div class="rekap-item-detail">
               HP: ${r.phone || '-'}<br>
               Jemput: ${r.pickup || '-'}<br>
-              Segment: ${r.segment || '-'} Â· ${r.hari}, ${r.tanggal} - ${r.jam}
+              Segment: ${r.segment || '-'} - ${r.hari}, ${r.tanggal} - ${r.jam}<br>
+              ${paymentInfo.label}: ${paymentInfo.value}
             </div>
-            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">Ã—</button>
+            <button class="rekap-item-remove" onclick="removeFromRekap(${idx})" title="Hapus dari rekap">&times;</button>
           </div>
-        `).join('');
+        `;
+        }).join('');
       }
-
       // Tambah item ke rekap
       window.addCurrentToRekap = function () {
         if (!_currentRekapItem) return;
@@ -4223,14 +4244,15 @@ Pembayaran: ${pembayaran}`;
           return;
         }
         const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
-        const lines = rekapList.map((r, i) =>
-          `${i + 1}. Kursi ${r.seatId} - ${r.name || '-'}\n` +
-          `   HP: ${r.phone || '-'}\n` +
-          `   Jemput: ${r.pickup || '-'}\n` +
-          `   Segment: ${r.segment || '-'}\n` +
-          `   Harga: ${formatRp(r.finalPrice)}`
-        ).join('\n\n');
-
+        const lines = rekapList.map((r, i) => {
+          const paymentInfo = formatPaymentLabel(r.pembayaran || '');
+          return `${i + 1}. Kursi ${r.seatId} - ${r.name || '-'}\n` +
+            `   HP: ${r.phone || '-'}\n` +
+            `   Jemput: ${r.pickup || '-'}\n` +
+            `   Segment: ${r.segment || '-'}\n` +
+            `   Harga: ${formatRp(r.finalPrice)}\n` +
+            `   ${paymentInfo.label}: ${paymentInfo.value}`;
+        }).join('\n\n');
         const firstItem = rekapList[0];
         const divider = '-'.repeat(30);
         const header = `REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} - ${firstItem.jam}\n${divider}`;
@@ -4596,3 +4618,5 @@ Pembayaran: ${pembayaran}`;
 </body>
 
 </html>
+
+
