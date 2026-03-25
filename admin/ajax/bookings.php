@@ -30,8 +30,8 @@ if ($search !== '') {
         OR COALESCE(d.nama, '') LIKE ?
         OR b.name LIKE ?
         OR b.phone LIKE ?
-        OR b.tanggal LIKE ?
-        OR b.jam LIKE ?
+        OR CAST(b.tanggal AS TEXT) LIKE ?
+        OR CAST(b.jam AS TEXT) LIKE ?
       )
     ";
     $params = [$like, $like, $like, $like, $like, $like];

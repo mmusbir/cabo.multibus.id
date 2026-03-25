@@ -17,7 +17,7 @@ if (empty($rute) || empty($tanggal) || empty($jam)) {
 // Convert date to day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
 $dow = date('w', strtotime($tanggal));
 
-$stmt = $conn->prepare("SELECT units FROM schedules WHERE rute = ? AND dow = ? AND jam LIKE ? LIMIT 1");
+$stmt = $conn->prepare("SELECT units FROM schedules WHERE rute = ? AND dow = ? AND CAST(jam AS TEXT) LIKE ? LIMIT 1");
 $jam_like = $jam . '%';
 $stmt->execute([$rute, $dow, $jam_like]);
 $row = $stmt->fetch();
