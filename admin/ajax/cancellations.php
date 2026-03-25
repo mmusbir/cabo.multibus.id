@@ -5,10 +5,29 @@
 
 global $conn;
 
+if (!function_exists('format_admin_relative_time')) {
+    function format_admin_relative_time($datetime)
+    {
+        if (empty($datetime)) return '-';
+        $timestamp = strtotime((string) $datetime);
+        if (!$timestamp) return '-';
+
+        $diff = time() - $timestamp;
+        if ($diff < 60) return 'Baru saja';
+        if ($diff < 3600) return floor($diff / 60) . ' menit lalu';
+        if ($diff < 86400) return floor($diff / 3600) . ' jam lalu';
+        if ($diff < 172800) return 'Kemarin';
+        if ($diff < 2592000) return floor($diff / 86400) . ' hari lalu';
+
+        return date('d M Y - H:i', $timestamp) . ' WITA';
+    }
+}
+
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$type = isset($_GET['type']) ? trim($_GET['type']) : '';
 
 $activitySql = "
     SELECT *
@@ -56,6 +75,11 @@ if ($search !== '') {
     $params = [$like, $like, $like];
 }
 
+if ($type !== '' && in_array($type, ['booking', 'charter', 'luggage'], true)) {
+    $activitySql .= ($search !== '' ? " AND " : " WHERE ") . " type = ? ";
+    $params[] = $type;
+}
+
 $countSql = "SELECT COUNT(*) AS cnt FROM (" . $activitySql . ") activity_count";
 $stmtCount = $conn->prepare($countSql);
 $stmtCount->execute($params);
@@ -83,7 +107,7 @@ if (empty($rows)) {
         if ($type === 'luggage') $icon = 'inventory_2';
 
         $createdAt = trim((string) ($log['created_at'] ?? ''));
-        $timeLabel = $createdAt !== '' ? date('d M Y - H:i', strtotime($createdAt)) . ' WITA' : '-';
+        $timeLabel = format_admin_relative_time($createdAt);
 
         echo '<div class="admin-card-compact">';
         echo '  <div class="acc-header">';

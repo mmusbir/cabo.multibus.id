@@ -1,4 +1,22 @@
 <?php
+if (!function_exists('format_admin_relative_time_dashboard')) {
+    function format_admin_relative_time_dashboard($datetime)
+    {
+        if (empty($datetime)) return '-';
+        $timestamp = strtotime((string) $datetime);
+        if (!$timestamp) return '-';
+
+        $diff = time() - $timestamp;
+        if ($diff < 60) return 'Baru saja';
+        if ($diff < 3600) return floor($diff / 60) . ' menit lalu';
+        if ($diff < 86400) return floor($diff / 3600) . ' jam lalu';
+        if ($diff < 172800) return 'Kemarin';
+        if ($diff < 2592000) return floor($diff / 86400) . ' hari lalu';
+
+        return date('d M Y - H:i', $timestamp) . ' WITA';
+    }
+}
+
 $dashboard = [
     'total_bookings' => 0,
     'pending' => 0,
@@ -98,7 +116,7 @@ try {
         $dashboard['recent_activity'][] = [
             'title' => $act['title'],
             'meta' => $act['meta'],
-            'time' => !empty($act['time']) ? date('H:i', strtotime($act['time'])) . ' WITA' : '-',
+            'time' => format_admin_relative_time_dashboard($act['time'] ?? ''),
             'tone' => $act['tone'],
             'tag' => $act['tag']
         ];

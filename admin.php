@@ -1769,6 +1769,7 @@ if (!isset($_REQUEST['action'])):
           } else if (target === 'cancellations') {
             params.per_page = parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10);
             params.search = document.getElementById('search_cancellations_input')?.value || '';
+            params.type = document.getElementById('log_activity_type')?.value || '';
           } else if (target === 'bookingsHistory' || target === 'chartersHistory') {
             params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
             params.search = document.getElementById('search_name_input')?.value || '';
@@ -1848,7 +1849,12 @@ if (!isset($_REQUEST['action'])):
     if (document.getElementById('searchCancellationsBtn')) {
       document.getElementById('searchCancellationsBtn').onclick = function () {
         const search = document.getElementById('search_cancellations_input').value;
-        ajaxListLoad('cancellations', { page: 1, per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10), search: search });
+        ajaxListLoad('cancellations', {
+          page: 1,
+          per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10),
+          search: search,
+          type: document.getElementById('log_activity_type')?.value || ''
+        });
       };
     }
     // Users search handler

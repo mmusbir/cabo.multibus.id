@@ -21,6 +21,14 @@
     </div>
   </div>
 
+  <div class="charter-command-filters no-scrollbar" id="logsFilterRow">
+    <input type="hidden" id="log_activity_type" value="">
+    <button type="button" class="charter-filter-chip active" data-log-type="">Semua</button>
+    <button type="button" class="charter-filter-chip" data-log-type="booking">Booking</button>
+    <button type="button" class="charter-filter-chip" data-log-type="charter">Carter</button>
+    <button type="button" class="charter-filter-chip" data-log-type="luggage">Bagasi</button>
+  </div>
+
   <div class="admin-bs-meta">
     <div class="small" id="cancellations_info">Memuat logs activity...</div>
   </div>
@@ -38,4 +46,45 @@
     <!-- Hidden legacy table wrapper for backwards compatibility -->
   </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const logTypeInput = document.getElementById('log_activity_type');
+      const searchInput = document.getElementById('search_cancellations_input');
+      let logSearchDebounce = null;
+
+      document.querySelectorAll('[data-log-type]').forEach((chip) => {
+        chip.addEventListener('click', function () {
+          const type = this.getAttribute('data-log-type') || '';
+          if (logTypeInput) logTypeInput.value = type;
+          document.querySelectorAll('[data-log-type]').forEach((item) => item.classList.remove('active'));
+          this.classList.add('active');
+          if (typeof ajaxListLoad === 'function') {
+            ajaxListLoad('cancellations', {
+              page: 1,
+              per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10),
+              search: searchInput?.value || '',
+              type: type
+            });
+          }
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          clearTimeout(logSearchDebounce);
+          const value = this.value;
+          logSearchDebounce = setTimeout(() => {
+            if (typeof ajaxListLoad === 'function') {
+              ajaxListLoad('cancellations', {
+                page: 1,
+                per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10),
+                search: value,
+                type: logTypeInput?.value || ''
+              });
+            }
+          }, 250);
+        });
+      }
+    });
+  </script>
 </section>
