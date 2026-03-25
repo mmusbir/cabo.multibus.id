@@ -4361,7 +4361,7 @@ body.admin-bootstrap-page .kinetic-dash-bar-value {
 
 body.admin-bootstrap-page .kinetic-dash-bar-shell {
     width: 100%;
-    min-height: 13rem;
+    height: 13rem;
     display: flex;
     align-items: flex-end;
     justify-content: center;
