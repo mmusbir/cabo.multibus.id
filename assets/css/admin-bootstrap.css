@@ -2833,6 +2833,7 @@ body.admin-bootstrap-page .booking-scope-chip {
     background: transparent;
     color: #aeb9ca;
     padding: 0.7rem 0.95rem;
+    min-height: 2.75rem;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
@@ -2845,6 +2846,7 @@ body.admin-bootstrap-page .booking-scope-chip.active,
 body.admin-bootstrap-page .booking-scope-chip:hover {
     background: rgba(249, 115, 22, 0.12);
     color: #fff1e6;
+    box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.18);
 }
 
 body.admin-bootstrap-page .booking-date-filter {
@@ -3421,15 +3423,40 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     }
 
     body.admin-bootstrap-page .booking-filter-controls {
-        gap: 0.55rem;
+        gap: 0.7rem;
+        padding: 0.1rem 0 0.2rem;
     }
 
     body.admin-bootstrap-page .booking-scope-toggle {
         justify-content: space-between;
+        padding: 0.3rem;
+        border-radius: 1rem;
     }
 
     body.admin-bootstrap-page .booking-scope-chip {
         flex: 1 1 0;
+        justify-content: center;
+        min-height: 3rem;
+        font-size: 0.78rem;
+        letter-spacing: 0.09em;
+    }
+
+    body.admin-bootstrap-page .booking-date-filter .small {
+        font-size: 0.66rem;
+    }
+
+    body.admin-bootstrap-page .booking-date-filter input,
+    body.admin-bootstrap-page .booking-filter-reset {
+        min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .booking-filter-reset {
+        font-size: 0.75rem;
+        font-weight: 800;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-start .kinetic-command-add-btn {
+        width: 100%;
         justify-content: center;
     }
 

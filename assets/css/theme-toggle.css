@@ -344,6 +344,7 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip.active,
 html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip:hover {
   background: rgba(249, 115, 22, 0.14) !important;
   color: #9a3412 !important;
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.2) !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
@@ -864,6 +865,7 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip.active,
 html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
   background: rgba(249, 115, 22, 0.12) !important;
   color: #fff1e6 !important;
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.18) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
