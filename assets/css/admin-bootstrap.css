@@ -2809,6 +2809,65 @@ body.admin-bootstrap-page .kinetic-command-toolbar-actions {
     flex: 1;
 }
 
+body.admin-bootstrap-page .booking-filter-controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.7rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .booking-scope-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem;
+    border-radius: 0.9rem;
+    background: #151821;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+body.admin-bootstrap-page .booking-scope-chip {
+    border: 0;
+    border-radius: 0.72rem;
+    background: transparent;
+    color: #aeb9ca;
+    padding: 0.7rem 0.95rem;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: 0.2s ease;
+}
+
+body.admin-bootstrap-page .booking-scope-chip.active,
+body.admin-bootstrap-page .booking-scope-chip:hover {
+    background: rgba(249, 115, 22, 0.12);
+    color: #fff1e6;
+}
+
+body.admin-bootstrap-page .booking-date-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 10.5rem;
+}
+
+body.admin-bootstrap-page .booking-date-filter .small {
+    color: #8f99aa;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-filter-reset {
+    min-height: 2.8rem;
+    padding-inline: 0.9rem;
+}
+
 body.admin-bootstrap-page .kinetic-command-add-btn {
     display: inline-flex;
     align-items: center;
@@ -3314,6 +3373,16 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         align-items: stretch;
     }
 
+    body.admin-bootstrap-page .booking-filter-controls {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    body.admin-bootstrap-page .booking-scope-toggle,
+    body.admin-bootstrap-page .booking-date-filter {
+        width: 100%;
+    }
+
     body.admin-bootstrap-page .kinetic-trip-action,
     body.admin-bootstrap-page .kinetic-command-refresh {
         width: 100%;
@@ -3349,6 +3418,19 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     body.admin-bootstrap-page .kinetic-command-subtitle {
         font-size: 0.88rem;
         line-height: 1.55;
+    }
+
+    body.admin-bootstrap-page .booking-filter-controls {
+        gap: 0.55rem;
+    }
+
+    body.admin-bootstrap-page .booking-scope-toggle {
+        justify-content: space-between;
+    }
+
+    body.admin-bootstrap-page .booking-scope-chip {
+        flex: 1 1 0;
+        justify-content: center;
     }
 
     body.admin-bootstrap-page .kinetic-command-metrics {

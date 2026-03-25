@@ -16,6 +16,33 @@
     </div>
 
     <div class="kinetic-command-toolbar-actions">
+      <div id="bookingFilterControls" class="booking-filter-controls">
+        <div class="booking-scope-toggle" role="tablist" aria-label="Mode daftar booking">
+          <button type="button" class="booking-scope-chip active" data-booking-scope="active">Aktif</button>
+          <button type="button" class="booking-scope-chip" data-booking-scope="history">History</button>
+        </div>
+        <label class="booking-date-filter" for="booking_date_filter">
+          <span class="small">Filter Tanggal</span>
+          <input type="date" id="booking_date_filter" class="form-control kinetic-command-select">
+        </label>
+        <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
+          <span class="material-symbols-outlined">close</span>
+          Reset
+        </button>
+      </div>
+      <div class="kinetic-command-toolbar-meta">
+        <label class="small" for="bookings_per_page">Per Page</label>
+        <select id="bookings_per_page" class="form-control kinetic-command-select">
+          <option value="10">10</option>
+          <option value="25" selected>25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <button type="button" class="kinetic-command-refresh" id="bookingToolbarRefresh">
+        <span class="material-symbols-outlined">refresh</span>
+        Refresh
+      </button>
     </div>
   </div>
 
@@ -62,6 +89,67 @@
         charters: 0,
         luggage: 0,
       },
+      filters: {
+        bookings: {
+          scope: 'active',
+          tanggal: '',
+        }
+      }
+    };
+
+    function getBookingFilters() {
+      if (!window.bookingDashboardState.filters) {
+        window.bookingDashboardState.filters = {};
+      }
+      if (!window.bookingDashboardState.filters.bookings) {
+        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '' };
+      }
+      return window.bookingDashboardState.filters.bookings;
+    }
+
+    function syncBookingFilterUi() {
+      const filters = getBookingFilters();
+      const bookingsMode = window.bookingDashboardState.active === 'bookings';
+      const filterControls = document.getElementById('bookingFilterControls');
+      const dateInput = document.getElementById('booking_date_filter');
+      const pageTitle = document.getElementById('bookingPageTitle');
+      const mobileListTitle = document.getElementById('bookingMobileListTitle');
+
+      if (filterControls) {
+        filterControls.style.display = bookingsMode ? 'flex' : 'none';
+      }
+      document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
+        chip.classList.toggle('active', chip.getAttribute('data-booking-scope') === filters.scope);
+      });
+      if (dateInput) {
+        dateInput.value = filters.tanggal || '';
+      }
+      if (bookingsMode && pageTitle) {
+        pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
+      }
+      if (bookingsMode && mobileListTitle) {
+        const titleText = filters.scope === 'history' ? 'History Bulan Ini' : 'Jadwal Mendatang';
+        mobileListTitle.innerHTML = '<span class="material-symbols-outlined">event_note</span>' + titleText;
+      }
+    }
+
+    function getBookingListQueryParams(overrides = {}) {
+      const filters = getBookingFilters();
+      const params = Object.assign({}, overrides);
+      params.scope = filters.scope || 'active';
+      if (filters.tanggal) {
+        params.tanggal = filters.tanggal;
+      } else {
+        delete params.tanggal;
+      }
+      return params;
+    }
+
+    window.getAdminListParams = function (target, baseParams = {}) {
+      if (target !== 'bookings') {
+        return baseParams;
+      }
+      return getBookingListQueryParams(baseParams);
     };
 
     function getBookingModeMeta(mode) {
@@ -181,6 +269,7 @@
       window.bookingDashboardState.totals[mode] = Number(total || 0);
       if (window.bookingDashboardState.active === mode) {
         updateBookingModeMeta(mode);
+        if (mode === 'bookings') syncBookingFilterUi();
       }
     };
 
@@ -317,11 +406,15 @@
 
     function refreshActiveBookingMode() {
       const target = window.bookingDashboardState.active || 'bookings';
-      ajaxListLoad(target, {
+      let params = {
         page: 1,
-        per_page: 999,
+        per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
         search: ''
-      });
+      };
+      if (target === 'bookings') {
+        params = getBookingListQueryParams(params);
+      }
+      ajaxListLoad(target, params);
     }
 
     function switchAdminView(mode) {
@@ -332,6 +425,7 @@
       document.getElementById('luggage_tbody').style.display = 'none';
 
       updateBookingModeMeta(mode);
+      syncBookingFilterUi();
 
       if (mode === 'charters') {
         document.getElementById('charters_tbody').style.display = 'grid';
@@ -353,6 +447,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const bookingRefreshBtn = document.getElementById('bookingToolbarRefresh');
+      const bookingDateInput = document.getElementById('booking_date_filter');
+      const bookingDateReset = document.getElementById('bookingDateReset');
+
       document.querySelectorAll('.charter-filter-chip').forEach((chip) => {
         chip.addEventListener('click', () => {
           document.querySelectorAll('.charter-filter-chip').forEach((item) => item.classList.remove('active'));
@@ -360,8 +458,50 @@
         });
       });
 
+      document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const nextScope = chip.getAttribute('data-booking-scope') || 'active';
+          const filters = getBookingFilters();
+          filters.scope = nextScope;
+          syncBookingFilterUi();
+          ajaxListLoad('bookings', getBookingListQueryParams({
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: ''
+          }));
+        });
+      });
+
+      if (bookingDateInput) {
+        bookingDateInput.addEventListener('change', () => {
+          const filters = getBookingFilters();
+          filters.tanggal = bookingDateInput.value || '';
+          ajaxListLoad('bookings', getBookingListQueryParams({
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: ''
+          }));
+        });
+      }
+
+      if (bookingDateReset) {
+        bookingDateReset.addEventListener('click', () => {
+          const filters = getBookingFilters();
+          filters.tanggal = '';
+          if (bookingDateInput) bookingDateInput.value = '';
+          ajaxListLoad('bookings', getBookingListQueryParams({
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: ''
+          }));
+        });
+      }
+
       if (mobileRefreshBtn) {
         mobileRefreshBtn.addEventListener('click', refreshActiveBookingMode);
+      }
+      if (bookingRefreshBtn) {
+        bookingRefreshBtn.addEventListener('click', refreshActiveBookingMode);
       }
       const primaryActionBtn = document.getElementById('bookingPrimaryAction');
       if (primaryActionBtn) {

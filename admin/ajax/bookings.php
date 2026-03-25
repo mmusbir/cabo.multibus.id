@@ -9,6 +9,11 @@ $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$scope = isset($_GET['scope']) ? trim((string) $_GET['scope']) : 'active';
+$tanggalFilter = isset($_GET['tanggal']) ? trim((string) $_GET['tanggal']) : '';
+
+$currentMonthStart = date('Y-m-01');
+$currentMonthEnd = date('Y-m-t');
 
 $baseFrom = "
     FROM bookings b
@@ -18,9 +23,22 @@ $baseFrom = "
      AND ta.jam = b.jam
      AND ta.unit = b.unit
     LEFT JOIN drivers d ON d.id = ta.driver_id
-    WHERE b.status != 'canceled' AND b.tanggal >= CURRENT_DATE
+    WHERE b.status != 'canceled'
 ";
 $params = [];
+
+if ($scope === 'history') {
+    $baseFrom .= " AND b.tanggal BETWEEN ? AND ? ";
+    $params[] = $currentMonthStart;
+    $params[] = $currentMonthEnd;
+} else {
+    $baseFrom .= " AND b.tanggal >= CURRENT_DATE ";
+}
+
+if ($tanggalFilter !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalFilter)) {
+    $baseFrom .= " AND b.tanggal = ? ";
+    $params[] = $tanggalFilter;
+}
 
 if ($search !== '') {
     $like = '%' . $search . '%';
@@ -34,7 +52,7 @@ if ($search !== '') {
         OR CAST(b.jam AS TEXT) LIKE ?
       )
     ";
-    $params = [$like, $like, $like, $like, $like, $like];
+    $params = array_merge($params, [$like, $like, $like, $like, $like, $like]);
 }
 
 $countSql = "SELECT COUNT(*) AS cnt FROM (
@@ -58,13 +76,15 @@ $sql = "SELECT
     $baseFrom
     GROUP BY b.rute, b.tanggal, b.jam, b.unit
     ORDER BY
-      CASE
-        WHEN b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME THEN 1
-        ELSE 0
-      END ASC,
-      b.tanggal ASC,
-      b.jam ASC,
-      b.unit ASC
+      " . ($scope === 'history'
+        ? "b.tanggal DESC, b.jam DESC, b.unit ASC"
+        : "CASE
+            WHEN b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME THEN 1
+            ELSE 0
+          END ASC,
+          b.tanggal ASC,
+          b.jam ASC,
+          b.unit ASC") . "
     LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $queryParams = $params;

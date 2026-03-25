@@ -1475,7 +1475,7 @@ if (!isset($_REQUEST['action'])):
           window.syncAdminNavState(id);
         }
         // Auto-load data for each section
-        if (id === 'bookings') ajaxListLoad('bookings', { page: 1, per_page: 999, search: '' });
+        if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: 999, search: '' }));
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: 999 });
         if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: 999 });
         if (id === 'users') ajaxListLoad('users', { page: 1, per_page: 999 });
@@ -1542,6 +1542,13 @@ if (!isset($_REQUEST['action'])):
       }
     }
     window.parseAdminApiResponse = parseAdminApiResponse;
+    function buildAdminListParams(target, baseParams) {
+      const params = Object.assign({}, baseParams || {});
+      if (typeof window.getAdminListParams === 'function') {
+        return window.getAdminListParams(target, params);
+      }
+      return params;
+    }
     // AJAX list loader
     async function ajaxListLoad(target, params) {
       const spinnerWrap = document.getElementById(target + '_spinner_wrap'); if (spinnerWrap) spinnerWrap.style.display = 'flex';
@@ -1599,7 +1606,7 @@ if (!isset($_REQUEST['action'])):
       document.getElementById('searchBtn').onclick = function () {
         const search = document.getElementById('search_name_input').value;
         const target = getActiveBookingTarget();
-        ajaxListLoad(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search });
+        ajaxListLoad(target, buildAdminListParams(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search }));
       };
     }
     // Auto-search on typing with debounce
@@ -1609,7 +1616,7 @@ if (!isset($_REQUEST['action'])):
         const search = this.value;
         searchDebounceTimer = setTimeout(function () {
           const target = getActiveBookingTarget();
-          ajaxListLoad(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search });
+          ajaxListLoad(target, buildAdminListParams(target, { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: search }));
         }, 300);
       });
     }
@@ -1647,11 +1654,11 @@ if (!isset($_REQUEST['action'])):
     if (document.getElementById('bookings_per_page')) {
       document.getElementById('bookings_per_page').onchange = function () {
         const target = getActiveBookingTarget();
-        ajaxListLoad(target, {
+        ajaxListLoad(target, buildAdminListParams(target, {
           page: 1,
           per_page: parseInt(this.value, 10),
           search: document.getElementById('search_name_input')?.value || ''
-        });
+        }));
       };
     }
     if (document.getElementById('routes_per_page')) {
@@ -1769,6 +1776,7 @@ if (!isset($_REQUEST['action'])):
             params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
             params.search = document.getElementById('search_name_input')?.value || '';
           }
+          params = buildAdminListParams(target, params);
           ajaxListLoad(target, params);
         };
       });
@@ -2181,7 +2189,7 @@ if (!isset($_REQUEST['action'])):
             fetch('admin.php?cancel_booking=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
               if (js.success) {
                 customAlert('Booking dibatalkan.').then(() => {
-                  ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+                  ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' }));
                 });
               } else {
                 customAlert('Gagal membatalkan: ' + (js.error || 'unknown'));
@@ -2200,7 +2208,7 @@ if (!isset($_REQUEST['action'])):
             fetch('admin.php?mark_paid=' + id, { method: 'GET', headers: { 'Accept': 'application/json' } }).then(res => res.json()).then(js => {
               if (js.success) {
                 customAlert('Status pembayaran diubah ke Lunas.').then(() => {
-                  ajaxListLoad('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' });
+                  ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: document.getElementById('search_name_input')?.value || '' }));
                 });
               } else {
                 customAlert('Gagal mengubah status: ' + (js.error || 'unknown'));

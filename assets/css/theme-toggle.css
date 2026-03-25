@@ -321,6 +321,7 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-card {
 html[data-theme="light"] body.admin-bootstrap-page .charter-route-preset,
 html[data-theme="light"] body.admin-bootstrap-page .charter-create-radio,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-toolbar-meta,
+html[data-theme="light"] body.admin-bootstrap-page .booking-scope-toggle,
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-side-item,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-route-stop,
 html[data-theme="light"] body.admin-bootstrap-page .charter-command-schedule-box,
@@ -331,11 +332,22 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-time,
 html[data-theme="light"] body.admin-bootstrap-page .customers-admin-table thead th,
 html[data-theme="light"] body.admin-bootstrap-page .report-details-table thead th,
 html[data-theme="light"] body.admin-bootstrap-page .charter-filter-chip,
+html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-tabs,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-command-select {
   background: #f8fafc !important;
   color: #334155 !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip.active,
+html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip:hover {
+  background: rgba(249, 115, 22, 0.14) !important;
+  color: #9a3412 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
+  color: #64748b !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-card:hover,
@@ -832,6 +844,8 @@ html[data-theme="dark"] body.admin-bootstrap-page .kinetic-trip-time,
 html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-select,
 html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-tabs,
 html[data-theme="dark"] body.admin-bootstrap-page .charter-filter-chip,
+html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-toggle,
+html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip,
 html[data-theme="dark"] body.admin-bootstrap-page .charter-route-preset,
 html[data-theme="dark"] body.admin-bootstrap-page .charter-create-radio,
 html[data-theme="dark"] body.admin-bootstrap-page .charter-command-route-stop,
@@ -844,6 +858,16 @@ html[data-theme="dark"] body.admin-bootstrap-page .kinetic-command-toolbar-meta 
   background: #111319 !important;
   color: #dbe4ee !important;
   border-color: rgba(88, 66, 55, 0.18) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip.active,
+html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
+  background: rgba(249, 115, 22, 0.12) !important;
+  color: #fff1e6 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
+  color: #94a3b8 !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {
