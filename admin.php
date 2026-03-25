@@ -513,6 +513,31 @@ if (isset($_GET['mark_paid'])) {
   exit;
 }
 
+/* BOOKINGS mark ALL unpaid as Lunas for a given trip — AJAX JSON */
+if (isset($_GET['mark_all_paid'])) {
+  $rute    = trim($_GET['rute'] ?? '');
+  $tanggal = trim($_GET['tanggal'] ?? '');
+  $jam     = trim($_GET['jam'] ?? '');
+  $unit    = intval($_GET['unit'] ?? 0);
+  $result  = ['success' => false];
+  if ($rute && $tanggal && $jam && $unit > 0) {
+    $stmt = $conn->prepare(
+      "UPDATE bookings SET pembayaran='Lunas'
+       WHERE rute=? AND tanggal=? AND jam=? AND unit=?
+         AND status != 'canceled'
+         AND (pembayaran IS NULL OR pembayaran NOT IN ('Lunas','Redbus','Traveloka'))"
+    );
+    $stmt->execute([$rute, $tanggal, $jam, $unit]);
+    $result['success'] = true;
+    $result['updated'] = $stmt->rowCount();
+  } else {
+    $result['error'] = 'invalid_params';
+  }
+  header('Content-Type: application/json');
+  echo json_encode($result);
+  exit;
+}
+
 /* USERS create/update */
 if (isset($_POST['add_user'])) {
   $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
@@ -2091,6 +2116,7 @@ if (!isset($_REQUEST['action'])):
       attachEditBookingHandlers();
       attachCancelHandlers();
       attachSeatLayoutMarkPaidHandlers();
+      attachMarkAllPaidHandler();
     }
     const originalLoadBookingDetailPassengers = window.loadBookingDetailPassengers;
     window.loadBookingDetailPassengers = async function () {
@@ -2103,6 +2129,7 @@ if (!isset($_REQUEST['action'])):
     attachEditBookingHandlers();
     attachCancelHandlers();
     attachSeatLayoutMarkPaidHandlers();
+    attachMarkAllPaidHandler();
     if (document.getElementById('closeCopyAllModal')) {
       document.getElementById('closeCopyAllModal').onclick = function () {
         const modal = document.getElementById('copyAllModal');
@@ -2203,6 +2230,44 @@ if (!isset($_REQUEST['action'])):
           }, 'Pembayaran Penumpang', 'success');
         };
       });
+    }
+    function attachMarkAllPaidHandler() {
+      const btn = document.getElementById('markAllPaidBtn');
+      if (!btn) return;
+      btn.onclick = function () {
+        const rute    = this.getAttribute('data-rute');
+        const tanggal = this.getAttribute('data-tanggal');
+        const jam     = this.getAttribute('data-jam');
+        const unit    = this.getAttribute('data-unit');
+        const countMatch = this.querySelector('span:last-child')?.textContent.match(/\d+/);
+        const count   = countMatch ? countMatch[0] : '';
+        customConfirm(
+          'Tandai ' + (count ? count + ' penumpang' : 'semua penumpang') + ' yang belum lunas menjadi LUNAS?',
+          async () => {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-small"></span><span>Memproses...</span>';
+            try {
+              const url = `admin.php?mark_all_paid=1&rute=${encodeURIComponent(rute)}&tanggal=${encodeURIComponent(tanggal)}&jam=${encodeURIComponent(jam)}&unit=${encodeURIComponent(unit)}`;
+              const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+              const js  = await res.json();
+              if (js.success) {
+                await customAlert('Berhasil! ' + (js.updated || 0) + ' penumpang telah ditandai Lunas.', 'Lunas Semua');
+                if (typeof window.loadBookingDetailPassengers === 'function') {
+                  window.loadBookingDetailPassengers();
+                }
+              } else {
+                customAlert('Gagal: ' + (js.error || 'unknown'));
+                btn.disabled = false;
+              }
+            } catch (e) {
+              customAlert('Kesalahan koneksi: ' + e);
+              btn.disabled = false;
+            }
+          },
+          'Konfirmasi Lunas Semua',
+          'success'
+        );
+      };
     }
     function updatePaymentRadioState(radios, selectedValue = '') {
       radios.forEach(radio => {

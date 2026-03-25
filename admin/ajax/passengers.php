@@ -174,10 +174,25 @@ try {
       <div class="view-booking-kicker">Logistics Overview</div>
       <h4 class="view-booking-title">Data Booking</h4>
     </div>
-    <a href="index.php" class="view-booking-cta">
-      <span class="material-symbols-outlined">add</span>
-      Tambah Booking
-    </a>
+    <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+      <?php if ($countUnpaid > 0): ?>
+      <button type="button" id="markAllPaidBtn"
+        class="btn btn-modern"
+        style="background:#16a34a;border-color:#16a34a;color:#fff;font-size:0.82rem;min-height:2.3rem;padding:0.45rem 1rem;border-radius:0.75rem;"
+        data-rute="<?php echo h($rute); ?>"
+        data-tanggal="<?php echo h($tanggal); ?>"
+        data-jam="<?php echo h($jam); ?>"
+        data-unit="<?php echo intval($unit); ?>"
+        title="Tandai semua penumpang belum lunas menjadi Lunas">
+        <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">task_alt</span>
+        <span>Lunas Semua (<?php echo $countUnpaid; ?>)</span>
+      </button>
+      <?php endif; ?>
+      <a href="index.php" class="view-booking-cta">
+        <span class="material-symbols-outlined">add</span>
+        Tambah Booking
+      </a>
+    </div>
   </div>
 
   <div class="booking-detail-grid">
