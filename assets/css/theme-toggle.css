@@ -147,6 +147,27 @@ html[data-theme="light"] .app-index .payment-badge {
   background: rgba(249, 115, 22, 0.12) !important;
 }
 
+html[data-theme="light"] .app-index .payment-option input:checked + .payment-label {
+  background: #ecfdf5 !important;
+  border-color: rgba(22, 163, 74, 0.48) !important;
+  color: #166534 !important;
+  box-shadow: 0 12px 22px rgba(22, 163, 74, 0.12) !important;
+}
+
+html[data-theme="light"] .app-index .payment-option input:checked + .payment-label .payment-title {
+  color: #166534 !important;
+}
+
+html[data-theme="light"] .app-index .payment-option input:checked + .payment-label .payment-caption {
+  color: #15803d !important;
+}
+
+html[data-theme="light"] .app-index .payment-option input:checked + .payment-label .payment-badge {
+  background: rgba(22, 163, 74, 0.16) !important;
+  color: #16a34a !important;
+  border-color: rgba(34, 197, 94, 0.22) !important;
+}
+
 html[data-theme="light"] .app-index .mobile-slate-section-title,
 html[data-theme="light"] .app-index .desktop-terminal-brand,
 html[data-theme="light"] .app-index .desktop-terminal-mark,
