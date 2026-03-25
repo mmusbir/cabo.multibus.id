@@ -2805,14 +2805,14 @@ body.admin-bootstrap-page .kinetic-command-toolbar-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: 0.62rem;
     flex: 1;
 }
 
 body.admin-bootstrap-page .booking-filter-controls {
     display: flex;
     align-items: flex-end;
-    gap: 0.7rem;
+    gap: 0.6rem;
     margin-left: auto;
     flex-wrap: wrap;
 }
@@ -2944,7 +2944,7 @@ body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select {
 }
 
 body.admin-bootstrap-page .booking-per-page-meta {
-    min-width: 7rem;
+    min-width: 6.6rem;
 }
 
 body.admin-bootstrap-page .kinetic-command-refresh {
@@ -3463,6 +3463,32 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         box-shadow: 0 10px 22px rgba(12, 14, 20, 0.16);
     }
 
+    body.admin-bootstrap-page .kinetic-command-toolbar-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.65rem;
+        align-items: end;
+    }
+
+    body.admin-bootstrap-page .booking-filter-controls {
+        grid-column: 1 / -1;
+    }
+
+    body.admin-bootstrap-page .booking-per-page-meta,
+    body.admin-bootstrap-page #bookingToolbarRefresh {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+    }
+
+    body.admin-bootstrap-page .booking-per-page-meta {
+        order: 2;
+    }
+
+    body.admin-bootstrap-page #bookingToolbarRefresh {
+        order: 3;
+    }
+
     body.admin-bootstrap-page .booking-scope-toggle {
         justify-content: space-between;
         padding: 0.3rem;
@@ -3481,11 +3507,19 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         font-size: 0.66rem;
     }
 
+    body.admin-bootstrap-page .booking-per-page-meta .small {
+        font-size: 0.66rem;
+    }
+
     body.admin-bootstrap-page .booking-date-filter input,
     body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select,
     body.admin-bootstrap-page .booking-filter-reset,
     body.admin-bootstrap-page #bookingToolbarRefresh {
         min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select {
+        text-align: center;
     }
 
     body.admin-bootstrap-page .booking-filter-reset {
