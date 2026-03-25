@@ -43,6 +43,7 @@
       <thead>
         <tr>
           <th>Waktu</th>
+          <th>Sumber</th>
           <th>Kategori</th>
           <th>Aksi</th>
           <th>Ringkasan</th>
@@ -51,7 +52,7 @@
       </thead>
       <tbody id="cancellations_tbody">
         <tr>
-          <td colspan="5" class="report-table-empty">Memuat logs...</td>
+          <td colspan="6" class="report-table-empty">Memuat logs...</td>
         </tr>
       </tbody>
     </table>

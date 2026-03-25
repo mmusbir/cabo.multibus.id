@@ -7146,6 +7146,30 @@ body.admin-bootstrap-page .admin-log-badge.action-danger {
     color: #fca5a5;
 }
 
+body.admin-bootstrap-page .admin-log-badge.source-admin {
+    background: rgba(249, 115, 22, 0.12);
+    color: #ffb690;
+}
+
+body.admin-bootstrap-page .admin-log-badge.source-web {
+    background: rgba(14, 165, 233, 0.12);
+    color: #7dd3fc;
+}
+
+body.admin-bootstrap-page .admin-log-badge.source-system {
+    background: rgba(148, 163, 184, 0.14);
+    color: #cbd5e1;
+}
+
+body.admin-bootstrap-page .admin-log-summary-cell {
+    line-height: 1.45;
+}
+
+body.admin-bootstrap-page .admin-log-time-cell,
+body.admin-bootstrap-page .admin-log-actor-cell {
+    white-space: nowrap;
+}
+
 body.admin-bootstrap-page .customers-table-link:hover {
     color: #cde5ff;
     text-decoration: underline;

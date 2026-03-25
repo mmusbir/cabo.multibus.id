@@ -19,9 +19,9 @@ $where = [];
 $params = [];
 
 if ($search !== '') {
-    $where[] = "(summary ILIKE ? OR details ILIKE ? OR actor ILIKE ? OR action ILIKE ? OR category ILIKE ?)";
+    $where[] = "(summary ILIKE ? OR details ILIKE ? OR actor ILIKE ? OR action ILIKE ? OR category ILIKE ? OR entity_type ILIKE ?)";
     $like = '%' . $search . '%';
-    array_push($params, $like, $like, $like, $like, $like);
+    array_push($params, $like, $like, $like, $like, $like, $like);
 }
 
 if ($type !== '' && in_array($type, $allowedTypes, true)) {
@@ -70,7 +70,7 @@ $actionLabels = [
 
 ob_start();
 if (empty($rows)) {
-    echo '<tr><td colspan="5" class="report-table-empty">Belum ada logs yang tercatat.</td></tr>';
+    echo '<tr><td colspan="6" class="report-table-empty">Belum ada logs yang tercatat.</td></tr>';
 } else {
     foreach ($rows as $row) {
         $category = strtolower(trim((string) ($row['category'] ?? '')));
@@ -79,6 +79,12 @@ if (empty($rows)) {
         $summary = trim((string) ($row['summary'] ?? '-'));
         $details = trim((string) ($row['details'] ?? ''));
         $actor = trim((string) ($row['actor'] ?? 'system'));
+        $source = 'ADMIN';
+        if (in_array(strtolower($actor), ['web', 'public'], true)) {
+            $source = 'WEB';
+        } elseif (in_array(strtolower($actor), ['system', 'cron'], true)) {
+            $source = 'SYSTEM';
+        }
         $absoluteTime = !empty($row['created_at']) ? date('d M Y H:i', strtotime((string) $row['created_at'])) . ' WITA' : '-';
 
         echo '<tr class="admin-log-row tone-' . htmlspecialchars($tone) . '">';
@@ -86,6 +92,7 @@ if (empty($rows)) {
         echo '    <div class="admin-log-time-main">' . htmlspecialchars(activity_log_relative_time($row['created_at'] ?? '')) . '</div>';
         echo '    <div class="admin-log-time-sub">' . htmlspecialchars($absoluteTime) . '</div>';
         echo '  </td>';
+        echo '  <td><span class="admin-log-badge source-' . htmlspecialchars(strtolower($source)) . '">' . htmlspecialchars($source) . '</span></td>';
         echo '  <td><span class="admin-log-badge category-' . htmlspecialchars($category) . '">' . htmlspecialchars($categoryLabels[$category] ?? ucfirst($category)) . '</span></td>';
         echo '  <td><span class="admin-log-badge action-' . htmlspecialchars($tone) . '">' . htmlspecialchars($actionLabels[$action] ?? ucwords(str_replace('_', ' ', $action))) . '</span></td>';
         echo '  <td class="admin-log-summary-cell">';
@@ -94,7 +101,7 @@ if (empty($rows)) {
             echo '    <div class="admin-log-details">' . htmlspecialchars($details) . '</div>';
         }
         echo '  </td>';
-        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($actor) . '</td>';
+        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($source === 'ADMIN' ? $actor : '-') . '</td>';
         echo '</tr>';
     }
 }
