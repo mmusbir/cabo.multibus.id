@@ -31,6 +31,7 @@ if ($scope === 'history') {
     $baseFrom .= " AND b.tanggal BETWEEN ? AND ? ";
     $params[] = $currentMonthStart;
     $params[] = $currentMonthEnd;
+    $baseFrom .= " AND (b.tanggal < CURRENT_DATE OR (b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME)) ";
 } else {
     $baseFrom .= " AND b.tanggal >= CURRENT_DATE ";
 }
