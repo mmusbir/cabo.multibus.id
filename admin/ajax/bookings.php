@@ -131,6 +131,9 @@ if (empty($rows)) {
         echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">confirmation_number</span>Lunas ' . $paidCount . ' / Belum lunas ' . $unpaidCount . '</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
+        if ($unpaidCount > 0 && $scope !== 'history') {
+            echo '        <button type="button" class="kinetic-trip-action success mark-all-paid-btn" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" title="Tandai semua penumpang di trip ini menjadi lunas"><span class="material-symbols-outlined">task_alt</span>Lunas Semua (' . $unpaidCount . ')</button>';
+        }
         echo '        <a href="#" class="kinetic-trip-action" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); copyBookingTripManifest(this);"><span class="material-symbols-outlined">content_copy</span>Copy Data</a>';
         echo '        <a href="#" class="kinetic-trip-action primary" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); openBookingTripDetail(this);"><span class="material-symbols-outlined">list_alt</span>Detail</a>';
         echo '      </div>';

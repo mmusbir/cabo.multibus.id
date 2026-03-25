@@ -176,8 +176,7 @@ try {
     </div>
     <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
       <?php if ($countUnpaid > 0): ?>
-      <button type="button" id="markAllPaidBtn"
-        class="btn btn-modern"
+      <button type="button" class="mark-all-paid-btn btn btn-modern"
         style="background:#16a34a;border-color:#16a34a;color:#fff;font-size:0.82rem;min-height:2.3rem;padding:0.45rem 1rem;border-radius:0.75rem;"
         data-rute="<?php echo h($rute); ?>"
         data-tanggal="<?php echo h($tanggal); ?>"

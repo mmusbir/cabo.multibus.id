@@ -1581,7 +1581,7 @@ if (!isset($_REQUEST['action'])):
         if (typeof window.updateBookingCommandSummary === 'function' && ['bookings', 'charters', 'luggage'].includes(target)) {
           window.updateBookingCommandSummary(target, js.total);
         }
-        if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); }
+        if (target === 'bookings') { attachEditBookingHandlers(); attachTableCancelHandlers(); attachTableMarkPaidHandlers(); attachMarkAllPaidHandler(); }
         if (target === 'charters') { attachCharterHandlers(); }
         if (target === 'luggage') { attachLuggageHandlers(); }
       } catch (e) {
@@ -2240,42 +2240,52 @@ if (!isset($_REQUEST['action'])):
       });
     }
     function attachMarkAllPaidHandler() {
-      const btn = document.getElementById('markAllPaidBtn');
-      if (!btn) return;
-      btn.onclick = function () {
-        const rute    = this.getAttribute('data-rute');
-        const tanggal = this.getAttribute('data-tanggal');
-        const jam     = this.getAttribute('data-jam');
-        const unit    = this.getAttribute('data-unit');
-        const countMatch = this.querySelector('span:last-child')?.textContent.match(/\d+/);
-        const count   = countMatch ? countMatch[0] : '';
-        customConfirm(
-          'Tandai ' + (count ? count + ' penumpang' : 'semua penumpang') + ' yang belum lunas menjadi LUNAS?',
-          async () => {
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-small"></span><span>Memproses...</span>';
-            try {
-              const url = `admin.php?mark_all_paid=1&rute=${encodeURIComponent(rute)}&tanggal=${encodeURIComponent(tanggal)}&jam=${encodeURIComponent(jam)}&unit=${encodeURIComponent(unit)}`;
-              const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-              const js  = await res.json();
-              if (js.success) {
-                await customAlert('Berhasil! ' + (js.updated || 0) + ' penumpang telah ditandai Lunas.', 'Lunas Semua');
-                if (typeof window.loadBookingDetailPassengers === 'function') {
-                  window.loadBookingDetailPassengers();
+      document.querySelectorAll('.mark-all-paid-btn').forEach((btn) => {
+        btn.onclick = function () {
+          const rute    = this.getAttribute('data-rute');
+          const tanggal = this.getAttribute('data-tanggal');
+          const jam     = this.getAttribute('data-jam');
+          const unit    = this.getAttribute('data-unit');
+          const countMatch = this.textContent.match(/\((\d+)\)/);
+          const count   = countMatch ? countMatch[1] : '';
+          const originalHtml = btn.innerHTML;
+          customConfirm(
+            'Tandai ' + (count ? count + ' penumpang' : 'semua penumpang') + ' pada keberangkatan ini menjadi LUNAS?',
+            async () => {
+              btn.disabled = true;
+              btn.innerHTML = '<span class="spinner-small"></span><span>Memproses...</span>';
+              try {
+                const url = `admin.php?mark_all_paid=1&rute=${encodeURIComponent(rute)}&tanggal=${encodeURIComponent(tanggal)}&jam=${encodeURIComponent(jam)}&unit=${encodeURIComponent(unit)}`;
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                const js  = await res.json();
+                if (js.success) {
+                  await customAlert('Berhasil! ' + (js.updated || 0) + ' penumpang pada keberangkatan ini telah ditandai Lunas.', 'Lunas Semua');
+                  if (window.bookingDashboardState?.active === 'bookings' && typeof ajaxListLoad === 'function') {
+                    const perPage = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);
+                    const params = typeof buildAdminListParams === 'function'
+                      ? buildAdminListParams('bookings', { page: 1, per_page: perPage, search: document.getElementById('search_name_input')?.value || '' })
+                      : { page: 1, per_page: perPage, search: '' };
+                    ajaxListLoad('bookings', params);
+                  }
+                  if (document.getElementById('booking-detail')?.style.display !== 'none' && typeof window.loadBookingDetailPassengers === 'function') {
+                    window.loadBookingDetailPassengers();
+                  }
+                } else {
+                  customAlert('Gagal: ' + (js.error || 'unknown'));
+                  btn.disabled = false;
+                  btn.innerHTML = originalHtml;
                 }
-              } else {
-                customAlert('Gagal: ' + (js.error || 'unknown'));
+              } catch (e) {
+                customAlert('Kesalahan koneksi: ' + e);
                 btn.disabled = false;
+                btn.innerHTML = originalHtml;
               }
-            } catch (e) {
-              customAlert('Kesalahan koneksi: ' + e);
-              btn.disabled = false;
-            }
-          },
-          'Konfirmasi Lunas Semua',
-          'success'
-        );
-      };
+            },
+            'Konfirmasi Lunas Semua',
+            'success'
+          );
+        };
+      });
     }
     function updatePaymentRadioState(radios, selectedValue = '') {
       radios.forEach(radio => {
