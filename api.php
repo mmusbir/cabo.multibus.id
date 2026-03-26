@@ -228,8 +228,8 @@ $router->get('getBookedSeatsDetail', function () use ($conn) {
         apiError('invalid_params', 400);
     }
     $stmt = $conn->prepare("
-        SELECT b.seat, b.name, b.phone, b.pembayaran, 
-               b.pickup_point, b.price, b.discount, s.rute AS segment_name 
+        SELECT b.id, b.seat, b.name, b.phone, b.pembayaran,
+               b.pickup_point, b.segment_id, b.price, b.discount, s.rute AS segment_name
         FROM bookings b 
         LEFT JOIN segments s ON b.segment_id = s.id 
         WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? 
@@ -239,16 +239,126 @@ $router->get('getBookedSeatsDetail', function () use ($conn) {
     $details = [];
     while ($r = $stmt->fetch()) {
         $details[(string) $r['seat']] = [
+            'id' => (int) ($r['id'] ?? 0),
             'name' => $r['name'],
             'phone' => $r['phone'],
             'pembayaran' => $r['pembayaran'],
             'pickup_point' => $r['pickup_point'],
+            'segment_id' => (int) ($r['segment_id'] ?? 0),
             'segment_name' => $r['segment_name'],
             'price' => floatval($r['price']),
             'discount' => floatval($r['discount'])
         ];
     }
     apiSuccess(['details' => $details]);
+});
+
+$router->post('updateBookedSeat', function () use ($conn) {
+    $data = getJsonInput();
+    if (empty($data)) {
+        apiError('invalid_json', 400);
+    }
+
+    $id = (int) ($data['id'] ?? 0);
+    $name = strtoupper(trim((string) ($data['name'] ?? '')));
+    $phone = preg_replace('/\D/', '', (string) ($data['phone'] ?? ''));
+    $pickupPoint = trim((string) ($data['pickup_point'] ?? ''));
+    $segmentId = (int) ($data['segment_id'] ?? 0);
+    $discount = max(0, (float) ($data['discount'] ?? 0));
+    $pembayaran = trim((string) ($data['pembayaran'] ?? 'Belum Lunas'));
+
+    if ($id <= 0 || $name === '' || $phone === '' || $pickupPoint === '') {
+        apiError('missing_fields', 400);
+    }
+
+    if (substr($phone, 0, 2) === '62') $phone = '0' . substr($phone, 2);
+    if (substr($phone, 0, 1) === '8') $phone = '0' . $phone;
+    if (strlen($phone) > 13) $phone = substr($phone, 0, 13);
+
+    $allowedPayments = ['Belum Lunas', 'Lunas', 'RedBus', 'Traveloka', 'QRIS', 'Transfer', 'Tunai'];
+    if (!in_array($pembayaran, $allowedPayments, true)) {
+        $pembayaran = 'Belum Lunas';
+    }
+
+    $stmtCurrent = $conn->prepare("SELECT id, seat, rute, tanggal, jam, unit, status FROM bookings WHERE id=? LIMIT 1");
+    $stmtCurrent->execute([$id]);
+    $current = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
+    if (!$current || ($current['status'] ?? '') === 'canceled') {
+        apiError('booking_not_found', 404);
+    }
+
+    $price = 0;
+    if ($segmentId > 0) {
+        $stmtSegment = $conn->prepare("SELECT harga FROM segments WHERE id=? LIMIT 1");
+        $stmtSegment->execute([$segmentId]);
+        if ($segment = $stmtSegment->fetch(PDO::FETCH_ASSOC)) {
+            $price = (float) ($segment['harga'] ?? 0);
+        }
+    }
+
+    $stmt = $conn->prepare("
+        UPDATE bookings
+        SET name=?, phone=?, pickup_point=?, pembayaran=?, segment_id=?, price=?, discount=?
+        WHERE id=? AND status!='canceled'
+    ");
+    $stmt->execute([$name, $phone, $pickupPoint, $pembayaran, $segmentId ?: null, $price, $discount, $id]);
+
+    $stmtCustomer = $conn->prepare("
+        INSERT INTO customers (name, phone, pickup_point, address)
+        VALUES (?, ?, ?, '')
+        ON CONFLICT (phone) DO UPDATE SET
+            name = EXCLUDED.name,
+            pickup_point = EXCLUDED.pickup_point
+    ");
+    $stmtCustomer->execute([$name, $phone, $pickupPoint]);
+
+    activity_log_write(
+        $conn,
+        'booking',
+        'booking',
+        $id,
+        'update',
+        'Booking diperbarui: ' . $name,
+        ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-'),
+        'web'
+    );
+
+    apiSuccess(['message' => 'Booking berhasil diperbarui']);
+});
+
+$router->post('cancelBookedSeat', function () use ($conn) {
+    $data = getJsonInput();
+    if (empty($data)) {
+        apiError('invalid_json', 400);
+    }
+
+    $id = (int) ($data['id'] ?? 0);
+    if ($id <= 0) {
+        apiError('invalid_booking_id', 400);
+    }
+
+    $stmtCurrent = $conn->prepare("SELECT id, seat, rute, tanggal, jam, unit, name, status FROM bookings WHERE id=? LIMIT 1");
+    $stmtCurrent->execute([$id]);
+    $current = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
+    if (!$current || ($current['status'] ?? '') === 'canceled') {
+        apiError('booking_not_found', 404);
+    }
+
+    $stmt = $conn->prepare("UPDATE bookings SET status='canceled' WHERE id=? AND status!='canceled'");
+    $stmt->execute([$id]);
+
+    activity_log_write(
+        $conn,
+        'booking',
+        'booking',
+        $id,
+        'cancel',
+        'Booking dibatalkan: ' . ($current['name'] ?? 'Tanpa Nama'),
+        ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-'),
+        'web'
+    );
+
+    apiSuccess(['message' => 'Booking berhasil dibatalkan']);
 });
 
 $router->get('searchCustomers', function () use ($conn) {

@@ -776,10 +776,14 @@
     .detail-modal-actions {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .detail-copy-btn,
-    .detail-rekap-btn {
+    .detail-rekap-btn,
+    .detail-edit-btn,
+    .detail-cancel-btn,
+    .detail-save-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -805,6 +809,7 @@
       box-shadow: 6px 6px 12px var(--neu-dark-shadow), -6px -6px 12px var(--neu-light-shadow);
     }
 
+    .detail-edit-btn,
     .detail-rekap-btn {
       flex: 1;
       padding: 12px 16px;
@@ -820,10 +825,111 @@
       font-family: inherit;
     }
 
+    .detail-edit-btn {
+      background: #f97316;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.28);
+    }
+
+    .detail-edit-btn:hover {
+      background: #ea580c;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(249, 115, 22, 0.36);
+    }
+
     .detail-rekap-btn:hover {
       background: #059669;
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .detail-cancel-btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      font-weight: 700;
+      font-size: 15px;
+      border: 1px solid rgba(248, 113, 113, 0.22);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .detail-cancel-btn:hover {
+      background: rgba(239, 68, 68, 0.18);
+      color: #fee2e2;
+      transform: translateY(-1px);
+    }
+
+    .detail-save-btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: #10b981;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .detail-save-btn:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .detail-edit-form {
+      display: none;
+      margin-bottom: 18px;
+    }
+
+    .detail-edit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-edit-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .detail-edit-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-edit-field-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(224, 192, 177, 0.68);
+    }
+
+    .detail-edit-input,
+    .detail-edit-select {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(12, 14, 20, 0.58);
+      color: #f8fafc;
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .detail-edit-input:focus,
+    .detail-edit-select:focus {
+      border-color: rgba(249, 115, 22, 0.4);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
     }
 
     .detail-rekap-btn.rekap-clear-btn {
@@ -2697,7 +2803,10 @@
       }
 
       .detail-copy-btn,
+      .detail-edit-btn,
       .detail-rekap-btn,
+      .detail-cancel-btn,
+      .detail-save-btn,
       .confirm-popup-btn {
         min-height: 2.9rem;
         border-radius: 0.8rem;
@@ -2720,16 +2829,22 @@
         border: 1px solid rgba(88, 66, 55, 0.16);
       }
 
+      .detail-edit-btn,
       .detail-rekap-btn {
         background: #f97316;
         color: #341100;
       }
 
+      .detail-cancel-btn,
       .detail-rekap-btn.rekap-clear-btn,
       .confirm-popup-yes {
         background: #93000a;
         color: #ffdad6;
         border: 1px solid rgba(255, 180, 171, 0.2);
+      }
+
+      .detail-edit-grid {
+        grid-template-columns: 1fr;
       }
 
       .confirm-popup-icon {
@@ -3502,14 +3617,66 @@
           <button type="button" id="closeDetailModal" class="modal-close-btn">&times;</button>
         </div>
         <div id="detailContent" class="modal-body"></div>
-        <div class="detail-modal-actions">
+        <div id="detailEditForm" class="detail-edit-form">
+          <div class="detail-edit-grid">
+            <label class="detail-edit-field full">
+              <span class="detail-edit-field-label">Nama Lengkap</span>
+              <input type="text" id="detailEditName" class="detail-edit-input" placeholder="Input nama penumpang">
+            </label>
+            <label class="detail-edit-field">
+              <span class="detail-edit-field-label">No. Handphone</span>
+              <input type="text" id="detailEditPhone" class="detail-edit-input" placeholder="Input nomor handphone">
+            </label>
+            <label class="detail-edit-field">
+              <span class="detail-edit-field-label">Titik Jemput</span>
+              <input type="text" id="detailEditPickup" class="detail-edit-input" placeholder="Input titik jemput">
+            </label>
+            <label class="detail-edit-field">
+              <span class="detail-edit-field-label">Segment Rute</span>
+              <select id="detailEditSegment" class="detail-edit-select">
+                <option value="">-- Pilih Segment --</option>
+              </select>
+            </label>
+            <label class="detail-edit-field">
+              <span class="detail-edit-field-label">Potongan Harga</span>
+              <input type="number" id="detailEditDiscount" class="detail-edit-input" placeholder="0" min="0">
+            </label>
+            <label class="detail-edit-field">
+              <span class="detail-edit-field-label">Pembayaran</span>
+              <select id="detailEditPayment" class="detail-edit-select">
+                <option value="Belum Lunas">Belum Lunas</option>
+                <option value="Lunas">Lunas</option>
+                <option value="RedBus">RedBus</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="detail-modal-actions" id="detailModalViewActions">
           <button type="button" id="copyDetailBtn" class="detail-copy-btn">
             <i class="fa-solid fa-copy fa-icon"></i>
             Salin Data
           </button>
+          <button type="button" id="editDetailBtn" class="detail-edit-btn">
+            <i class="fa-solid fa-pen-to-square fa-icon"></i>
+            Edit Data
+          </button>
           <button type="button" id="addToRekapBtn" class="detail-rekap-btn">
             <i class="fa-solid fa-square-plus fa-icon"></i>
             Tambah Rekap
+          </button>
+          <button type="button" id="cancelBookingBtn" class="detail-cancel-btn">
+            <i class="fa-solid fa-ban fa-icon"></i>
+            Batalkan
+          </button>
+        </div>
+        <div class="detail-modal-actions" id="detailModalEditActions" style="display:none;">
+          <button type="button" id="closeEditModeBtn" class="detail-copy-btn">
+            <i class="fa-solid fa-arrow-left fa-icon"></i>
+            Kembali
+          </button>
+          <button type="button" id="saveDetailEditBtn" class="detail-save-btn">
+            <i class="fa-solid fa-floppy-disk fa-icon"></i>
+            Simpan Perubahan
           </button>
         </div>
       </div>
@@ -3790,7 +3957,6 @@
               const info = seatDetails[id];
               if (info) {
                 const modal = document.getElementById('detailModal');
-                const content = document.getElementById('detailContent');
                 const tanggal = tanggalEl.value;
                 const jam = jamEl.value || '-';
                 const hari = tanggal ? new Date(tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long' }) : '-';
@@ -3800,38 +3966,43 @@
                 const price = info.price || 0;
                 const disc = info.discount || 0;
                 const finalPrice = price - disc;
-                const priceFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(finalPrice);
+                const priceFormatted = formatRp(finalPrice);
 
-                content.innerHTML = `
-                    <div><strong>Keberangkatan:</strong> ${hari}, ${tanggal} - ${jam}</div>
-                    <div><strong>Kursi:</strong> ${id} - Terisi</div>
-                    <div><strong>Segment:</strong> ${segment}</div>
-                    <div><strong>Harga:</strong> ${priceFormatted}</div>
-                    <div><strong>Nama:</strong> ${info.name || '-'}</div>
-                    <div><strong>No. HP:</strong> ${info.phone || '-'}</div>
-                    <div><strong>Titik Jemput:</strong> ${info.pickup_point || '-'}</div>
-                    <div><strong>${paymentInfo.label}:</strong> ${paymentInfo.value}</div>
-                  `;
+                currentDetailBooking = {
+                  bookingId: info.id || 0,
+                  seatId: id,
+                  name: info.name || '-',
+                  phone: info.phone || '-',
+                  pickup_point: info.pickup_point || '-',
+                  segment: segment,
+                  segment_id: info.segment_id || '',
+                  price: price,
+                  disc: disc,
+                  finalPrice: finalPrice,
+                  pembayaran: pembayaran,
+                  tanggal: tanggal,
+                  jam: jam,
+                  hari: hari,
+                  priceFormatted: priceFormatted
+                };
 
-                modal.style.display = 'flex';
+                _currentRekapItem = {
+                  seatId: id,
+                  name: info.name || '-',
+                  phone: info.phone || '-',
+                  pickup: info.pickup_point || '-',
+                  segment: segment,
+                  price: price,
+                  disc: disc,
+                  finalPrice: finalPrice,
+                  pembayaran: pembayaran,
+                  tanggal: tanggal,
+                  jam: jam,
+                  hari: hari
+                };
 
-                // Set context for "Tambah ke Rekap" button
-                if (typeof _currentRekapItem !== 'undefined') {
-                  _currentRekapItem = {
-                    seatId: id,
-                    name: info.name || '-',
-                    phone: info.phone || '-',
-                    pickup: info.pickup_point || '-',
-                    segment: segment,
-                    price: price,
-                    disc: disc,
-                    finalPrice: finalPrice,
-                    pembayaran: pembayaran,
-                    tanggal: tanggal,
-                    jam: jam,
-                    hari: hari
-                  };
-                }
+                renderDetailModalView();
+                setDetailEditMode(false);
 
                 document.getElementById('copyDetailBtn').onclick = () => {
                   const text = `BUKTI BOOKING
@@ -4110,7 +4281,9 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
       /* ================== REKAP MULTI-PENUMPANG ================== */
       // State
       let rekapList = []; // Array of { seatId, name, phone, pickup, segment, price, disc, finalPrice, tanggal, jam, hari }
-      let _currentRekapItem = null; // temp store for "addToRekap" button context
+      let _currentRekapItem = null; // temp store for detail modal context
+      let currentDetailBooking = null;
+      let isDetailEditMode = false;
 
       function getSearchLookupValue() {
         if (!searchNameEl) return '';
@@ -4148,6 +4321,128 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           return { label: 'Metode Pembayaran', value: normalized };
         }
         return { label: 'Status Pembayaran', value: normalized };
+      }
+
+      function renderDetailModalView() {
+        const modal = document.getElementById('detailModal');
+        const content = document.getElementById('detailContent');
+        if (!modal || !content || !currentDetailBooking) return;
+
+        const info = currentDetailBooking;
+        const paymentInfo = formatPaymentLabel(info.pembayaran);
+        content.innerHTML = `
+          <div><strong>Keberangkatan:</strong> ${info.hari}, ${info.tanggal} - ${info.jam}</div>
+          <div><strong>Kursi:</strong> ${info.seatId} - Terisi</div>
+          <div><strong>Segment:</strong> ${info.segment || '-'}</div>
+          <div><strong>Harga:</strong> ${info.priceFormatted}</div>
+          <div><strong>Nama:</strong> ${info.name || '-'}</div>
+          <div><strong>No. HP:</strong> ${info.phone || '-'}</div>
+          <div><strong>Titik Jemput:</strong> ${info.pickup_point || '-'}</div>
+          <div><strong>${paymentInfo.label}:</strong> ${paymentInfo.value}</div>
+        `;
+        modal.style.display = 'flex';
+      }
+
+      function fillDetailEditSegmentOptions(selectedId) {
+        const select = document.getElementById('detailEditSegment');
+        if (!select) return;
+        const currentValue = String(selectedId || '');
+        const options = ['<option value="">-- Pilih Segment --</option>'];
+        (window.currentSegments || []).forEach((segment) => {
+          const isSelected = String(segment.id) === currentValue ? ' selected' : '';
+          options.push(`<option value="${segment.id}"${isSelected}>${segment.rute} (${formatRp(segment.harga || 0)})</option>`);
+        });
+        select.innerHTML = options.join('');
+      }
+
+      function setDetailEditMode(editing) {
+        isDetailEditMode = !!editing;
+        const detailContent = document.getElementById('detailContent');
+        const editForm = document.getElementById('detailEditForm');
+        const viewActions = document.getElementById('detailModalViewActions');
+        const editActions = document.getElementById('detailModalEditActions');
+        if (detailContent) detailContent.style.display = editing ? 'none' : 'block';
+        if (editForm) editForm.style.display = editing ? 'block' : 'none';
+        if (viewActions) viewActions.style.display = editing ? 'none' : 'flex';
+        if (editActions) editActions.style.display = editing ? 'flex' : 'none';
+      }
+
+      function openDetailEditMode() {
+        if (!currentDetailBooking) return;
+        document.getElementById('detailEditName').value = currentDetailBooking.name || '';
+        document.getElementById('detailEditPhone').value = currentDetailBooking.phone || '';
+        document.getElementById('detailEditPickup').value = currentDetailBooking.pickup_point || '';
+        document.getElementById('detailEditDiscount').value = currentDetailBooking.disc || 0;
+        document.getElementById('detailEditPayment').value = currentDetailBooking.pembayaran || 'Belum Lunas';
+        fillDetailEditSegmentOptions(currentDetailBooking.segment_id || '');
+        setDetailEditMode(true);
+      }
+
+      function closeDetailEditMode() {
+        setDetailEditMode(false);
+      }
+
+      async function saveDetailBookingEdit() {
+        if (!currentDetailBooking) return;
+        const payload = {
+          id: currentDetailBooking.bookingId,
+          name: document.getElementById('detailEditName').value.trim(),
+          phone: document.getElementById('detailEditPhone').value.trim(),
+          pickup_point: document.getElementById('detailEditPickup').value.trim(),
+          segment_id: document.getElementById('detailEditSegment').value || '',
+          discount: document.getElementById('detailEditDiscount').value || 0,
+          pembayaran: document.getElementById('detailEditPayment').value || 'Belum Lunas'
+        };
+
+        if (!payload.name || !payload.phone || !payload.pickup_point) {
+          showRekapToast('Lengkapi nama, no. handphone, dan titik jemput');
+          return;
+        }
+
+        try {
+          const res = await fetch(API_URL + '?action=updateBookedSeat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const js = await res.json();
+          if (!js || !js.success) {
+            showRekapToast(js?.error || 'Gagal memperbarui booking');
+            return;
+          }
+          showRekapToast(js.message || 'Booking berhasil diperbarui');
+          closeDetailEditMode();
+          document.getElementById('detailModal').style.display = 'none';
+          await refreshSeats();
+        } catch (err) {
+          showRekapToast('Gagal koneksi saat memperbarui booking');
+        }
+      }
+
+      async function cancelCurrentDetailBooking() {
+        if (!currentDetailBooking || !currentDetailBooking.bookingId) return;
+        if (!window.confirm('Batalkan booking untuk kursi ' + currentDetailBooking.seatId + '?')) return;
+
+        try {
+          const res = await fetch(API_URL + '?action=cancelBookedSeat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: currentDetailBooking.bookingId })
+          });
+          const js = await res.json();
+          if (!js || !js.success) {
+            showRekapToast(js?.error || 'Gagal membatalkan booking');
+            return;
+          }
+          rekapList = rekapList.filter(item => item.seatId !== currentDetailBooking.seatId);
+          updateRekapBar();
+          showRekapToast(js.message || 'Booking berhasil dibatalkan');
+          document.getElementById('detailModal').style.display = 'none';
+          currentDetailBooking = null;
+          await refreshSeats();
+        } catch (err) {
+          showRekapToast('Gagal koneksi saat membatalkan booking');
+        }
       }
 
       // Update sticky bottom bar
@@ -4289,6 +4584,10 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
       // Bind tombol modal rekap
       document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('addToRekapBtn').addEventListener('click', addCurrentToRekap);
+        document.getElementById('editDetailBtn')?.addEventListener('click', openDetailEditMode);
+        document.getElementById('closeEditModeBtn')?.addEventListener('click', closeDetailEditMode);
+        document.getElementById('saveDetailEditBtn')?.addEventListener('click', saveDetailBookingEdit);
+        document.getElementById('cancelBookingBtn')?.addEventListener('click', cancelCurrentDetailBooking);
 
         document.getElementById('copyRekapBtn').addEventListener('click', copyRekap);
 
@@ -4326,6 +4625,24 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
       });
 
       phoneEl.addEventListener('input', function () {
+        let val = this.value.replace(/[^0-9]/g, '');
+        if (val.startsWith('62')) {
+          val = '0' + val.substring(2);
+        }
+        if (val.startsWith('8')) {
+          val = '0' + val;
+        }
+        if (val.length > 13) {
+          val = val.substring(0, 13);
+        }
+        this.value = val;
+      });
+
+      document.getElementById('detailEditName')?.addEventListener('input', function () {
+        this.value = this.value.toUpperCase();
+      });
+
+      document.getElementById('detailEditPhone')?.addEventListener('input', function () {
         let val = this.value.replace(/[^0-9]/g, '');
         if (val.startsWith('62')) {
           val = '0' + val.substring(2);
@@ -4435,8 +4752,16 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         }
       });
 
-      document.getElementById('closeDetailModal')?.addEventListener('click', () => { document.getElementById('detailModal').style.display = 'none'; });
-      document.getElementById('detailModal')?.addEventListener('click', (e) => { if (e.target.id === 'detailModal') e.target.style.display = 'none'; });
+      document.getElementById('closeDetailModal')?.addEventListener('click', () => {
+        closeDetailEditMode();
+        document.getElementById('detailModal').style.display = 'none';
+      });
+      document.getElementById('detailModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'detailModal') {
+          closeDetailEditMode();
+          e.target.style.display = 'none';
+        }
+      });
 
       /* ================== INIT ================== */
       (function () {
