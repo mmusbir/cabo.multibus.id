@@ -1192,6 +1192,18 @@ body.admin-bootstrap-page .admin-modal-action-wide {
     flex: 2 1 0;
 }
 
+body.admin-bootstrap-page .admin-copy-modal-message {
+    margin-bottom: 0.4rem;
+}
+
+body.admin-bootstrap-page .admin-modal-copy-textarea {
+    min-height: 11rem;
+    resize: vertical;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
 body.admin-bootstrap-page .admin-modal-icon-row {
     display: flex;
     justify-content: center;

@@ -373,10 +373,18 @@
         if (copied) {
           customAlert('Semua detail penumpang berhasil disalin!');
         } else {
-          window.prompt('Salin data booking ini:', text);
+          if (typeof window.openCopyTextModal === 'function') {
+            window.openCopyTextModal(text, 'Salin Data Booking');
+          } else {
+            window.prompt('Salin data booking ini:', text);
+          }
         }
       } catch (e) {
-        window.prompt('Salin data booking ini:', text);
+        if (typeof window.openCopyTextModal === 'function') {
+          window.openCopyTextModal(text, 'Salin Data Booking');
+        } else {
+          window.prompt('Salin data booking ini:', text);
+        }
       }
       document.body.removeChild(temp);
     }

@@ -1533,6 +1533,21 @@ if (!isset($_REQUEST['action'])):
     </div>
   </div>
 
+  <!-- Modal for Copy Fallback -->
+  <div class="bottom-more-modal admin-modal-overlay" id="copyTextModal">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-md admin-modal-card-form">
+      <h3 id="copyTextModalTitle" class="modal-popup-title admin-modal-heading">Salin Data Booking</h3>
+      <p class="modal-popup-message admin-copy-modal-message">Safari kadang memblokir salin otomatis. Teks sudah kami siapkan di bawah ini supaya bisa langsung disalin.</p>
+      <div class="admin-modal-field">
+        <textarea id="copyTextModalValue" class="form-control admin-modal-control admin-modal-copy-textarea" readonly></textarea>
+      </div>
+      <div class="admin-modal-actions admin-modal-actions-split">
+        <button id="copyTextModalCopyBtn" type="button" class="btn btn-modern admin-modal-action admin-modal-action-wide">Copy Sekarang</button>
+        <button id="copyTextModalCloseBtn" type="button" class="btn btn-modern secondary admin-modal-action">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal for Custom Alert -->
   <div class="bottom-more-modal admin-modal-overlay" id="globalAlertModal">
     <div class="modal-popup-content admin-modal-card admin-modal-card-sm admin-modal-card-center">

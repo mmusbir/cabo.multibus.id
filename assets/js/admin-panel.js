@@ -52,6 +52,71 @@
       };
     };
 
+    window.openCopyTextModal = function (text, title = 'Salin Data Booking') {
+      const modal = document.getElementById('copyTextModal');
+      const titleEl = document.getElementById('copyTextModalTitle');
+      const valueEl = document.getElementById('copyTextModalValue');
+      const copyBtn = document.getElementById('copyTextModalCopyBtn');
+      const closeBtn = document.getElementById('copyTextModalCloseBtn');
+
+      if (!modal || !valueEl || !copyBtn || !closeBtn) {
+        window.prompt('Salin data ini:', text);
+        return;
+      }
+
+      const closeModal = () => {
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      };
+
+      if (titleEl) titleEl.textContent = title;
+      valueEl.value = text || '';
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+        valueEl.focus();
+        valueEl.select();
+        valueEl.setSelectionRange(0, valueEl.value.length);
+      }, 10);
+
+      copyBtn.onclick = async () => {
+        valueEl.focus();
+        valueEl.select();
+        valueEl.setSelectionRange(0, valueEl.value.length);
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            await navigator.clipboard.writeText(valueEl.value);
+            await customAlert('Data booking berhasil disalin!', 'Copy Data');
+            closeModal();
+            return;
+          }
+        } catch (err) {
+          // Fall through to manual copy attempt.
+        }
+
+        try {
+          const copied = document.execCommand('copy');
+          if (copied) {
+            await customAlert('Data booking berhasil disalin!', 'Copy Data');
+            closeModal();
+            return;
+          }
+        } catch (err) {
+          // Keep modal open with selected text for manual copy.
+        }
+
+        await customAlert('Teks sudah dipilih. Silakan tekan salin manual di browser Anda.', 'Copy Manual');
+        valueEl.focus();
+        valueEl.select();
+        valueEl.setSelectionRange(0, valueEl.value.length);
+      };
+
+      closeBtn.onclick = closeModal;
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+    };
+
     // --- Profile & Password Logic ---
     document.addEventListener('DOMContentLoaded', function () {
       const btnOpenPass = document.querySelectorAll('[data-open-change-password]');

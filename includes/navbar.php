@@ -18,7 +18,7 @@
     <div class="kinetic-sidebar-scroll">
       <nav class="kinetic-sidebar-primary">
         <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><i class="fa-solid fa-table-columns fa-icon"></i>Dashboard</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><i class="fa-solid fa-ticket fa-icon"></i>Booking</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><i class="fa-solid fa-receipt fa-icon"></i>Booking</a>
         <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><i class="fa-solid fa-van-shuttle fa-icon"></i>Carter</a>
         <a href="#luggage" data-target="luggage" data-nav-key="luggage"><i class="fa-solid fa-suitcase-rolling fa-icon"></i>Bagasi</a>
         <a href="#reports" data-target="reports" data-nav-key="reports"><i class="fa-solid fa-chart-column fa-icon"></i>Laporan</a>
@@ -135,7 +135,7 @@
       <span class="nav-label">Dashboard</span>
     </a>
     <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking" id="navBooking">
-      <i class="fa-solid fa-ticket fa-icon"></i>
+      <i class="fa-solid fa-receipt fa-icon"></i>
       <span class="nav-label">Booking</span>
     </a>
     <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="charters" data-nav-key="charter" id="navCharter">
