@@ -85,7 +85,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
       </div>
       <button type="button" class="kinetic-dash-export" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('reports');window.location.hash='#reports';}">
         <span class="material-symbols-outlined">download</span>
-        Export Report
+        Export Laporan
       </button>
     </section>
 
@@ -134,7 +134,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
 
       <section class="kinetic-dash-panel kinetic-dash-activity">
         <div class="kinetic-dash-panel-head">
-          <h2>Recent Activity</h2>
+          <h2>Aktivitas Terbaru</h2>
           <button type="button" class="kinetic-dash-panel-link" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('cancellations');window.location.hash='#cancellations';}">
             Lihat Semua Activity
           </button>
@@ -165,27 +165,27 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
 
     <section class="kinetic-dash-insights">
       <div class="kinetic-insight-card">
-        <h3>Top Route</h3>
+        <h3>Rute Teratas</h3>
         <div class="kinetic-insight-body">
           <div>
             <p><?php echo htmlspecialchars($dashboard['top_route']); ?></p>
-            <span><?php echo number_format($dashboard['top_route_count'], 0, ',', '.'); ?> BOOKINGS</span>
+            <span><?php echo number_format($dashboard['top_route_count'], 0, ',', '.'); ?> BOOKING</span>
           </div>
           <span class="material-symbols-outlined">route</span>
         </div>
       </div>
       <div class="kinetic-insight-card">
-        <h3>Live Fleet</h3>
+        <h3>Armada Aktif</h3>
         <div class="kinetic-insight-body">
           <div>
-            <p><?php echo number_format($dashboard['live_fleet'], 0, ',', '.'); ?> Units On-Road</p>
-            <span>0 INCIDENTS REPORTED</span>
+            <p><?php echo number_format($dashboard['live_fleet'], 0, ',', '.'); ?> Unit Beroperasi</p>
+            <span>0 INSIDEN DILAPORKAN</span>
           </div>
           <span class="material-symbols-outlined">minor_crash</span>
         </div>
       </div>
       <div class="kinetic-insight-card is-revenue">
-        <h3>Revenue Today</h3>
+        <h3>Pendapatan Hari Ini</h3>
         <div class="kinetic-insight-body">
           <div>
             <p>Rp <?php echo number_format($dashboard['revenue_today'], 0, ',', '.'); ?></p>
