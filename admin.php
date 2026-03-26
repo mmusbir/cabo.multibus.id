@@ -1262,7 +1262,12 @@ if (!isset($_REQUEST['action'])):
   <title>Admin Panel</title>
   <meta name="description" content="Admin Panel Cahaya Bone untuk mengelola dashboard, booking, carter, bagasi, laporan, dan pengaturan operasional.">
   <meta name="theme-color" content="#f97316">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111319'/%3E%3Cpath d='M17 21c0-5.523 4.477-10 10-10h10c5.523 0 10 4.477 10 10v18a5 5 0 0 1-5 5h-1.5a5.5 5.5 0 1 1-11 0h-7a5.5 5.5 0 1 1-11 0H10a2 2 0 0 1-2-2V26a5 5 0 0 1 5-5h4Zm3 2h24v9H20v-9Zm-3 0h-4a3 3 0 0 0-3 3v10h7V23Zm7 18a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm17 0a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM22 35h20v4H22v-4Z' fill='%23f97316'/%3E%3C/svg%3E">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cahaya Bone">
+  <meta property="og:title" content="Admin Panel">
+  <meta property="og:description" content="Admin Panel Cahaya Bone untuk mengelola dashboard, booking, carter, bagasi, laporan, dan pengaturan operasional.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="shortcut icon" href="assets/images/favicon.svg">
   <script>
     (function () {
       try {
