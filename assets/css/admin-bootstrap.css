@@ -2913,6 +2913,22 @@ body.admin-bootstrap-page .kinetic-command-add-btn:hover {
     color: #341100;
 }
 
+body.admin-bootstrap-page .kinetic-command-add-btn .fa-icon,
+body.admin-bootstrap-page .kinetic-command-refresh .fa-icon,
+body.admin-bootstrap-page .kinetic-mobile-icon-btn .fa-icon,
+body.admin-bootstrap-page .kinetic-icon-btn .fa-icon,
+body.admin-bootstrap-page .theme-toggle-btn .fa-icon {
+    transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-command-add-btn:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-command-refresh:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-mobile-icon-btn:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-icon-btn:hover .fa-icon,
+body.admin-bootstrap-page .theme-toggle-btn:hover .fa-icon {
+    transform: translateY(-1px);
+}
+
 body.admin-bootstrap-page .kinetic-command-search {
     min-width: 18rem;
     max-width: 24rem;
@@ -3279,6 +3295,11 @@ body.admin-bootstrap-page .kinetic-trip-action:hover {
     color: #ffffff;
     border-color: rgba(148, 163, 184, 0.3);
     background: rgba(148, 163, 184, 0.08);
+}
+
+body.admin-bootstrap-page .kinetic-trip-action:hover .fa-icon {
+    opacity: 1;
+    transform: scale(1.04);
 }
 
 body.admin-bootstrap-page .kinetic-trip-action.primary {
@@ -4452,6 +4473,7 @@ body.admin-bootstrap-page .kinetic-revenue-split-icon {
     color: #f8fafc;
     font-size: 1rem;
     flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 body.admin-bootstrap-page .kinetic-revenue-split-card h3 {
@@ -4661,6 +4683,18 @@ body.admin-bootstrap-page .kinetic-insight-body .fa-icon {
     color: rgba(255, 255, 255, 0.08);
 }
 
+body.admin-bootstrap-page .kinetic-insight-card.is-route .kinetic-insight-body .fa-icon {
+    color: rgba(96, 165, 250, 0.22);
+}
+
+body.admin-bootstrap-page .kinetic-insight-card.is-fleet .kinetic-insight-body .fa-icon {
+    color: rgba(34, 197, 94, 0.22);
+}
+
+body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body .fa-icon {
+    color: rgba(249, 115, 22, 0.22);
+}
+
 body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body p {
     color: #f97316;
 }
@@ -4859,6 +4893,30 @@ body.admin-bootstrap-page .kinetic-sidebar-links a.active,
 body.admin-bootstrap-page .kinetic-sidebar-links-footer a.active {
     background: #1e1f26;
     color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links a .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a .fa-icon,
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .fa-icon,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn .fa-icon {
+    color: inherit;
+    opacity: 0.86;
+    transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-primary a:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links a:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-primary a.active .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links a.active .fa-icon,
+body.admin-bootstrap-page .kinetic-sidebar-links-footer a.active .fa-icon,
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn:hover .fa-icon,
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.active .fa-icon,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn:hover .fa-icon,
+body.admin-bootstrap-page #bottomMoreModal .nav-btn.active .fa-icon {
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-section {
