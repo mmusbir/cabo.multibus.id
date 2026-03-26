@@ -633,6 +633,10 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.
   color: #0f172a !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn::after {
+  color: #f97316 !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
   background: rgba(255, 255, 255, 0.82) !important;
   border-color: rgba(255, 255, 255, 0.45) !important;
@@ -1292,6 +1296,10 @@ html[data-theme="dark"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.a
   background: rgba(255, 255, 255, 0.08) !important;
   color: #fff7ed !important;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn::after {
+  color: #ffb690 !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
