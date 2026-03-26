@@ -2,7 +2,7 @@
 <section id="bookings" class="card kinetic-command-bookings" data-active-mode="bookings" style="display:none;">
   <div class="kinetic-command-header">
     <div>
-      <div class="kinetic-command-kicker" id="bookingPageKicker">Kinetic Command</div>
+      <div class="kinetic-command-kicker" id="bookingPageKicker">Admin Panel</div>
       <h3 class="kinetic-command-title" id="bookingPageTitle">Data Keberangkatan</h3>
       <div class="booking-history-note" id="bookingHistoryNote" style="display:none;">Riwayat keberangkatan yang sudah lewat pada bulan ini.</div>
     </div>
@@ -205,7 +205,7 @@
         info: 'Pantau keberangkatan, driver, dan total booking customer per jadwal sebelum membuka detail booking.',
         tag: 'Manifest Queue',
         context: 'Live',
-        pageKicker: 'Kinetic Command',
+          pageKicker: 'Admin Panel',
         pageTitle: 'Data Keberangkatan',
         pageSubtitle: 'Real-time schedule monitoring and dispatch control untuk operasional keberangkatan, carter, dan bagasi.',
         searchPlaceholder: 'Cari rute, driver, penumpang, atau jam...',

@@ -79,7 +79,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
   <div class="kinetic-dash-shell">
     <section class="kinetic-dash-head">
       <div>
-        <p class="kinetic-dash-kicker">Operational Overview</p>
+        <p class="kinetic-dash-kicker">Admin Panel</p>
         <h1 class="kinetic-dash-title">Dashboard</h1>
         <p class="kinetic-dash-date"><?php echo htmlspecialchars($todayLabel); ?></p>
       </div>
@@ -123,7 +123,6 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
                 <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
                 <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
               </div>
-              <span class="kinetic-dash-bar-value">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
               <div class="kinetic-dash-bar-shell">
                 <div class="kinetic-dash-bar <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? 'is-zero' : ''; ?>" style="height: <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? '0.35rem' : htmlspecialchars((string) $trendHeights[$idx]) . '%'; ?>;"></div>
               </div>
