@@ -54,6 +54,27 @@
           .replace(/'/g, '&#39;');
       }
 
+      function normalizePhoneValue(rawValue) {
+        let value = String(rawValue || '').replace(/[^0-9]/g, '');
+        if (value.startsWith('62')) value = '0' + value.substring(2);
+        if (value.startsWith('8')) value = '0' + value;
+        if (value.length > 13) value = value.substring(0, 13);
+        return value;
+      }
+
+      function fillCustomerFieldsFromLookup(customer, overwriteExisting) {
+        if (!customer) return;
+        const normalizedPhone = normalizePhoneValue(customer.phone || '');
+        if (overwriteExisting || !nameEl.value.trim()) nameEl.value = String(customer.name || '').toUpperCase();
+        if (overwriteExisting || !phoneEl.value.trim()) phoneEl.value = normalizedPhone;
+        if (overwriteExisting || !pickupEl.value.trim()) pickupEl.value = customer.pickup_point || '';
+        if (overwriteExisting || !addressEl.value.trim()) addressEl.value = customer.address || '';
+        if (overwriteExisting || !getSearchLookupValue().trim()) {
+          setSearchLookupValue(String(customer.name || '').toUpperCase());
+        }
+        validateBookingForm();
+      }
+
       /* ================== LOAD ROUTES BY DATE ================== */
       function loadRoutesByDate(dateStr) {
         // Reset downstream
@@ -973,18 +994,27 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         this.value = this.value.toUpperCase();
       });
 
+      let phoneLookupTimer = null;
       phoneEl.addEventListener('input', function () {
-        let val = this.value.replace(/[^0-9]/g, '');
-        if (val.startsWith('62')) {
-          val = '0' + val.substring(2);
-        }
-        if (val.startsWith('8')) {
-          val = '0' + val;
-        }
-        if (val.length > 13) {
-          val = val.substring(0, 13);
-        }
+        const val = normalizePhoneValue(this.value);
         this.value = val;
+
+        if (phoneLookupTimer) clearTimeout(phoneLookupTimer);
+        if (val.length < 4) return;
+
+        phoneLookupTimer = setTimeout(async () => {
+          try {
+            const res = await fetch(API_URL + '?action=searchCustomers&q=' + encodeURIComponent(val));
+            const js = await res.json();
+            if (!(js && js.success && Array.isArray(js.customers) && js.customers.length)) return;
+            const exactMatch = js.customers.find((customer) => normalizePhoneValue(customer.phone || '') === val) || js.customers[0];
+            if (exactMatch) {
+              fillCustomerFieldsFromLookup(exactMatch, false);
+            }
+          } catch (err) {
+            console.error('phone lookup error', err);
+          }
+        }, 250);
       });
 
       document.getElementById('detailEditName')?.addEventListener('input', function () {
@@ -1041,27 +1071,14 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
                 div.dataset.pickup = c.pickup_point || '';
                 div.dataset.gmaps = c.address || '';
                 div.addEventListener('click', function () {
-                  // Name to uppercase
-                  nameEl.value = (this.dataset.name || '').toUpperCase();
-
-                  // Phone formatting
-                  let rawPhone = this.dataset.phone || '';
-                  let val = rawPhone.replace(/[^0-9]/g, '');
-                  if (val.startsWith('62')) {
-                    val = '0' + val.substring(2);
-                  }
-                  if (val.startsWith('8')) {
-                    val = '0' + val;
-                  }
-                  if (val.length > 13) {
-                    val = val.substring(0, 13);
-                  }
-                  phoneEl.value = val;
-                  pickupEl.value = this.dataset.pickup || '';
-                  addressEl.value = this.dataset.gmaps || '';
+                  fillCustomerFieldsFromLookup({
+                    name: this.dataset.name || '',
+                    phone: this.dataset.phone || '',
+                    pickup_point: this.dataset.pickup || '',
+                    address: this.dataset.gmaps || ''
+                  }, true);
                   sugList.style.display = 'none';
                   setSearchLookupValue((this.dataset.name || '').toUpperCase());
-                  validateBookingForm(); // Trigger validation after suggestion pick
                 });
                 sugList.appendChild(div);
               });

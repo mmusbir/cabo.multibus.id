@@ -685,7 +685,7 @@ $router->post('submitBooking', function () use ($conn) {
         }
 
         // Ensure customer exists
-        $stmt_c = $conn->prepare("INSERT INTO customers (name, phone, pickup_point, address) VALUES (?, ?, ?, ?) ON CONFLICT (phone) DO UPDATE SET pickup_point=EXCLUDED.pickup_point, address=EXCLUDED.address");
+        $stmt_c = $conn->prepare("INSERT INTO customers (name, phone, pickup_point, address) VALUES (?, ?, ?, ?) ON CONFLICT (phone) DO UPDATE SET name=EXCLUDED.name, pickup_point=EXCLUDED.pickup_point, address=EXCLUDED.address");
         $stmt_c->execute([$name, $phone, $pickup_point, $address]);
 
         $conn->commit();
