@@ -8,6 +8,9 @@ $dashboard = [
     'top_route_count' => 0,
     'live_fleet' => 0,
     'revenue_today' => 0,
+    'revenue_booking_month' => 0,
+    'revenue_charter_month' => 0,
+    'revenue_luggage_month' => 0,
     'trend_labels' => [],
     'trend_revenues' => [],
     'trend_dates' => [],
@@ -28,6 +31,9 @@ try {
 
     $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT (tanggal::text || '|' || jam::text || '|' || unit::text)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
     $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
+    $dashboard['revenue_booking_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_TRUNC('month', tanggal) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
+    $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
+    $dashboard['revenue_luggage_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM luggages WHERE payment_status = 'Lunas' AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
 
     // Revenue trend per day (last 7 days), only counting paid bookings
     $revTrendStmt = $conn->query("SELECT tanggal, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY tanggal ORDER BY tanggal ASC");
@@ -109,28 +115,48 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
     </section>
 
     <div class="kinetic-dash-grid">
-      <section class="kinetic-dash-panel kinetic-dash-chart">
-        <div class="kinetic-dash-panel-head">
-          <h2>Tren Revenue Harian</h2>
-          <span class="kinetic-dash-chip">7 Hari Terakhir</span>
-        </div>
-        <div class="kinetic-dash-chart-bars">
-          <?php foreach ($dashboard['trend_labels'] as $idx => $label): ?>
-            <div class="kinetic-dash-bar-group <?php echo $idx === array_key_last($dashboard['trend_labels']) ? 'is-active' : ''; ?>"
-                 data-revenue="<?php echo (int) $dashboard['trend_revenues'][$idx]; ?>"
-                 data-date="<?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?>">
-              <div class="kinetic-dash-bar-tooltip">
-                <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
-                <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
+      <div class="kinetic-dash-chart-stack">
+        <section class="kinetic-dash-panel kinetic-dash-chart">
+          <div class="kinetic-dash-panel-head">
+            <h2>Tren Revenue Harian</h2>
+            <span class="kinetic-dash-chip">7 Hari Terakhir</span>
+          </div>
+          <div class="kinetic-dash-chart-bars">
+            <?php foreach ($dashboard['trend_labels'] as $idx => $label): ?>
+              <div class="kinetic-dash-bar-group <?php echo $idx === array_key_last($dashboard['trend_labels']) ? 'is-active' : ''; ?>"
+                   data-revenue="<?php echo (int) $dashboard['trend_revenues'][$idx]; ?>"
+                   data-date="<?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?>">
+                <div class="kinetic-dash-bar-tooltip">
+                  <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
+                  <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
+                </div>
+                <div class="kinetic-dash-bar-shell">
+                  <div class="kinetic-dash-bar <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? 'is-zero' : ''; ?>" style="height: <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? '0.35rem' : htmlspecialchars((string) $trendHeights[$idx]) . '%'; ?>;"></div>
+                </div>
+                <span><?php echo htmlspecialchars($label); ?></span>
               </div>
-              <div class="kinetic-dash-bar-shell">
-                <div class="kinetic-dash-bar <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? 'is-zero' : ''; ?>" style="height: <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? '0.35rem' : htmlspecialchars((string) $trendHeights[$idx]) . '%'; ?>;"></div>
-              </div>
-              <span><?php echo htmlspecialchars($label); ?></span>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      </section>
+            <?php endforeach; ?>
+          </div>
+        </section>
+
+        <section class="kinetic-dash-revenue-splits">
+          <article class="kinetic-revenue-split-card is-booking">
+            <h3>Revenue Booking Penumpang</h3>
+            <strong>Rp <?php echo number_format($dashboard['revenue_booking_month'], 0, ',', '.'); ?></strong>
+            <span>Bulan ini · booking lunas</span>
+          </article>
+          <article class="kinetic-revenue-split-card is-charter">
+            <h3>Revenue Carter</h3>
+            <strong>Rp <?php echo number_format($dashboard['revenue_charter_month'], 0, ',', '.'); ?></strong>
+            <span>Bulan ini · seluruh carter</span>
+          </article>
+          <article class="kinetic-revenue-split-card is-luggage">
+            <h3>Revenue Bagasi</h3>
+            <strong>Rp <?php echo number_format($dashboard['revenue_luggage_month'], 0, ',', '.'); ?></strong>
+            <span>Bulan ini · bagasi lunas</span>
+          </article>
+        </section>
+      </div>
 
       <section class="kinetic-dash-panel kinetic-dash-activity">
         <div class="kinetic-dash-panel-head">

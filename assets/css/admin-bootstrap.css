@@ -4282,6 +4282,18 @@ body.admin-bootstrap-page .kinetic-dash-grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
     gap: 1.5rem;
+    align-items: start;
+}
+
+body.admin-bootstrap-page .kinetic-dash-chart-stack {
+    display: grid;
+    gap: 1rem;
+}
+
+body.admin-bootstrap-page .kinetic-dash-revenue-splits {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
 }
 
 body.admin-bootstrap-page .kinetic-dash-panel {
@@ -4398,6 +4410,55 @@ body.admin-bootstrap-page .kinetic-dash-bar-group > span {
 
 body.admin-bootstrap-page .kinetic-dash-bar-group.is-active > span {
     color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card {
+    padding: 1.2rem 1.1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(88, 66, 55, 0.15);
+    background: #191b22;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-height: 8.6rem;
+    box-shadow: 0 16px 30px rgba(12, 14, 20, 0.14);
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card h3 {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card strong {
+    color: #f8fafc;
+    font-size: 1.4rem;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card span {
+    color: rgba(224, 192, 177, 0.78);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-booking {
+    border-top: 3px solid #f97316;
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.12), rgba(25, 27, 34, 0.92));
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-charter {
+    border-top: 3px solid #3b82f6;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(25, 27, 34, 0.92));
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-luggage {
+    border-top: 3px solid #14b8a6;
+    background: linear-gradient(180deg, rgba(20, 184, 166, 0.12), rgba(25, 27, 34, 0.92));
 }
 
 /* Revenue Tooltip */
@@ -4561,6 +4622,10 @@ body.admin-bootstrap-page .kinetic-insight-card.is-revenue .kinetic-insight-body
 
 @media (max-width: 1199.98px) {
     body.admin-bootstrap-page .kinetic-dash-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.admin-bootstrap-page .kinetic-dash-revenue-splits {
         grid-template-columns: 1fr;
     }
 }

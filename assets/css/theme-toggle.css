@@ -759,6 +759,39 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-insight-card.is-reve
   color: #f97316 !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card h3 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card strong {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card span {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card.is-booking {
+  background: #fffcf8 !important;
+  border-top-color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card.is-charter {
+  background: #f8fbff !important;
+  border-top-color: #3b82f6 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-revenue-split-card.is-luggage {
+  background: #f3fffd !important;
+  border-top-color: #14b8a6 !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .admin-empty-state {
   color: #94a3b8 !important;
   background: #f8fafc !important;
