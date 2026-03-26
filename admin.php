@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $isActionRequest = isset($_REQUEST['action']);
 if ($isActionRequest) {
