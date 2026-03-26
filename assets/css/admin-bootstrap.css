@@ -4933,14 +4933,43 @@ body.admin-bootstrap-page .kinetic-sidebar-section {
     margin-bottom: 1.15rem;
 }
 
-body.admin-bootstrap-page .kinetic-sidebar-section-title {
+body.admin-bootstrap-page .kinetic-sidebar-section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
     padding: 0 0.95rem 0.5rem;
+    border: 0;
+    background: transparent;
     color: #7c8798;
+    cursor: pointer;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-title {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-caret {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-toggle:hover,
+body.admin-bootstrap-page .kinetic-sidebar-section-toggle:hover .kinetic-sidebar-section-caret {
+    color: #f97316;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-submenu.is-collapsed .kinetic-sidebar-links {
+    display: none;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-submenu.is-collapsed .kinetic-sidebar-section-caret {
+    transform: rotate(-90deg);
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-footer {

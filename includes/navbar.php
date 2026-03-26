@@ -24,9 +24,12 @@
         <a href="#reports" data-target="reports" data-nav-key="reports"><i class="fa-solid fa-chart-column fa-icon"></i>Laporan</a>
       </nav>
 
-      <div class="kinetic-sidebar-section">
-        <div class="kinetic-sidebar-section-title">Pengaturan</div>
-        <div class="kinetic-sidebar-links">
+      <div class="kinetic-sidebar-section kinetic-sidebar-submenu" id="settingsSidebarSection">
+        <button class="kinetic-sidebar-section-toggle" id="settingsSidebarToggle" type="button" aria-expanded="true" aria-controls="settingsSidebarLinks">
+          <span class="kinetic-sidebar-section-title">Pengaturan</span>
+          <i class="fa-solid fa-chevron-down fa-icon kinetic-sidebar-section-caret"></i>
+        </button>
+        <div class="kinetic-sidebar-links" id="settingsSidebarLinks">
           <a href="#customers" data-target="customers"><i class="fa-solid fa-users fa-icon"></i>Customers</a>
           <a href="#schedules" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i>Jadwal</a>
           <a href="#cancellations" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i>Logs</a>
@@ -191,6 +194,10 @@
     const closeMoreModal = document.getElementById('closeMoreModal');
     const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
     const sidebarStorageKey = 'adminSidebarHidden';
+    const settingsSidebarSection = document.getElementById('settingsSidebarSection');
+    const settingsSidebarToggle = document.getElementById('settingsSidebarToggle');
+    const settingsMenuStorageKey = 'adminSettingsMenuCollapsed';
+    const settingsTargets = ['customers', 'schedules', 'cancellations', 'routes', 'segments', 'luggage_services', 'units', 'drivers', 'users'];
 
     function syncDesktopSidebarButton() {
       const isHidden = document.body.classList.contains('sidebar-hidden');
@@ -212,6 +219,23 @@
         // Ignore storage issues in private mode.
       }
       syncDesktopSidebarButton();
+    }
+
+    function isSettingsTarget(target) {
+      return settingsTargets.includes(target);
+    }
+
+    function setSettingsMenuCollapsed(isCollapsed, persist = true) {
+      if (!settingsSidebarSection || !settingsSidebarToggle) return;
+      settingsSidebarSection.classList.toggle('is-collapsed', !!isCollapsed);
+      settingsSidebarToggle.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+      if (persist) {
+        try {
+          window.localStorage.setItem(settingsMenuStorageKey, isCollapsed ? '1' : '0');
+        } catch (err) {
+          // Ignore unavailable storage.
+        }
+      }
     }
 
     function getPrimaryNavKey(target) {
@@ -238,6 +262,10 @@
       document.querySelectorAll('.kinetic-sidebar-links a[data-target], .bottom-more-content .nav-btn[data-target]').forEach(link => {
         link.classList.toggle('active', link.getAttribute('data-target') === target);
       });
+
+      if (isSettingsTarget(target)) {
+        setSettingsMenuCollapsed(false, false);
+      }
     }
 
     window.syncAdminNavState = syncAdminNavState;
@@ -289,6 +317,13 @@
     if (desktopSidebarToggle) {
       desktopSidebarToggle.addEventListener('click', function () {
         setDesktopSidebarHidden(!document.body.classList.contains('sidebar-hidden'));
+      });
+    }
+
+    if (settingsSidebarToggle) {
+      settingsSidebarToggle.addEventListener('click', function () {
+        const willCollapse = !settingsSidebarSection.classList.contains('is-collapsed');
+        setSettingsMenuCollapsed(willCollapse, true);
       });
     }
 
@@ -395,6 +430,9 @@
     try {
       if (window.matchMedia('(min-width: 992px)').matches && window.localStorage.getItem(sidebarStorageKey) === '1') {
         document.body.classList.add('sidebar-hidden');
+      }
+      if (window.localStorage.getItem(settingsMenuStorageKey) === '1' && !isSettingsTarget(initialTarget)) {
+        setSettingsMenuCollapsed(true, false);
       }
     } catch (err) {
       // Ignore unavailable storage.
