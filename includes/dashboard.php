@@ -142,7 +142,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <section class="kinetic-dash-revenue-splits">
           <article class="kinetic-revenue-split-card is-booking">
             <div class="kinetic-revenue-split-head">
-              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-ticket fa-icon"></i></span>
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-receipt fa-icon"></i></span>
               <h3>Booking</h3>
             </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_booking_month'], 0, ',', '.'); ?></strong>
