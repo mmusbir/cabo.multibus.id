@@ -630,18 +630,6 @@ $router->post('submitBooking', function () use ($conn) {
     $numSeats = count($seats);
     $discountPerSeat = ($numSeats > 0) ? ($discount / $numSeats) : 0;
 
-    // Check phone/name conflict
-    $stmtC = $conn->prepare("SELECT name FROM customers WHERE phone=? LIMIT 1");
-    $stmtC->execute([$phone]);
-    $rowC = $stmtC->fetch();
-    if ($rowC) {
-        if (strtolower(trim($rowC['name'])) !== strtolower($name)) {
-            apiError('phone_conflict', 400, [
-                'msg' => 'Nomor HP sudah terdaftar atas nama: ' . $rowC['name'] . '. Harap gunakan nama yang sesuai atau nomor HP lain.'
-            ]);
-        }
-    }
-
     // Validate seat numbers
     foreach ($seats as $s) {
         if (!preg_match('/^\d+$/', $s)) {
