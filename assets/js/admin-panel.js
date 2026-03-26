@@ -1037,8 +1037,14 @@
         const js = await parseAdminApiResponse(res);
         if (js.success && js.html) {
           list.innerHTML = js.html;
+          if (typeof window.attachBookingDetailCardToggles === 'function') {
+            window.attachBookingDetailCardToggles();
+          }
           if (typeof window.sortBookingDetailCards === 'function') {
             window.sortBookingDetailCards();
+          }
+          if (typeof window.filterBookingDetailCards === 'function') {
+            window.filterBookingDetailCards();
           }
         } else {
           const errMsg = js.detail || js.message || js.error || 'Data penumpang tidak ditemukan.';
@@ -1088,9 +1094,69 @@
     }
     window.sortBookingDetailCards = sortBookingDetailCards;
 
+    function filterBookingDetailCards() {
+      const list = document.getElementById('passengerList');
+      const searchInput = document.getElementById('booking_detail_search');
+      if (!list || !searchInput) return;
+
+      const cards = Array.from(list.querySelectorAll('.booking-detail-card'));
+      const query = (searchInput.value || '').trim().toLowerCase();
+      const shell = list.querySelector('.view-booking-list-shell');
+      const grid = list.querySelector('.booking-detail-grid');
+      if (!grid) return;
+
+      let emptyState = shell?.querySelector('[data-booking-detail-filter-empty]');
+      if (!emptyState && shell) {
+        emptyState = document.createElement('div');
+        emptyState.className = 'admin-empty-state view-empty-state';
+        emptyState.setAttribute('data-booking-detail-filter-empty', '1');
+        emptyState.textContent = 'Data penumpang tidak ditemukan untuk pencarian ini.';
+        emptyState.style.display = 'none';
+        shell.appendChild(emptyState);
+      }
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const haystack = [
+          card.dataset.name || '',
+          card.dataset.seat || '',
+          card.dataset.phone || '',
+          card.dataset.pickup || '',
+          card.dataset.paymentLabel || ''
+        ].join(' ').toLowerCase();
+
+        const visible = query === '' || haystack.includes(query);
+        card.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
+      });
+
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+    window.filterBookingDetailCards = filterBookingDetailCards;
+
+    function attachBookingDetailCardToggles() {
+      document.querySelectorAll('.booking-detail-toggle').forEach((btn) => {
+        btn.onclick = function (e) {
+          e.preventDefault();
+          const card = this.closest('.booking-detail-card');
+          if (!card) return;
+          card.classList.toggle('is-expanded');
+        };
+      });
+    }
+    window.attachBookingDetailCardToggles = attachBookingDetailCardToggles;
+
     if (document.getElementById('booking_detail_sort')) {
       document.getElementById('booking_detail_sort').addEventListener('change', function () {
         sortBookingDetailCards();
+        filterBookingDetailCards();
+      });
+    }
+    if (document.getElementById('booking_detail_search')) {
+      document.getElementById('booking_detail_search').addEventListener('input', function () {
+        filterBookingDetailCards();
       });
     }
     syncBookingDetailContext();

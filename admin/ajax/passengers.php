@@ -239,7 +239,9 @@ try {
           data-seat="<?php echo h($p['seat'] ?? ''); ?>"
           data-name="<?php echo h(mb_strtoupper(trim((string) ($p['name'] ?? '')), 'UTF-8')); ?>"
           data-payment-rank="<?php echo $isPaid ? 2 : (in_array($payStatus, ['Redbus', 'Traveloka'], true) ? 3 : 1); ?>"
-          data-payment-label="<?php echo h($payStatus); ?>">
+          data-payment-label="<?php echo h($payStatus); ?>"
+          data-phone="<?php echo h($p['phone'] ?? ''); ?>"
+          data-pickup="<?php echo h($pickupText); ?>">
           <div class="booking-detail-line"></div>
           <div class="booking-detail-main">
             <div class="booking-detail-copy">
@@ -286,6 +288,9 @@ try {
               </div>
               <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
               <div class="seat-actions booking-detail-actions">
+                <button type="button" class="btn-action-icon info booking-detail-toggle" title="Lihat detail">
+                  <i class="fa-solid fa-chevron-down fa-icon"></i>
+                </button>
                 <button
                   type="button"
                   class="edit-booking-btn btn-action-icon edit"
@@ -315,6 +320,24 @@ try {
                   <i class="fa-solid fa-xmark fa-icon"></i>
                 </button>
               </div>
+            </div>
+          </div>
+          <div class="booking-detail-extra">
+            <div class="booking-detail-extra-item">
+              <span class="booking-detail-extra-label">No. HP</span>
+              <strong class="booking-detail-extra-value"><?php echo h($p['phone'] ?? '-'); ?></strong>
+            </div>
+            <div class="booking-detail-extra-item">
+              <span class="booking-detail-extra-label">Alamat / Titik Jemput</span>
+              <strong class="booking-detail-extra-value"><?php echo h($pickupText); ?></strong>
+            </div>
+            <div class="booking-detail-extra-item">
+              <span class="booking-detail-extra-label">Status Bayar</span>
+              <strong class="booking-detail-extra-value"><?php echo h($payStatus); ?></strong>
+            </div>
+            <div class="booking-detail-extra-item">
+              <span class="booking-detail-extra-label">Google Maps</span>
+              <strong class="booking-detail-extra-value"><?php echo h($p['gmaps'] ?? '-'); ?></strong>
             </div>
           </div>
         </div>

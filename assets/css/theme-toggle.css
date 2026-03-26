@@ -906,6 +906,15 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-helpe
   border-color: rgba(249, 115, 22, 0.1) !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-extra-item {
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-extra-value {
+  color: #0f172a !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-list-toolbar-label {
   color: #0f172a !important;
 }
@@ -1123,6 +1132,11 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-list-toolbar-l
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-list-toolbar-note {
   color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-extra-item {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(88, 66, 55, 0.14) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {
