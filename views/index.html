@@ -713,6 +713,11 @@
       box-shadow: var(--neu-shadow-outset);
     }
 
+    .modal-detail-box {
+      max-width: 500px;
+      padding: 20px;
+    }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -768,8 +773,8 @@
       display: none;
       align-items: center;
       gap: 10px;
-      margin-bottom: 16px;
-      padding: 12px 14px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
       border-radius: 14px;
       font-size: 13px;
       font-weight: 700;
@@ -915,19 +920,19 @@
 
     .detail-edit-form {
       display: none;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .detail-edit-grid {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 10px;
+      gap: 8px;
     }
 
     .detail-edit-field {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       grid-column: span 3;
     }
 
@@ -940,7 +945,7 @@
     }
 
     .detail-edit-field-label {
-      font-size: 0.68rem;
+      font-size: 0.64rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -948,9 +953,9 @@
     }
 
     .detail-edit-field-hint {
-      font-size: 0.72rem;
+      font-size: 0.64rem;
       color: rgba(224, 192, 177, 0.54);
-      line-height: 1.4;
+      line-height: 1.2;
     }
 
     .detail-edit-input,
@@ -960,9 +965,9 @@
       background: rgba(12, 14, 20, 0.58);
       color: #f8fafc;
       border-radius: 14px;
-      padding: 10px 12px;
+      padding: 9px 11px;
       font-family: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -3664,7 +3669,7 @@
 
     <!-- Detail Passenger Modal -->
     <div id="detailModal" class="modal-overlay">
-      <div class="modal-content-box">
+      <div class="modal-content-box modal-detail-box">
         <div class="modal-header">
           <div class="modal-title-wrap">
             <h3 class="modal-title">Detail Penumpang</h3>
@@ -3679,11 +3684,11 @@
         <div id="detailContent" class="modal-body"></div>
         <div id="detailEditForm" class="detail-edit-form">
           <div class="detail-edit-grid">
-            <label class="detail-edit-field full">
+            <label class="detail-edit-field">
               <span class="detail-edit-field-label">Nama Lengkap</span>
               <input type="text" id="detailEditName" class="detail-edit-input" placeholder="Input nama penumpang">
             </label>
-            <label class="detail-edit-field third">
+            <label class="detail-edit-field">
               <span class="detail-edit-field-label">No. Handphone</span>
               <input type="text" id="detailEditPhone" class="detail-edit-input" placeholder="Input nomor handphone">
             </label>
@@ -3702,6 +3707,10 @@
                 <option value="RedBus">RedBus</option>
               </select>
             </label>
+            <label class="detail-edit-field third">
+              <span class="detail-edit-field-label">Potongan Harga</span>
+              <input type="number" id="detailEditDiscount" class="detail-edit-input" placeholder="0" min="0">
+            </label>
             <label class="detail-edit-field">
               <span class="detail-edit-field-label">Titik Jemput</span>
               <input type="text" id="detailEditPickup" class="detail-edit-input" placeholder="Input titik jemput">
@@ -3711,10 +3720,6 @@
               <select id="detailEditSegment" class="detail-edit-select">
                 <option value="">-- Pilih Segment --</option>
               </select>
-            </label>
-            <label class="detail-edit-field">
-              <span class="detail-edit-field-label">Potongan Harga</span>
-              <input type="number" id="detailEditDiscount" class="detail-edit-input" placeholder="0" min="0">
             </label>
           </div>
         </div>
