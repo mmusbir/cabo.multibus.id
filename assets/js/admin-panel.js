@@ -1037,6 +1037,9 @@
         const js = await parseAdminApiResponse(res);
         if (js.success && js.html) {
           list.innerHTML = js.html;
+          if (typeof window.sortBookingDetailCards === 'function') {
+            window.sortBookingDetailCards();
+          }
         } else {
           const errMsg = js.detail || js.message || js.error || 'Data penumpang tidak ditemukan.';
           list.innerHTML = '<div class="admin-empty-state view-empty-state">Tidak dapat memuat detail booking. ' + errMsg + '</div>';
@@ -1048,6 +1051,48 @@
       }
     }
     window.loadBookingDetailPassengers = loadBookingDetailPassengers;
+
+    function sortBookingDetailCards() {
+      const list = document.getElementById('passengerList');
+      const sortSelect = document.getElementById('booking_detail_sort');
+      if (!list || !sortSelect) return;
+
+      const cards = Array.from(list.querySelectorAll('.booking-detail-card'));
+      if (!cards.length) return;
+
+      const mode = sortSelect.value || 'seat';
+      const fragment = document.createDocumentFragment();
+      const sorted = cards.slice().sort((a, b) => {
+        if (mode === 'name') {
+          const nameA = (a.dataset.name || '').trim();
+          const nameB = (b.dataset.name || '').trim();
+          return nameA.localeCompare(nameB, 'id', { sensitivity: 'base' });
+        }
+
+        if (mode === 'payment') {
+          const rankA = parseInt(a.dataset.paymentRank || '99', 10);
+          const rankB = parseInt(b.dataset.paymentRank || '99', 10);
+          if (rankA !== rankB) return rankA - rankB;
+          const seatA = (a.dataset.seat || '').trim();
+          const seatB = (b.dataset.seat || '').trim();
+          return seatA.localeCompare(seatB, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        const seatA = (a.dataset.seat || '').trim();
+        const seatB = (b.dataset.seat || '').trim();
+        return seatA.localeCompare(seatB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      sorted.forEach((card) => fragment.appendChild(card));
+      list.appendChild(fragment);
+    }
+    window.sortBookingDetailCards = sortBookingDetailCards;
+
+    if (document.getElementById('booking_detail_sort')) {
+      document.getElementById('booking_detail_sort').addEventListener('change', function () {
+        sortBookingDetailCards();
+      });
+    }
     syncBookingDetailContext();
     // Optimalkan handler copy agar hanya menyalin detail penumpang yang relevan
     function attachCopyHandlers() {

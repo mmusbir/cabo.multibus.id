@@ -876,6 +876,12 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context {
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04) !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-list-toolbar {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04) !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-title {
   color: #0f172a !important;
 }
@@ -898,6 +904,14 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-helpe
   color: #64748b !important;
   background: #fffcf8 !important;
   border-color: rgba(249, 115, 22, 0.1) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-list-toolbar-label {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-list-toolbar-note {
+  color: #64748b !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .view-booking-stat-chip {
@@ -1095,6 +1109,20 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-filter-controls {
   background: rgba(17, 19, 25, 0.92) !important;
   border-color: rgba(88, 66, 55, 0.18) !important;
   box-shadow: 0 12px 24px rgba(12, 14, 20, 0.28) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-list-toolbar {
+  background: rgba(17, 19, 25, 0.92) !important;
+  border-color: rgba(88, 66, 55, 0.18) !important;
+  box-shadow: 0 12px 24px rgba(12, 14, 20, 0.28) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-list-toolbar-label {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-detail-list-toolbar-note {
+  color: #94a3b8 !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {

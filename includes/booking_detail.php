@@ -59,6 +59,20 @@
       <div class="ajax-spinner"></div>
     </div>
 
+    <div class="booking-detail-list-toolbar admin-bs-panel">
+      <div class="booking-detail-list-toolbar-copy">
+        <span class="booking-detail-list-toolbar-label">Urutkan Data</span>
+        <span class="booking-detail-list-toolbar-note">Tampilan card penumpang bisa diurutkan sesuai kebutuhan operasional.</span>
+      </div>
+      <div class="booking-detail-list-toolbar-actions">
+        <select id="booking_detail_sort" class="form-select admin-bs-select-sm booking-detail-sort-select">
+          <option value="seat">Urutkan: Kursi</option>
+          <option value="name">Urutkan: Nama</option>
+          <option value="payment">Urutkan: Status Bayar</option>
+        </select>
+      </div>
+    </div>
+
     <div id="passengerList" class="view-passenger-list booking-detail-page-list">
       <div class="admin-empty-state view-empty-state">
         Belum ada jadwal yang dipilih. Buka menu Booking lalu tekan <strong>Detail Booking List</strong> pada trip yang ingin dilihat.

@@ -984,6 +984,10 @@ body.admin-bootstrap-page .admin-modal-card-md {
     width: min(100%, 410px);
 }
 
+body.admin-bootstrap-page .admin-modal-card-compact {
+    width: min(100%, 560px);
+}
+
 body.admin-bootstrap-page .admin-modal-card-lg {
     width: min(100%, 520px);
 }
@@ -6693,6 +6697,45 @@ body.admin-bootstrap-page .booking-detail-context-helper {
     line-height: 1.55;
 }
 
+body.admin-bootstrap-page .booking-detail-list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.95rem;
+}
+
+body.admin-bootstrap-page .booking-detail-list-toolbar-copy {
+    display: grid;
+    gap: 0.18rem;
+}
+
+body.admin-bootstrap-page .booking-detail-list-toolbar-label {
+    color: #f8fafc;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .booking-detail-list-toolbar-note {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+body.admin-bootstrap-page .booking-detail-list-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .booking-detail-sort-select {
+    min-width: 11.5rem;
+}
+
 body.admin-bootstrap-page .booking-detail-page-list {
     gap: 0.95rem;
 }
@@ -6888,6 +6931,16 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .fa-icon {
     }
 
     body.admin-bootstrap-page .booking-detail-page-actions {
+        width: 100%;
+    }
+
+    body.admin-bootstrap-page .booking-detail-list-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    body.admin-bootstrap-page .booking-detail-list-toolbar-actions,
+    body.admin-bootstrap-page .booking-detail-sort-select {
         width: 100%;
     }
 

@@ -1350,7 +1350,7 @@ if (!isset($_REQUEST['action'])):
   <!-- Bottom Navbar for Mobile moved to includes/navbar.php -->
   <!-- Modal for Edit Booking (Seat & Pickup) -->
   <div class="bottom-more-modal admin-modal-overlay" id="editBookingModal">
-    <div class="modal-popup-content admin-modal-card admin-modal-card-md admin-modal-card-form">
+    <div class="modal-popup-content admin-modal-card admin-modal-card-compact admin-modal-card-form">
       <h3 class="modal-popup-title admin-modal-heading">Edit Penumpang</h3>
 
       <form method="post" id="editBookingForm" novalidate class="admin-modal-form">
@@ -1358,7 +1358,7 @@ if (!isset($_REQUEST['action'])):
         <input type="hidden" name="save_booking_edit" value="1">
         <input type="hidden" id="edit_booking_id" name="booking_id" value="">
 
-        <div class="admin-modal-grid admin-modal-grid-2">
+        <div class="admin-modal-grid admin-modal-grid-3 admin-modal-grid-tight">
           <div class="admin-modal-field">
             <label class="admin-modal-label">Unit</label>
             <select id="edit_unit" name="unit" class="form-control admin-modal-control" required>
@@ -1371,18 +1371,16 @@ if (!isset($_REQUEST['action'])):
               <option value="">Pilih Kursi</option>
             </select>
           </div>
-        </div>
-
-        <div class="admin-modal-grid admin-modal-grid-2">
           <div class="admin-modal-field">
             <label class="admin-modal-label">Tanggal Berangkat</label>
             <input type="date" id="edit_tanggal" name="edit_tanggal" class="form-control admin-modal-control" required>
           </div>
-          <div class="admin-modal-field">
-            <label class="admin-modal-label">Titik Jemput</label>
-            <input type="text" id="edit_pickup" name="pickup_point"class="form-control admin-modal-control"
+        </div>
+
+        <div class="admin-modal-field">
+          <label class="admin-modal-label">Alamat / Titik Jemput</label>
+          <input type="text" id="edit_pickup" name="pickup_point" class="form-control admin-modal-control"
             placeholder="Lokasi jemput">
-          </div>
         </div>
 
         <div class="admin-modal-field">
@@ -1403,19 +1401,18 @@ if (!isset($_REQUEST['action'])):
           </div>
         </div>
 
-        <div class="admin-modal-field">
-          <label class="admin-modal-label">Segment Rute</label>
-          <select id="edit_segment_id" name="segment_id" class="form-control admin-modal-control">
-            <option value="0">-- Default Rute --</option>
-            <?php foreach ($globalSegments as $gs): ?>
-              <option value="<?= $gs['id'] ?>" data-price="<?= $gs['harga'] ?>">
-                <?= htmlspecialchars($gs['rute']) ?> (Rp <?= number_format($gs['harga'], 0, ',', '.') ?>)
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-
-        <div class="admin-modal-grid admin-modal-grid-2">
+        <div class="admin-modal-grid admin-modal-grid-3 admin-modal-grid-tight">
+          <div class="admin-modal-field">
+            <label class="admin-modal-label">Segment Rute</label>
+            <select id="edit_segment_id" name="segment_id" class="form-control admin-modal-control">
+              <option value="0">-- Default Rute --</option>
+              <?php foreach ($globalSegments as $gs): ?>
+                <option value="<?= $gs['id'] ?>" data-price="<?= $gs['harga'] ?>">
+                  <?= htmlspecialchars($gs['rute']) ?> (Rp <?= number_format($gs['harga'], 0, ',', '.') ?>)
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
           <div class="admin-modal-field">
             <label class="admin-modal-label">Harga (Rp)</label>
             <input type="number" id="edit_price_display" class="form-control admin-modal-control" disabled>

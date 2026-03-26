@@ -234,7 +234,12 @@ try {
           $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : 'END USER';
           $priceValue = max(0, floatval($p['price'] ?? 0) - floatval($p['discount'] ?? 0));
         ?>
-        <div class="seat-block view-seat-card booking-detail-card tone-<?php echo h($lineTone); ?>" data-seat="<?php echo h($p['seat'] ?? ''); ?>">
+        <div
+          class="seat-block view-seat-card booking-detail-card tone-<?php echo h($lineTone); ?>"
+          data-seat="<?php echo h($p['seat'] ?? ''); ?>"
+          data-name="<?php echo h(mb_strtoupper(trim((string) ($p['name'] ?? '')), 'UTF-8')); ?>"
+          data-payment-rank="<?php echo $isPaid ? 2 : (in_array($payStatus, ['Redbus', 'Traveloka'], true) ? 3 : 1); ?>"
+          data-payment-label="<?php echo h($payStatus); ?>">
           <div class="booking-detail-line"></div>
           <div class="booking-detail-main">
             <div class="booking-detail-copy">
