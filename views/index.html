@@ -947,6 +947,12 @@
       color: rgba(224, 192, 177, 0.68);
     }
 
+    .detail-edit-field-hint {
+      font-size: 0.72rem;
+      color: rgba(224, 192, 177, 0.54);
+      line-height: 1.4;
+    }
+
     .detail-edit-input,
     .detail-edit-select {
       width: 100%;
@@ -3686,6 +3692,7 @@
               <select id="detailEditSeat" class="detail-edit-select">
                 <option value="">-- Pilih Kursi --</option>
               </select>
+              <small class="detail-edit-field-hint">Hanya kursi kosong yang ditampilkan.</small>
             </label>
             <label class="detail-edit-field third">
               <span class="detail-edit-field-label">Pembayaran</span>
@@ -4460,6 +4467,8 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           }
         }
 
+        pushSeat(selectedValue);
+
         const availableSeats = seatOptions.filter((seat) => !booked.has(seat) || seat === selectedValue);
         const options = ['<option value="">-- Pilih Kursi --</option>'];
 
@@ -4469,6 +4478,7 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         });
 
         select.innerHTML = options.join('');
+        select.value = selectedValue && availableSeats.includes(selectedValue) ? selectedValue : (availableSeats[0] || '');
       }
 
       function setDetailEditMode(editing) {
