@@ -1538,6 +1538,16 @@ body.admin-bootstrap-page .admin-bs-toolbar {
     margin-bottom: 0.75rem;
 }
 
+body.admin-bootstrap-page .admin-bs-select-sm {
+    min-width: 9rem;
+    border-radius: 999px;
+    padding-inline: 0.9rem 2.2rem;
+}
+
+body.admin-bootstrap-page .pagination-outer {
+    margin-top: 0.85rem;
+}
+
 body.admin-bootstrap-page .admin-bs-search {
     width: 100%;
     max-width: 480px;

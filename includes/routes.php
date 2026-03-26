@@ -141,6 +141,14 @@
 
   <div class="admin-bs-meta">
     <div class="small" id="routes_info">Memuat rute...</div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <select id="routes_per_page" class="form-select form-select-sm admin-bs-select-sm">
+        <option value="10">10 / halaman</option>
+        <option value="25" selected>25 / halaman</option>
+        <option value="50">50 / halaman</option>
+        <option value="100">100 / halaman</option>
+      </select>
+    </div>
   </div>
 
   <div id="routes_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -150,6 +158,7 @@
   <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
     <div class="small admin-grid-message">Loading...</div>
   </div>
+  <div id="routes_pagination" class="pagination-outer"></div>
 
   <script>
     <?php if ($route_type === 'carter'): ?>
@@ -179,10 +188,11 @@
       if (type) window.currentRouteType = type;
       const currentType = window.currentRouteType || 'reguler';
       const search = document.getElementById('search_route_input')?.value || '';
+      const currentPage = parseInt(page || '1', 10) || 1;
 
       ajaxListLoad('routes', {
-        page: 1,
-        per_page: 999,
+        page: currentPage,
+        per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10),
         type: currentType,
         search: search
       });

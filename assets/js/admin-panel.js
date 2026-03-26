@@ -224,14 +224,14 @@
         }
         bindAdminLazyControls(id);
         // Auto-load data for each section
-        if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: 999, search: '' }));
-        if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: 999 });
-        if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: 999 });
-        if (id === 'users') ajaxListLoad('users', { page: 1, per_page: 999 });
+        if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' }));
+        if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
+        if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
+        if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
         if (id === 'routes' && typeof window.switchRouteTab === 'function') {
           window.switchRouteTab(window.currentRouteType || 'reguler');
         }
-        if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 999 });
+        if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10) });
         if (id === 'reports' && document.getElementById('btnGenerateReport')) {
           // Reports section is ready after its script is injected; no auto-fetch here.
         }
@@ -502,6 +502,124 @@
       }
       return params;
     }
+
+    window.setupAdminStaticListPagination = function setupAdminStaticListPagination(config) {
+      const list = document.getElementById(config.listId);
+      if (!list) return null;
+
+      const info = document.getElementById(config.infoId);
+      const pagination = document.getElementById(config.paginationId);
+      const perPageSelect = document.getElementById(config.perPageId);
+      const searchInput = config.searchInputId ? document.getElementById(config.searchInputId) : null;
+      const itemSelector = config.itemSelector || '.admin-card-compact';
+      const pageState = { value: 1 };
+
+      if (!list.dataset.staticPagerBound) {
+        if (searchInput) {
+          searchInput.addEventListener('input', function () {
+            pageState.value = 1;
+            render();
+          });
+        }
+
+        if (perPageSelect) {
+          perPageSelect.addEventListener('change', function () {
+            pageState.value = 1;
+            render();
+          });
+        }
+
+        if (pagination) {
+          pagination.addEventListener('click', function (event) {
+            const trigger = event.target.closest('.admin-static-page');
+            if (!trigger) return;
+            event.preventDefault();
+            pageState.value = parseInt(trigger.getAttribute('data-page') || '1', 10) || 1;
+            render();
+          });
+        }
+
+        list.dataset.staticPagerBound = '1';
+      }
+
+      function getItems() {
+        return Array.from(list.querySelectorAll(itemSelector));
+      }
+
+      function ensureEmptyState() {
+        let emptyState = list.querySelector('[data-static-empty]');
+        if (!emptyState) {
+          emptyState = document.createElement('div');
+          emptyState.setAttribute('data-static-empty', '1');
+          emptyState.className = 'small admin-grid-message';
+          emptyState.textContent = 'Tidak ada data.';
+          emptyState.style.display = 'none';
+          list.appendChild(emptyState);
+        }
+        return emptyState;
+      }
+
+      function render() {
+        const items = getItems();
+        const keyword = (searchInput?.value || '').trim().toLowerCase();
+        const perPage = Math.max(1, parseInt(perPageSelect?.value || '25', 10) || 25);
+        const filtered = items.filter((item) => {
+          const haystack = (item.dataset.searchText || item.textContent || '').toLowerCase();
+          return keyword === '' || haystack.includes(keyword);
+        });
+
+        const total = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / perPage));
+        pageState.value = Math.min(Math.max(1, pageState.value), totalPages);
+
+        const start = (pageState.value - 1) * perPage;
+        const end = start + perPage;
+        const visibleItems = new Set(filtered.slice(start, end));
+        const emptyState = ensureEmptyState();
+
+        items.forEach((item) => {
+          if (!item.dataset.originalDisplay) {
+            const currentDisplay = getComputedStyle(item).display;
+            item.dataset.originalDisplay = currentDisplay === 'none' ? 'flex' : currentDisplay;
+          }
+          item.style.display = visibleItems.has(item) ? item.dataset.originalDisplay : 'none';
+        });
+
+        emptyState.style.display = total === 0 ? 'block' : 'none';
+
+        if (info) {
+          info.textContent = 'Total: ' + total;
+        }
+
+        if (pagination) {
+          if (total <= perPage) {
+            pagination.innerHTML = '';
+          } else {
+            let html = '<div class="pagination-container">';
+            for (let page = 1; page <= totalPages; page++) {
+              if (page === pageState.value) {
+                html += '<span class="badge active">' + page + '</span>';
+              } else {
+                html += '<a href="#" class="badge admin-static-page" data-page="' + page + '">' + page + '</a>';
+              }
+            }
+            html += '</div>';
+            pagination.innerHTML = html;
+          }
+        }
+      }
+
+      render();
+
+      return {
+        refresh: function () {
+          pageState.value = 1;
+          render();
+        },
+        render: render
+      };
+    };
+
     // AJAX list loader
     async function ajaxListLoad(target, params) {
       const spinnerWrap = document.getElementById(target + '_spinner_wrap'); if (spinnerWrap) spinnerWrap.style.display = 'flex';

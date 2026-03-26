@@ -92,6 +92,14 @@
   </div>
   <div class="admin-bs-meta">
     <div id="customers_info" class="small">Memuat data...</div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <select id="customers_per_page" class="form-select form-select-sm admin-bs-select-sm">
+        <option value="10">10 / halaman</option>
+        <option value="25" selected>25 / halaman</option>
+        <option value="50">50 / halaman</option>
+        <option value="100">100 / halaman</option>
+      </select>
+    </div>
   </div>
 
   <div id="customers_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -117,6 +125,7 @@
       </tbody>
     </table>
   </div>
+  <div id="customers_pagination" class="pagination-outer"></div>
 
 </section>
 

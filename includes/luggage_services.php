@@ -31,11 +31,20 @@
 
     <div class="admin-bs-meta admin-meta-gap">
         <div class="small" id="ls_info">Memuat layanan...</div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select id="ls_per_page" class="form-select form-select-sm admin-bs-select-sm">
+                <option value="10">10 / halaman</option>
+                <option value="25" selected>25 / halaman</option>
+                <option value="50">50 / halaman</option>
+                <option value="100">100 / halaman</option>
+            </select>
+        </div>
     </div>
 
     <div id="ls_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid-min">
         <div class="small admin-grid-message">Memuat data...</div>
     </div>
+    <div id="ls_pagination" class="pagination-outer"></div>
 </section>
 
 <script>
@@ -49,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputName = document.getElementById('ls_name');
     const inputPrice = document.getElementById('ls_price');
     const formTitle = document.getElementById('ls-form-title');
+    let lsPager = null;
 
     function loadLuggageServices() {
         lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Memuat data...</div>';
@@ -57,7 +67,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then((js) => {
                 if (js.success) {
                     lsTbody.innerHTML = js.rows;
-                    lsInfo.textContent = 'Total: ' + js.total + ' layanan';
+                    lsInfo.textContent = 'Total: ' + js.total;
+                    lsPager = window.setupAdminStaticListPagination?.({
+                        listId: 'ls_tbody',
+                        perPageId: 'ls_per_page',
+                        infoId: 'ls_info',
+                        paginationId: 'ls_pagination'
+                    }) || null;
                     attachActionListeners();
                 } else {
                     lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Gagal memuat data.</div>';

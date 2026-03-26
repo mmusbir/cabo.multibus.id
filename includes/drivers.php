@@ -85,6 +85,17 @@
             </button>
         </div>
     </div>
+    <div class="admin-bs-meta">
+        <div class="small" id="drivers_info">Total: 0</div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select id="drivers_per_page" class="form-select form-select-sm admin-bs-select-sm">
+                <option value="10">10 / halaman</option>
+                <option value="25" selected>25 / halaman</option>
+                <option value="50">50 / halaman</option>
+                <option value="100">100 / halaman</option>
+            </select>
+        </div>
+    </div>
 
     <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="drivers_grid">
         <?php
@@ -127,14 +138,14 @@
             </div>
         <?php endforeach; ?>
     </div>
+    <div id="drivers_pagination" class="pagination-outer"></div>
     <script>
-        document.getElementById('filter_driver_input')?.addEventListener('input', function () {
-            const val = this.value.toLowerCase();
-            const cards = document.querySelectorAll('#drivers_grid .admin-card-compact');
-            cards.forEach((card) => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(val) ? 'flex' : 'none';
-            });
+        window.setupAdminStaticListPagination?.({
+            listId: 'drivers_grid',
+            searchInputId: 'filter_driver_input',
+            perPageId: 'drivers_per_page',
+            infoId: 'drivers_info',
+            paginationId: 'drivers_pagination'
         });
     </script>
 </section>

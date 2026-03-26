@@ -109,7 +109,6 @@ function buildQueryString($overrides = []) {
 }
 
 function render_pagination_ajax($total, $per_page, $current_page, $param_prefix, $around = 2) {
-  return '';
   if ($total <= $per_page)
     return '';
   $total_pages = (int) ceil($total / $per_page);

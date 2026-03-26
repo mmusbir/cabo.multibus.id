@@ -448,12 +448,12 @@
       if (mode === 'charters') {
         document.getElementById('charters_tbody').style.display = 'grid';
         if (document.getElementById('charters_tbody').children.length <= 1) {
-          ajaxListLoad('charters', { page: 1, per_page: 999, search: '' });
+          ajaxListLoad('charters', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' });
         }
       } else if (mode === 'luggage') {
         document.getElementById('luggage_tbody').style.display = 'grid';
         if (document.getElementById('luggage_tbody').children.length <= 1) {
-          ajaxListLoad('luggage', { page: 1, per_page: 999, search: '' });
+          ajaxListLoad('luggage', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' });
         }
       } else {
         document.getElementById('bookings_tbody').style.display = 'grid';

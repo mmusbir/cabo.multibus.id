@@ -117,6 +117,14 @@
 
   <div class="admin-bs-meta">
     <div class="small" id="schedules_info">Memuat jadwal...</div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <select id="schedules_per_page" class="form-select form-select-sm admin-bs-select-sm">
+        <option value="10">10 / halaman</option>
+        <option value="25" selected>25 / halaman</option>
+        <option value="50">50 / halaman</option>
+        <option value="100">100 / halaman</option>
+      </select>
+    </div>
   </div>
 
   <div id="schedules_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -126,5 +134,6 @@
   <div id="schedules_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
     <div class="small admin-grid-message">Loading...</div>
   </div>
+  <div id="schedules_pagination" class="pagination-outer"></div>
 </section>
 

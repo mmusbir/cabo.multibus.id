@@ -87,6 +87,17 @@
             </button>
         </div>
     </div>
+    <div class="admin-bs-meta">
+        <div class="small" id="units_info">Total: 0</div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select id="units_per_page" class="form-select form-select-sm admin-bs-select-sm">
+                <option value="10">10 / halaman</option>
+                <option value="25" selected>25 / halaman</option>
+                <option value="50">50 / halaman</option>
+                <option value="100">100 / halaman</option>
+            </select>
+        </div>
+    </div>
 
     <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="units_grid">
         <?php foreach ($units as $u): ?>
@@ -127,6 +138,7 @@
             </div>
         <?php endforeach; ?>
     </div>
+    <div id="units_pagination" class="pagination-outer"></div>
 </section>
 <!-- Popup Layout Edit -->
 <div class="popup-bg layout-popup" id="popup-bg">
@@ -174,13 +186,12 @@
 </div>
 
 <script>
-    document.getElementById('filter_unit_input')?.addEventListener('input', function () {
-        const val = this.value.toLowerCase();
-        const cards = document.querySelectorAll('#units_grid .admin-card-compact');
-        cards.forEach(card => {
-            const text = card.textContent.toLowerCase();
-            card.style.display = text.includes(val) ? 'flex' : 'none';
-        });
+    window.setupAdminStaticListPagination?.({
+        listId: 'units_grid',
+        searchInputId: 'filter_unit_input',
+        perPageId: 'units_per_page',
+        infoId: 'units_info',
+        paginationId: 'units_pagination'
     });
     // Layout State
     let currentUnitId = null;
