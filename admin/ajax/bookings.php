@@ -13,12 +13,20 @@ $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $scope = isset($_GET['scope']) ? trim((string) $_GET['scope']) : 'active';
 $tanggalFilter = isset($_GET['tanggal']) ? trim((string) $_GET['tanggal']) : '';
+$paymentFilter = isset($_GET['payment']) ? trim((string) $_GET['payment']) : '';
 
 $currentMonthStart = date('Y-m-01');
 $currentMonthEnd = date('Y-m-t');
 
 $bookingWhere = "WHERE b.status != 'canceled' ";
 $params = [];
+$paymentHaving = '';
+
+if ($paymentFilter === 'paid') {
+    $paymentHaving = " HAVING SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) = 0 ";
+} elseif ($paymentFilter === 'unpaid') {
+    $paymentHaving = " HAVING SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) > 0 ";
+}
 
 if ($scope === 'history') {
     $bookingWhere .= " AND b.tanggal BETWEEN ? AND ? ";
@@ -59,6 +67,7 @@ if ($search !== '') {
         SELECT b.rute, b.tanggal, b.jam, b.unit
         $baseFrom
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
+        $paymentHaving
     ) trips";
     $stmtCount = $conn->prepare($countSql);
     $stmtCount->execute($params);
@@ -75,6 +84,7 @@ if ($search !== '') {
         MAX(COALESCE(d.nama, '')) AS driver_name
         $baseFrom
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
+        $paymentHaving
         ORDER BY
           " . ($scope === 'history'
             ? "b.tanggal DESC, b.jam DESC, b.unit ASC"
@@ -98,6 +108,7 @@ if ($search !== '') {
         FROM bookings b
         $bookingWhere
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
+        $paymentHaving
     ) trips";
     $stmtCount = $conn->prepare($countSql);
     $stmtCount->execute($params);
@@ -115,6 +126,7 @@ if ($search !== '') {
         FROM bookings b
         $bookingWhere
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
+        $paymentHaving
     )
     SELECT
         tb.rute,
@@ -209,6 +221,7 @@ perf_finish('admin.bookingsPage', $perfStartedAt, [
     'per_page' => $per_page,
     'search' => $search !== '',
     'tanggal' => $tanggalFilter !== '',
+    'payment' => $paymentFilter !== '',
     'rows' => count($rows),
     'total' => $total,
 ], 120);

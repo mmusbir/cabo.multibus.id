@@ -23,8 +23,14 @@
           <button type="button" class="booking-scope-chip" data-booking-scope="history">History</button>
         </div>
         <label class="booking-date-filter" for="booking_date_filter">
-          <input type="date" id="booking_date_filter" class="form-control kinetic-command-select">
+          <input type="date" id="booking_date_filter" class="form-control kinetic-command-select" aria-label="Filter tanggal keberangkatan" title="Filter tanggal keberangkatan">
+          <span class="booking-date-filter-placeholder">Filter tanggal keberangkatan</span>
         </label>
+        <select id="booking_payment_filter" class="form-control kinetic-command-select booking-payment-filter" aria-label="Filter status pembayaran">
+          <option value="">Semua Pembayaran</option>
+          <option value="paid">Lunas</option>
+          <option value="unpaid">Belum Lunas</option>
+        </select>
         <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
           <i class="fa-solid fa-xmark fa-icon"></i>
           Reset
@@ -104,6 +110,7 @@
         bookings: {
           scope: 'active',
           tanggal: '',
+          payment: '',
         }
       }
     };
@@ -113,7 +120,7 @@
         window.bookingDashboardState.filters = {};
       }
       if (!window.bookingDashboardState.filters.bookings) {
-        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '' };
+        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '', payment: '' };
       }
       return window.bookingDashboardState.filters.bookings;
     }
@@ -123,9 +130,11 @@
       const bookingsMode = window.bookingDashboardState.active === 'bookings';
       const filterControls = document.getElementById('bookingFilterControls');
       const dateInput = document.getElementById('booking_date_filter');
+      const paymentInput = document.getElementById('booking_payment_filter');
       const pageTitle = document.getElementById('bookingPageTitle');
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
       const historyNote = document.getElementById('bookingHistoryNote');
+      const dateFilter = dateInput ? dateInput.closest('.booking-date-filter') : null;
 
       if (filterControls) {
         filterControls.style.display = bookingsMode ? 'flex' : 'none';
@@ -135,6 +144,12 @@
       });
       if (dateInput) {
         dateInput.value = filters.tanggal || '';
+      }
+      if (dateFilter) {
+        dateFilter.classList.toggle('has-value', Boolean(filters.tanggal));
+      }
+      if (paymentInput) {
+        paymentInput.value = filters.payment || '';
       }
       if (bookingsMode && pageTitle) {
         pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
@@ -156,6 +171,11 @@
         params.tanggal = filters.tanggal;
       } else {
         delete params.tanggal;
+      }
+      if (filters.payment) {
+        params.payment = filters.payment;
+      } else {
+        delete params.payment;
       }
       return params;
     }
@@ -467,6 +487,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const bookingRefreshBtn = document.getElementById('bookingToolbarRefresh');
       const bookingDateInput = document.getElementById('booking_date_filter');
+      const bookingPaymentInput = document.getElementById('booking_payment_filter');
       const bookingDateReset = document.getElementById('bookingDateReset');
 
       document.querySelectorAll('.charter-filter-chip').forEach((chip) => {
@@ -494,6 +515,19 @@
         bookingDateInput.addEventListener('change', () => {
           const filters = getBookingFilters();
           filters.tanggal = bookingDateInput.value || '';
+          syncBookingFilterUi();
+          ajaxListLoad('bookings', getBookingListQueryParams({
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: ''
+          }));
+        });
+      }
+
+      if (bookingPaymentInput) {
+        bookingPaymentInput.addEventListener('change', () => {
+          const filters = getBookingFilters();
+          filters.payment = bookingPaymentInput.value || '';
           ajaxListLoad('bookings', getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
@@ -506,7 +540,10 @@
         bookingDateReset.addEventListener('click', () => {
           const filters = getBookingFilters();
           filters.tanggal = '';
+          filters.payment = '';
           if (bookingDateInput) bookingDateInput.value = '';
+          if (bookingPaymentInput) bookingPaymentInput.value = '';
+          syncBookingFilterUi();
           ajaxListLoad('bookings', getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),

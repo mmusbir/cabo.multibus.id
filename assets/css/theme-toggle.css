@@ -372,6 +372,10 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #64748b !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .booking-date-filter-placeholder {
+  color: #94a3b8 !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-history-note {
   color: #64748b !important;
 }
@@ -1144,6 +1148,10 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-scope-chip:hover {
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .small {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .booking-date-filter .booking-date-filter-placeholder {
   color: #94a3b8 !important;
 }
 

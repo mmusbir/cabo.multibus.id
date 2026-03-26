@@ -2914,6 +2914,7 @@ body.admin-bootstrap-page .booking-date-filter {
     display: flex;
     flex-direction: column;
     min-width: 10.5rem;
+    position: relative;
 }
 
 body.admin-bootstrap-page .booking-date-filter .small {
@@ -2924,6 +2925,28 @@ body.admin-bootstrap-page .booking-date-filter .small {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     min-height: 0.95rem;
+}
+
+body.admin-bootstrap-page .booking-date-filter .booking-date-filter-placeholder {
+    position: absolute;
+    left: 0.9rem;
+    right: 2.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8f99aa;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.2;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.18s ease;
+}
+
+body.admin-bootstrap-page .booking-date-filter.has-value .booking-date-filter-placeholder,
+body.admin-bootstrap-page .booking-date-filter:focus-within .booking-date-filter-placeholder {
+    opacity: 0;
 }
 
 body.admin-bootstrap-page .booking-filter-reset {
@@ -3017,6 +3040,10 @@ body.admin-bootstrap-page .kinetic-command-select {
 body.admin-bootstrap-page .booking-date-filter .kinetic-command-select,
 body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select {
     width: 100%;
+}
+
+body.admin-bootstrap-page .booking-payment-filter {
+    min-width: 11rem;
 }
 
 body.admin-bootstrap-page .booking-per-page-meta {
@@ -3489,7 +3516,8 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     }
 
     body.admin-bootstrap-page .booking-scope-toggle,
-    body.admin-bootstrap-page .booking-date-filter {
+    body.admin-bootstrap-page .booking-date-filter,
+    body.admin-bootstrap-page .booking-payment-filter {
         width: 100%;
     }
 
@@ -3593,6 +3621,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
     }
 
     body.admin-bootstrap-page .booking-date-filter input,
+    body.admin-bootstrap-page .booking-payment-filter,
     body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select,
     body.admin-bootstrap-page .booking-filter-reset,
     body.admin-bootstrap-page #bookingToolbarRefresh {
