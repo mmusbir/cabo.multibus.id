@@ -764,6 +764,35 @@
       color: var(--neu-text);
     }
 
+    .detail-action-state {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+    }
+
+    .detail-action-state.show {
+      display: flex;
+    }
+
+    .detail-action-state.success {
+      background: rgba(16, 185, 129, 0.12);
+      color: #a7f3d0;
+      border-color: rgba(16, 185, 129, 0.26);
+    }
+
+    .detail-action-state.cancel {
+      background: rgba(239, 68, 68, 0.12);
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.24);
+    }
+
     .modal-copy-btn {
       width: 100%;
       background: var(--neu-bg);
@@ -2847,6 +2876,11 @@
         grid-template-columns: 1fr;
       }
 
+      .detail-action-state {
+        font-size: 0.75rem;
+        padding: 0.8rem 0.9rem;
+      }
+
       .confirm-popup-icon {
         width: 3.5rem;
         height: 3.5rem;
@@ -3616,6 +3650,10 @@
           </div>
           <button type="button" id="closeDetailModal" class="modal-close-btn">&times;</button>
         </div>
+        <div id="detailActionState" class="detail-action-state">
+          <i id="detailActionStateIcon" class="fa-solid fa-circle-check fa-icon"></i>
+          <span id="detailActionStateText">Perubahan berhasil disimpan</span>
+        </div>
         <div id="detailContent" class="modal-body"></div>
         <div id="detailEditForm" class="detail-edit-form">
           <div class="detail-edit-grid">
@@ -3719,6 +3757,18 @@
         <div class="confirm-popup-actions">
           <button type="button" id="confirmResetNo" class="confirm-popup-btn confirm-popup-no">Batal</button>
           <button type="button" id="confirmResetYes" class="confirm-popup-btn confirm-popup-yes">Ya, Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmCancelBookingPopup" class="confirm-popup-overlay">
+      <div class="confirm-popup-box">
+        <div class="confirm-popup-icon"><i class="fa-solid fa-ban fa-icon"></i></div>
+        <div class="confirm-popup-title">Batalkan Booking</div>
+        <div class="confirm-popup-msg">Booking untuk kursi ini akan dibatalkan dari keberangkatan aktif. Lanjutkan?</div>
+        <div class="confirm-popup-actions">
+          <button type="button" id="confirmCancelBookingNo" class="confirm-popup-btn confirm-popup-no">Kembali</button>
+          <button type="button" id="confirmCancelBookingYes" class="confirm-popup-btn confirm-popup-yes">Ya, Batalkan</button>
         </div>
       </div>
     </div>
@@ -4326,7 +4376,9 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
       function renderDetailModalView() {
         const modal = document.getElementById('detailModal');
         const content = document.getElementById('detailContent');
+        const stateEl = document.getElementById('detailActionState');
         if (!modal || !content || !currentDetailBooking) return;
+        if (stateEl) stateEl.classList.remove('show', 'success', 'cancel');
 
         const info = currentDetailBooking;
         const paymentInfo = formatPaymentLabel(info.pembayaran);
@@ -4382,6 +4434,31 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         setDetailEditMode(false);
       }
 
+      async function flashDetailActionState(message, tone = 'success') {
+        const stateEl = document.getElementById('detailActionState');
+        const textEl = document.getElementById('detailActionStateText');
+        const iconEl = document.getElementById('detailActionStateIcon');
+        if (!stateEl || !textEl || !iconEl) return;
+        stateEl.classList.remove('success', 'cancel', 'show');
+        stateEl.classList.add(tone === 'cancel' ? 'cancel' : 'success');
+        iconEl.className = `fa-solid ${tone === 'cancel' ? 'fa-ban' : 'fa-circle-check'} fa-icon`;
+        textEl.textContent = message;
+        stateEl.classList.add('show');
+        await new Promise(resolve => setTimeout(resolve, 900));
+        stateEl.classList.remove('show');
+      }
+
+      function openCancelBookingConfirm() {
+        if (!currentDetailBooking || !currentDetailBooking.bookingId) return;
+        const popup = document.getElementById('confirmCancelBookingPopup');
+        if (popup) popup.style.display = 'flex';
+      }
+
+      function closeCancelBookingConfirm() {
+        const popup = document.getElementById('confirmCancelBookingPopup');
+        if (popup) popup.style.display = 'none';
+      }
+
       async function saveDetailBookingEdit() {
         if (!currentDetailBooking) return;
         const payload = {
@@ -4412,6 +4489,7 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           }
           showRekapToast(js.message || 'Booking berhasil diperbarui');
           closeDetailEditMode();
+          await flashDetailActionState(js.message || 'Booking berhasil diperbarui', 'success');
           document.getElementById('detailModal').style.display = 'none';
           await refreshSeats();
         } catch (err) {
@@ -4421,7 +4499,6 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
       async function cancelCurrentDetailBooking() {
         if (!currentDetailBooking || !currentDetailBooking.bookingId) return;
-        if (!window.confirm('Batalkan booking untuk kursi ' + currentDetailBooking.seatId + '?')) return;
 
         try {
           const res = await fetch(API_URL + '?action=cancelBookedSeat', {
@@ -4437,6 +4514,8 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           rekapList = rekapList.filter(item => item.seatId !== currentDetailBooking.seatId);
           updateRekapBar();
           showRekapToast(js.message || 'Booking berhasil dibatalkan');
+          closeCancelBookingConfirm();
+          await flashDetailActionState(js.message || 'Booking berhasil dibatalkan', 'cancel');
           document.getElementById('detailModal').style.display = 'none';
           currentDetailBooking = null;
           await refreshSeats();
@@ -4587,7 +4666,9 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         document.getElementById('editDetailBtn')?.addEventListener('click', openDetailEditMode);
         document.getElementById('closeEditModeBtn')?.addEventListener('click', closeDetailEditMode);
         document.getElementById('saveDetailEditBtn')?.addEventListener('click', saveDetailBookingEdit);
-        document.getElementById('cancelBookingBtn')?.addEventListener('click', cancelCurrentDetailBooking);
+        document.getElementById('cancelBookingBtn')?.addEventListener('click', openCancelBookingConfirm);
+        document.getElementById('confirmCancelBookingNo')?.addEventListener('click', closeCancelBookingConfirm);
+        document.getElementById('confirmCancelBookingYes')?.addEventListener('click', cancelCurrentDetailBooking);
 
         document.getElementById('copyRekapBtn').addEventListener('click', copyRekap);
 
@@ -4754,12 +4835,19 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
       document.getElementById('closeDetailModal')?.addEventListener('click', () => {
         closeDetailEditMode();
+        closeCancelBookingConfirm();
         document.getElementById('detailModal').style.display = 'none';
       });
       document.getElementById('detailModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'detailModal') {
           closeDetailEditMode();
+          closeCancelBookingConfirm();
           e.target.style.display = 'none';
+        }
+      });
+      document.getElementById('confirmCancelBookingPopup')?.addEventListener('click', (e) => {
+        if (e.target.id === 'confirmCancelBookingPopup') {
+          closeCancelBookingConfirm();
         }
       });
 
