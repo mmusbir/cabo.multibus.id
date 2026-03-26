@@ -448,6 +448,10 @@ html[data-theme="light"] body.admin-bootstrap-page .customers-admin-table tbody 
   background: #ffffff !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .customers-admin-table tbody tr:nth-child(odd) td {
+  background: #f8fafc !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .customers-table-id {
   background: #fff7ed !important;
   color: #c2410c !important;
@@ -1073,6 +1077,10 @@ html[data-theme="dark"] body.admin-bootstrap-page .booking-filter-controls {
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody td {
   border-bottom-color: rgba(88, 66, 55, 0.14) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .customers-admin-table tbody tr:nth-child(odd) td {
+  background: rgba(17, 19, 25, 0.92) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-table-name,

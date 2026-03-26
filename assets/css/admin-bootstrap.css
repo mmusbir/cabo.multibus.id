@@ -7265,6 +7265,11 @@ body.admin-bootstrap-page .customers-admin-table tbody td {
     vertical-align: middle;
     color: #e2e2eb;
     font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+body.admin-bootstrap-page .customers-admin-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.015);
 }
 
 body.admin-bootstrap-page .customers-admin-table tbody tr:hover {
@@ -7288,6 +7293,7 @@ body.admin-bootstrap-page .customers-table-id {
 }
 
 body.admin-bootstrap-page .customers-table-name {
+    display: block;
     font-weight: 700;
     color: #f8fafc;
 }
