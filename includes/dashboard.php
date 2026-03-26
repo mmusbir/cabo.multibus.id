@@ -141,17 +141,26 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
 
         <section class="kinetic-dash-revenue-splits">
           <article class="kinetic-revenue-split-card is-booking">
-            <h3>Revenue Booking Penumpang</h3>
+            <div class="kinetic-revenue-split-head">
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-ticket"></i></span>
+              <h3>Booking</h3>
+            </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_booking_month'], 0, ',', '.'); ?></strong>
             <span>Bulan ini · booking lunas</span>
           </article>
           <article class="kinetic-revenue-split-card is-charter">
-            <h3>Revenue Carter</h3>
+            <div class="kinetic-revenue-split-head">
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-bus"></i></span>
+              <h3>Carter</h3>
+            </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_charter_month'], 0, ',', '.'); ?></strong>
             <span>Bulan ini · seluruh carter</span>
           </article>
           <article class="kinetic-revenue-split-card is-luggage">
-            <h3>Revenue Bagasi</h3>
+            <div class="kinetic-revenue-split-head">
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-suitcase-rolling"></i></span>
+              <h3>Bagasi</h3>
+            </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_luggage_month'], 0, ',', '.'); ?></strong>
             <span>Bulan ini · bagasi lunas</span>
           </article>

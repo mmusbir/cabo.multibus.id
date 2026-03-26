@@ -4424,6 +4424,25 @@ body.admin-bootstrap-page .kinetic-revenue-split-card {
     box-shadow: 0 16px 30px rgba(12, 14, 20, 0.14);
 }
 
+body.admin-bootstrap-page .kinetic-revenue-split-head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
 body.admin-bootstrap-page .kinetic-revenue-split-card h3 {
     margin: 0;
     color: #94a3b8;
@@ -4451,14 +4470,29 @@ body.admin-bootstrap-page .kinetic-revenue-split-card.is-booking {
     background: linear-gradient(180deg, rgba(249, 115, 22, 0.12), rgba(25, 27, 34, 0.92));
 }
 
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-booking .kinetic-revenue-split-icon {
+    color: #f97316;
+    background: rgba(249, 115, 22, 0.12);
+}
+
 body.admin-bootstrap-page .kinetic-revenue-split-card.is-charter {
     border-top: 3px solid #3b82f6;
     background: linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(25, 27, 34, 0.92));
 }
 
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-charter .kinetic-revenue-split-icon {
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.12);
+}
+
 body.admin-bootstrap-page .kinetic-revenue-split-card.is-luggage {
     border-top: 3px solid #14b8a6;
     background: linear-gradient(180deg, rgba(20, 184, 166, 0.12), rgba(25, 27, 34, 0.92));
+}
+
+body.admin-bootstrap-page .kinetic-revenue-split-card.is-luggage .kinetic-revenue-split-icon {
+    color: #2dd4bf;
+    background: rgba(20, 184, 166, 0.12);
 }
 
 /* Revenue Tooltip */
