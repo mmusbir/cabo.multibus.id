@@ -8,7 +8,7 @@
     <div class="kinetic-sidebar-head">
       <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-        <span class="kinetic-brand-text">CAHAYA BONE</span>
+        <span class="kinetic-brand-text">Admin Panel</span>
       </a>
       <button class="kinetic-sidebar-floating-toggle d-none d-lg-inline-flex" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
         <span class="material-symbols-outlined">left_panel_close</span>
@@ -76,7 +76,7 @@
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
       <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
         <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
-        <span class="kinetic-brand-text">CAHAYA BONE</span>
+        <span class="kinetic-brand-text">Admin Panel</span>
       </a>
 
       <div class="topbar-right kinetic-topbar-right d-flex align-items-center">
