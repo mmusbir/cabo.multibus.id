@@ -54,7 +54,7 @@
 
   <div class="kinetic-mobile-list-head">
     <h4 class="kinetic-mobile-list-title" id="bookingMobileListTitle">
-      <i class="fa-solid fa-calendar-check fa-icon"></i>
+      <i class="fa-solid fa-calendar-days fa-icon"></i>
       Jadwal Mendatang
     </h4>
     <div class="kinetic-mobile-list-actions">
@@ -96,7 +96,7 @@
     }
 
     function getBookingListTitleIconHtml() {
-      return '<i class="fa-solid fa-calendar-check fa-icon"></i>';
+      return '<i class="fa-solid fa-calendar-days fa-icon"></i>';
     }
 
     window.bookingDashboardState = window.bookingDashboardState || {
@@ -358,13 +358,25 @@
     function fallbackBookingTripCopy(text) {
       const temp = document.createElement('textarea');
       temp.value = text;
+      temp.setAttribute('readonly', 'readonly');
+      temp.style.position = 'fixed';
+      temp.style.top = '0';
+      temp.style.left = '-9999px';
+      temp.style.opacity = '0';
+      temp.style.pointerEvents = 'none';
       document.body.appendChild(temp);
+      temp.focus();
       temp.select();
+      temp.setSelectionRange(0, temp.value.length);
       try {
-        document.execCommand('copy');
-        customAlert('Semua detail penumpang berhasil disalin!');
+        const copied = document.execCommand('copy');
+        if (copied) {
+          customAlert('Semua detail penumpang berhasil disalin!');
+        } else {
+          window.prompt('Salin data booking ini:', text);
+        }
       } catch (e) {
-        customAlert('Gagal menyalin ke clipboard.');
+        window.prompt('Salin data booking ini:', text);
       }
       document.body.removeChild(temp);
     }
