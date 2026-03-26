@@ -3683,7 +3683,9 @@
             </label>
             <label class="detail-edit-field third">
               <span class="detail-edit-field-label">No. Kursi</span>
-              <input type="text" id="detailEditSeat" class="detail-edit-input" placeholder="Contoh: 7A">
+              <select id="detailEditSeat" class="detail-edit-select">
+                <option value="">-- Pilih Kursi --</option>
+              </select>
             </label>
             <label class="detail-edit-field third">
               <span class="detail-edit-field-label">Pembayaran</span>
@@ -4427,6 +4429,48 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         select.innerHTML = options.join('');
       }
 
+      function fillDetailEditSeatOptions(selectedSeat) {
+        const select = document.getElementById('detailEditSeat');
+        if (!select) return;
+
+        const selectedValue = String(selectedSeat || '');
+        const seatOptions = [];
+
+        const pushSeat = (value) => {
+          const seatValue = String(value || '').trim();
+          if (!seatValue) return;
+          if (!seatOptions.includes(seatValue)) {
+            seatOptions.push(seatValue);
+          }
+        };
+
+        if (Array.isArray(CURRENT_LAYOUT) && CURRENT_LAYOUT.length) {
+          CURRENT_LAYOUT.forEach((row) => {
+            row.forEach((cell) => {
+              if (cell && cell.type === 'seat' && !cell.hidden) {
+                pushSeat(cell.label || cell.seatNumber);
+              }
+            });
+          });
+        }
+
+        if (!seatOptions.length) {
+          for (let i = 1; i <= CURRENT_SEATS; i++) {
+            pushSeat(String(i));
+          }
+        }
+
+        const availableSeats = seatOptions.filter((seat) => !booked.has(seat) || seat === selectedValue);
+        const options = ['<option value="">-- Pilih Kursi --</option>'];
+
+        availableSeats.forEach((seat) => {
+          const isSelected = seat === selectedValue ? ' selected' : '';
+          options.push(`<option value="${seat}"${isSelected}>${seat}</option>`);
+        });
+
+        select.innerHTML = options.join('');
+      }
+
       function setDetailEditMode(editing) {
         isDetailEditMode = !!editing;
         const detailContent = document.getElementById('detailContent');
@@ -4443,11 +4487,11 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         if (!currentDetailBooking) return;
         document.getElementById('detailEditName').value = currentDetailBooking.name || '';
         document.getElementById('detailEditPhone').value = currentDetailBooking.phone || '';
-        document.getElementById('detailEditSeat').value = currentDetailBooking.seatId || '';
         document.getElementById('detailEditPickup').value = currentDetailBooking.pickup_point || '';
         document.getElementById('detailEditDiscount').value = currentDetailBooking.disc || 0;
         document.getElementById('detailEditPayment').value = currentDetailBooking.pembayaran || 'Belum Lunas';
         fillDetailEditSegmentOptions(currentDetailBooking.segment_id || '');
+        fillDetailEditSeatOptions(currentDetailBooking.seatId || '');
         setDetailEditMode(true);
       }
 
@@ -4757,10 +4801,6 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           val = val.substring(0, 13);
         }
         this.value = val;
-      });
-
-      document.getElementById('detailEditSeat')?.addEventListener('input', function () {
-        this.value = this.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
       });
 
       /* ================== SUGGESTIONS ================== */
