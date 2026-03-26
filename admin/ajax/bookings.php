@@ -15,7 +15,26 @@ $tanggalFilter = isset($_GET['tanggal']) ? trim((string) $_GET['tanggal']) : '';
 $currentMonthStart = date('Y-m-01');
 $currentMonthEnd = date('Y-m-t');
 
-$baseFrom = "
+$bookingWhere = "WHERE b.status != 'canceled' ";
+$params = [];
+
+if ($scope === 'history') {
+    $bookingWhere .= " AND b.tanggal BETWEEN ? AND ? ";
+    $params[] = $currentMonthStart;
+    $params[] = $currentMonthEnd;
+    $bookingWhere .= " AND (b.tanggal < CURRENT_DATE OR (b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME)) ";
+} else {
+    $bookingWhere .= " AND b.tanggal >= CURRENT_DATE ";
+}
+
+if ($tanggalFilter !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalFilter)) {
+    $bookingWhere .= " AND b.tanggal = ? ";
+    $params[] = $tanggalFilter;
+}
+
+if ($search !== '') {
+    $like = '%' . $search . '%';
+    $baseFrom = "
     FROM bookings b
     LEFT JOIN trip_assignments ta
       ON ta.rute = b.rute
@@ -23,27 +42,7 @@ $baseFrom = "
      AND ta.jam = b.jam
      AND ta.unit = b.unit
     LEFT JOIN drivers d ON d.id = ta.driver_id
-    WHERE b.status != 'canceled'
-";
-$params = [];
-
-if ($scope === 'history') {
-    $baseFrom .= " AND b.tanggal BETWEEN ? AND ? ";
-    $params[] = $currentMonthStart;
-    $params[] = $currentMonthEnd;
-    $baseFrom .= " AND (b.tanggal < CURRENT_DATE OR (b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME)) ";
-} else {
-    $baseFrom .= " AND b.tanggal >= CURRENT_DATE ";
-}
-
-if ($tanggalFilter !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalFilter)) {
-    $baseFrom .= " AND b.tanggal = ? ";
-    $params[] = $tanggalFilter;
-}
-
-if ($search !== '') {
-    $like = '%' . $search . '%';
-    $baseFrom .= "
+    $bookingWhere
       AND (
         b.rute LIKE ?
         OR COALESCE(d.nama, '') LIKE ?
@@ -54,45 +53,100 @@ if ($search !== '') {
       )
     ";
     $params = array_merge($params, [$like, $like, $like, $like, $like, $like]);
-}
+    $countSql = "SELECT COUNT(*) AS cnt FROM (
+        SELECT b.rute, b.tanggal, b.jam, b.unit
+        $baseFrom
+        GROUP BY b.rute, b.tanggal, b.jam, b.unit
+    ) trips";
+    $stmtCount = $conn->prepare($countSql);
+    $stmtCount->execute($params);
+    $total = intval(($stmtCount->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
 
-$countSql = "SELECT COUNT(*) AS cnt FROM (
-    SELECT b.rute, b.tanggal, b.jam, b.unit
-    $baseFrom
-    GROUP BY b.rute, b.tanggal, b.jam, b.unit
-) trips";
-$stmtCount = $conn->prepare($countSql);
-$stmtCount->execute($params);
-$total = intval(($stmtCount->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
+    $sql = "SELECT
+        b.rute,
+        b.tanggal,
+        b.jam,
+        b.unit,
+        COUNT(*) AS total_pax,
+        SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
+        SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
+        MAX(COALESCE(d.nama, '')) AS driver_name
+        $baseFrom
+        GROUP BY b.rute, b.tanggal, b.jam, b.unit
+        ORDER BY
+          " . ($scope === 'history'
+            ? "b.tanggal DESC, b.jam DESC, b.unit ASC"
+            : "CASE
+                WHEN b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME THEN 1
+                ELSE 0
+              END ASC,
+              b.tanggal ASC,
+              b.jam ASC,
+              b.unit ASC") . "
+        LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $queryParams = $params;
+    $queryParams[] = $per_page;
+    $queryParams[] = $offset;
+    $stmt->execute($queryParams);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $countSql = "SELECT COUNT(*) AS cnt FROM (
+        SELECT 1
+        FROM bookings b
+        $bookingWhere
+        GROUP BY b.rute, b.tanggal, b.jam, b.unit
+    ) trips";
+    $stmtCount = $conn->prepare($countSql);
+    $stmtCount->execute($params);
+    $total = intval(($stmtCount->fetch(PDO::FETCH_ASSOC))['cnt'] ?? 0);
 
-$sql = "SELECT
-    b.rute,
-    b.tanggal,
-    b.jam,
-    b.unit,
-    COUNT(*) AS total_pax,
-    SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
-    SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
-    MAX(COALESCE(d.nama, '')) AS driver_name
-    $baseFrom
-    GROUP BY b.rute, b.tanggal, b.jam, b.unit
-    ORDER BY
-      " . ($scope === 'history'
-        ? "b.tanggal DESC, b.jam DESC, b.unit ASC"
+    $sql = "WITH trip_base AS (
+        SELECT
+            b.rute,
+            b.tanggal,
+            b.jam,
+            b.unit,
+            COUNT(*) AS total_pax,
+            SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
+            SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count
+        FROM bookings b
+        $bookingWhere
+        GROUP BY b.rute, b.tanggal, b.jam, b.unit
+    )
+    SELECT
+        tb.rute,
+        tb.tanggal,
+        tb.jam,
+        tb.unit,
+        tb.total_pax,
+        tb.paid_count,
+        tb.unpaid_count,
+        COALESCE(d.nama, '') AS driver_name
+    FROM trip_base tb
+    LEFT JOIN trip_assignments ta
+      ON ta.rute = tb.rute
+     AND ta.tanggal = tb.tanggal
+     AND ta.jam = tb.jam
+     AND ta.unit = tb.unit
+    LEFT JOIN drivers d ON d.id = ta.driver_id
+    ORDER BY " . ($scope === 'history'
+        ? "tb.tanggal DESC, tb.jam DESC, tb.unit ASC"
         : "CASE
-            WHEN b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME THEN 1
+            WHEN tb.tanggal = CURRENT_DATE AND tb.jam < CURRENT_TIME THEN 1
             ELSE 0
           END ASC,
-          b.tanggal ASC,
-          b.jam ASC,
-          b.unit ASC") . "
+          tb.tanggal ASC,
+          tb.jam ASC,
+          tb.unit ASC") . "
     LIMIT ? OFFSET ?";
-$stmt = $conn->prepare($sql);
-$queryParams = $params;
-$queryParams[] = $per_page;
-$queryParams[] = $offset;
-$stmt->execute($queryParams);
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare($sql);
+    $queryParams = $params;
+    $queryParams[] = $per_page;
+    $queryParams[] = $offset;
+    $stmt->execute($queryParams);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 ob_start();
 if (empty($rows)) {

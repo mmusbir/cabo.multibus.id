@@ -237,6 +237,15 @@ try {
   // Silent fail
 }
 
+// ==================== PERFORMANCE INDEXES ====================
+try {
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_bookings_trip_date_active ON bookings (tanggal, jam, rute, unit) WHERE status <> 'canceled'");
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_bookings_trip_route_active ON bookings (rute, tanggal, jam, unit, seat) WHERE status <> 'canceled'");
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_charters_start_created ON charters (start_date, created_at DESC)");
+} catch (PDOException $e) {
+  // Silent fail
+}
+
 // Create default admin if users table is empty
 $userCheck = $conn->query("SELECT id FROM users LIMIT 1");
 if ($userCheck->rowCount() === 0) {
