@@ -88,8 +88,23 @@
   <div id="users_spinner_wrap" class="spinner-wrap" style="display:none">
     <div class="ajax-spinner"></div>
   </div>
-  <div id="users_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
-    <div class="small admin-grid-message">Loading...</div>
+  <div class="table-wrapper customers-table-wrap">
+    <table class="table align-middle mb-0 customers-admin-table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Username</th>
+          <th scope="col">Nama Lengkap</th>
+          <th scope="col">Dibuat</th>
+          <th scope="col">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="users_tbody" data-colspan="5">
+        <tr>
+          <td colspan="5" class="customers-table-empty">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div id="users_pagination" class="pagination-outer"></div>
 </section>

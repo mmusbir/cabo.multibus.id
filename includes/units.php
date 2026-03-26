@@ -99,44 +99,48 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="units_grid">
-        <?php foreach ($units as $u): ?>
-            <div class="admin-card-compact">
-                <div class="acc-header">
-                    <div class="acc-title"><?= htmlspecialchars($u['nopol']) ?></div>
-                    <div class="acc-id"><?= htmlspecialchars($u['merek']) ?></div>
-                </div>
-                <div class="acc-body">
-                    <div class="acc-row">
-                        <div class="acc-label">Type</div>
-                        <div class="acc-val"><?= htmlspecialchars($u['type']) ?></div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Tahun</div>
-                        <div class="acc-val"><?= htmlspecialchars($u['tahun']) ?></div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Kapasitas</div>
-                        <div class="acc-val"><?= htmlspecialchars($u['kapasitas']) ?> kursi</div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Status</div>
-                        <div class="acc-val"><?= htmlspecialchars($u['status']) ?></div>
-                    </div>
-                </div>
-                <div class="acc-actions">
-                    <a href="admin.php?edit_unit=<?= $u['id'] ?>#units" class="acc-btn">Edit</a>
-                    <button class="acc-btn edit-layout-btn" data-id="<?= $u['id'] ?>"
-                        data-nopol="<?= htmlspecialchars($u['nopol']) ?>"
-                        data-kapasitas="<?= htmlspecialchars($u['kapasitas']) ?>">Layout</button>
-                    <form method="post" class="admin-inline-form"
-                        onsubmit="event.preventDefault(); customConfirm('Hapus unit ini?', () => this.submit(), 'Hapus Unit', 'danger');">
-                        <input type="hidden" name="unit_id" value="<?= $u['id'] ?>">
-                        <button type="submit" name="delete_unit" class="acc-btn danger w-100">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        <?php endforeach; ?>
+    <div class="table-wrapper customers-table-wrap">
+        <table class="table align-middle mb-0 customers-admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Unit / Nopol</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Tahun</th>
+                    <th scope="col">Kapasitas</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="units_grid" data-colspan="7">
+                <?php foreach ($units as $u): ?>
+                    <tr data-table-row="1">
+                        <td><span class="customers-table-id">#<?= intval($u['id']) ?></span></td>
+                        <td>
+                            <div class="customers-table-name"><?= htmlspecialchars($u['nopol']) ?></div>
+                            <div class="customers-table-muted"><?= htmlspecialchars($u['merek']) ?></div>
+                        </td>
+                        <td><?= htmlspecialchars($u['type']) ?></td>
+                        <td><?= htmlspecialchars($u['tahun']) ?></td>
+                        <td><?= htmlspecialchars($u['kapasitas']) ?> kursi</td>
+                        <td><?= htmlspecialchars($u['status']) ?></td>
+                        <td>
+                            <div class="customers-table-actions">
+                                <a href="admin.php?edit_unit=<?= $u['id'] ?>#units" class="acc-btn">Edit</a>
+                                <button class="acc-btn edit-layout-btn" data-id="<?= $u['id'] ?>"
+                                    data-nopol="<?= htmlspecialchars($u['nopol']) ?>"
+                                    data-kapasitas="<?= htmlspecialchars($u['kapasitas']) ?>">Layout</button>
+                                <form method="post" class="admin-inline-form"
+                                    onsubmit="event.preventDefault(); customConfirm('Hapus unit ini?', () => this.submit(), 'Hapus Unit', 'danger');">
+                                    <input type="hidden" name="unit_id" value="<?= $u['id'] ?>">
+                                    <button type="submit" name="delete_unit" class="acc-btn danger">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
     <div id="units_pagination" class="pagination-outer"></div>
 </section>
@@ -191,7 +195,8 @@
         searchInputId: 'filter_unit_input',
         perPageId: 'units_per_page',
         infoId: 'units_info',
-        paginationId: 'units_pagination'
+        paginationId: 'units_pagination',
+        itemSelector: 'tr[data-table-row]'
     });
     // Layout State
     let currentUnitId = null;

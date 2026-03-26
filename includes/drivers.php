@@ -97,46 +97,43 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="drivers_grid">
-        <?php
-        $drivers = [];
-        $res = $conn->query("SELECT d.*, u.nopol, u.merek FROM drivers d LEFT JOIN units u ON d.unit_id = u.id ORDER BY d.nama");
-        while ($d = $res->fetch(PDO::FETCH_ASSOC)) {
-            $drivers[] = $d;
-        }
-        foreach ($drivers as $d):
-            $unit_display = $d['nopol'] ? htmlspecialchars($d['nopol'] . ' - ' . $d['merek']) : '-';
-            ?>
-            <div class="admin-card-compact">
-                <div class="acc-header">
-                    <div class="acc-title">
-                        <?= htmlspecialchars($d['nama']) ?>
-                    </div>
-                    <div class="acc-id">#
-                        <?= intval($d['id']) ?>
-                    </div>
-                </div>
-                <div class="acc-body">
-                    <div class="acc-row">
-                        <div class="acc-label">Telepon</div>
-                        <div class="acc-val">
-                            <?= htmlspecialchars($d['phone']) ?>
-                        </div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Unit</div>
-                        <div class="acc-val">
-                            <?= $unit_display ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="acc-actions">
-                    <a href="admin.php?edit_driver=<?= $d['id'] ?>#drivers" class="acc-btn">Edit</a>
-                    <a href="admin.php?delete_driver=<?= $d['id'] ?>#drivers" class="acc-btn danger"
-                        onclick="event.preventDefault(); customConfirm('Hapus driver ini?', () => { window.location.href = 'admin.php?delete_driver=<?= $d['id'] ?>#drivers'; }, 'Hapus Driver', 'danger')">Hapus</a>
-                </div>
-            </div>
-        <?php endforeach; ?>
+    <div class="table-wrapper customers-table-wrap">
+        <table class="table align-middle mb-0 customers-admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nama Driver</th>
+                    <th scope="col">No. Telepon</th>
+                    <th scope="col">Unit Kendaraan</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="drivers_grid" data-colspan="5">
+                <?php
+                $drivers = [];
+                $res = $conn->query("SELECT d.*, u.nopol, u.merek FROM drivers d LEFT JOIN units u ON d.unit_id = u.id ORDER BY d.nama");
+                while ($d = $res->fetch(PDO::FETCH_ASSOC)) {
+                    $drivers[] = $d;
+                }
+                foreach ($drivers as $d):
+                    $unit_display = $d['nopol'] ? htmlspecialchars($d['nopol'] . ' - ' . $d['merek']) : '-';
+                    ?>
+                    <tr data-table-row="1">
+                        <td><span class="customers-table-id">#<?= intval($d['id']) ?></span></td>
+                        <td class="customers-table-name"><?= htmlspecialchars($d['nama']) ?></td>
+                        <td class="customers-table-phone"><?= htmlspecialchars($d['phone']) ?></td>
+                        <td class="customers-table-pickup"><?= $unit_display ?></td>
+                        <td>
+                            <div class="customers-table-actions">
+                                <a href="admin.php?edit_driver=<?= $d['id'] ?>#drivers" class="acc-btn">Edit</a>
+                                <a href="admin.php?delete_driver=<?= $d['id'] ?>#drivers" class="acc-btn danger"
+                                    onclick="event.preventDefault(); customConfirm('Hapus driver ini?', () => { window.location.href = 'admin.php?delete_driver=<?= $d['id'] ?>#drivers'; }, 'Hapus Driver', 'danger')">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
     <div id="drivers_pagination" class="pagination-outer"></div>
     <script>
@@ -145,7 +142,8 @@
             searchInputId: 'filter_driver_input',
             perPageId: 'drivers_per_page',
             infoId: 'drivers_info',
-            paginationId: 'drivers_pagination'
+            paginationId: 'drivers_pagination',
+            itemSelector: 'tr[data-table-row]'
         });
     </script>
 </section>

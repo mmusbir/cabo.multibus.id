@@ -155,8 +155,25 @@
     <div class="ajax-spinner"></div>
   </div>
 
-  <div id="routes_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
-    <div class="small admin-grid-message">Loading...</div>
+  <div class="table-wrapper customers-table-wrap">
+    <table class="table align-middle mb-0 customers-admin-table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nama Rute</th>
+          <th scope="col">Keberangkatan</th>
+          <th scope="col">Tujuan</th>
+          <th scope="col">Layanan</th>
+          <th scope="col">Harga</th>
+          <th scope="col">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="routes_tbody" data-colspan="7">
+        <tr>
+          <td colspan="7" class="customers-table-empty">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div id="routes_pagination" class="pagination-outer"></div>
 

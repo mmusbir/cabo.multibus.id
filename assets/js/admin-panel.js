@@ -549,12 +549,24 @@
       function ensureEmptyState() {
         let emptyState = list.querySelector('[data-static-empty]');
         if (!emptyState) {
-          emptyState = document.createElement('div');
-          emptyState.setAttribute('data-static-empty', '1');
-          emptyState.className = 'small admin-grid-message';
-          emptyState.textContent = 'Tidak ada data.';
-          emptyState.style.display = 'none';
-          list.appendChild(emptyState);
+          if (list.tagName === 'TBODY') {
+            emptyState = document.createElement('tr');
+            emptyState.setAttribute('data-static-empty', '1');
+            emptyState.style.display = 'none';
+            const cell = document.createElement('td');
+            cell.colSpan = parseInt(list.getAttribute('data-colspan') || '6', 10) || 6;
+            cell.className = 'customers-table-empty';
+            cell.textContent = 'Tidak ada data.';
+            emptyState.appendChild(cell);
+            list.appendChild(emptyState);
+          } else {
+            emptyState = document.createElement('div');
+            emptyState.setAttribute('data-static-empty', '1');
+            emptyState.className = 'small admin-grid-message';
+            emptyState.textContent = 'Tidak ada data.';
+            emptyState.style.display = 'none';
+            list.appendChild(emptyState);
+          }
         }
         return emptyState;
       }
@@ -580,12 +592,12 @@
         items.forEach((item) => {
           if (!item.dataset.originalDisplay) {
             const currentDisplay = getComputedStyle(item).display;
-            item.dataset.originalDisplay = currentDisplay === 'none' ? 'flex' : currentDisplay;
+            item.dataset.originalDisplay = currentDisplay === 'none' ? (list.tagName === 'TBODY' ? 'table-row' : 'flex') : currentDisplay;
           }
           item.style.display = visibleItems.has(item) ? item.dataset.originalDisplay : 'none';
         });
 
-        emptyState.style.display = total === 0 ? 'block' : 'none';
+        emptyState.style.display = total === 0 ? (list.tagName === 'TBODY' ? 'table-row' : 'block') : 'none';
 
         if (info) {
           info.textContent = 'Total: ' + total;
@@ -640,8 +652,10 @@
         const js = await parseAdminApiResponse(res);
         if (!js.success) { 
           if (tbody) {
-            tbody.innerHTML = target === 'customers'
-              ? '<tr><td colspan="6" class="customers-table-empty">Error: ' + (js.error || 'Unknown error') + '</td></tr>'
+            const isTableBody = tbody.tagName === 'TBODY';
+            const colspan = tbody.getAttribute('data-colspan') || '6';
+            tbody.innerHTML = isTableBody
+              ? '<tr><td colspan="' + colspan + '" class="customers-table-empty">Error: ' + (js.error || 'Unknown error') + '</td></tr>'
               : '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Unknown error') + '</div>';
           }
           return; 
@@ -657,8 +671,10 @@
         if (target === 'luggage') { attachLuggageHandlers(); }
       } catch (e) {
         if (tbody) {
-          tbody.innerHTML = target === 'customers'
-            ? '<tr><td colspan="6" class="customers-table-empty">Kesalahan koneksi</td></tr>'
+          const isTableBody = tbody.tagName === 'TBODY';
+          const colspan = tbody.getAttribute('data-colspan') || '6';
+          tbody.innerHTML = isTableBody
+            ? '<tr><td colspan="' + colspan + '" class="customers-table-empty">Kesalahan koneksi</td></tr>'
             : '<div class="small admin-grid-message">Kesalahan koneksi</div>';
         }
       }
@@ -822,6 +838,12 @@
           e.preventDefault();
           const target = a.getAttribute('data-target');
           const page = parseInt(a.getAttribute('data-page'), 10) || 1;
+          if (target === 'ls') {
+            if (typeof window.goToLsPage === 'function') {
+              window.goToLsPage(page);
+            }
+            return;
+          }
           let params = { page: page };
           if (target === 'bookings') {
             params.per_page = parseInt(document.getElementById('bookings_per_page')?.value || '25', 10);

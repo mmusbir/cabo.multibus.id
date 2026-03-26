@@ -110,53 +110,46 @@
         </div>
     </div>
 
-    <div class="booking-cards-grid admin-bs-card-grid admin-list-grid-tight" id="segments_grid">
-        <?php
-        $segments = [];
-        $res = $conn->query("SELECT s.*, r.name as parent_route FROM segments s LEFT JOIN routes r ON s.route_id = r.id ORDER BY r.name, s.rute");
-        while ($s = $res->fetch(PDO::FETCH_ASSOC)) {
-            $segments[] = $s;
-        }
-        foreach ($segments as $s):
-            $harga_formatted = 'Rp ' . number_format($s['harga'], 0, ',', '.');
-            $parent = $s['parent_route'] ?: '<span class="admin-text-danger">Belum ada rute</span>';
-            ?>
-            <div class="admin-card-compact">
-                <div class="acc-header">
-                    <div class="acc-title">
-                        <?= htmlspecialchars($s['rute']) ?>
-                    </div>
-                    <div class="acc-id">#
-                        <?= intval($s['id']) ?>
-                    </div>
-                </div>
-                <div class="acc-body">
-                    <div class="acc-row">
-                        <div class="acc-label">Rute</div>
-                        <div class="acc-val admin-value-sm">
-                            <?= $parent ?>
-                        </div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Harga</div>
-                        <div class="acc-val admin-value-success">
-                            <?= $harga_formatted ?>
-                        </div>
-                    </div>
-                    <div class="acc-row">
-                        <div class="acc-label">Pickup</div>
-                        <div class="acc-val">
-                            <?= !empty($s['pickup_time']) ? htmlspecialchars($s['pickup_time']) : '-' ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="acc-actions">
-                    <a href="admin.php?edit_segment=<?= $s['id'] ?>#segments" class="acc-btn">Edit</a>
-                    <a href="admin.php?delete_segment=<?= $s['id'] ?>#segments" class="acc-btn danger"
-                        onclick="event.preventDefault(); customConfirm('Hapus segment ini?', () => { window.location.href = 'admin.php?delete_segment=<?= $s['id'] ?>#segments'; }, 'Hapus Segment', 'danger')">Hapus</a>
-                </div>
-            </div>
-        <?php endforeach; ?>
+    <div class="table-wrapper customers-table-wrap">
+        <table class="table align-middle mb-0 customers-admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Segment</th>
+                    <th scope="col">Rute Induk</th>
+                    <th scope="col">Pickup</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="segments_grid" data-colspan="6">
+                <?php
+                $segments = [];
+                $res = $conn->query("SELECT s.*, r.name as parent_route FROM segments s LEFT JOIN routes r ON s.route_id = r.id ORDER BY r.name, s.rute");
+                while ($s = $res->fetch(PDO::FETCH_ASSOC)) {
+                    $segments[] = $s;
+                }
+                foreach ($segments as $s):
+                    $harga_formatted = 'Rp ' . number_format($s['harga'], 0, ',', '.');
+                    $parent = $s['parent_route'] ?: 'Belum ada rute';
+                    ?>
+                    <tr data-table-row="1">
+                        <td><span class="customers-table-id">#<?= intval($s['id']) ?></span></td>
+                        <td class="customers-table-name"><?= htmlspecialchars($s['rute']) ?></td>
+                        <td class="customers-table-pickup"><?= htmlspecialchars($parent) ?></td>
+                        <td class="customers-table-phone"><?= !empty($s['pickup_time']) ? htmlspecialchars($s['pickup_time']) : '-' ?></td>
+                        <td class="customers-table-phone"><?= $harga_formatted ?></td>
+                        <td>
+                            <div class="customers-table-actions">
+                                <a href="admin.php?edit_segment=<?= $s['id'] ?>#segments" class="acc-btn">Edit</a>
+                                <a href="admin.php?delete_segment=<?= $s['id'] ?>#segments" class="acc-btn danger"
+                                    onclick="event.preventDefault(); customConfirm('Hapus segment ini?', () => { window.location.href = 'admin.php?delete_segment=<?= $s['id'] ?>#segments'; }, 'Hapus Segment', 'danger')">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
     <div id="segments_pagination" class="pagination-outer"></div>
     <script>
@@ -165,7 +158,8 @@
             searchInputId: 'filter_segment_input',
             perPageId: 'segments_per_page',
             infoId: 'segments_info',
-            paginationId: 'segments_pagination'
+            paginationId: 'segments_pagination',
+            itemSelector: 'tr[data-table-row]'
         });
     </script>
 </section>

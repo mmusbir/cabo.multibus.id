@@ -30,23 +30,21 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
 if (empty($rows)) {
-    echo '<div class="small admin-grid-message admin-grid-message-muted">Data user tidak ditemukan</div>';
+    echo '<tr><td colspan="5" class="customers-table-empty">Data user tidak ditemukan</td></tr>';
 } else {
     foreach ($rows as $u) {
-        echo '<div class="admin-card-compact">';
-        echo '  <div class="acc-header">';
-        echo '    <div class="acc-title">' . htmlspecialchars($u['username']) . '</div>';
-        echo '    <div class="acc-id">#' . intval($u['id']) . '</div>';
-        echo '  </div>';
-        echo '  <div class="acc-body">';
-        echo '    <div class="acc-row"><div class="acc-label">Full Name</div><div class="acc-val">' . htmlspecialchars($u['fullname'] ?? '-') . '</div></div>';
-        echo '    <div class="acc-row"><div class="acc-label">Dibuat</div><div class="acc-val">' . htmlspecialchars($u['created_at']) . '</div></div>';
-        echo '  </div>';
-        echo '  <div class="acc-actions">';
-        echo '    <a class="acc-btn" href="admin.php?edit_user=' . intval($u['id']) . '#users">Edit</a>';
-        echo '    <a class="acc-btn danger" href="admin.php?delete_user=' . intval($u['id']) . '#users" onclick="event.preventDefault(); customConfirm(\'Hapus user?\', () => { window.location.href = this.href; }, \'Hapus User\', \'danger\')">Hapus</a>';
-        echo '  </div>';
-        echo '</div>';
+        echo '<tr>';
+        echo '  <td><span class="customers-table-id">#' . intval($u['id']) . '</span></td>';
+        echo '  <td class="customers-table-name">' . htmlspecialchars($u['username']) . '</td>';
+        echo '  <td>' . htmlspecialchars($u['fullname'] ?? '-') . '</td>';
+        echo '  <td>' . htmlspecialchars($u['created_at']) . '</td>';
+        echo '  <td>';
+        echo '    <div class="customers-table-actions">';
+        echo '      <a class="acc-btn" href="admin.php?edit_user=' . intval($u['id']) . '#users">Edit</a>';
+        echo '      <a class="acc-btn danger" href="admin.php?delete_user=' . intval($u['id']) . '#users" onclick="event.preventDefault(); customConfirm(\'Hapus user?\', () => { window.location.href = this.href; }, \'Hapus User\', \'danger\')">Hapus</a>';
+        echo '    </div>';
+        echo '  </td>';
+        echo '</tr>';
     }
 }
 $rows_html = ob_get_clean();

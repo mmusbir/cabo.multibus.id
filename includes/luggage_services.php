@@ -41,8 +41,23 @@
         </div>
     </div>
 
-    <div id="ls_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid-min">
-        <div class="small admin-grid-message">Memuat data...</div>
+    <div class="table-wrapper customers-table-wrap">
+        <table class="table align-middle mb-0 customers-admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nama Layanan</th>
+                    <th scope="col">Harga</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="ls_tbody" data-colspan="5">
+                <tr>
+                    <td colspan="5" class="customers-table-empty">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div id="ls_pagination" class="pagination-outer"></div>
 </section>
@@ -58,34 +73,43 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputName = document.getElementById('ls_name');
     const inputPrice = document.getElementById('ls_price');
     const formTitle = document.getElementById('ls-form-title');
-    let lsPager = null;
 
-    function loadLuggageServices() {
-        lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Memuat data...</div>';
-        fetch('admin.php?action=luggageServicesPage')
+    function loadLuggageServices(page = 1) {
+        const perPage = parseInt(document.getElementById('ls_per_page')?.value || '25', 10);
+        lsTbody.innerHTML = '<tr><td colspan="5" class="customers-table-empty">Memuat data...</td></tr>';
+        fetch('admin.php?action=luggageServicesPage&page=' + page + '&per_page=' + perPage)
             .then((r) => r.json())
             .then((js) => {
                 if (js.success) {
                     lsTbody.innerHTML = js.rows;
                     lsInfo.textContent = 'Total: ' + js.total;
-                    lsPager = window.setupAdminStaticListPagination?.({
-                        listId: 'ls_tbody',
-                        perPageId: 'ls_per_page',
-                        infoId: 'ls_info',
-                        paginationId: 'ls_pagination'
-                    }) || null;
+                    document.getElementById('ls_pagination').innerHTML = js.pagination || '';
+                    bindLsPagination();
                     attachActionListeners();
                 } else {
-                    lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Gagal memuat data.</div>';
+                    lsTbody.innerHTML = '<tr><td colspan="5" class="customers-table-empty">Gagal memuat data.</td></tr>';
                 }
             })
             .catch((e) => {
                 console.error(e);
-                lsTbody.innerHTML = '<div class="small admin-empty-state admin-grid-message">Kesalahan koneksi.</div>';
+                lsTbody.innerHTML = '<tr><td colspan="5" class="customers-table-empty">Kesalahan koneksi.</td></tr>';
             });
     }
 
     window.loadLuggageServices = loadLuggageServices;
+    window.goToLsPage = function (page) {
+        loadLuggageServices(page);
+    };
+
+    function bindLsPagination() {
+        document.querySelectorAll('#ls_pagination .ajax-page').forEach((link) => {
+            link.onclick = function (e) {
+                e.preventDefault();
+                const page = parseInt(link.getAttribute('data-page') || '1', 10) || 1;
+                loadLuggageServices(page);
+            };
+        });
+    }
 
     function attachActionListeners() {
         document.querySelectorAll('.luggage-service-action').forEach((btn) => {
@@ -160,6 +184,10 @@ document.addEventListener('DOMContentLoaded', function () {
         resetLsForm();
     };
 
+    document.getElementById('ls_per_page')?.addEventListener('change', function () {
+        loadLuggageServices(1);
+    });
+
     function resetLsForm() {
         inputId.value = '0';
         inputName.value = '';
@@ -180,4 +208,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-
