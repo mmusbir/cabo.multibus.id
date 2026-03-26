@@ -3827,15 +3827,16 @@
                 }
 
                 document.getElementById('copyDetailBtn').onclick = () => {
-                  const text = `Detail Booking
-Keberangkatan: ${hari}, ${tanggal} - ${jam}
-Kursi: ${id}
-Segment: ${segment}
-Harga: ${priceFormatted}
-Nama: ${info.name || '-'}
-No. HP: ${info.phone || '-'}
-Titik Jemput: ${info.pickup_point || '-'}
-${paymentInfo.label}: ${paymentInfo.value}`;
+                  const text = `BUKTI BOOKING
+------------------------------
+Keberangkatan : ${hari}, ${tanggal} - ${jam}
+Kursi         : ${id}
+Segment       : ${segment}
+Harga         : ${priceFormatted}
+Nama          : ${info.name || '-'}
+No. HP        : ${info.phone || '-'}
+Titik Jemput  : ${info.pickup_point || '-'}
+${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
                   // Fallback function
                   const fallbackCopy = (txt) => {
@@ -4246,17 +4247,18 @@ ${paymentInfo.label}: ${paymentInfo.value}`;
         const total = rekapList.reduce((s, r) => s + r.finalPrice, 0);
         const lines = rekapList.map((r, i) => {
           const paymentInfo = formatPaymentLabel(r.pembayaran || '');
-          return `${i + 1}. Kursi ${r.seatId} - ${r.name || '-'}\n` +
-            `   HP: ${r.phone || '-'}\n` +
-            `   Jemput: ${r.pickup || '-'}\n` +
-            `   Segment: ${r.segment || '-'}\n` +
-            `   Harga: ${formatRp(r.finalPrice)}\n` +
-            `   ${paymentInfo.label}: ${paymentInfo.value}`;
+          return `${i + 1}. ${r.name || '-'}\n` +
+            `   Kursi         : ${r.seatId}\n` +
+            `   No. HP        : ${r.phone || '-'}\n` +
+            `   Titik Jemput  : ${r.pickup || '-'}\n` +
+            `   Segment       : ${r.segment || '-'}\n` +
+            `   Harga         : ${formatRp(r.finalPrice)}\n` +
+            `   ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         }).join('\n\n');
         const firstItem = rekapList[0];
         const divider = '-'.repeat(30);
-        const header = `REKAP BOOKING\nTanggal: ${firstItem.hari}, ${firstItem.tanggal} - ${firstItem.jam}\n${divider}`;
-        const footer = `${divider}\nTotal: ${rekapList.length} Penumpang\nTOTAL: ${formatRp(total)}`;
+        const header = `BUKTI BOOKING\nTanggal Keberangkatan : ${firstItem.hari}, ${firstItem.tanggal} - ${firstItem.jam}\n${divider}`;
+        const footer = `${divider}\nTotal Penumpang       : ${rekapList.length}\nTotal Pembayaran      : ${formatRp(total)}`;
         const text = `${header}\n\n${lines}\n\n${footer}`;
 
         const doFallback = (t) => {
