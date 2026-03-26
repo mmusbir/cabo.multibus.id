@@ -396,6 +396,10 @@
       const jam = trigger.getAttribute('data-jam') || '';
       const unit = trigger.getAttribute('data-unit') || '1';
 
+      if (typeof window.showSectionById === 'function') {
+        await window.showSectionById('booking-detail');
+      }
+
       const viewRoute = document.getElementById('booking_detail_rute');
       const viewTanggal = document.getElementById('booking_detail_tanggal');
       const viewJam = document.getElementById('booking_detail_jam');
@@ -411,9 +415,6 @@
       viewJam.value = jam;
       viewUnit.value = unit;
 
-      if (typeof window.showSectionById === 'function') {
-        window.showSectionById('booking-detail');
-      }
       window.location.hash = '#booking-detail';
       document.getElementById('booking-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       if (typeof window.loadBookingDetailPassengers === 'function') {

@@ -154,6 +154,26 @@ function updateSetting($conn, $key, $value) {
   }
 }
 
+function renderAdminSectionFragmentFile($file) {
+  if (!is_file($file)) {
+    return '';
+  }
+
+  ob_start();
+  extract($GLOBALS, EXTR_SKIP);
+  include $file;
+  return ob_get_clean();
+}
+
+function renderAdminSectionSlot($sectionId) {
+  $safeId = preg_replace('/[^a-z0-9\-_]/i', '', (string) $sectionId);
+  echo '<div id="section-slot-' . htmlspecialchars($safeId) . '" class="admin-section-slot" data-section-slot="' . htmlspecialchars($safeId) . '" data-loaded="0">';
+  echo '<section id="' . htmlspecialchars($safeId) . '" class="card admin-lazy-section" style="display:none;">';
+  echo '<div class="small admin-grid-message">Memuat panel...</div>';
+  echo '</section>';
+  echo '</div>';
+}
+
 // ==================== ROUTER-BASED ACTION HANDLING ====================
 
 if ($isActionRequest) {
@@ -186,6 +206,34 @@ if ($isActionRequest) {
     
     $router->get('bookingsPage', function () use ($ajax_dir) {
       include $ajax_dir . 'bookings.php';
+    });
+
+    $router->get('getSectionFragment', function () {
+      $section = preg_replace('/[^a-z0-9\-_]/i', '', (string) ($_GET['section'] ?? ''));
+      $map = [
+        'bookings' => __DIR__ . '/includes/bookings.php',
+        'charter-create' => __DIR__ . '/includes/charter_create.php',
+        'customers' => __DIR__ . '/includes/customers.php',
+        'routes' => __DIR__ . '/includes/routes.php',
+        'schedules' => __DIR__ . '/includes/schedules.php',
+        'drivers' => __DIR__ . '/includes/drivers.php',
+        'segments' => __DIR__ . '/includes/segments.php',
+        'users' => __DIR__ . '/includes/users.php',
+        'units' => __DIR__ . '/includes/units.php',
+        'booking-detail' => __DIR__ . '/includes/booking_detail.php',
+        'cancellations' => __DIR__ . '/includes/cancellations.php',
+        'reports' => __DIR__ . '/includes/reports.php',
+        'luggage_services' => __DIR__ . '/includes/luggage_services.php',
+        'luggage' => __DIR__ . '/includes/luggage.php',
+      ];
+
+      if ($section === '' || !isset($map[$section])) {
+        echo json_encode(['success' => false, 'error' => 'section_not_found']);
+        return;
+      }
+
+      $html = renderAdminSectionFragmentFile($map[$section]);
+      echo json_encode(['success' => true, 'html' => $html]);
     });
     
     $router->get('customersPage', function () use ($ajax_dir) {
@@ -1212,49 +1260,20 @@ if (!isset($_REQUEST['action'])):
         <!-- DASHBOARD -->
         <?php include 'includes/dashboard.php'; ?>
 
-        <!-- BOOKINGS -->
-        <?php include 'includes/bookings.php'; ?>
-
-        <!-- CHARTER CREATE -->
-        <?php include 'includes/charter_create.php'; ?>
-
-
-        <!-- CUSTOMERS -->
-        <?php include 'includes/customers.php'; ?>
-
-        <!-- ROUTES -->
-        <?php include 'includes/routes.php'; ?>
-
-        <!-- SCHEDULES -->
-        <?php include 'includes/schedules.php'; ?>
-
-        <!-- DRIVERS -->
-        <?php include 'includes/drivers.php'; ?>
-
-        <!-- SEGMENTS -->
-        <?php include 'includes/segments.php'; ?>
-
-        <!-- USERS -->
-        <?php include 'includes/users.php'; ?>
-
-        <!-- UNITS -->
-        <?php include 'includes/units.php'; ?>
-
-        <!-- VIEW DETAIL -->
-        <!-- VIEW DETAIL -->
-        <?php include 'includes/booking_detail.php'; ?>
-
-        <!-- CANCELLATIONS -->
-        <?php include 'includes/cancellations.php'; ?>
-
-        <!-- REPORTS -->
-        <?php include 'includes/reports.php'; ?>
-
-        <!-- LUGGAGE SERVICES -->
-        <?php include 'includes/luggage_services.php'; ?>
-
-        <!-- LUGGAGE DATA (Bagasi) -->
-        <?php include 'includes/luggage.php'; ?>
+        <?php renderAdminSectionSlot('bookings'); ?>
+        <?php renderAdminSectionSlot('charter-create'); ?>
+        <?php renderAdminSectionSlot('customers'); ?>
+        <?php renderAdminSectionSlot('routes'); ?>
+        <?php renderAdminSectionSlot('schedules'); ?>
+        <?php renderAdminSectionSlot('drivers'); ?>
+        <?php renderAdminSectionSlot('segments'); ?>
+        <?php renderAdminSectionSlot('users'); ?>
+        <?php renderAdminSectionSlot('units'); ?>
+        <?php renderAdminSectionSlot('booking-detail'); ?>
+        <?php renderAdminSectionSlot('cancellations'); ?>
+        <?php renderAdminSectionSlot('reports'); ?>
+        <?php renderAdminSectionSlot('luggage_services'); ?>
+        <?php renderAdminSectionSlot('luggage'); ?>
 
       </div>
 
@@ -1627,12 +1646,111 @@ if (!isset($_REQUEST['action'])):
       }
     });
 
+    const adminLazySections = new Set([
+      'bookings',
+      'charter-create',
+      'customers',
+      'routes',
+      'schedules',
+      'drivers',
+      'segments',
+      'users',
+      'units',
+      'booking-detail',
+      'cancellations',
+      'reports',
+      'luggage_services',
+      'luggage'
+    ]);
+    const adminSectionLoadPromises = {};
+
+    function unwrapAdminSectionScript(code) {
+      if (!code) return '';
+      return code
+        .replace(/(?:document|window)\.addEventListener\(\s*['"]DOMContentLoaded['"]\s*,\s*function\s*\(\)\s*\{([\s\S]*?)\}\s*\)\s*;?/g, '$1')
+        .replace(/(?:document|window)\.addEventListener\(\s*['"]DOMContentLoaded['"]\s*,\s*\(\)\s*=>\s*\{([\s\S]*?)\}\s*\)\s*;?/g, '$1');
+    }
+
+    function executeAdminSectionScripts(container) {
+      if (!container) return;
+      container.querySelectorAll('script').forEach(function (script) {
+        const code = unwrapAdminSectionScript(script.textContent || '');
+        if (script.src) {
+          const injected = document.createElement('script');
+          injected.src = script.src;
+          document.body.appendChild(injected);
+          document.body.removeChild(injected);
+        } else if (code.trim()) {
+          try {
+            window.eval(code);
+          } catch (err) {
+            console.error('Failed to init admin section script:', err);
+          }
+        }
+        script.remove();
+      });
+    }
+
+    async function ensureAdminSectionLoaded(id) {
+      if (!adminLazySections.has(id)) {
+        return document.getElementById(id);
+      }
+
+      const slot = document.getElementById('section-slot-' + id);
+      if (!slot) {
+        return document.getElementById(id);
+      }
+      if (slot.dataset.loaded === '1') {
+        return document.getElementById(id);
+      }
+      if (adminSectionLoadPromises[id]) {
+        return adminSectionLoadPromises[id];
+      }
+
+      slot.dataset.loading = '1';
+      adminSectionLoadPromises[id] = (async function () {
+        const url = new URL('admin.php', window.location.origin);
+        url.searchParams.set('action', 'getSectionFragment');
+        url.searchParams.set('section', id);
+
+        const res = await fetch(url.toString(), { credentials: 'same-origin' });
+        const js = await parseAdminApiResponse(res);
+        if (!js.success || !js.html) {
+          throw new Error(js.error || 'Gagal memuat panel');
+        }
+
+        slot.innerHTML = js.html;
+        slot.dataset.loaded = '1';
+        slot.dataset.loading = '0';
+        executeAdminSectionScripts(slot);
+        return document.getElementById(id);
+      })();
+
+      try {
+        return await adminSectionLoadPromises[id];
+      } finally {
+        delete adminSectionLoadPromises[id];
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
       // Show only active section and load data
-      function showSection(id) {
+      async function showSection(id) {
         document.querySelectorAll('.card').forEach(function (card) {
           card.style.display = 'none';
         });
+
+        try {
+          await ensureAdminSectionLoaded(id);
+        } catch (err) {
+          const fallback = document.getElementById(id);
+          if (fallback) {
+            fallback.style.display = 'block';
+            fallback.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">' + (err.message || 'Gagal memuat panel') + '</div>';
+          }
+          return;
+        }
+
         if (id === 'charter-create' && window.bookingDashboardState) {
           window.bookingDashboardState.active = 'charters';
         }
@@ -1641,13 +1759,19 @@ if (!isset($_REQUEST['action'])):
         if (typeof window.syncAdminNavState === 'function') {
           window.syncAdminNavState(id);
         }
+        bindAdminLazyControls(id);
         // Auto-load data for each section
         if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: 999, search: '' }));
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: 999 });
         if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: 999 });
         if (id === 'users') ajaxListLoad('users', { page: 1, per_page: 999 });
-        if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: 999 });
+        if (id === 'routes' && typeof window.switchRouteTab === 'function') {
+          window.switchRouteTab(window.currentRouteType || 'reguler');
+        }
         if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: 999 });
+        if (id === 'reports' && document.getElementById('btnGenerateReport')) {
+          // Reports section is ready after its script is injected; no auto-fetch here.
+        }
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'luggage' && typeof window.loadLuggageData === 'function') window.loadLuggageData();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
@@ -1709,6 +1833,205 @@ if (!isset($_REQUEST['action'])):
       }
     }
     window.parseAdminApiResponse = parseAdminApiResponse;
+    function bindAdminLazyControls(sectionId) {
+      const debounce = (fn, wait = 300) => {
+        clearTimeout(window.__adminLazyDebounceTimer);
+        window.__adminLazyDebounceTimer = setTimeout(fn, wait);
+      };
+
+      if (sectionId === 'customers') {
+        const input = document.getElementById('search_customer_name_input');
+        const btn = document.getElementById('searchCustomerBtn');
+        const perPage = document.getElementById('customers_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('customers', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('customers', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('customers', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+      }
+
+      if (sectionId === 'routes') {
+        const input = document.getElementById('search_route_input');
+        const btn = document.getElementById('searchRouteBtn');
+        const perPage = document.getElementById('routes_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('routes', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search,
+                type: window.currentRouteType || 'reguler'
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('routes', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || '',
+              type: window.currentRouteType || 'reguler'
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('routes', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || '',
+              type: window.currentRouteType || 'reguler'
+            });
+          };
+        }
+      }
+
+      if (sectionId === 'schedules') {
+        const input = document.getElementById('search_schedule_route_input');
+        const btn = document.getElementById('searchScheduleRouteBtn');
+        const perPage = document.getElementById('schedules_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('schedules', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('schedules', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('schedules', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+      }
+
+      if (sectionId === 'users') {
+        const input = document.getElementById('search_user_input');
+        const btn = document.getElementById('searchUserBtn');
+        const perPage = document.getElementById('users_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('users', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('users', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('users', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+      }
+
+      if (sectionId === 'cancellations') {
+        const input = document.getElementById('search_cancellations_input');
+        const btn = document.getElementById('searchCancellationsBtn');
+        const perPage = document.getElementById('cancellations_per_page');
+        const typeInput = document.getElementById('log_activity_type');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('cancellations', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search,
+                type: typeInput?.value || ''
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('cancellations', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || '',
+              type: typeInput?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('cancellations', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || '',
+              type: typeInput?.value || ''
+            });
+          };
+        }
+      }
+    }
+
     function buildAdminListParams(target, baseParams) {
       const params = Object.assign({}, baseParams || {});
       if (typeof window.getAdminListParams === 'function') {

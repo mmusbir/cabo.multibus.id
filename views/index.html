@@ -19,6 +19,8 @@
   <!--Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <!-- Vanilla Datepicker CSS -->
@@ -4956,28 +4958,38 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 60);
 
-        // Initialize Vanilla Datepicker
-        const datePicker = new Datepicker(tanggalEl, {
-          language: 'id',
-          format: 'yyyy-mm-dd',
-          autohide: true,
-          todayHighlight: true,
-          minDate: today,
-          maxDate: maxDate,
-          todayBtn: true,
-          todayBtnMode: 1,
-          clearBtn: false,
-          prevArrow: '&lsaquo;',
-          nextArrow: '&rsaquo;',
-          container: 'body'
+        let datePicker = null;
+        function ensureDatePicker() {
+          if (datePicker) return datePicker;
+          datePicker = new Datepicker(tanggalEl, {
+            language: 'id',
+            format: 'yyyy-mm-dd',
+            autohide: true,
+            todayHighlight: true,
+            minDate: today,
+            maxDate: maxDate,
+            todayBtn: true,
+            todayBtnMode: 1,
+            clearBtn: false,
+            prevArrow: '&lsaquo;',
+            nextArrow: '&rsaquo;',
+            container: 'body'
+          });
+          return datePicker;
+        }
+
+        requestAnimationFrame(() => {
+          setTimeout(() => ensureDatePicker(), 0);
         });
+
+        tanggalEl.addEventListener('focus', ensureDatePicker, { once: true });
 
         // Handle Today button click - force select today's date
         document.addEventListener('click', function (e) {
           if (e.target.classList.contains('today-btn') || e.target.closest('.today-btn')) {
-            datePicker.setDate(today);
-            datePicker.hide();
-            // Trigger change event
+            const picker = ensureDatePicker();
+            picker.setDate(today);
+            picker.hide();
             const dateStr = tanggalEl.value;
             loadRoutesByDate(dateStr);
           }
@@ -5002,13 +5014,10 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         jamEl.addEventListener('change', jamChanged);
         unitEl.addEventListener('change', refreshSeats);
         bookBtn.addEventListener('click', doBooking);
-        setTimeout(() => {
-          if (jamEl.options.length > 1) {
-            jamChanged();
-          } else {
-            renderSeatLayout();
-          }
-        }, 1000);
+        renderSeatLayout();
+        if (jamEl.options.length > 1) {
+          jamChanged();
+        }
       })();
       /* ================== LOAD SEGMENTS ================== */
       function loadSegments(routeName = '') {
@@ -5036,8 +5045,6 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           });
       }
 
-      // INIT
-      loadSegments();
     </script>
     <script src="assets/js/theme-toggle.js"></script>
     <!-- Change Password Modal -->
