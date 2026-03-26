@@ -1259,7 +1259,7 @@ if (!isset($_REQUEST['action'])):
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Admin Panel Ã¢â‚¬â€ Hiace Booking</title>
+    <title>Admin Panel</title>
   <script>
     (function () {
       try {
