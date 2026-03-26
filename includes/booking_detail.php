@@ -7,7 +7,7 @@
 
       <div class="booking-detail-page-actions">
         <button type="button" id="copyAllBtn" class="booking-detail-page-ghost">
-          <i class="fa-regular fa-copy fa-icon"></i>
+          <i class="fa-solid fa-copy fa-icon"></i>
           <span>Copy Semua</span>
         </button>
         <a href="index.php" class="booking-detail-page-cta">

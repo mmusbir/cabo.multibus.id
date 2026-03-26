@@ -48,7 +48,7 @@
 
   <div class="kinetic-mobile-list-head">
     <h4 class="kinetic-mobile-list-title" id="bookingMobileListTitle">
-      <i class="fa-regular fa-calendar-check fa-icon"></i>
+      <i class="fa-solid fa-calendar-check fa-icon"></i>
       Jadwal Mendatang
     </h4>
     <div class="kinetic-mobile-list-actions">
@@ -90,7 +90,7 @@
     }
 
     function getBookingListTitleIconHtml() {
-      return '<i class="fa-regular fa-calendar-check fa-icon"></i>';
+      return '<i class="fa-solid fa-calendar-check fa-icon"></i>';
     }
 
     window.bookingDashboardState = window.bookingDashboardState || {

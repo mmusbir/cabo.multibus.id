@@ -217,9 +217,9 @@ if (empty($rows)) {
         if ($bopStatus !== 'done') {
             echo '      <a href="#" class="charter-command-action success bop-done-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-circle-check fa-icon"></i>BOP</a>';
         }
-        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-regular fa-copy fa-icon"></i>Copy</a>';
-        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-regular fa-pen-to-square fa-icon"></i>Edit</a>';
-        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><i class="fa-regular fa-trash-can fa-icon"></i>Hapus</a>';
+        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-copy fa-icon"></i>Copy</a>';
+        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-pen-to-square fa-icon"></i>Edit</a>';
+        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><i class="fa-solid fa-trash-can fa-icon"></i>Hapus</a>';
         echo '    </div>';
         echo '  </div>';
         echo '</article>';

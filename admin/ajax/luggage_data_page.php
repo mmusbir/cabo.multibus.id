@@ -80,7 +80,7 @@ if (empty($rows)) {
 
         $noteExtra = trim($l['notes'] ?? '');
         if ($noteExtra) {
-            echo '        <div class="kinetic-trip-line"><i class="fa-regular fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra) . '</div>';
+            echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra) . '</div>';
         }
         echo '      </div>';
 

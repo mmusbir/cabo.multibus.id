@@ -290,10 +290,10 @@ try {
                   data-discount="<?php echo h($p['discount'] ?? '0'); ?>"
                   data-pembayaran="<?php echo h($payStatus); ?>"
                   title="Edit Penumpang">
-                  <i class="fa-regular fa-pen-to-square fa-icon"></i>
+                  <i class="fa-solid fa-pen-to-square fa-icon"></i>
                 </button>
                 <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
-                  <i class="fa-regular fa-copy fa-icon"></i>
+                  <i class="fa-solid fa-copy fa-icon"></i>
                 </button>
                 <?php if (!$isPaid): ?>
                   <button type="button" class="mark-paid-seat btn-action-icon pay" data-id="<?php echo h($p['id']); ?>" title="Mark Lunas">

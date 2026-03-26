@@ -1507,7 +1507,14 @@
     }
 
     .fa-icon {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.15em;
+      min-width: 1.15em;
+      vertical-align: middle;
+      line-height: 1;
+      font-size: 0.98em;
     }
 
     .mobile-slate-topbar,
@@ -3310,7 +3317,7 @@
           </div>
           <div class="mobile-slate-control-card">
             <div class="mobile-slate-control-icon">
-              <i class="fa-regular fa-clock fa-icon"></i>
+              <i class="fa-solid fa-clock fa-icon"></i>
             </div>
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Jam Berangkat</div>
@@ -3375,7 +3382,7 @@
       <div class="carter-section" id="card-passenger">
         <div class="mobile-slate-passenger-head">
           <h3 class="mobile-slate-section-title">
-            <i class="fa-regular fa-user fa-icon"></i>
+            <i class="fa-solid fa-user fa-icon"></i>
             Detail Penumpang
           </h3>
             <div class="search-container-modern booking-search-shell" id="suggestions">
@@ -3474,7 +3481,7 @@
         </div>
         <div class="rekap-bar-actions">
           <button type="button" onclick="openRekapModal()" class="rekap-bar-btn rekap-bar-btn-secondary">
-            <i class="fa-regular fa-rectangle-list fa-icon"></i>
+            <i class="fa-solid fa-rectangle-list fa-icon"></i>
             Lihat Rekap
           </button>
           <button id="book" class="rekap-bar-btn rekap-bar-btn-primary">
@@ -3497,7 +3504,7 @@
         <div id="detailContent" class="modal-body"></div>
         <div class="detail-modal-actions">
           <button type="button" id="copyDetailBtn" class="detail-copy-btn">
-            <i class="fa-regular fa-copy fa-icon"></i>
+            <i class="fa-solid fa-copy fa-icon"></i>
             Salin Data
           </button>
           <button type="button" id="addToRekapBtn" class="detail-rekap-btn">
@@ -3525,11 +3532,11 @@
         </div>
         <div class="detail-modal-actions">
           <button type="button" id="copyRekapBtn" class="detail-copy-btn">
-            <i class="fa-regular fa-copy fa-icon"></i>
+            <i class="fa-solid fa-copy fa-icon"></i>
             Salin Semua
           </button>
           <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">
-            <i class="fa-regular fa-trash-can fa-icon"></i>
+            <i class="fa-solid fa-trash-can fa-icon"></i>
             Reset Rekap
           </button>
         </div>

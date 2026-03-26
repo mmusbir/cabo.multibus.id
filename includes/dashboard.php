@@ -102,7 +102,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
       </div>
       <div class="kinetic-stat-card is-warning">
         <p>Belum Lunas</p>
-        <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><i class="fa-regular fa-clock fa-icon"></i></div>
+        <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><i class="fa-solid fa-clock fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-success">
         <p>Lunas Semua</p>
@@ -142,7 +142,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <section class="kinetic-dash-revenue-splits">
           <article class="kinetic-revenue-split-card is-booking">
             <div class="kinetic-revenue-split-head">
-              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-ticket"></i></span>
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-ticket fa-icon"></i></span>
               <h3>Booking</h3>
             </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_booking_month'], 0, ',', '.'); ?></strong>
@@ -150,7 +150,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
           </article>
           <article class="kinetic-revenue-split-card is-charter">
             <div class="kinetic-revenue-split-head">
-              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-bus"></i></span>
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-bus fa-icon"></i></span>
               <h3>Carter</h3>
             </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_charter_month'], 0, ',', '.'); ?></strong>
@@ -158,7 +158,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
           </article>
           <article class="kinetic-revenue-split-card is-luggage">
             <div class="kinetic-revenue-split-head">
-              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-suitcase-rolling"></i></span>
+              <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-suitcase-rolling fa-icon"></i></span>
               <h3>Bagasi</h3>
             </div>
             <strong>Rp <?php echo number_format($dashboard['revenue_luggage_month'], 0, ',', '.'); ?></strong>

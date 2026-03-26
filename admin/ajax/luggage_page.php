@@ -85,7 +85,7 @@ if (empty($rows)) {
         echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars($serviceName) . ' / Qty ' . intval($l['quantity']) . '</div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone fa-icon"></i><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone-volume fa-icon"></i>' . htmlspecialchars($l['receiver_phone']) . '</div>';
-        echo '        <div class="kinetic-trip-line"><i class="fa-regular fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra !== '' ? $noteExtra : 'Tanpa catatan') . '</div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra !== '' ? $noteExtra : 'Tanpa catatan') . '</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-stat">';
         echo '        <div class="kinetic-trip-stat-label">Shipment Snapshot</div>';
@@ -98,7 +98,7 @@ if (empty($rows)) {
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         if ($status === 'pending') {
-            echo '        <a href="#" class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><i class="fa-regular fa-pen-to-square fa-icon"></i>Input</a>';
+            echo '        <a href="#" class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><i class="fa-solid fa-pen-to-square fa-icon"></i>Input</a>';
         }
         if ($payment !== 'Lunas') {
             echo '        <a href="#" class="kinetic-trip-action success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas"><i class="fa-solid fa-circle-check fa-icon"></i>Bayar</a>';
