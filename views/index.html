@@ -3425,32 +3425,32 @@
           <div class="input-label">Pembayaran</div>
           <div class="payment-selector-modern" id="pembayaran_radios">
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_belum" value="QRIS" checked>
+              <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
               <label for="p_belum" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">QRIS</span>
-                  <span class="payment-caption">Scan pembayaran cepat</span>
+                  <span class="payment-title">Belum Lunas</span>
+                  <span class="payment-caption">Tunai / Transfer</span>
                 </span>
               </label>
             </div>
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_lunas" value="Transfer">
+              <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
               <label for="p_lunas" class="payment-label">
                 <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Transfer</span>
-                  <span class="payment-caption">Transfer bank</span>
+                  <span class="payment-title">Lunas</span>
+                  <span class="payment-caption">Pembayaran penuh</span>
                 </span>
               </label>
             </div>
             <div class="payment-option">
-              <input type="radio" name="pembayaran" id="p_redbus" value="Tunai">
+              <input type="radio" name="pembayaran" id="p_redbus" value="RedBus">
               <label for="p_redbus" class="payment-label">
                 <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
                 <span class="payment-copy">
-                  <span class="payment-title">Tunai</span>
-                  <span class="payment-caption">Bayar di tempat</span>
+                  <span class="payment-title">RedBus</span>
+                  <span class="payment-caption">Mitra online</span>
                 </span>
               </label>
             </div>
@@ -4133,11 +4133,11 @@ ${paymentInfo.label}: ${paymentInfo.value}`;
       function formatPaymentLabel(value) {
         const normalized = String(value || '').trim();
         if (!normalized) return { label: 'Pembayaran', value: '-' };
+        if (normalized === 'Belum Lunas') {
+          return { label: 'Metode Pembayaran', value: 'QRIS / Transfer / Tunai' };
+        }
         if (isPaymentMethodValue(normalized)) {
           return { label: 'Metode Pembayaran', value: normalized };
-        }
-        if (normalized === 'Belum Lunas') {
-          return { label: 'Metode Pembayaran', value: 'Belum dipilih' };
         }
         return { label: 'Status Pembayaran', value: normalized };
       }
