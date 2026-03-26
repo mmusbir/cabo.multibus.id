@@ -83,9 +83,6 @@
         <button class="kinetic-icon-btn theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
           <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
         </button>
-        <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
-          <i class="fa-solid fa-magnifying-glass fa-icon"></i>
-        </button>
         <button class="kinetic-icon-btn" id="moreMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu admin">
           <i class="fa-solid fa-table-cells-large fa-icon"></i>
         </button>
