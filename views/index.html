@@ -20,13 +20,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <!-- Vanilla Datepicker CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
   <link rel="stylesheet" href="assets/css/style.css?v=3">
   <link rel="stylesheet" href="assets/css/seat-layout.css">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=10">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=11">
   <style>
     * {
       box-sizing: border-box;
@@ -698,8 +698,8 @@
       align-items: center;
     }
 
-    .modal-overlay .material-symbols-outlined,
-    .confirm-popup-icon .material-symbols-outlined {
+    .modal-overlay .fa-icon,
+    .confirm-popup-icon .fa-icon {
       font-size: 1.1rem;
       line-height: 1;
     }
@@ -1506,7 +1506,7 @@
       }
     }
 
-    .material-symbols-outlined {
+    .fa-icon {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
@@ -1613,7 +1613,7 @@
         flex-shrink: 0;
       }
 
-      .mobile-slate-control-icon .material-symbols-outlined {
+      .mobile-slate-control-icon .fa-icon {
         font-size: 1.15rem;
       }
 
@@ -1695,9 +1695,9 @@
         color: rgba(224, 192, 177, 0.54);
       }
 
-      .mobile-slate-section-title .material-symbols-outlined,
+      .mobile-slate-section-title .fa-icon,
       .mobile-slate-refresh-btn,
-      .payment-badge .material-symbols-outlined {
+      .payment-badge .fa-icon {
         color: #f97316;
       }
 
@@ -1714,7 +1714,7 @@
         justify-content: center;
       }
 
-      .mobile-slate-refresh-btn .material-symbols-outlined {
+      .mobile-slate-refresh-btn .fa-icon {
         font-size: 0.98rem;
         line-height: 1;
       }
@@ -2189,7 +2189,7 @@
         color: rgba(224, 192, 177, 0.56);
       }
 
-      .mobile-slate-section-title .material-symbols-outlined {
+      .mobile-slate-section-title .fa-icon {
         color: #ffb690;
       }
 
@@ -2214,7 +2214,7 @@
         transform: translateY(-1px);
       }
 
-      .mobile-slate-refresh-btn .material-symbols-outlined {
+      .mobile-slate-refresh-btn .fa-icon {
         font-size: 1rem;
         line-height: 1;
       }
@@ -2571,7 +2571,7 @@
         transform: none;
       }
 
-      .rekap-bar-btn .material-symbols-outlined {
+      .rekap-bar-btn .fa-icon {
         font-size: 1rem;
         line-height: 1;
       }
@@ -2737,7 +2737,7 @@
         color: #f97316;
       }
 
-      .confirm-popup-icon .material-symbols-outlined {
+      .confirm-popup-icon .fa-icon {
         font-size: 1.8rem;
       }
     }
@@ -3168,10 +3168,10 @@
       color: rgba(241, 235, 230, 0.82) !important; text-decoration: none !important; font-size: 0.88rem; font-weight: 600;
     }
     .profile-menu a:hover { background: rgba(249, 115, 22, 0.1) !important; color: #f97316 !important; }
-    .profile-menu .material-symbols-outlined { color: #f97316; font-size: 1.2rem; }
+    .profile-menu .fa-icon { color: #f97316; font-size: 1.2rem; }
     .menu-divider-line { height: 1px; background: rgba(255, 255, 255, 0.06); margin: 0.5rem 0; }
     .logout-link:hover { background: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
-    .logout-link:hover .material-symbols-outlined { color: #ef4444 !important; }
+    .logout-link:hover .fa-icon { color: #ef4444 !important; }
     .profile-trigger { cursor: pointer; border: 1px solid rgba(249, 115, 22, 0.18) !important; font-family: inherit; font-weight: 800; }
     
     .admin-modal-overlay-bg {
@@ -3204,7 +3204,7 @@
   <header class="desktop-terminal-topbar">
     <div class="desktop-terminal-brand-wrap">
       <div class="desktop-terminal-brand-icon">
-        <span class="material-symbols-outlined">directions_bus</span>
+        <i class="fa-solid fa-bus fa-icon"></i>
       </div>
       <div class="desktop-terminal-brand-copy">
         <div class="desktop-terminal-brand">Cahaya Bone</div>
@@ -3214,10 +3214,10 @@
     <div class="desktop-terminal-topbar-right">
       <div class="desktop-terminal-topbar-links">
         <button class="desktop-terminal-settings theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-          <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+          <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
         </button>
         <a class="desktop-terminal-settings" href="admin.php" aria-label="Admin panel">
-          <span class="material-symbols-outlined">settings</span>
+          <i class="fa-solid fa-gear fa-icon"></i>
         </a>
         <div class="profile-dropdown">
           <button class="desktop-terminal-avatar profile-trigger" id="desktopProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
@@ -3229,12 +3229,12 @@
               <div class="profile-role">Booking Agent</div>
             </div>
             <a href="javascript:void(0)" class="open-pass-btn">
-              <span class="material-symbols-outlined">lock</span>
+              <i class="fa-solid fa-lock fa-icon"></i>
               Ganti Password
             </a>
             <div class="menu-divider-line"></div>
             <a href="logout.php" class="logout-link">
-              <span class="material-symbols-outlined">logout</span>
+              <i class="fa-solid fa-right-from-bracket fa-icon"></i>
               Logout
             </a>
           </div>
@@ -3245,12 +3245,12 @@
   </header>
   <header class="mobile-slate-topbar">
     <a class="mobile-slate-topbar-action" href="admin.php" aria-label="Buka admin">
-      <span class="material-symbols-outlined">menu</span>
+      <i class="fa-solid fa-bars fa-icon"></i>
     </a>
     <div class="mobile-slate-topbar-title">Booking Kursi</div>
     <div class="flex-center-gap">
       <button class="mobile-slate-topbar-action theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+        <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
       </button>
       <div class="profile-dropdown">
         <button class="mobile-slate-topbar-avatar profile-trigger" id="mobileProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
@@ -3262,12 +3262,12 @@
             <div class="profile-role">Booking Agent</div>
           </div>
           <a href="javascript:void(0)" class="open-pass-btn">
-            <span class="material-symbols-outlined">lock</span>
+            <i class="fa-solid fa-lock fa-icon"></i>
             Ganti Password
           </a>
           <div class="menu-divider-line"></div>
           <a href="logout.php" class="logout-link">
-            <span class="material-symbols-outlined">logout</span>
+            <i class="fa-solid fa-right-from-bracket fa-icon"></i>
             Logout
           </a>
         </div>
@@ -3290,7 +3290,7 @@
         <div class="mobile-slate-controls-grid">
           <div class="mobile-slate-control-card control-date-card">
             <div class="mobile-slate-control-icon">
-              <span class="material-symbols-outlined">calendar_month</span>
+              <i class="fa-solid fa-calendar-days fa-icon"></i>
             </div>
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Tanggal Berangkat</div>
@@ -3299,7 +3299,7 @@
           </div>
           <div class="mobile-slate-control-card">
             <div class="mobile-slate-control-icon">
-              <span class="material-symbols-outlined">route</span>
+              <i class="fa-solid fa-route fa-icon"></i>
             </div>
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Rute</div>
@@ -3310,7 +3310,7 @@
           </div>
           <div class="mobile-slate-control-card">
             <div class="mobile-slate-control-icon">
-              <span class="material-symbols-outlined">schedule</span>
+              <i class="fa-regular fa-clock fa-icon"></i>
             </div>
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Jam Berangkat</div>
@@ -3321,7 +3321,7 @@
           </div>
           <div class="mobile-slate-control-card unit-wrapper-state" id="unit-wrapper">
             <div class="mobile-slate-control-icon">
-              <span class="material-symbols-outlined">directions_bus</span>
+              <i class="fa-solid fa-bus fa-icon"></i>
             </div>
             <div class="mobile-slate-control-copy">
               <div class="mobile-slate-control-label">Unit</div>
@@ -3338,13 +3338,13 @@
         <div class="mobile-slate-seat-head">
           <div class="seat-head-copy">
             <h3 class="mobile-slate-section-title">
-              <span class="material-symbols-outlined">grid_view</span>
+              <i class="fa-solid fa-table-cells-large fa-icon"></i>
               Peta Kursi
             </h3>
             <div class="seat-head-meta">Status kursi real-time</div>
           </div>
           <button type="button" id="refreshSeatsBtn" class="mobile-slate-refresh-btn" title="Muat ulang kursi" onclick="refreshSeats()">
-            <span class="material-symbols-outlined">refresh</span>
+            <i class="fa-solid fa-rotate-right fa-icon"></i>
           </button>
         </div>
         <div class="mobile-slate-seat-canvas">
@@ -3375,11 +3375,11 @@
       <div class="carter-section" id="card-passenger">
         <div class="mobile-slate-passenger-head">
           <h3 class="mobile-slate-section-title">
-            <span class="material-symbols-outlined">person</span>
+            <i class="fa-regular fa-user fa-icon"></i>
             Detail Penumpang
           </h3>
             <div class="search-container-modern booking-search-shell" id="suggestions">
-              <span class="material-symbols-outlined booking-search-icon">search</span>
+              <i class="booking-search-icon fa-solid fa-magnifying-glass fa-icon"></i>
               <div id="search_name" contenteditable="true" role="searchbox" aria-autocomplete="list" aria-label="Cari nama atau nomor pelanggan" data-placeholder="Cari nama / nomor" spellcheck="false"></div>
               <div id="sugList"></div>
           </div>
@@ -3427,7 +3427,7 @@
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_belum" value="Belum Lunas" checked>
               <label for="p_belum" class="payment-label">
-                <span class="payment-badge"><span class="material-symbols-outlined">pending_actions</span></span>
+                <span class="payment-badge"><i class="fa-solid fa-hourglass-half fa-icon"></i></span>
                 <span class="payment-copy">
                   <span class="payment-title">Belum Lunas</span>
                   <span class="payment-caption">Tunai / Transfer</span>
@@ -3437,7 +3437,7 @@
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_lunas" value="Lunas">
               <label for="p_lunas" class="payment-label">
-                <span class="payment-badge"><span class="material-symbols-outlined">check_circle</span></span>
+                <span class="payment-badge"><i class="fa-solid fa-circle-check fa-icon"></i></span>
                 <span class="payment-copy">
                   <span class="payment-title">Lunas</span>
                   <span class="payment-caption">Pembayaran penuh</span>
@@ -3447,7 +3447,7 @@
             <div class="payment-option">
               <input type="radio" name="pembayaran" id="p_redbus" value="RedBus">
               <label for="p_redbus" class="payment-label">
-                <span class="payment-badge bus"><span class="material-symbols-outlined">directions_bus</span></span>
+                <span class="payment-badge bus"><i class="fa-solid fa-bus fa-icon"></i></span>
                 <span class="payment-copy">
                   <span class="payment-title">RedBus</span>
                   <span class="payment-caption">Mitra online</span>
@@ -3474,11 +3474,11 @@
         </div>
         <div class="rekap-bar-actions">
           <button type="button" onclick="openRekapModal()" class="rekap-bar-btn rekap-bar-btn-secondary">
-            <span class="material-symbols-outlined">list_alt</span>
+            <i class="fa-regular fa-rectangle-list fa-icon"></i>
             Lihat Rekap
           </button>
           <button id="book" class="rekap-bar-btn rekap-bar-btn-primary">
-            <span class="material-symbols-outlined">bolt</span>
+            <i class="fa-solid fa-bolt fa-icon"></i>
             Konfirmasi
           </button>
         </div>
@@ -3497,11 +3497,11 @@
         <div id="detailContent" class="modal-body"></div>
         <div class="detail-modal-actions">
           <button type="button" id="copyDetailBtn" class="detail-copy-btn">
-            <span class="material-symbols-outlined">content_copy</span>
+            <i class="fa-regular fa-copy fa-icon"></i>
             Salin Data
           </button>
           <button type="button" id="addToRekapBtn" class="detail-rekap-btn">
-            <span class="material-symbols-outlined">playlist_add</span>
+            <i class="fa-solid fa-square-plus fa-icon"></i>
             Tambah Rekap
           </button>
         </div>
@@ -3525,11 +3525,11 @@
         </div>
         <div class="detail-modal-actions">
           <button type="button" id="copyRekapBtn" class="detail-copy-btn">
-            <span class="material-symbols-outlined">content_copy</span>
+            <i class="fa-regular fa-copy fa-icon"></i>
             Salin Semua
           </button>
           <button type="button" id="clearRekapBtn" class="detail-rekap-btn rekap-clear-btn">
-            <span class="material-symbols-outlined">delete</span>
+            <i class="fa-regular fa-trash-can fa-icon"></i>
             Reset Rekap
           </button>
         </div>
@@ -3539,7 +3539,7 @@
     <!-- Confirm Reset Popup -->
     <div id="confirmResetPopup" class="confirm-popup-overlay">
       <div class="confirm-popup-box">
-        <div class="confirm-popup-icon"><span class="material-symbols-outlined">warning</span></div>
+        <div class="confirm-popup-icon"><i class="fa-solid fa-triangle-exclamation fa-icon"></i></div>
         <div class="confirm-popup-title">Reset Rekap</div>
         <div class="confirm-popup-msg">Semua penumpang dalam daftar rekap akan dihapus.</div>
         <div class="confirm-popup-actions">
@@ -4167,7 +4167,7 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         if (rekapList.length === 0) {
           content.innerHTML = `
             <div class="rekap-empty-state">
-              <span class="rekap-empty-icon"><span class="material-symbols-outlined">receipt_long</span></span>
+              <span class="rekap-empty-icon"><i class="fa-solid fa-receipt fa-icon"></i></span>
               Belum ada penumpang di rekap.<br>Klik kursi yang terisi, lalu tekan "+ Tambah ke Rekap".
             </div>`;
           return;

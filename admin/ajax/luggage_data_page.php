@@ -74,26 +74,26 @@ if (empty($rows)) {
         echo '        </div>';
         echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($l['sender_name']) . ' → ' . htmlspecialchars($l['receiver_name']) . '</h4>';
         echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars($serviceName) . ' / Qty ' . intval($l['quantity']) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call</span><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call_received</span>' . htmlspecialchars($l['receiver_phone']) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">payments</span>Rp ' . number_format($l['price'], 0, ',', '.') . ' — ' . htmlspecialchars($payment) . '</div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone fa-icon"></i><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone-volume fa-icon"></i>' . htmlspecialchars($l['receiver_phone']) . '</div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-wallet fa-icon"></i>Rp ' . number_format($l['price'], 0, ',', '.') . ' — ' . htmlspecialchars($payment) . '</div>';
 
         $noteExtra = trim($l['notes'] ?? '');
         if ($noteExtra) {
-            echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">notes</span>' . htmlspecialchars($noteExtra) . '</div>';
+            echo '        <div class="kinetic-trip-line"><i class="fa-regular fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra) . '</div>';
         }
         echo '      </div>';
 
         // Actions
         echo '      <div class="kinetic-trip-actions">';
         if ($status === 'pending') {
-            echo '        <a href="#" class="kinetic-trip-action" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'active\')" title="Terangkut"><span class="material-symbols-outlined">local_shipping</span>Angkut</a>';
+            echo '        <a href="#" class="kinetic-trip-action" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'active\')" title="Terangkut"><i class="fa-solid fa-truck fa-icon"></i>Angkut</a>';
         }
         if ($status === 'active') {
-            echo '        <a href="#" class="kinetic-trip-action success" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'finished\')" title="Selesai"><span class="material-symbols-outlined">done_all</span>Selesai</a>';
+            echo '        <a href="#" class="kinetic-trip-action success" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'finished\')" title="Selesai"><i class="fa-solid fa-circle-check fa-icon"></i>Selesai</a>';
         }
         if ($status !== 'canceled' && $status !== 'finished') {
-            echo '        <a href="#" class="kinetic-trip-action danger" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'canceled\')" title="Batalkan"><span class="material-symbols-outlined">block</span>Batal</a>';
+            echo '        <a href="#" class="kinetic-trip-action danger" onclick="event.preventDefault();luggageUpdateStatus(' . intval($l['id']) . ', \'canceled\')" title="Batalkan"><i class="fa-solid fa-ban fa-icon"></i>Batal</a>';
         }
         echo '      </div>';
 

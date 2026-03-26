@@ -7,35 +7,35 @@
   <aside class="kinetic-sidebar d-none d-lg-flex">
     <div class="kinetic-sidebar-head">
       <a href="#dashboard" class="kinetic-sidebar-brand" data-target="dashboard" data-nav-key="dashboard">
-        <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+        <i class="kinetic-brand-icon fa-solid fa-bus fa-icon"></i>
         <span class="kinetic-brand-text">Admin Panel</span>
       </a>
       <button class="kinetic-sidebar-floating-toggle d-none d-lg-inline-flex" id="desktopSidebarToggle" type="button" aria-label="Sembunyikan sidebar" aria-expanded="true">
-        <span class="material-symbols-outlined">left_panel_close</span>
+        <i class="fa-solid fa-angles-left fa-icon" data-sidebar-toggle-icon></i>
       </button>
     </div>
 
     <div class="kinetic-sidebar-scroll">
       <nav class="kinetic-sidebar-primary">
-        <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><span class="material-symbols-outlined">confirmation_number</span>Booking</a>
-        <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><span class="material-symbols-outlined">airport_shuttle</span>Carter</a>
-        <a href="#luggage" data-target="luggage" data-nav-key="luggage"><span class="material-symbols-outlined">inventory_2</span>Bagasi</a>
-        <a href="#reports" data-target="reports" data-nav-key="reports"><span class="material-symbols-outlined">assessment</span>Laporan</a>
+        <a href="#dashboard" data-target="dashboard" data-nav-key="dashboard"><i class="fa-solid fa-table-columns fa-icon"></i>Dashboard</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking"><i class="fa-solid fa-ticket fa-icon"></i>Booking</a>
+        <a href="#bookings" data-target="bookings" data-booking-mode="charters" data-nav-key="charter"><i class="fa-solid fa-van-shuttle fa-icon"></i>Carter</a>
+        <a href="#luggage" data-target="luggage" data-nav-key="luggage"><i class="fa-solid fa-suitcase-rolling fa-icon"></i>Bagasi</a>
+        <a href="#reports" data-target="reports" data-nav-key="reports"><i class="fa-solid fa-chart-column fa-icon"></i>Laporan</a>
       </nav>
 
       <div class="kinetic-sidebar-section">
         <div class="kinetic-sidebar-section-title">Pengaturan</div>
         <div class="kinetic-sidebar-links">
-          <a href="#customers" data-target="customers"><span class="material-symbols-outlined">groups</span>Customers</a>
-          <a href="#schedules" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span>Jadwal</a>
-          <a href="#cancellations" data-target="cancellations"><span class="material-symbols-outlined">history</span>Logs</a>
-          <a href="#routes" data-target="routes"><span class="material-symbols-outlined">route</span>Rute</a>
-          <a href="#segments" data-target="segments"><span class="material-symbols-outlined">conversion_path</span>Segment</a>
-          <a href="#luggage_services" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span>Layanan Bagasi</a>
-          <a href="#units" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span>Unit Kendaraan</a>
-          <a href="#drivers" data-target="drivers"><span class="material-symbols-outlined">badge</span>Data Driver</a>
-          <a href="#users" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span>Users</a>
+          <a href="#customers" data-target="customers"><i class="fa-solid fa-users fa-icon"></i>Customers</a>
+          <a href="#schedules" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i>Jadwal</a>
+          <a href="#cancellations" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i>Logs</a>
+          <a href="#routes" data-target="routes"><i class="fa-solid fa-route fa-icon"></i>Rute</a>
+          <a href="#segments" data-target="segments"><i class="fa-solid fa-shuffle fa-icon"></i>Segment</a>
+          <a href="#luggage_services" data-target="luggage_services"><i class="fa-solid fa-suitcase-rolling fa-icon"></i>Layanan Bagasi</a>
+          <a href="#units" data-target="units"><i class="fa-solid fa-van-shuttle fa-icon"></i>Unit Kendaraan</a>
+          <a href="#drivers" data-target="drivers"><i class="fa-solid fa-id-badge fa-icon"></i>Data Driver</a>
+          <a href="#users" data-target="users"><i class="fa-solid fa-user-shield fa-icon"></i>Users</a>
         </div>
       </div>
     </div>
@@ -47,7 +47,7 @@
     <div class="kinetic-desktop-navbar-inner">
       <div class="kinetic-desktop-navbar-spacer"></div>
       <button class="kinetic-icon-btn theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+        <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
       </button>
       <div class="profile-dropdown kinetic-profile-dropdown">
         <button class="profile-btn kinetic-profile-btn" id="desktopProfileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil desktop">
@@ -59,12 +59,12 @@
             <div class="kinetic-profile-role">Admin Panel</div>
           </div>
           <a href="javascript:void(0)" data-open-change-password>
-            <span class="material-symbols-outlined">lock</span>
+            <i class="fa-solid fa-lock fa-icon"></i>
             Ganti Password
           </a>
           <div class="menu-divider"></div>
           <a href="logout.php" class="logout-link">
-            <span class="material-symbols-outlined">logout</span>
+            <i class="fa-solid fa-right-from-bracket fa-icon"></i>
             Logout
           </a>
         </div>
@@ -75,19 +75,19 @@
   <div class="topbar kinetic-topbar kinetic-mobile-topbar d-lg-none">
     <div class="topbar-inner container-fluid kinetic-topbar-inner">
       <a href="#dashboard" class="kinetic-topbar-brand" data-target="dashboard" data-nav-key="dashboard">
-        <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+        <i class="kinetic-brand-icon fa-solid fa-bus fa-icon"></i>
         <span class="kinetic-brand-text">Admin Panel</span>
       </a>
 
       <div class="topbar-right kinetic-topbar-right d-flex align-items-center">
         <button class="kinetic-icon-btn theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-          <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+          <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
         </button>
         <button class="kinetic-icon-btn" type="button" data-focus-admin-search aria-label="Fokus pencarian">
-          <span class="material-symbols-outlined">search</span>
+          <i class="fa-solid fa-magnifying-glass fa-icon"></i>
         </button>
         <button class="kinetic-icon-btn" id="moreMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu admin">
-          <span class="material-symbols-outlined">apps</span>
+          <i class="fa-solid fa-table-cells-large fa-icon"></i>
         </button>
         <div class="profile-dropdown kinetic-profile-dropdown">
           <button class="profile-btn kinetic-profile-btn" id="profileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil">
@@ -99,16 +99,16 @@
               <div class="kinetic-profile-role">Admin Panel</div>
             </div>
             <a href="javascript:void(0)" data-open-change-password>
-              <span class="material-symbols-outlined">lock</span>
+              <i class="fa-solid fa-lock fa-icon"></i>
               Ganti Password
             </a>
             <a href="index.php">
-              <span class="material-symbols-outlined">add_circle</span>
+              <i class="fa-solid fa-plus fa-icon"></i>
               Booking Area
             </a>
             <div class="menu-divider"></div>
             <a href="logout.php" class="logout-link">
-              <span class="material-symbols-outlined">logout</span>
+              <i class="fa-solid fa-right-from-bracket fa-icon"></i>
               Logout
             </a>
           </div>
@@ -120,7 +120,7 @@
   <div class="topbar kinetic-topbar">
     <div class="topbar-inner topbar-public kinetic-topbar-inner">
       <a href="login.php" class="kinetic-topbar-brand public-brand">
-        <span class="material-symbols-outlined kinetic-brand-icon">directions_bus</span>
+        <i class="kinetic-brand-icon fa-solid fa-bus fa-icon"></i>
         <span class="kinetic-brand-text">CAHAYA BONE</span>
       </a>
       <a href="index.php" class="inline-small btn-booking kinetic-public-booking">Buat Booking</a>
@@ -131,23 +131,23 @@
 <?php if ($auth): ?>
   <nav class="bottom-nav kinetic-bottom-nav" id="bottomNav">
     <a href="#dashboard" class="nav-btn" data-target="dashboard" data-nav-key="dashboard" id="navDashboard">
-      <span class="material-symbols-outlined">dashboard</span>
+      <i class="fa-solid fa-table-columns fa-icon"></i>
       <span class="nav-label">Dashboard</span>
     </a>
     <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="bookings" data-nav-key="booking" id="navBooking">
-      <span class="material-symbols-outlined">confirmation_number</span>
+      <i class="fa-solid fa-ticket fa-icon"></i>
       <span class="nav-label">Booking</span>
     </a>
     <a href="#bookings" class="nav-btn" data-target="bookings" data-booking-mode="charters" data-nav-key="charter" id="navCharter">
-      <span class="material-symbols-outlined">airport_shuttle</span>
+      <i class="fa-solid fa-van-shuttle fa-icon"></i>
       <span class="nav-label">Carter</span>
     </a>
     <a href="#luggage" class="nav-btn" data-target="luggage" data-nav-key="luggage" id="navLuggage">
-      <span class="material-symbols-outlined">inventory_2</span>
+      <i class="fa-solid fa-suitcase-rolling fa-icon"></i>
       <span class="nav-label">Bagasi</span>
     </a>
     <a href="#reports" class="nav-btn" data-target="reports" data-nav-key="reports" id="navReports">
-      <span class="material-symbols-outlined">assessment</span>
+      <i class="fa-solid fa-chart-column fa-icon"></i>
       <span class="nav-label">Laporan</span>
     </a>
   </nav>
@@ -158,21 +158,21 @@
 
       <div class="menu-section-header">Pengaturan</div>
       <div class="menu-grid">
-        <a href="#customers" class="nav-btn" data-target="customers"><span class="material-symbols-outlined">groups</span><span class="nav-label">Customers</span></a>
-        <a href="#schedules" class="nav-btn" data-target="schedules"><span class="material-symbols-outlined">calendar_month</span><span class="nav-label">Jadwal</span></a>
-        <a href="#cancellations" class="nav-btn" data-target="cancellations"><span class="material-symbols-outlined">history</span><span class="nav-label">Logs</span></a>
-        <a href="#routes" class="nav-btn" data-target="routes"><span class="material-symbols-outlined">route</span><span class="nav-label">Rute</span></a>
-        <a href="#segments" class="nav-btn" data-target="segments"><span class="material-symbols-outlined">conversion_path</span><span class="nav-label">Segment</span></a>
-        <a href="#luggage_services" class="nav-btn" data-target="luggage_services"><span class="material-symbols-outlined">inventory_2</span><span class="nav-label">Bagasi</span></a>
-        <a href="#units" class="nav-btn" data-target="units"><span class="material-symbols-outlined">airport_shuttle</span><span class="nav-label">Unit</span></a>
-        <a href="#drivers" class="nav-btn" data-target="drivers"><span class="material-symbols-outlined">badge</span><span class="nav-label">Driver</span></a>
-        <a href="#users" class="nav-btn" data-target="users"><span class="material-symbols-outlined">admin_panel_settings</span><span class="nav-label">Users</span></a>
+        <a href="#customers" class="nav-btn" data-target="customers"><i class="fa-solid fa-users fa-icon"></i><span class="nav-label">Customers</span></a>
+        <a href="#schedules" class="nav-btn" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i><span class="nav-label">Jadwal</span></a>
+        <a href="#cancellations" class="nav-btn" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i><span class="nav-label">Logs</span></a>
+        <a href="#routes" class="nav-btn" data-target="routes"><i class="fa-solid fa-route fa-icon"></i><span class="nav-label">Rute</span></a>
+        <a href="#segments" class="nav-btn" data-target="segments"><i class="fa-solid fa-shuffle fa-icon"></i><span class="nav-label">Segment</span></a>
+        <a href="#luggage_services" class="nav-btn" data-target="luggage_services"><i class="fa-solid fa-suitcase-rolling fa-icon"></i><span class="nav-label">Bagasi</span></a>
+        <a href="#units" class="nav-btn" data-target="units"><i class="fa-solid fa-van-shuttle fa-icon"></i><span class="nav-label">Unit</span></a>
+        <a href="#drivers" class="nav-btn" data-target="drivers"><i class="fa-solid fa-id-badge fa-icon"></i><span class="nav-label">Driver</span></a>
+        <a href="#users" class="nav-btn" data-target="users"><i class="fa-solid fa-user-shield fa-icon"></i><span class="nav-label">Users</span></a>
       </div>
 
       <div class="menu-section-header">Akun</div>
       <div class="menu-grid">
-        <a href="index.php" class="nav-btn"><span class="material-symbols-outlined">add_circle</span><span class="nav-label">Booking</span></a>
-        <button class="nav-btn nav-btn-close" id="closeMoreModal" type="button"><span class="material-symbols-outlined">close</span><span class="nav-label">Tutup</span></button>
+        <a href="index.php" class="nav-btn"><i class="fa-solid fa-plus fa-icon"></i><span class="nav-label">Booking</span></a>
+        <button class="nav-btn nav-btn-close" id="closeMoreModal" type="button"><i class="fa-solid fa-xmark fa-icon"></i><span class="nav-label">Tutup</span></button>
       </div>
     </div>
   </div>
@@ -197,13 +197,13 @@
 
     function syncDesktopSidebarButton() {
       const isHidden = document.body.classList.contains('sidebar-hidden');
-      const icon = desktopSidebarToggle ? desktopSidebarToggle.querySelector('.material-symbols-outlined') : null;
+      const icon = desktopSidebarToggle ? desktopSidebarToggle.querySelector('[data-sidebar-toggle-icon]') : null;
       if (desktopSidebarToggle) {
         desktopSidebarToggle.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
         desktopSidebarToggle.setAttribute('aria-label', isHidden ? 'Tampilkan sidebar' : 'Sembunyikan sidebar');
       }
       if (icon) {
-        icon.textContent = isHidden ? 'left_panel_open' : 'left_panel_close';
+        icon.className = 'fa-solid fa-icon ' + (isHidden ? 'fa-angles-right' : 'fa-angles-left');
       }
     }
 

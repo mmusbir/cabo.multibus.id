@@ -6,6 +6,10 @@ body.admin-bootstrap-page {
     color: #0f172a;
 }
 
+body.admin-bootstrap-page .fa-icon {
+    line-height: 1;
+}
+
 /* Legacy compatibility after retiring admin.css */
 body.admin-bootstrap-page .small {
     font-size: 0.82rem;
@@ -1408,7 +1412,7 @@ body.admin-bootstrap-page .search-btn-icon:hover {
 }
 
 body.admin-bootstrap-page .search-btn-icon svg,
-body.admin-bootstrap-page .search-btn-icon .material-symbols-outlined {
+body.admin-bootstrap-page .search-btn-icon .fa-icon {
     width: 1rem;
     height: 1rem;
     font-size: 1rem;
@@ -2643,7 +2647,7 @@ body.admin-bootstrap-page .kinetic-command-bookings select {
     font-family: 'Space Grotesk', 'Inter', sans-serif;
 }
 
-body.admin-bootstrap-page .kinetic-command-bookings .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-command-bookings .fa-icon {
     font-family: 'Material Symbols Outlined';
     font-weight: normal;
     font-style: normal;
@@ -3225,7 +3229,7 @@ body.admin-bootstrap-page .kinetic-trip-line {
     margin-top: 0.32rem;
 }
 
-body.admin-bootstrap-page .kinetic-trip-line .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-trip-line .fa-icon {
     font-size: 0.92rem;
 }
 
@@ -3260,7 +3264,7 @@ body.admin-bootstrap-page .kinetic-trip-action {
     transition: 0.2s ease;
 }
 
-body.admin-bootstrap-page .kinetic-trip-action .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-trip-action .fa-icon {
     font-size: 0.92rem;
 }
 
@@ -3297,7 +3301,7 @@ body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action {
     white-space: nowrap;
 }
 
-body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-trip-action.bulk-pay-action .fa-icon {
     font-size: 0.88rem;
 }
 
@@ -3634,7 +3638,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         font-weight: 800;
     }
 
-    body.admin-bootstrap-page .kinetic-mobile-list-title .material-symbols-outlined {
+    body.admin-bootstrap-page .kinetic-mobile-list-title .fa-icon {
         color: #f97316;
         font-size: 1.1rem;
     }
@@ -3719,7 +3723,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         margin-top: 0.38rem;
     }
 
-    body.admin-bootstrap-page .kinetic-trip-line .material-symbols-outlined {
+    body.admin-bootstrap-page .kinetic-trip-line .fa-icon {
         font-size: 1rem;
     }
 
@@ -3737,7 +3741,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         font-size: 0.68rem;
     }
 
-    body.admin-bootstrap-page .kinetic-trip-action .material-symbols-outlined {
+    body.admin-bootstrap-page .kinetic-trip-action .fa-icon {
         font-size: 1rem;
     }
 
@@ -3953,8 +3957,8 @@ body.admin-bootstrap-page .kinetic-more-dropdown a.active {
     color: #f97316;
 }
 
-body.admin-bootstrap-page .kinetic-more-dropdown .material-symbols-outlined,
-body.admin-bootstrap-page .kinetic-profile-menu .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-more-dropdown .fa-icon,
+body.admin-bootstrap-page .kinetic-profile-menu .fa-icon {
     font-size: 1.1rem;
 }
 
@@ -4009,7 +4013,7 @@ body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
     border: 0;
 }
 
-body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .fa-icon {
     font-size: 1.35rem;
 }
 
@@ -4095,7 +4099,7 @@ body.admin-bootstrap-page #bottomMoreModal .nav-btn {
     text-decoration: none;
 }
 
-body.admin-bootstrap-page #bottomMoreModal .nav-btn .material-symbols-outlined {
+body.admin-bootstrap-page #bottomMoreModal .nav-btn .fa-icon {
     font-size: 1.3rem;
 }
 
@@ -4265,18 +4269,18 @@ body.admin-bootstrap-page .kinetic-stat-card strong {
     font-weight: 800;
 }
 
-body.admin-bootstrap-page .kinetic-stat-card .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-stat-card .fa-icon {
     font-size: 1.5rem;
 }
 
 body.admin-bootstrap-page .kinetic-stat-card.is-primary { background: rgba(249, 115, 22, 0.12); border-left-color: #f97316; }
-body.admin-bootstrap-page .kinetic-stat-card.is-primary .material-symbols-outlined { color: #f97316; }
+body.admin-bootstrap-page .kinetic-stat-card.is-primary .fa-icon { color: #f97316; }
 body.admin-bootstrap-page .kinetic-stat-card.is-warning { background: rgba(234, 179, 8, 0.12); border-left-color: #eab308; }
-body.admin-bootstrap-page .kinetic-stat-card.is-warning strong, body.admin-bootstrap-page .kinetic-stat-card.is-warning .material-symbols-outlined { color: #eab308; }
+body.admin-bootstrap-page .kinetic-stat-card.is-warning strong, body.admin-bootstrap-page .kinetic-stat-card.is-warning .fa-icon { color: #eab308; }
 body.admin-bootstrap-page .kinetic-stat-card.is-success { background: rgba(34, 197, 94, 0.12); border-left-color: #22c55e; }
-body.admin-bootstrap-page .kinetic-stat-card.is-success strong, body.admin-bootstrap-page .kinetic-stat-card.is-success .material-symbols-outlined { color: #22c55e; }
+body.admin-bootstrap-page .kinetic-stat-card.is-success strong, body.admin-bootstrap-page .kinetic-stat-card.is-success .fa-icon { color: #22c55e; }
 body.admin-bootstrap-page .kinetic-stat-card.is-danger { background: rgba(239, 68, 68, 0.12); border-left-color: #ef4444; }
-body.admin-bootstrap-page .kinetic-stat-card.is-danger strong, body.admin-bootstrap-page .kinetic-stat-card.is-danger .material-symbols-outlined { color: #ef4444; }
+body.admin-bootstrap-page .kinetic-stat-card.is-danger strong, body.admin-bootstrap-page .kinetic-stat-card.is-danger .fa-icon { color: #ef4444; }
 
 body.admin-bootstrap-page .kinetic-dash-grid {
     display: grid;
@@ -4635,7 +4639,7 @@ body.admin-bootstrap-page .kinetic-insight-body p {
     font-weight: 700;
 }
 
-body.admin-bootstrap-page .kinetic-insight-body span:not(.material-symbols-outlined) {
+body.admin-bootstrap-page .kinetic-insight-body span {
     display: block;
     margin-top: 0.35rem;
     color: #94a3b8;
@@ -4645,7 +4649,7 @@ body.admin-bootstrap-page .kinetic-insight-body span:not(.material-symbols-outli
     text-transform: uppercase;
 }
 
-body.admin-bootstrap-page .kinetic-insight-body .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-insight-body .fa-icon {
     font-size: 2.5rem;
     color: rgba(255, 255, 255, 0.08);
 }
@@ -5001,7 +5005,7 @@ body.admin-bootstrap-page .kinetic-command-mode-chip {
     text-transform: uppercase;
 }
 
-body.admin-bootstrap-page .kinetic-command-mode-chip .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-command-mode-chip .fa-icon {
     color: #f97316;
     font-size: 1rem;
 }
@@ -5220,7 +5224,7 @@ body.admin-bootstrap-page .booking-detail-route {
     font-size: 0.88rem;
 }
 
-body.admin-bootstrap-page .booking-detail-route .material-symbols-outlined {
+body.admin-bootstrap-page .booking-detail-route .fa-icon {
     font-size: 1rem;
     color: #94a3b8;
 }
@@ -5238,7 +5242,7 @@ body.admin-bootstrap-page .booking-detail-segment {
     line-height: 1.35;
 }
 
-body.admin-bootstrap-page .booking-detail-segment .material-symbols-outlined {
+body.admin-bootstrap-page .booking-detail-segment .fa-icon {
     font-size: 0.9rem;
     color: #f97316;
 }
@@ -5313,8 +5317,8 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon {
     color: #d7dde7;
 }
 
-body.admin-bootstrap-page .booking-detail-actions .copy-btn .material-symbols-outlined,
-body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .material-symbols-outlined {
+body.admin-bootstrap-page .booking-detail-actions .copy-btn .fa-icon,
+body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .fa-icon {
     font-size: 1rem;
 }
 
@@ -5788,9 +5792,9 @@ body.admin-bootstrap-page .charter-command-route-wide {
     flex-wrap: wrap;
 }
 
-body.admin-bootstrap-page .charter-command-route-wide .material-symbols-outlined,
-body.admin-bootstrap-page .charter-command-route-inline .material-symbols-outlined,
-body.admin-bootstrap-page .charter-command-date-split .material-symbols-outlined {
+body.admin-bootstrap-page .charter-command-route-wide .fa-icon,
+body.admin-bootstrap-page .charter-command-route-inline .fa-icon,
+body.admin-bootstrap-page .charter-command-date-split .fa-icon {
     color: #f97316;
 }
 
@@ -6258,7 +6262,7 @@ body.admin-bootstrap-page .kinetic-stat-card strong {
     font-size: 1.55rem;
 }
 
-body.admin-bootstrap-page .kinetic-stat-card .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-stat-card .fa-icon {
     font-size: 1.2rem;
 }
 
@@ -6323,12 +6327,12 @@ body.admin-bootstrap-page .kinetic-insight-body p {
     font-size: 0.92rem;
 }
 
-body.admin-bootstrap-page .kinetic-insight-body span:not(.material-symbols-outlined) {
+body.admin-bootstrap-page .kinetic-insight-body span {
     margin-top: 0.2rem;
     font-size: 0.62rem;
 }
 
-body.admin-bootstrap-page .kinetic-insight-body .material-symbols-outlined {
+body.admin-bootstrap-page .kinetic-insight-body .fa-icon {
     font-size: 2rem;
 }
 
@@ -6649,7 +6653,7 @@ body.admin-bootstrap-page .booking-detail-route {
     font-size: 0.78rem;
 }
 
-body.admin-bootstrap-page .booking-detail-route .material-symbols-outlined {
+body.admin-bootstrap-page .booking-detail-route .fa-icon {
     font-size: 0.92rem;
 }
 
@@ -6683,8 +6687,8 @@ body.admin-bootstrap-page .booking-detail-actions .btn-action-icon {
     border-radius: 0.65rem;
 }
 
-body.admin-bootstrap-page .booking-detail-actions .copy-btn .material-symbols-outlined,
-body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .material-symbols-outlined {
+body.admin-bootstrap-page .booking-detail-actions .copy-btn .fa-icon,
+body.admin-bootstrap-page .booking-detail-actions .btn-action-icon .fa-icon {
     font-size: 0.92rem;
 }
 

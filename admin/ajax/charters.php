@@ -177,7 +177,7 @@ if (empty($rows)) {
         if ($cardVariantClass === 'is-wide') {
             echo '      <div class="charter-command-route-wide">';
             echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Departure</span><strong>' . charter_h($routeFrom) . '</strong></div>';
-            echo '        <span class="material-symbols-outlined">trending_flat</span>';
+            echo '        <i class="fa-solid fa-arrow-right fa-icon"></i>';
             echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Destination</span><strong>' . charter_h($routeTo) . '</strong></div>';
             echo '      </div>';
             echo '      <div class="charter-command-schedule-box">';
@@ -194,13 +194,13 @@ if (empty($rows)) {
             echo '      <p class="charter-command-caption">' . charter_h($layanan) . ' - ' . charter_h($durationDays) . ' hari</p>';
             echo '      <div class="charter-command-date-split">';
             echo '        <div><span class="charter-command-label">Depart</span><strong>' . charter_h($tripDateShort) . '</strong></div>';
-            echo '        <span class="material-symbols-outlined">double_arrow</span>';
+            echo '        <i class="fa-solid fa-right-left fa-icon"></i>';
             echo '        <div><span class="charter-command-label">Return</span><strong>' . charter_h(!empty($r['end_date']) ? strtoupper(date('d M', strtotime($r['end_date']))) : '-') . '</strong></div>';
             echo '      </div>';
         } else {
             echo '      <div class="charter-command-detail-grid">';
             echo '        <div><span class="charter-command-label">Customer</span><strong>' . charter_h($r['name']) . '</strong></div>';
-            echo '        <div><span class="charter-command-label">Route Status</span><div class="charter-command-route-inline"><span class="material-symbols-outlined">local_shipping</span><strong>' . charter_h($routeFromShort) . ' → ' . charter_h($routeToShort) . '</strong></div></div>';
+            echo '        <div><span class="charter-command-label">Route Status</span><div class="charter-command-route-inline"><i class="fa-solid fa-truck fa-icon"></i><strong>' . charter_h($routeFromShort) . ' → ' . charter_h($routeToShort) . '</strong></div></div>';
             echo '      </div>';
         }
         echo '    </div>';
@@ -215,11 +215,11 @@ if (empty($rows)) {
 
         echo '    <div class="charter-command-actions">';
         if ($bopStatus !== 'done') {
-            echo '      <a href="#" class="charter-command-action success bop-done-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">task_alt</span>BOP</a>';
+            echo '      <a href="#" class="charter-command-action success bop-done-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-circle-check fa-icon"></i>BOP</a>';
         }
-        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">content_copy</span>Copy</a>';
-        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><span class="material-symbols-outlined">edit_square</span>Edit</a>';
-        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><span class="material-symbols-outlined">delete</span>Hapus</a>';
+        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-regular fa-copy fa-icon"></i>Copy</a>';
+        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-regular fa-pen-to-square fa-icon"></i>Edit</a>';
+        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><i class="fa-regular fa-trash-can fa-icon"></i>Hapus</a>';
         echo '    </div>';
         echo '  </div>';
         echo '</article>';

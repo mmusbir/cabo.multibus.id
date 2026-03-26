@@ -90,7 +90,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <p class="kinetic-dash-date"><?php echo htmlspecialchars($todayLabel); ?></p>
       </div>
       <button type="button" class="kinetic-dash-export" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('reports');window.location.hash='#reports';}">
-        <span class="material-symbols-outlined">download</span>
+        <i class="fa-solid fa-file-arrow-down fa-icon"></i>
         Export Laporan
       </button>
     </section>
@@ -98,19 +98,19 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
     <section class="kinetic-dash-stats">
       <div class="kinetic-stat-card is-primary">
         <p>Total Booking</p>
-        <div><strong><?php echo number_format($dashboard['total_bookings'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">trending_up</span></div>
+        <div><strong><?php echo number_format($dashboard['total_bookings'], 0, ',', '.'); ?></strong><i class="fa-solid fa-arrow-trend-up fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-warning">
         <p>Belum Lunas</p>
-        <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">schedule</span></div>
+        <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><i class="fa-regular fa-clock fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-success">
         <p>Lunas Semua</p>
-        <div><strong><?php echo number_format($dashboard['confirmed'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">check_circle</span></div>
+        <div><strong><?php echo number_format($dashboard['confirmed'], 0, ',', '.'); ?></strong><i class="fa-solid fa-circle-check fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-danger">
         <p>Dibatalkan</p>
-        <div><strong><?php echo number_format($dashboard['canceled'], 0, ',', '.'); ?></strong><span class="material-symbols-outlined">cancel</span></div>
+        <div><strong><?php echo number_format($dashboard['canceled'], 0, ',', '.'); ?></strong><i class="fa-solid fa-circle-xmark fa-icon"></i></div>
       </div>
     </section>
 
@@ -206,7 +206,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
             <p><?php echo htmlspecialchars($dashboard['top_route']); ?></p>
             <span><?php echo number_format($dashboard['top_route_count'], 0, ',', '.'); ?> BOOKING</span>
           </div>
-          <span class="material-symbols-outlined">route</span>
+          <i class="fa-solid fa-route fa-icon"></i>
         </div>
       </div>
       <div class="kinetic-insight-card">
@@ -216,7 +216,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
             <p><?php echo number_format($dashboard['live_fleet'], 0, ',', '.'); ?> Unit Beroperasi</p>
             <span>0 INSIDEN DILAPORKAN</span>
           </div>
-          <span class="material-symbols-outlined">minor_crash</span>
+          <i class="fa-solid fa-bus-simple fa-icon"></i>
         </div>
       </div>
       <div class="kinetic-insight-card is-revenue">
@@ -226,7 +226,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
             <p>Rp <?php echo number_format($dashboard['revenue_today'], 0, ',', '.'); ?></p>
             <span>AKUMULASI HARI INI</span>
           </div>
-          <span class="material-symbols-outlined">payments</span>
+          <i class="fa-solid fa-wallet fa-icon"></i>
         </div>
       </div>
     </section>

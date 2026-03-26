@@ -6,7 +6,7 @@
         <p class="admin-section-subtitle">Kelola data pengiriman bagasi penumpang</p>
       </div>
       <button class="btn btn-primary btn-modern" type="button" onclick="openLuggageModal()">
-        <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;">add</span> Tambah Bagasi
+        <i class="fa-solid fa-plus fa-icon" style="font-size:18px;vertical-align:middle;"></i> Tambah Bagasi
       </button>
     </div>
 

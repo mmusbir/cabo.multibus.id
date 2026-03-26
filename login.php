@@ -79,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme-toggle.css?v=9">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="assets/css/theme-toggle.css?v=11">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -146,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </script>
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .fa-icon {
             vertical-align: middle;
+            line-height: 1;
         }
         .bg-industrial-grid {
             background-image: radial-gradient(circle at 2px 2px, rgba(249, 115, 22, 0.03) 1px, transparent 0);
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="app-login bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-8 md:py-10 bg-industrial-grid">
     <button class="theme-toggle-btn login-theme-toggle" type="button" data-theme-toggle aria-label="Ubah tema">
-        <span class="material-symbols-outlined" data-theme-icon>light_mode</span>
+        <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
     </button>
     <div class="w-full flex flex-col items-center justify-center gap-8 md:gap-10">
         <header class="text-center">
@@ -199,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline ml-1" for="username">Username atau Email</label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
-                                    <span class="material-symbols-outlined text-lg">person</span>
+                                    <i class="fa-regular fa-user fa-icon text-lg"></i>
                                 </div>
                                 <input autocomplete="username" class="w-full bg-surface-container-highest border-none rounded-lg py-3.5 md:py-4 pl-12 pr-4 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="username" name="username" placeholder="Masukkan username atau email" required type="text" value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
                             </div>
@@ -209,11 +209,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="px-1"><label class="font-label text-[10px] font-bold uppercase tracking-widest text-outline" for="password">Password</label></div>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline group-focus-within:text-primary-container transition-colors">
-                                    <span class="material-symbols-outlined text-lg">lock</span>
+                                    <i class="fa-solid fa-lock fa-icon text-lg"></i>
                                 </div>
                                 <input autocomplete="current-password" class="w-full bg-surface-container-highest border-none rounded-lg py-3.5 md:py-4 pl-12 pr-12 text-on-surface font-body placeholder:text-outline/50 focus:ring-2 focus:ring-primary-container/20 transition-all" id="password" name="password" placeholder="Masukkan password" required type="password">
                                 <button class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface transition-colors" id="toggle-password" type="button">
-                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                    <i class="fa-regular fa-eye fa-icon text-lg"></i>
                                 </button>
                             </div>
                         </div>
@@ -238,9 +238,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="flex flex-col items-center gap-2.5 opacity-40">
             <div class="flex items-center gap-6">
-                <span class="material-symbols-outlined text-2xl">encrypted</span>
-                <span class="material-symbols-outlined text-2xl">verified_user</span>
-                <span class="material-symbols-outlined text-2xl">shield</span>
+                <i class="fa-solid fa-lock fa-icon text-2xl"></i>
+                <i class="fa-solid fa-user-shield fa-icon text-2xl"></i>
+                <i class="fa-solid fa-shield-halved fa-icon text-2xl"></i>
             </div>
             <p class="font-label text-[9px] tracking-[0.2em] uppercase text-center">Autentikasi Berlapis Diperlukan</p>
         </div>
@@ -254,7 +254,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             togglePasswordBtn.addEventListener('click', () => {
                 const isHidden = passwordInput.type === 'password';
                 passwordInput.type = isHidden ? 'text' : 'password';
-                togglePasswordBtn.querySelector('.material-symbols-outlined').textContent = isHidden ? 'visibility_off' : 'visibility';
+                const icon = togglePasswordBtn.querySelector('.fa-icon');
+                if (icon) {
+                    icon.className = 'fa-icon text-lg ' + (isHidden ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye');
+                }
             });
         }
     </script>

@@ -11,7 +11,7 @@
   <div class="kinetic-command-toolbar">
     <div class="kinetic-command-toolbar-start">
       <a href="index.php" id="bookingPrimaryAction" class="kinetic-command-add-btn">
-        <span id="bookingPrimaryActionIcon" class="material-symbols-outlined">add</span>
+        <i id="bookingPrimaryActionIcon" class="fa-solid fa-plus fa-icon"></i>
         <span id="bookingPrimaryActionText">Tambah Booking</span>
       </a>
     </div>
@@ -26,7 +26,7 @@
           <input type="date" id="booking_date_filter" class="form-control kinetic-command-select">
         </label>
         <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
-          <span class="material-symbols-outlined">close</span>
+          <i class="fa-solid fa-xmark fa-icon"></i>
           Reset
         </button>
       </div>
@@ -39,7 +39,7 @@
         </select>
       </div>
       <button type="button" class="kinetic-command-refresh" id="bookingToolbarRefresh">
-        <span class="material-symbols-outlined">refresh</span>
+        <i class="fa-solid fa-rotate-right fa-icon"></i>
         Refresh
       </button>
     </div>
@@ -48,12 +48,12 @@
 
   <div class="kinetic-mobile-list-head">
     <h4 class="kinetic-mobile-list-title" id="bookingMobileListTitle">
-      <span class="material-symbols-outlined">event_note</span>
+      <i class="fa-regular fa-calendar-check fa-icon"></i>
       Jadwal Mendatang
     </h4>
     <div class="kinetic-mobile-list-actions">
       <button type="button" class="kinetic-mobile-icon-btn" id="bookingMobileRefresh" aria-label="Refresh daftar booking">
-        <span class="material-symbols-outlined">refresh</span>
+        <i class="fa-solid fa-rotate-right fa-icon"></i>
       </button>
     </div>
   </div>
@@ -81,6 +81,18 @@
   </div>
 
   <script>
+    function getBookingIconClass(iconName) {
+      const map = {
+        add: 'fa-solid fa-plus',
+        add_circle: 'fa-solid fa-plus'
+      };
+      return map[iconName] || 'fa-solid fa-plus';
+    }
+
+    function getBookingListTitleIconHtml() {
+      return '<i class="fa-regular fa-calendar-check fa-icon"></i>';
+    }
+
     window.bookingDashboardState = window.bookingDashboardState || {
       active: 'bookings',
       totals: {
@@ -132,7 +144,7 @@
       }
       if (bookingsMode && mobileListTitle) {
         const titleText = filters.scope === 'history' ? 'History Bulan Ini' : 'Jadwal Mendatang';
-        mobileListTitle.innerHTML = '<span class="material-symbols-outlined">event_note</span>' + titleText;
+        mobileListTitle.innerHTML = getBookingListTitleIconHtml() + titleText;
       }
     }
 
@@ -257,9 +269,11 @@
         }
       }
       if (primaryActionText) primaryActionText.textContent = meta.primaryActionText || 'Tambah Booking';
-      if (primaryActionIcon) primaryActionIcon.textContent = meta.primaryActionIcon || 'add';
+      if (primaryActionIcon) {
+        primaryActionIcon.className = getBookingIconClass(meta.primaryActionIcon || 'add') + ' fa-icon';
+      }
       if (mobileListTitle) {
-        mobileListTitle.innerHTML = '<span class="material-symbols-outlined">event_note</span>' + meta.mobileTitle;
+        mobileListTitle.innerHTML = getBookingListTitleIconHtml() + meta.mobileTitle;
       }
       if (bookingsSection) bookingsSection.setAttribute('data-active-mode', mode);
       if (charterFilterRow) charterFilterRow.style.display = mode === 'charters' ? 'flex' : 'none';

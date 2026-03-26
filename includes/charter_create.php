@@ -47,7 +47,7 @@ $charterCreateForm = array_merge([
         <h3 class="charter-create-title">Tambah Carter</h3>
       </div>
       <a href="#bookings" class="charter-create-back" data-target="bookings" data-booking-mode="charters">
-        <span class="material-symbols-outlined">arrow_back</span>
+        <i class="fa-solid fa-arrow-left fa-icon"></i>
         Kembali
       </a>
     </div>
@@ -180,7 +180,7 @@ $charterCreateForm = array_merge([
 
         <div class="charter-create-actions">
           <button type="submit" name="create_charter_submit" class="charter-create-save">
-            <span class="material-symbols-outlined">save</span>
+            <i class="fa-solid fa-floppy-disk fa-icon"></i>
             Konfirmasi & Simpan
           </button>
           <a href="#bookings" class="charter-create-cancel" data-target="bookings" data-booking-mode="charters">Batalkan</a>

@@ -83,9 +83,9 @@ if (empty($rows)) {
         echo '        </div>';
         echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($l['sender_name']) . ' -> ' . htmlspecialchars($l['receiver_name']) . '</h4>';
         echo '        <div class="kinetic-trip-subtitle">' . htmlspecialchars($serviceName) . ' / Qty ' . intval($l['quantity']) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call</span><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">call_received</span>' . htmlspecialchars($l['receiver_phone']) . '</div>';
-        echo '        <div class="kinetic-trip-line"><span class="material-symbols-outlined">notes</span>' . htmlspecialchars($noteExtra !== '' ? $noteExtra : 'Tanpa catatan') . '</div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone fa-icon"></i><strong>' . htmlspecialchars($l['sender_phone']) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-phone-volume fa-icon"></i>' . htmlspecialchars($l['receiver_phone']) . '</div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-regular fa-note-sticky fa-icon"></i>' . htmlspecialchars($noteExtra !== '' ? $noteExtra : 'Tanpa catatan') . '</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-stat">';
         echo '        <div class="kinetic-trip-stat-label">Shipment Snapshot</div>';
@@ -93,17 +93,17 @@ if (empty($rows)) {
         echo '          <div class="kinetic-trip-progress-bar"><span class="kinetic-trip-progress-fill" style="width:' . ($payment === 'Lunas' ? '100' : ($status === 'active' ? '76' : '42')) . '%"></span></div>';
         echo '          <div class="kinetic-trip-progress-value">Rp ' . number_format($l['price'], 0, ',', '.') . '<span> total</span></div>';
         echo '        </div>';
-        echo '        <div class="kinetic-trip-note ' . $noteClass . '"><span class="material-symbols-outlined">inventory_2</span>' . htmlspecialchars($noteText) . '</div>';
-        echo '        <div class="kinetic-trip-note muted"><span class="material-symbols-outlined">payments</span>Status pembayaran: ' . htmlspecialchars($payment) . '</div>';
+        echo '        <div class="kinetic-trip-note ' . $noteClass . '"><i class="fa-solid fa-suitcase-rolling fa-icon"></i>' . htmlspecialchars($noteText) . '</div>';
+        echo '        <div class="kinetic-trip-note muted"><i class="fa-solid fa-wallet fa-icon"></i>Status pembayaran: ' . htmlspecialchars($payment) . '</div>';
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         if ($status === 'pending') {
-            echo '        <a href="#" class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><span class="material-symbols-outlined">edit_note</span>Input</a>';
+            echo '        <a href="#" class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><i class="fa-regular fa-pen-to-square fa-icon"></i>Input</a>';
         }
         if ($payment !== 'Lunas') {
-            echo '        <a href="#" class="kinetic-trip-action success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas"><span class="material-symbols-outlined">task_alt</span>Bayar</a>';
+            echo '        <a href="#" class="kinetic-trip-action success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas"><i class="fa-solid fa-circle-check fa-icon"></i>Bayar</a>';
         }
-        echo '        <a href="#" class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" title="Batalkan bagasi"><span class="material-symbols-outlined">block</span>Batalkan</a>';
+        echo '        <a href="#" class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" title="Batalkan bagasi"><i class="fa-solid fa-ban fa-icon"></i>Batalkan</a>';
         echo '      </div>';
         echo '    </div>';
         echo '  </div>';

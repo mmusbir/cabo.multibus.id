@@ -183,12 +183,12 @@ try {
         data-jam="<?php echo h($jam); ?>"
         data-unit="<?php echo intval($unit); ?>"
         title="Tandai semua penumpang belum lunas menjadi Lunas">
-        <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;">task_alt</span>
+        <i class="fa-solid fa-circle-check fa-icon" style="font-size:1rem;vertical-align:middle;"></i>
         <span>Lunas Semua (<?php echo $countUnpaid; ?>)</span>
       </button>
       <?php endif; ?>
       <a href="index.php" class="view-booking-cta">
-        <span class="material-symbols-outlined">add</span>
+        <i class="fa-solid fa-plus fa-icon"></i>
         Tambah Booking
       </a>
     </div>
@@ -242,19 +242,19 @@ try {
               <div class="seat-badge-num">Kursi <?php echo h($p['seat'] ?? '-'); ?></div>
               <h3 class="booking-detail-name sb-val name"><?php echo h($p['name'] ?? '-'); ?></h3>
               <div class="booking-detail-route">
-                <span class="material-symbols-outlined">location_on</span>
+                <i class="fa-solid fa-location-dot fa-icon"></i>
                 <span class="font-medium"><?php echo h($pickupText); ?></span>
                 <?php if ($routeDestination !== ''): ?>
-                  <span class="material-symbols-outlined booking-detail-arrow">arrow_forward</span>
+                  <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
                   <span class="font-medium"><?php echo h($routeDestination); ?></span>
                 <?php else: ?>
-                  <span class="material-symbols-outlined booking-detail-arrow">arrow_forward</span>
+                  <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
                   <span class="font-medium"><?php echo h($rute); ?></span>
                 <?php endif; ?>
               </div>
               <?php if ($segmentLabel !== ''): ?>
                 <div class="booking-detail-segment">
-                  <span class="material-symbols-outlined">conversion_path</span>
+                  <i class="fa-solid fa-shuffle fa-icon"></i>
                   <span>Segment: <strong><?php echo h($segmentLabel); ?></strong></span>
                 </div>
               <?php endif; ?>
@@ -290,18 +290,18 @@ try {
                   data-discount="<?php echo h($p['discount'] ?? '0'); ?>"
                   data-pembayaran="<?php echo h($payStatus); ?>"
                   title="Edit Penumpang">
-                  <span class="material-symbols-outlined">edit</span>
+                  <i class="fa-regular fa-pen-to-square fa-icon"></i>
                 </button>
                 <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
-                  <span class="material-symbols-outlined">content_copy</span>
+                  <i class="fa-regular fa-copy fa-icon"></i>
                 </button>
                 <?php if (!$isPaid): ?>
                   <button type="button" class="mark-paid-seat btn-action-icon pay" data-id="<?php echo h($p['id']); ?>" title="Mark Lunas">
-                    <span class="material-symbols-outlined">task_alt</span>
+                    <i class="fa-solid fa-circle-check fa-icon"></i>
                   </button>
                 <?php endif; ?>
                 <button type="button" class="cancel-btn btn-action-icon cancel" data-id="<?php echo h($p['id']); ?>" title="Batalkan">
-                  <span class="material-symbols-outlined">close</span>
+                  <i class="fa-solid fa-xmark fa-icon"></i>
                 </button>
               </div>
             </div>
