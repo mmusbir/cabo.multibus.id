@@ -7220,7 +7220,8 @@ body.admin-bootstrap-page #users .admin-section-header {
 
 body.admin-bootstrap-page .customers-table-wrap {
     padding: 0;
-    overflow: hidden;
+    max-height: min(62vh, 38rem);
+    overflow: auto;
 }
 
 body.admin-bootstrap-page .customers-admin-table {
@@ -7228,9 +7229,13 @@ body.admin-bootstrap-page .customers-admin-table {
     margin: 0;
     color: #e2e2eb;
     border-collapse: collapse;
+    min-width: 860px;
 }
 
 body.admin-bootstrap-page .customers-admin-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     padding: 0.9rem 1rem;
     border-bottom: 1px solid rgba(88, 66, 55, 0.26);
     background: rgba(12, 14, 20, 0.7);
@@ -7239,6 +7244,18 @@ body.admin-bootstrap-page .customers-admin-table thead th {
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .customers-admin-table thead th:first-child,
+body.admin-bootstrap-page .customers-admin-table tbody td:first-child {
+    width: 1%;
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .customers-admin-table thead th:last-child,
+body.admin-bootstrap-page .customers-admin-table tbody td:last-child {
+    width: 1%;
     white-space: nowrap;
 }
 
@@ -7283,6 +7300,23 @@ body.admin-bootstrap-page .customers-table-pickup {
 body.admin-bootstrap-page .customers-table-link {
     color: #93ccff;
     text-decoration: none;
+}
+
+body.admin-bootstrap-page .customers-table-muted {
+    display: block;
+    margin-top: 0.22rem;
+    color: rgba(224, 192, 177, 0.78);
+    font-size: 0.76rem;
+    line-height: 1.35;
+}
+
+body.admin-bootstrap-page .customers-table-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    min-width: 9.5rem;
 }
 
 body.admin-bootstrap-page .admin-logs-table .admin-log-time-main {
