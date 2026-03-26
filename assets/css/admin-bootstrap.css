@@ -2876,7 +2876,7 @@ body.admin-bootstrap-page .kinetic-command-toolbar-actions {
 
 body.admin-bootstrap-page .booking-filter-controls {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     gap: 0.6rem;
     margin-left: auto;
     flex-wrap: wrap;
@@ -2927,6 +2927,7 @@ body.admin-bootstrap-page .booking-date-filter {
     flex-direction: column;
     min-width: 10.5rem;
     position: relative;
+    justify-content: center;
 }
 
 body.admin-bootstrap-page .booking-date-filter .small {
@@ -2964,7 +2965,7 @@ body.admin-bootstrap-page .booking-date-filter:focus-within .booking-date-filter
 body.admin-bootstrap-page .booking-filter-reset {
     min-height: 2.95rem;
     padding: 0.72rem 1rem;
-    align-self: flex-end;
+    align-self: center;
 }
 
 body.admin-bootstrap-page .kinetic-command-add-btn {
@@ -3060,6 +3061,71 @@ body.admin-bootstrap-page .booking-payment-filter {
 
 body.admin-bootstrap-page .booking-per-page-meta {
     min-width: 6.6rem;
+}
+
+@media (min-width: 1200px) {
+    body.admin-bootstrap-page .kinetic-command-toolbar {
+        align-items: center;
+        gap: 1.15rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-start {
+        flex: 0 0 auto;
+    }
+
+    body.admin-bootstrap-page .kinetic-command-toolbar-actions {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.8rem;
+        min-width: 0;
+    }
+
+    body.admin-bootstrap-page .booking-filter-controls {
+        flex: 1 1 auto;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 0.7rem;
+        min-width: 0;
+        padding: 0.28rem;
+        border-radius: 1rem;
+        background: rgba(17, 19, 25, 0.68);
+        border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    body.admin-bootstrap-page .booking-scope-toggle {
+        flex: 0 0 auto;
+        align-self: stretch;
+    }
+
+    body.admin-bootstrap-page .booking-date-filter,
+    body.admin-bootstrap-page .booking-payment-filter {
+        flex: 0 1 12rem;
+        min-width: 0;
+    }
+
+    body.admin-bootstrap-page .booking-date-filter .kinetic-command-select,
+    body.admin-bootstrap-page .booking-payment-filter,
+    body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select,
+    body.admin-bootstrap-page .booking-filter-reset,
+    body.admin-bootstrap-page #bookingToolbarRefresh {
+        min-height: 3rem;
+    }
+
+    body.admin-bootstrap-page .booking-per-page-meta {
+        flex: 0 0 5.75rem;
+        min-width: 5.75rem;
+    }
+
+    body.admin-bootstrap-page .booking-per-page-meta .kinetic-command-select {
+        text-align: center;
+        padding-inline: 0.65rem;
+    }
+
+    body.admin-bootstrap-page .booking-filter-reset,
+    body.admin-bootstrap-page #bookingToolbarRefresh {
+        flex: 0 0 auto;
+        align-self: center;
+    }
 }
 
 body.admin-bootstrap-page .kinetic-command-refresh {
