@@ -170,24 +170,30 @@ try {
 
 <div class="view-booking-list-shell">
   <div class="view-booking-list-head">
-    <div>
-      <div class="view-booking-kicker">Logistics Overview</div>
+    <div class="view-booking-list-copy">
+      <div class="view-booking-kicker">Ringkasan Booking</div>
       <h4 class="view-booking-title">Data Booking</h4>
+      <div class="view-booking-stats">
+        <span class="view-booking-stat-chip">Total <?php echo intval($totalPax); ?> penumpang</span>
+        <span class="view-booking-stat-chip success"><?php echo intval($countPaid); ?> lunas</span>
+        <?php if ($countUnpaid > 0): ?>
+          <span class="view-booking-stat-chip warning"><?php echo intval($countUnpaid); ?> belum lunas</span>
+        <?php endif; ?>
+      </div>
     </div>
-    <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+    <div class="view-booking-head-actions">
       <?php if ($countUnpaid > 0): ?>
-      <button type="button" class="mark-all-paid-btn btn btn-modern"
-        style="background:#16a34a;border-color:#16a34a;color:#fff;font-size:0.82rem;min-height:2.3rem;padding:0.45rem 1rem;border-radius:0.75rem;"
+      <button type="button" class="mark-all-paid-btn btn btn-modern booking-detail-toolbar-btn success"
         data-rute="<?php echo h($rute); ?>"
         data-tanggal="<?php echo h($tanggal); ?>"
         data-jam="<?php echo h($jam); ?>"
         data-unit="<?php echo intval($unit); ?>"
         title="Tandai semua penumpang belum lunas menjadi Lunas">
-        <i class="fa-solid fa-circle-check fa-icon" style="font-size:1rem;vertical-align:middle;"></i>
+        <i class="fa-solid fa-circle-check fa-icon"></i>
         <span>Lunas Semua (<?php echo $countUnpaid; ?>)</span>
       </button>
       <?php endif; ?>
-      <a href="index.php" class="view-booking-cta">
+      <a href="index.php" class="view-booking-cta booking-detail-toolbar-btn">
         <i class="fa-solid fa-plus fa-icon"></i>
         Tambah Booking
       </a>
