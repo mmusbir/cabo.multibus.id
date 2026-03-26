@@ -1,5 +1,9 @@
 <?php
 
+if (ob_get_level() === 0) {
+  ob_start();
+}
+
 $isActionRequest = isset($_REQUEST['action']);
 if ($isActionRequest) {
   // Keep AJAX responses JSON-clean even if PHP emits warnings/notices.
