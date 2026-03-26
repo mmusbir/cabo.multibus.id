@@ -890,6 +890,14 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-label
   color: #94a3b8 !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .view-driver-label {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .view-driver-display strong {
+  color: #0f172a !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-context-value {
   color: #1e293b !important;
 }

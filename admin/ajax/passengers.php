@@ -231,7 +231,7 @@ try {
               $segmentLabel = '';
           }
           $bookingCode = formatBookingId($p['id'], $p['created_at'] ?? $tanggal . ' 00:00:00');
-          $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : 'END USER';
+          $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : '';
           $priceValue = max(0, floatval($p['price'] ?? 0) - floatval($p['discount'] ?? 0));
         ?>
         <div
@@ -286,7 +286,9 @@ try {
                 <span class="booking-detail-side-label">Pembayaran</span>
                 <span class="booking-detail-side-value">Rp <?php echo number_format($priceValue, 0, ',', '.'); ?></span>
               </div>
-              <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
+              <?php if ($sourceLabel !== ''): ?>
+                <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
+              <?php endif; ?>
               <div class="seat-actions booking-detail-actions">
                 <button type="button" class="btn-action-icon info booking-detail-toggle" title="Lihat detail">
                   <i class="fa-solid fa-chevron-down fa-icon"></i>
