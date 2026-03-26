@@ -160,12 +160,60 @@ function updateSetting($conn, $key, $value) {
 }
 
 function renderAdminSectionFragmentFile($file) {
+  global $conn;
+
   if (!is_file($file)) {
     return '';
   }
 
+  $fragmentData = [];
+  $basename = basename($file);
+
+  if ($basename === 'customers.php') {
+    $fragmentData['import_msg'] = $_SESSION['import_msg'] ?? '';
+  }
+
+  if ($basename === 'schedules.php') {
+    $fragmentData['routes'] = [];
+    $fragmentData['units'] = [];
+
+    if (isset($conn)) {
+      $routeStmt = $conn->query("SELECT id, name FROM routes ORDER BY id");
+      if ($routeStmt) {
+        $fragmentData['routes'] = $routeStmt->fetchAll(PDO::FETCH_ASSOC);
+      }
+
+      $unitStmt = $conn->query("SELECT * FROM units ORDER BY id DESC");
+      if ($unitStmt) {
+        $fragmentData['units'] = $unitStmt->fetchAll(PDO::FETCH_ASSOC);
+      }
+    }
+  }
+
+  if ($basename === 'units.php') {
+    $fragmentData['units'] = [];
+    $fragmentData['edit_unit'] = [];
+
+    if (isset($conn)) {
+      $unitStmt = $conn->query("SELECT * FROM units ORDER BY id DESC");
+      if ($unitStmt) {
+        $fragmentData['units'] = $unitStmt->fetchAll(PDO::FETCH_ASSOC);
+      }
+
+      if (isset($_GET['edit_unit'])) {
+        $editId = intval($_GET['edit_unit']);
+        if ($editId > 0) {
+          $editStmt = $conn->prepare("SELECT * FROM units WHERE id=? LIMIT 1");
+          $editStmt->execute([$editId]);
+          $fragmentData['edit_unit'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+        }
+      }
+    }
+  }
+
   ob_start();
   extract($GLOBALS, EXTR_SKIP);
+  extract($fragmentData, EXTR_OVERWRITE);
   include $file;
   return ob_get_clean();
 }
