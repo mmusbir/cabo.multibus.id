@@ -3844,6 +3844,24 @@ body.admin-bootstrap-page .kinetic-topbar-inner {
     gap: 1rem;
 }
 
+body.admin-bootstrap-page .kinetic-mobile-topbar {
+    position: sticky;
+    top: 0.65rem;
+    z-index: 1002;
+    margin: 0.65rem 0.65rem 0;
+    border-radius: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+    backdrop-filter: blur(18px) saturate(165%);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+}
+
+body.admin-bootstrap-page .kinetic-mobile-topbar .kinetic-topbar-inner {
+    min-height: 3.65rem;
+    padding: 0.78rem 0.95rem;
+}
+
 body.admin-bootstrap-page .kinetic-topbar-brand-wrap {
     display: flex;
     align-items: center;
@@ -3861,6 +3879,17 @@ body.admin-bootstrap-page .kinetic-topbar-brand {
 body.admin-bootstrap-page .kinetic-brand-icon {
     font-size: 1.55rem;
     line-height: 1;
+}
+
+body.admin-bootstrap-page .kinetic-mobile-topbar .kinetic-brand-icon {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 0.9rem;
+    background: rgba(249, 115, 22, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
 }
 
 body.admin-bootstrap-page .kinetic-brand-text {
@@ -4128,10 +4157,13 @@ body.admin-bootstrap-page #bottomMoreModal.show {
 body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
     width: min(100%, 560px);
     margin: 0 auto;
-    padding: 1rem 1rem calc(1.45rem + env(safe-area-inset-bottom));
-    border-radius: 1.5rem 1.5rem 0 0;
-    background: #191b22;
-    box-shadow: 0 -20px 40px rgba(12, 14, 20, 0.42);
+    padding: 0.95rem 0.95rem calc(1.25rem + env(safe-area-inset-bottom));
+    border-radius: 1.6rem 1.6rem 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+    backdrop-filter: blur(18px) saturate(165%);
+    box-shadow: 0 -24px 48px rgba(15, 23, 42, 0.16);
     transform: translateY(100%);
     transition: transform 0.28s ease;
 }
@@ -4145,7 +4177,7 @@ body.admin-bootstrap-page #bottomMoreModal .sheet-handle {
     height: 0.3rem;
     margin: 0 auto 1rem;
     border-radius: 999px;
-    background: rgba(224, 192, 177, 0.2);
+    background: rgba(100, 116, 139, 0.28);
 }
 
 body.admin-bootstrap-page #bottomMoreModal .menu-grid {
@@ -4156,9 +4188,14 @@ body.admin-bootstrap-page #bottomMoreModal .menu-grid {
 }
 
 body.admin-bootstrap-page #bottomMoreModal .menu-section-header {
-    padding: 1rem 0.25rem 0.4rem;
-    color: #7c8798;
-    border-top: 1px solid rgba(88, 66, 55, 0.2);
+    padding: 0.95rem 0.3rem 0.45rem;
+    color: #64748b;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+    font-family: 'Inter', 'SF Pro Display', 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 body.admin-bootstrap-page #bottomMoreModal .menu-section-header:first-child {
@@ -4168,26 +4205,28 @@ body.admin-bootstrap-page #bottomMoreModal .menu-section-header:first-child {
 
 body.admin-bootstrap-page #bottomMoreModal .nav-btn {
     width: 100%;
-    min-height: 5.4rem;
-    padding: 0.8rem 0.5rem;
+    min-height: 5.05rem;
+    padding: 0.78rem 0.42rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.42rem;
-    border-radius: 1rem;
-    background: #111319;
-    border: 1px solid rgba(88, 66, 55, 0.2);
-    color: #d7dde7;
+    border-radius: 1.15rem;
+    background: rgba(255, 255, 255, 0.48);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #334155;
     text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
 body.admin-bootstrap-page #bottomMoreModal .nav-btn .fa-icon {
-    font-size: 1.3rem;
+    font-size: 1.18rem;
 }
 
 body.admin-bootstrap-page #bottomMoreModal .nav-btn .nav-label {
-    font-size: 0.68rem;
+    font-family: 'Inter', 'SF Pro Display', 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -4196,7 +4235,8 @@ body.admin-bootstrap-page #bottomMoreModal .nav-btn .nav-label {
 body.admin-bootstrap-page #bottomMoreModal .nav-btn:hover,
 body.admin-bootstrap-page #bottomMoreModal .nav-btn.active {
     color: #f97316;
-    background: #1e1f26;
+    background: rgba(255, 255, 255, 0.68);
+    transform: translateY(-1px);
 }
 
 body.admin-bootstrap-page #bottomMoreModal .nav-btn-close {

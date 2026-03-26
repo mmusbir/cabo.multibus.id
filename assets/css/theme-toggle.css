@@ -618,6 +618,12 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav {
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12) !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .kinetic-mobile-topbar {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12) !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
   color: #64748b !important;
 }
@@ -625,6 +631,18 @@ html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn 
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.active {
   background: rgba(255, 255, 255, 0.68) !important;
   color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 -24px 48px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page #bottomMoreModal .nav-btn {
+  background: rgba(255, 255, 255, 0.52) !important;
+  color: #334155 !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-profile-btn,
@@ -1260,6 +1278,12 @@ html[data-theme="dark"] body.admin-bootstrap-page .kinetic-bottom-nav {
   box-shadow: 0 20px 42px rgba(12, 14, 20, 0.34) !important;
 }
 
+html[data-theme="dark"] body.admin-bootstrap-page .kinetic-mobile-topbar {
+  background: rgba(17, 19, 25, 0.74) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 34px rgba(12, 14, 20, 0.3) !important;
+}
+
 html[data-theme="dark"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
   color: rgba(219, 228, 238, 0.78) !important;
 }
@@ -1268,6 +1292,18 @@ html[data-theme="dark"] body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.a
   background: rgba(255, 255, 255, 0.08) !important;
   color: #fff7ed !important;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page #bottomMoreModal .bottom-more-content {
+  background: rgba(17, 19, 25, 0.84) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 -24px 48px rgba(12, 14, 20, 0.34) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page #bottomMoreModal .nav-btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: rgba(219, 228, 238, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 html[data-theme="dark"] body.admin-bootstrap-page .customers-table-actions .acc-btn.danger {
