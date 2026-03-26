@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'Router.php';
 require_once 'config/db.php';
 require_once 'config/activity_log.php';
+require_once 'config/perf_log.php';
 
 // Create lazy tables
 $conn->exec("CREATE TABLE IF NOT EXISTS bookings (
@@ -181,6 +182,7 @@ $router->get('getRoutesByDate', function () use ($conn) {
 });
 
 $router->get('getSchedules', function () use ($conn) {
+    $perfStartedAt = perf_timer_start();
     $rute = $_GET['rute'] ?? '';
     $tanggal = $_GET['tanggal'] ?? '';
     if (!$rute || !isValidDate($tanggal)) {
@@ -216,10 +218,16 @@ $router->get('getSchedules', function () use ($conn) {
             'nopol' => $r['nopol'] ?? ''
         ];
     }
+    perf_finish('api.getSchedules', $perfStartedAt, [
+        'rute' => $rute,
+        'tanggal' => $tanggal,
+        'count' => count($schedules),
+    ], 100);
     apiSuccess(['schedules' => $schedules]);
 });
 
 $router->get('getBookedSeatsDetail', function () use ($conn) {
+    $perfStartedAt = perf_timer_start();
     $rute = $_GET['rute'] ?? '';
     $tanggal = $_GET['tanggal'] ?? '';
     $jam = $_GET['jam'] ?? '';
@@ -250,6 +258,13 @@ $router->get('getBookedSeatsDetail', function () use ($conn) {
             'discount' => floatval($r['discount'])
         ];
     }
+    perf_finish('api.getBookedSeatsDetail', $perfStartedAt, [
+        'rute' => $rute,
+        'tanggal' => $tanggal,
+        'jam' => $jam,
+        'unit' => $unit,
+        'count' => count($details),
+    ], 80);
     apiSuccess(['details' => $details]);
 });
 

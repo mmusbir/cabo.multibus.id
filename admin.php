@@ -45,6 +45,7 @@ require_once 'middleware/auth.php';
 require_once 'config/db.php';
 require_once 'config/auth_config.php';
 require_once 'config/activity_log.php';
+require_once 'config/perf_log.php';
 require_once 'Router.php';
 
 // Check Auth immediately BEFORE any HTML output

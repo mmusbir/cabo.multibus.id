@@ -5,6 +5,8 @@
 
 global $conn;
 
+$perfStartedAt = perf_timer_start();
+
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
@@ -201,6 +203,15 @@ $rows_html = ob_get_clean();
 $pag_html = render_pagination_ajax($total, $per_page, $page, 'bookings');
 
 header('Content-Type: application/json');
+perf_finish('admin.bookingsPage', $perfStartedAt, [
+    'scope' => $scope,
+    'page' => $page,
+    'per_page' => $per_page,
+    'search' => $search !== '',
+    'tanggal' => $tanggalFilter !== '',
+    'rows' => count($rows),
+    'total' => $total,
+], 120);
 echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total]);
 exit;
 

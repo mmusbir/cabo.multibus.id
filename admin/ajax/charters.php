@@ -5,6 +5,8 @@
 
 global $conn;
 
+$perfStartedAt = perf_timer_start();
+
 function charter_h($value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
@@ -229,5 +231,12 @@ $rows_html = ob_get_clean();
 $pag_html = render_pagination_ajax($total, $per_page, $page, 'charters');
 
 header('Content-Type: application/json');
+perf_finish('admin.chartersPage', $perfStartedAt, [
+    'page' => $page,
+    'per_page' => $per_page,
+    'search' => $search !== '',
+    'rows' => count($rows),
+    'total' => $total,
+], 120);
 echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total]);
 exit;
