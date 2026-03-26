@@ -2962,6 +2962,30 @@ body.admin-bootstrap-page .booking-date-filter:focus-within .booking-date-filter
     opacity: 0;
 }
 
+body.admin-bootstrap-page .booking-date-filter input[type="date"] {
+    caret-color: transparent;
+}
+
+body.admin-bootstrap-page .booking-date-filter input[type="date"]::-webkit-datetime-edit {
+    color: transparent;
+}
+
+body.admin-bootstrap-page .booking-date-filter input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+body.admin-bootstrap-page .booking-date-filter.has-value input[type="date"],
+body.admin-bootstrap-page .booking-date-filter:focus-within input[type="date"] {
+    color: inherit;
+    -webkit-text-fill-color: currentColor;
+    caret-color: auto;
+}
+
+body.admin-bootstrap-page .booking-date-filter.has-value input[type="date"]::-webkit-datetime-edit,
+body.admin-bootstrap-page .booking-date-filter:focus-within input[type="date"]::-webkit-datetime-edit {
+    color: inherit;
+}
+
 body.admin-bootstrap-page .booking-filter-reset {
     min-height: 2.95rem;
     padding: 0.72rem 1rem;

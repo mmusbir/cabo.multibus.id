@@ -201,10 +201,10 @@ if (empty($rows)) {
         echo '      </div>';
         echo '      <div class="kinetic-trip-actions">';
         if ($unpaidCount > 0) {
-            echo '        <button type="button" class="kinetic-trip-action success bulk-pay-action mark-all-paid-btn" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" title="Tandai semua penumpang di trip ini menjadi lunas"><i class="fa-solid fa-circle-check fa-icon"></i>Lunas Semua (' . $unpaidCount . ')</button>';
+            echo '        <button type="button" class="kinetic-trip-action success bulk-pay-action mark-all-paid-btn" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" title="Tandai semua penumpang di trip ini menjadi lunas"><i class="fa-solid fa-money-check-dollar fa-icon"></i>Lunas Semua (' . $unpaidCount . ')</button>';
         }
         echo '        <a href="#" class="kinetic-trip-action" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); copyBookingTripManifest(this);"><i class="fa-solid fa-copy fa-icon"></i>Copy Data</a>';
-        echo '        <a href="#" class="kinetic-trip-action primary" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); openBookingTripDetail(this);"><i class="fa-solid fa-list-ul fa-icon"></i>Detail</a>';
+        echo '        <a href="#" class="kinetic-trip-action primary" data-rute="' . htmlspecialchars($trip['rute']) . '" data-tanggal="' . htmlspecialchars($tanggal) . '" data-jam="' . htmlspecialchars($tripHour) . '" data-unit="' . $unit . '" onclick="event.preventDefault(); openBookingTripDetail(this);"><i class="fa-solid fa-file-lines fa-icon"></i>Detail</a>';
         echo '      </div>';
         echo '    </div>';
         echo '  </div>';
