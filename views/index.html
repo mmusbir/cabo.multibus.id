@@ -915,23 +915,28 @@
 
     .detail-edit-form {
       display: none;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .detail-edit-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .detail-edit-field {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      grid-column: span 3;
     }
 
     .detail-edit-field.full {
       grid-column: 1 / -1;
+    }
+
+    .detail-edit-field.third {
+      grid-column: span 2;
     }
 
     .detail-edit-field-label {
@@ -949,9 +954,9 @@
       background: rgba(12, 14, 20, 0.58);
       color: #f8fafc;
       border-radius: 14px;
-      padding: 11px 13px;
+      padding: 10px 12px;
       font-family: inherit;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
@@ -3672,9 +3677,21 @@
               <span class="detail-edit-field-label">Nama Lengkap</span>
               <input type="text" id="detailEditName" class="detail-edit-input" placeholder="Input nama penumpang">
             </label>
-            <label class="detail-edit-field">
+            <label class="detail-edit-field third">
               <span class="detail-edit-field-label">No. Handphone</span>
               <input type="text" id="detailEditPhone" class="detail-edit-input" placeholder="Input nomor handphone">
+            </label>
+            <label class="detail-edit-field third">
+              <span class="detail-edit-field-label">No. Kursi</span>
+              <input type="text" id="detailEditSeat" class="detail-edit-input" placeholder="Contoh: 7A">
+            </label>
+            <label class="detail-edit-field third">
+              <span class="detail-edit-field-label">Pembayaran</span>
+              <select id="detailEditPayment" class="detail-edit-select">
+                <option value="Belum Lunas">Belum Lunas</option>
+                <option value="Lunas">Lunas</option>
+                <option value="RedBus">RedBus</option>
+              </select>
             </label>
             <label class="detail-edit-field">
               <span class="detail-edit-field-label">Titik Jemput</span>
@@ -3689,14 +3706,6 @@
             <label class="detail-edit-field">
               <span class="detail-edit-field-label">Potongan Harga</span>
               <input type="number" id="detailEditDiscount" class="detail-edit-input" placeholder="0" min="0">
-            </label>
-            <label class="detail-edit-field">
-              <span class="detail-edit-field-label">Pembayaran</span>
-              <select id="detailEditPayment" class="detail-edit-select">
-                <option value="Belum Lunas">Belum Lunas</option>
-                <option value="Lunas">Lunas</option>
-                <option value="RedBus">RedBus</option>
-              </select>
             </label>
           </div>
         </div>
@@ -4434,6 +4443,7 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         if (!currentDetailBooking) return;
         document.getElementById('detailEditName').value = currentDetailBooking.name || '';
         document.getElementById('detailEditPhone').value = currentDetailBooking.phone || '';
+        document.getElementById('detailEditSeat').value = currentDetailBooking.seatId || '';
         document.getElementById('detailEditPickup').value = currentDetailBooking.pickup_point || '';
         document.getElementById('detailEditDiscount').value = currentDetailBooking.disc || 0;
         document.getElementById('detailEditPayment').value = currentDetailBooking.pembayaran || 'Belum Lunas';
@@ -4476,14 +4486,15 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           id: currentDetailBooking.bookingId,
           name: document.getElementById('detailEditName').value.trim(),
           phone: document.getElementById('detailEditPhone').value.trim(),
+          seat: document.getElementById('detailEditSeat').value.trim().toUpperCase(),
           pickup_point: document.getElementById('detailEditPickup').value.trim(),
           segment_id: document.getElementById('detailEditSegment').value || '',
           discount: document.getElementById('detailEditDiscount').value || 0,
           pembayaran: document.getElementById('detailEditPayment').value || 'Belum Lunas'
         };
 
-        if (!payload.name || !payload.phone || !payload.pickup_point) {
-          showRekapToast('Lengkapi nama, no. handphone, dan titik jemput');
+        if (!payload.name || !payload.phone || !payload.pickup_point || !payload.seat) {
+          showRekapToast('Lengkapi nama, no. handphone, kursi, dan titik jemput');
           return;
         }
 
@@ -4746,6 +4757,10 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
           val = val.substring(0, 13);
         }
         this.value = val;
+      });
+
+      document.getElementById('detailEditSeat')?.addEventListener('input', function () {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
       });
 
       /* ================== SUGGESTIONS ================== */

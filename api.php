@@ -262,13 +262,18 @@ $router->post('updateBookedSeat', function () use ($conn) {
     $id = (int) ($data['id'] ?? 0);
     $name = strtoupper(trim((string) ($data['name'] ?? '')));
     $phone = preg_replace('/\D/', '', (string) ($data['phone'] ?? ''));
+    $seat = strtoupper(trim((string) ($data['seat'] ?? '')));
     $pickupPoint = trim((string) ($data['pickup_point'] ?? ''));
     $segmentId = (int) ($data['segment_id'] ?? 0);
     $discount = max(0, (float) ($data['discount'] ?? 0));
     $pembayaran = trim((string) ($data['pembayaran'] ?? 'Belum Lunas'));
 
-    if ($id <= 0 || $name === '' || $phone === '' || $pickupPoint === '') {
+    if ($id <= 0 || $name === '' || $phone === '' || $pickupPoint === '' || $seat === '') {
         apiError('missing_fields', 400);
+    }
+
+    if (!preg_match('/^[A-Z0-9-]{1,20}$/', $seat)) {
+        apiError('invalid_seat', 400);
     }
 
     if (substr($phone, 0, 2) === '62') $phone = '0' . substr($phone, 2);
@@ -287,6 +292,23 @@ $router->post('updateBookedSeat', function () use ($conn) {
         apiError('booking_not_found', 404);
     }
 
+    $stmtConflict = $conn->prepare("
+        SELECT id FROM bookings
+        WHERE rute=? AND tanggal=? AND jam=? AND unit=? AND seat=? AND status!='canceled' AND id!=?
+        LIMIT 1
+    ");
+    $stmtConflict->execute([
+        $current['rute'] ?? '',
+        $current['tanggal'] ?? '',
+        $current['jam'] ?? '',
+        $current['unit'] ?? 1,
+        $seat,
+        $id
+    ]);
+    if ($stmtConflict->fetch(PDO::FETCH_ASSOC)) {
+        apiError('Kursi sudah terpakai pada keberangkatan ini', 409);
+    }
+
     $price = 0;
     if ($segmentId > 0) {
         $stmtSegment = $conn->prepare("SELECT harga FROM segments WHERE id=? LIMIT 1");
@@ -298,10 +320,10 @@ $router->post('updateBookedSeat', function () use ($conn) {
 
     $stmt = $conn->prepare("
         UPDATE bookings
-        SET name=?, phone=?, pickup_point=?, pembayaran=?, segment_id=?, price=?, discount=?
+        SET seat=?, name=?, phone=?, pickup_point=?, pembayaran=?, segment_id=?, price=?, discount=?
         WHERE id=? AND status!='canceled'
     ");
-    $stmt->execute([$name, $phone, $pickupPoint, $pembayaran, $segmentId ?: null, $price, $discount, $id]);
+    $stmt->execute([$seat, $name, $phone, $pickupPoint, $pembayaran, $segmentId ?: null, $price, $discount, $id]);
 
     $stmtCustomer = $conn->prepare("
         INSERT INTO customers (name, phone, pickup_point, address)
@@ -319,7 +341,7 @@ $router->post('updateBookedSeat', function () use ($conn) {
         $id,
         'update',
         'Booking diperbarui: ' . $name,
-        ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-'),
+        ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-') . ' -> ' . $seat,
         'web'
     );
 
