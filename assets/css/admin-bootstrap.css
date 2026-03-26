@@ -2962,6 +2962,11 @@ body.admin-bootstrap-page .booking-date-filter:focus-within .booking-date-filter
     opacity: 0;
 }
 
+body.admin-bootstrap-page .booking-date-filter .kinetic-command-select {
+    padding-left: 0.95rem;
+    padding-right: 2.7rem;
+}
+
 body.admin-bootstrap-page .booking-date-filter input[type="date"] {
     caret-color: transparent;
 }
@@ -2972,6 +2977,12 @@ body.admin-bootstrap-page .booking-date-filter input[type="date"]::-webkit-datet
 
 body.admin-bootstrap-page .booking-date-filter input[type="date"]::-webkit-date-and-time-value {
     text-align: left;
+}
+
+body.admin-bootstrap-page .booking-date-filter input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.78;
+    cursor: pointer;
+    filter: brightness(1.1);
 }
 
 body.admin-bootstrap-page .booking-date-filter.has-value input[type="date"],
@@ -3453,6 +3464,7 @@ body.admin-bootstrap-page .kinetic-trip-action {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    min-height: 2.55rem;
     padding: 0.58rem 0.82rem;
     border-radius: 0.72rem;
     border: 1px solid rgba(167, 139, 125, 0.18);
@@ -3468,7 +3480,12 @@ body.admin-bootstrap-page .kinetic-trip-action {
 }
 
 body.admin-bootstrap-page .kinetic-trip-action .fa-icon {
-    font-size: 0.92rem;
+    width: 0.98rem;
+    min-width: 0.98rem;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1;
+    flex: 0 0 0.98rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-action:hover {
