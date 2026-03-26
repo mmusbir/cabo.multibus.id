@@ -10,5 +10,5 @@ define('JWT_ALGO', 'HS256');
 
 // Cookie settings
 define('COOKIE_NAME', 'auth_token');
-define('EXPIRE_TIME', 3600); // 1 Hour (Access Token)
+define('EXPIRE_TIME', 43200); // 12 Hours (Access Token)
 define('REFRESH_EXPIRE_TIME', 604800); // 7 Days (Optional)
