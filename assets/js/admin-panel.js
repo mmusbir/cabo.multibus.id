@@ -219,6 +219,20 @@
       });
     }
 
+    function markAdminShellReady() {
+      const shell = document.getElementById('adminShellLoader');
+      if (!shell || shell.dataset.ready === '1') return;
+      shell.dataset.ready = '1';
+      document.body.classList.add('admin-shell-ready');
+      shell.classList.add('is-hidden');
+      window.setTimeout(function () {
+        if (shell && shell.parentNode) {
+          shell.parentNode.removeChild(shell);
+        }
+      }, 280);
+    }
+    window.markAdminShellReady = markAdminShellReady;
+
     async function ensureAdminSectionLoaded(id) {
       if (!adminLazySections.has(id)) {
         return document.getElementById(id);
@@ -236,6 +250,7 @@
       }
 
       slot.dataset.loading = '1';
+      slot.classList.add('is-loading');
       adminSectionLoadPromises[id] = (async function () {
         const url = new URL('admin.php', window.location.origin);
         url.searchParams.set('action', 'getSectionFragment');
@@ -250,6 +265,7 @@
         slot.innerHTML = js.html;
         slot.dataset.loaded = '1';
         slot.dataset.loading = '0';
+        slot.classList.remove('is-loading');
         executeAdminSectionScripts(slot);
         return document.getElementById(id);
       })();
@@ -257,6 +273,8 @@
       try {
         return await adminSectionLoadPromises[id];
       } finally {
+        slot.dataset.loading = '0';
+        slot.classList.remove('is-loading');
         delete adminSectionLoadPromises[id];
       }
     }
@@ -276,6 +294,7 @@
             fallback.style.display = 'block';
             fallback.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">' + (err.message || 'Gagal memuat panel') + '</div>';
           }
+          markAdminShellReady();
           return;
         }
 
@@ -303,6 +322,7 @@
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'luggage' && typeof window.loadLuggageData === 'function') window.loadLuggageData();
         if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
+        markAdminShellReady();
       }
       window.showSectionById = showSection;
       function updateSectionFromHash() {

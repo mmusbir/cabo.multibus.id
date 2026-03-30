@@ -3405,6 +3405,157 @@ body.admin-bootstrap-page .kinetic-trip-state.ready { background: rgba(16, 185, 
 body.admin-bootstrap-page .kinetic-trip-state.ready .status-dot { background: #34d399; }
 body.admin-bootstrap-page .kinetic-trip-state.loading { background: rgba(147, 204, 255, 0.12); color: #cfeaff; }
 body.admin-bootstrap-page .kinetic-trip-state.loading .status-dot { background: #93ccff; }
+
+/* Admin shell loader */
+body.admin-bootstrap-page .admin-shell-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 116px 28px 28px 300px;
+  background: rgba(11, 14, 22, 0.26);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.24s ease, visibility 0.24s ease;
+}
+body.admin-bootstrap-page .admin-shell-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+body.admin-bootstrap-page .admin-shell-loader-panel {
+  width: 100%;
+  max-width: 1600px;
+  display: grid;
+  gap: 22px;
+}
+body.admin-bootstrap-page .admin-shell-loader-topbar,
+body.admin-bootstrap-page .admin-shell-loader-title,
+body.admin-bootstrap-page .admin-shell-loader-subtitle,
+body.admin-bootstrap-page .admin-shell-loader-metric,
+body.admin-bootstrap-page .admin-shell-loader-chart,
+body.admin-bootstrap-page .admin-shell-loader-side-card,
+body.admin-bootstrap-page .admin-section-skeleton-pill,
+body.admin-bootstrap-page .admin-section-skeleton-hero,
+body.admin-bootstrap-page .admin-section-skeleton-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(31, 36, 48, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+body.admin-bootstrap-page .admin-shell-loader-topbar::after,
+body.admin-bootstrap-page .admin-shell-loader-title::after,
+body.admin-bootstrap-page .admin-shell-loader-subtitle::after,
+body.admin-bootstrap-page .admin-shell-loader-metric::after,
+body.admin-bootstrap-page .admin-shell-loader-chart::after,
+body.admin-bootstrap-page .admin-shell-loader-side-card::after,
+body.admin-bootstrap-page .admin-section-skeleton-pill::after,
+body.admin-bootstrap-page .admin-section-skeleton-hero::after,
+body.admin-bootstrap-page .admin-section-skeleton-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.11), transparent);
+  animation: adminShellPulse 1.35s ease-in-out infinite;
+}
+body.admin-bootstrap-page .admin-shell-loader-topbar {
+  height: 56px;
+  border-radius: 24px;
+}
+body.admin-bootstrap-page .admin-shell-loader-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.85fr);
+  gap: 22px;
+}
+body.admin-bootstrap-page .admin-shell-loader-main,
+body.admin-bootstrap-page .admin-shell-loader-side {
+  display: grid;
+  gap: 18px;
+}
+body.admin-bootstrap-page .admin-shell-loader-title {
+  width: min(320px, 48%);
+  height: 28px;
+  border-radius: 18px;
+}
+body.admin-bootstrap-page .admin-shell-loader-subtitle {
+  width: min(220px, 34%);
+  height: 13px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-shell-loader-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+body.admin-bootstrap-page .admin-shell-loader-metric {
+  height: 96px;
+  border-radius: 24px;
+}
+body.admin-bootstrap-page .admin-shell-loader-chart {
+  min-height: 340px;
+  border-radius: 28px;
+}
+body.admin-bootstrap-page .admin-shell-loader-side-card {
+  min-height: 176px;
+  border-radius: 28px;
+}
+body.admin-bootstrap-page .admin-section-slot.is-loading .admin-lazy-section {
+  display: block !important;
+}
+body.admin-bootstrap-page .admin-section-skeleton {
+  display: grid;
+  gap: 18px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-pill {
+  width: 180px;
+  height: 18px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-pill-short {
+  width: 96px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-hero {
+  min-height: 120px;
+  border-radius: 24px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-card {
+  min-height: 140px;
+  border-radius: 22px;
+}
+@keyframes adminShellPulse {
+  100% {
+    transform: translateX(100%);
+  }
+}
+@media (max-width: 991.98px) {
+  body.admin-bootstrap-page .admin-shell-loader {
+    padding: 94px 16px 16px 16px;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-grid {
+    grid-template-columns: 1fr;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body.admin-bootstrap-page .admin-shell-loader-chart {
+    min-height: 240px;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
 body.admin-bootstrap-page .kinetic-trip-state.scheduled { background: rgba(148, 163, 184, 0.12); color: #d6dbe4; }
 body.admin-bootstrap-page .kinetic-trip-state.scheduled .status-dot { background: #94a3b8; }
 body.admin-bootstrap-page .kinetic-trip-state.warning { background: rgba(249, 115, 22, 0.14); color: #ffd1b0; }

@@ -221,7 +221,18 @@ function renderAdminSectionSlot($sectionId) {
   $safeId = preg_replace('/[^a-z0-9\-_]/i', '', (string) $sectionId);
   echo '<div id="section-slot-' . htmlspecialchars($safeId) . '" class="admin-section-slot" data-section-slot="' . htmlspecialchars($safeId) . '" data-loaded="0">';
   echo '<section id="' . htmlspecialchars($safeId) . '" class="card admin-lazy-section" style="display:none;">';
-  echo '<div class="small admin-grid-message">Memuat panel...</div>';
+  echo '<div class="admin-section-skeleton" aria-hidden="true">';
+  echo '<div class="admin-section-skeleton-head">';
+  echo '<span class="admin-section-skeleton-pill"></span>';
+  echo '<span class="admin-section-skeleton-pill admin-section-skeleton-pill-short"></span>';
+  echo '</div>';
+  echo '<div class="admin-section-skeleton-hero"></div>';
+  echo '<div class="admin-section-skeleton-grid">';
+  echo '<div class="admin-section-skeleton-card"></div>';
+  echo '<div class="admin-section-skeleton-card"></div>';
+  echo '<div class="admin-section-skeleton-card"></div>';
+  echo '</div>';
+  echo '</div>';
   echo '</section>';
   echo '</div>';
 }
@@ -1282,8 +1293,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=47">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=48">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=14">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1310,6 +1321,28 @@ if (!isset($_REQUEST['action'])):
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <?php include 'includes/navbar.php'; ?>
+
+  <div class="admin-shell-loader" id="adminShellLoader" aria-hidden="true">
+    <div class="admin-shell-loader-panel">
+      <div class="admin-shell-loader-topbar"></div>
+      <div class="admin-shell-loader-grid">
+        <div class="admin-shell-loader-main">
+          <div class="admin-shell-loader-title"></div>
+          <div class="admin-shell-loader-subtitle"></div>
+          <div class="admin-shell-loader-metrics">
+            <span class="admin-shell-loader-metric"></span>
+            <span class="admin-shell-loader-metric"></span>
+            <span class="admin-shell-loader-metric"></span>
+          </div>
+          <div class="admin-shell-loader-chart"></div>
+        </div>
+        <div class="admin-shell-loader-side">
+          <div class="admin-shell-loader-side-card"></div>
+          <div class="admin-shell-loader-side-card"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main class="container container-fluid admin-bootstrap-container">
     <div class="layout admin-bootstrap-grid">
@@ -1603,7 +1636,7 @@ if (!isset($_REQUEST['action'])):
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=1"></script>
+  <script src="assets/js/admin-panel.js?v=2"></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>

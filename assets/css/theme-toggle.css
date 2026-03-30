@@ -1382,3 +1382,32 @@ html[data-theme="dark"] body.admin-bootstrap-page .theme-toggle-btn {
   background: #1e1f26;
   color: #e2e2eb;
 }
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader {
+  background: rgba(239, 244, 251, 0.72);
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-topbar,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-title,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-subtitle,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-metric,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-chart,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-side-card,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-pill,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-hero,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-topbar::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-title::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-subtitle::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-metric::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-chart::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-side-card::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-pill::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-hero::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card::after {
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.22), transparent);
+}
