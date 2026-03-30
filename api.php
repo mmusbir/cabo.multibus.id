@@ -43,6 +43,19 @@ require_once 'Router.php';
 require_once 'config/db.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
+require_once 'middleware/auth.php';
+
+function apiRequireAdminUser(): array
+{
+    $auth = getAuthenticatedUser();
+    if (!$auth) {
+        apiError('unauthorized', 401);
+    }
+
+    return $auth;
+}
+
+$apiAuthUser = apiRequireAdminUser();
 
 // Create lazy tables
 $conn->exec("CREATE TABLE IF NOT EXISTS bookings (
@@ -269,6 +282,8 @@ $router->get('getBookedSeatsDetail', function () use ($conn) {
 });
 
 $router->post('updateBookedSeat', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -357,13 +372,15 @@ $router->post('updateBookedSeat', function () use ($conn) {
         'update',
         'Booking diperbarui: ' . $name,
         ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-') . ' -> ' . $seat,
-        'web'
+        $actor
     );
 
     apiSuccess(['message' => 'Booking berhasil diperbarui']);
 });
 
 $router->post('cancelBookedSeat', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -392,7 +409,7 @@ $router->post('cancelBookedSeat', function () use ($conn) {
         'cancel',
         'Booking dibatalkan: ' . ($current['name'] ?? 'Tanpa Nama'),
         ($current['rute'] ?? '-') . ' | ' . ($current['tanggal'] ?? '-') . ' ' . ($current['jam'] ?? '-') . ' | Unit ' . ($current['unit'] ?? '1') . ' | Kursi ' . ($current['seat'] ?? '-'),
-        'web'
+        $actor
     );
 
     apiSuccess(['message' => 'Booking berhasil dibatalkan']);
@@ -472,6 +489,8 @@ $router->get('getLuggageServices', function () use ($conn) {
 // ============================================
 
 $router->post('addCharterRoute', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -490,11 +509,13 @@ $router->post('addCharterRoute', function () use ($conn) {
     $name = $origin . ' - ' . $destination;
     $stmt = $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$name, $origin, $destination, $duration, $rental_price, $bop_price, $notes]);
-    activity_log_write($conn, 'settings', 'master_carter', $conn->lastInsertId(), 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, 'web');
+    activity_log_write($conn, 'settings', 'master_carter', $conn->lastInsertId(), 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
     apiSuccess(['message' => 'Charter route added', 'route_id' => $conn->lastInsertId()], 201);
 });
 
 $router->post('submitCharter', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -530,7 +551,7 @@ $router->post('submitCharter', function () use ($conn) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
         $stmt->execute([$name, $company, $phone, $start_date, $end_date, $departure_time, $pickup, $drop, $unit_id, $driver, $price, $layanan, $bop_price]);
-        activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter baru dibuat: ' . $name, $pickup . ' -> ' . $drop . ' | ' . $start_date . ' ' . $departure_time, 'web');
+        activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter baru dibuat: ' . $name, $pickup . ' -> ' . $drop . ' | ' . $start_date . ' ' . $departure_time, $actor);
         apiSuccess(['message' => 'Charter submitted successfully'], 201);
     } catch (Exception $e) {
         apiError('Database error: ' . $e->getMessage(), 500);
@@ -538,6 +559,8 @@ $router->post('submitCharter', function () use ($conn) {
 });
 
 $router->post('submitLuggage', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -565,7 +588,7 @@ $router->post('submitLuggage', function () use ($conn) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
         $stmt->execute([$sender_name, $sender_phone, $sender_address, $receiver_name, $receiver_phone, $receiver_address, $service_id, $quantity, $notes, $price]);
-        activity_log_write($conn, 'luggage', 'luggage', $conn->lastInsertId(), 'create', 'Bagasi baru dibuat: ' . $sender_name, $sender_name . ' -> ' . $receiver_name . ' | Qty ' . $quantity, 'web');
+        activity_log_write($conn, 'luggage', 'luggage', $conn->lastInsertId(), 'create', 'Bagasi baru dibuat: ' . $sender_name, $sender_name . ' -> ' . $receiver_name . ' | Qty ' . $quantity, $actor);
         apiSuccess(['message' => 'Luggage shipment saved successfully'], 201);
     } catch (Exception $e) {
         apiError('Database error: ' . $e->getMessage(), 500);
@@ -574,6 +597,8 @@ $router->post('submitLuggage', function () use ($conn) {
 
 // Regular Booking (POST without specific action - handled separately)
 $router->post('submitBooking', function () use ($conn) {
+    $auth = apiRequireAdminUser();
+    $actor = activity_log_current_actor($auth);
     $data = getJsonInput();
     if (empty($data)) {
         apiError('invalid_json', 400);
@@ -697,7 +722,7 @@ $router->post('submitBooking', function () use ($conn) {
             'create',
             'Booking baru dibuat: ' . $name,
             $rute . ' | ' . $tanggal . ' ' . $jam . ' | Unit ' . $unit . ' | Kursi ' . implode(', ', $seats) . ' | Pembayaran ' . $pembayaran,
-            'web'
+            $actor
         );
         apiSuccess(['added' => count($seats)], 201);
     } catch (Exception $ex) {
