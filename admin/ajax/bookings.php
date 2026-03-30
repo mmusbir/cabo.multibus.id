@@ -81,7 +81,7 @@ if ($search !== '') {
         COUNT(*) AS total_pax,
         SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
         SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
-        MAX(COALESCE(d.nama, '')) AS driver_name,
+        MAX(COALESCE(d.nama, '')) AS driver_name
         $baseFrom
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
         $paymentHaving
@@ -122,7 +122,7 @@ if ($search !== '') {
             b.unit,
             COUNT(*) AS total_pax,
             SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
-            SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
+            SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count
         FROM bookings b
         $bookingWhere
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
@@ -136,7 +136,7 @@ if ($search !== '') {
         tb.total_pax,
         tb.paid_count,
         tb.unpaid_count,
-        COALESCE(d.nama, '') AS driver_name,
+        COALESCE(d.nama, '') AS driver_name
     FROM trip_base tb
     LEFT JOIN trip_assignments ta
       ON ta.rute = tb.rute
