@@ -59,7 +59,7 @@ try {
         $allDrivers[] = $rd;
     }
 
-    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, b.segment_id, c.address AS gmaps,\n         s.rute AS segment_route, s.origin AS segment_origin, s.destination AS segment_destination\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  LEFT JOIN segments s ON b.segment_id = s.id\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
+    $stmt = $conn->prepare("\n  SELECT b.id, b.name, b.phone, b.pickup_point, b.pembayaran, b.seat, b.price, b.discount, b.status, b.created_at, b.segment_id, b.created_by_username, c.address AS gmaps,\n         s.rute AS segment_route, s.origin AS segment_origin, s.destination AS segment_destination\n  FROM bookings b\n  LEFT JOIN customers c ON b.phone = c.phone\n  LEFT JOIN segments s ON b.segment_id = s.id\n  WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? AND b.status!='canceled'\n  ORDER BY CAST(b.seat AS INTEGER), b.created_at ASC\n");
     if (!$stmt) {
         echo json_encode(['success' => false, 'error' => 'db_error']);
         exit;
@@ -233,6 +233,10 @@ try {
           $bookingCode = formatBookingId($p['id'], $p['created_at'] ?? $tanggal . ' 00:00:00');
           $sourceLabel = in_array($payStatus, ['Redbus', 'Traveloka'], true) ? strtoupper($payStatus) : '';
           $priceValue = max(0, floatval($p['price'] ?? 0) - floatval($p['discount'] ?? 0));
+          $creatorName = trim((string) ($p['created_by_username'] ?? ''));
+          if ($creatorName === '') {
+              $creatorName = 'Admin Panel';
+          }
         ?>
         <div
           class="seat-block view-seat-card booking-detail-card tone-<?php echo h($lineTone); ?>"
@@ -275,6 +279,10 @@ try {
               <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
               <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
               <div class="booking-detail-hidden sb-val pay"><?php echo h($payStatus); ?></div>
+              <div class="booking-detail-created-by">
+                <i class="fa-solid fa-user-pen fa-icon"></i>
+                <span>Dibuat oleh <strong><?php echo h($creatorName); ?></strong></span>
+              </div>
             </div>
 
             <div class="booking-detail-side">
@@ -340,6 +348,10 @@ try {
             <div class="booking-detail-extra-item">
               <span class="booking-detail-extra-label">Google Maps</span>
               <strong class="booking-detail-extra-value"><?php echo h($p['gmaps'] ?? '-'); ?></strong>
+            </div>
+            <div class="booking-detail-extra-item">
+              <span class="booking-detail-extra-label">Dibuat Oleh</span>
+              <strong class="booking-detail-extra-value"><?php echo h($creatorName); ?></strong>
             </div>
           </div>
         </div>

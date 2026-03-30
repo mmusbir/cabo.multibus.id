@@ -81,7 +81,8 @@ if ($search !== '') {
         COUNT(*) AS total_pax,
         SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
         SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
-        MAX(COALESCE(d.nama, '')) AS driver_name
+        MAX(COALESCE(d.nama, '')) AS driver_name,
+        STRING_AGG(DISTINCT NULLIF(TRIM(COALESCE(b.created_by_username, '')), ''), ', ') AS creator_names
         $baseFrom
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
         $paymentHaving
@@ -122,7 +123,8 @@ if ($search !== '') {
             b.unit,
             COUNT(*) AS total_pax,
             SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
-            SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count
+            SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
+            STRING_AGG(DISTINCT NULLIF(TRIM(COALESCE(b.created_by_username, '')), ''), ', ') AS creator_names
         FROM bookings b
         $bookingWhere
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
@@ -136,7 +138,8 @@ if ($search !== '') {
         tb.total_pax,
         tb.paid_count,
         tb.unpaid_count,
-        COALESCE(d.nama, '') AS driver_name
+        COALESCE(d.nama, '') AS driver_name,
+        tb.creator_names
     FROM trip_base tb
     LEFT JOIN trip_assignments ta
       ON ta.rute = tb.rute
@@ -174,6 +177,14 @@ if (empty($rows)) {
         $tripDate = !empty($tanggal) ? strtoupper(date('d M', strtotime($tanggal))) : '-';
         $tripHour = $jam !== '' ? $jam : '--:--';
         $driverName = trim($trip['driver_name'] ?? '') !== '' ? trim($trip['driver_name']) : '-';
+        $creatorNames = array_values(array_filter(array_map('trim', explode(',', (string) ($trip['creator_names'] ?? '')))));
+        if (empty($creatorNames)) {
+            $creatorSummary = 'Admin Panel';
+        } elseif (count($creatorNames) === 1) {
+            $creatorSummary = $creatorNames[0];
+        } else {
+            $creatorSummary = $creatorNames[0] . ' +' . (count($creatorNames) - 1);
+        }
         $totalPax = intval($trip['total_pax'] ?? 0);
         $paidCount = intval($trip['paid_count'] ?? 0);
         $unpaidCount = intval($trip['unpaid_count'] ?? 0);
@@ -196,6 +207,7 @@ if (empty($rows)) {
         echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($trip['rute']) . '</h4>';
         echo '        <div class="kinetic-trip-subtitle">Keberangkatan ' . htmlspecialchars(date('d M Y', strtotime($tanggal)) . ' - ' . $tripHour) . ' / Unit ' . $unit . '</div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user fa-icon"></i>Driver: <strong>' . htmlspecialchars($driverName) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user-pen fa-icon"></i>Dibuat oleh: <strong>' . htmlspecialchars($creatorSummary) . '</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-users fa-icon"></i>Total booking customer: <strong>' . $totalPax . ' penumpang</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-wallet fa-icon"></i>Lunas ' . $paidCount . ' / Belum lunas ' . $unpaidCount . '</div>';
         echo '      </div>';
