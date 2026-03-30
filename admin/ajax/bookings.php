@@ -187,12 +187,15 @@ if (empty($rows)) {
         if (empty($creatorNames)) {
             $creatorSummary = 'Admin Panel';
             $creatorFullList = 'Admin Panel';
+            $creatorInteractive = false;
         } elseif (count($creatorNames) === 1) {
             $creatorSummary = $creatorNames[0];
             $creatorFullList = $creatorNames[0];
+            $creatorInteractive = false;
         } else {
             $creatorSummary = $creatorNames[0] . ' +' . (count($creatorNames) - 1);
             $creatorFullList = implode(', ', $creatorNames);
+            $creatorInteractive = true;
         }
         $totalPax = intval($trip['total_pax'] ?? 0);
         $paidCount = intval($trip['paid_count'] ?? 0);
@@ -216,7 +219,7 @@ if (empty($rows)) {
         echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($trip['rute']) . '</h4>';
         echo '        <div class="kinetic-trip-subtitle">Keberangkatan ' . htmlspecialchars(date('d M Y', strtotime($tanggal)) . ' - ' . $tripHour) . ' / Unit ' . $unit . '</div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user fa-icon"></i>Driver: <strong>' . htmlspecialchars($driverName) . '</strong></div>';
-        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user-pen fa-icon"></i>Dibuat oleh: <strong class="kinetic-trip-creator-trigger" title="' . htmlspecialchars($creatorFullList) . '">' . htmlspecialchars($creatorSummary) . '</strong></div>';
+        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user-pen fa-icon"></i>Dibuat oleh: <strong class="kinetic-trip-creator-trigger' . ($creatorInteractive ? ' is-interactive' : '') . '" title="' . htmlspecialchars($creatorFullList) . '"' . ($creatorInteractive ? ' role="button" tabindex="0" aria-label="Lihat daftar creator" data-full-creators="' . htmlspecialchars($creatorFullList) . '"' : '') . '>' . htmlspecialchars($creatorSummary) . '</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-users fa-icon"></i>Total booking customer: <strong>' . $totalPax . ' penumpang</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-wallet fa-icon"></i>Lunas ' . $paidCount . ' / Belum lunas ' . $unpaidCount . '</div>';
         echo '      </div>';

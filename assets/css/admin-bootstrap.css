@@ -3929,6 +3929,16 @@ body.admin-bootstrap-page .kinetic-trip-creator-trigger {
     text-underline-offset: 0.12rem;
 }
 
+body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive {
+    cursor: pointer;
+}
+
+body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive:hover,
+body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive:focus-visible {
+    color: #f97316;
+    outline: none;
+}
+
 body.admin-bootstrap-page .kinetic-trip-actions {
     display: flex;
     flex-wrap: wrap;

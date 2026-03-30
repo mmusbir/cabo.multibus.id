@@ -463,6 +463,17 @@ try {
       }
     };
 
+    window.showBookingCreators = function (trigger) {
+      if (!trigger) return;
+      const fullList = trigger.getAttribute('data-full-creators') || trigger.getAttribute('title') || '';
+      if (!fullList) return;
+      if (typeof customAlert === 'function') {
+        customAlert('Dibuat oleh: ' + fullList);
+      } else {
+        window.alert('Dibuat oleh: ' + fullList);
+      }
+    };
+
     window.openBookingTripDetail = async function (trigger) {
       const rute = trigger.getAttribute('data-rute') || '';
       const tanggal = trigger.getAttribute('data-tanggal') || '';
@@ -549,6 +560,21 @@ try {
           document.querySelectorAll('.charter-filter-chip').forEach((item) => item.classList.remove('active'));
           chip.classList.add('active');
         });
+      });
+
+      document.addEventListener('click', (event) => {
+        const creatorTrigger = event.target.closest('.kinetic-trip-creator-trigger.is-interactive');
+        if (!creatorTrigger) return;
+        event.preventDefault();
+        window.showBookingCreators(creatorTrigger);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const creatorTrigger = event.target.closest('.kinetic-trip-creator-trigger.is-interactive');
+        if (!creatorTrigger) return;
+        event.preventDefault();
+        window.showBookingCreators(creatorTrigger);
       });
 
       document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
