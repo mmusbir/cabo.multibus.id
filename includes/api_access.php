@@ -78,6 +78,7 @@ $apiBase = $scheme . '://' . $host . '/api.php';
         <div class="admin-bs-actions admin-bs-col-12">
           <?php if ($editApiKey): ?>
             <a href="admin.php#api_access" class="btn btn-outline-secondary btn-modern secondary">Batal</a>
+            <button type="submit" name="regenerate_api_key" value="1" class="btn btn-outline-secondary btn-modern secondary" onclick="return confirm('Regenerate API key ini? Key lama akan langsung tidak berlaku.');">Regenerate Key</button>
           <?php endif; ?>
           <button type="submit" name="save_api_key" value="1" class="btn btn-primary btn-modern"><?= $editApiKey ? 'Update API Key' : 'Generate API Key' ?></button>
         </div>
@@ -121,6 +122,76 @@ $apiBase = $scheme . '://' . $host . '/api.php';
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="modern-form-card admin-bs-panel">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <span class="admin-bs-chip">Contoh Request</span>
+      Dokumentasi singkat untuk integrasi aplikasi eksternal.
+    </div>
+    <div class="modern-form-grid admin-bs-form-grid">
+      <div class="admin-bs-field admin-bs-col-12">
+        <label class="admin-bs-input-label">Header Wajib</label>
+        <pre class="api-access-code-block"><code>X-API-Key: API_KEY_ANDA
+Content-Type: application/json</code></pre>
+      </div>
+
+      <div class="admin-bs-field admin-bs-col-12">
+        <label class="admin-bs-input-label">Create Booking</label>
+        <pre class="api-access-code-block"><code>curl -X POST "<?= htmlspecialchars($apiBase) ?>?action=externalCreateBooking" \
+-H "X-API-Key: API_KEY_ANDA" \
+-H "Content-Type: application/json" \
+-d '{
+  "rute": "PINRANG - MAKASSAR",
+  "tanggal": "2026-03-30",
+  "jam": "09:30",
+  "unit": 1,
+  "seats": ["3", "4"],
+  "name": "BUDI",
+  "phone": "08123456789",
+  "pickup_point": "Terminal",
+  "pembayaran": "Belum Lunas"
+}'</code></pre>
+      </div>
+
+      <div class="admin-bs-field admin-bs-col-6">
+        <label class="admin-bs-input-label">Update Booking</label>
+        <pre class="api-access-code-block"><code>{
+  "booking_id": 123,
+  "name": "BUDI SANTOSO",
+  "phone": "08123456789",
+  "seat": "5",
+  "pickup_point": "Bandara",
+  "pembayaran": "Lunas"
+}</code></pre>
+      </div>
+
+      <div class="admin-bs-field admin-bs-col-6">
+        <label class="admin-bs-input-label">Cancel Booking</label>
+        <pre class="api-access-code-block"><code>{
+  "booking_id": 123,
+  "reason": "Dibatalkan dari aplikasi agen"
+}</code></pre>
+      </div>
+
+      <div class="admin-bs-field admin-bs-col-6">
+        <label class="admin-bs-input-label">Contoh Response Sukses</label>
+        <pre class="api-access-code-block"><code>{
+  "success": true,
+  "added": 2,
+  "booking_ids": [101, 102]
+}</code></pre>
+      </div>
+
+      <div class="admin-bs-field admin-bs-col-6">
+        <label class="admin-bs-input-label">Contoh Response Error</label>
+        <pre class="api-access-code-block"><code>{
+  "success": false,
+  "error": "conflict",
+  "conflict": ["3", "4"]
+}</code></pre>
+      </div>
     </div>
   </div>
 

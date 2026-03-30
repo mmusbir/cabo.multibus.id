@@ -972,6 +972,47 @@ if (isset($_POST['save_api_key'])) {
   exit;
 }
 
+if (isset($_POST['regenerate_api_key'])) {
+  external_api_ensure_table($conn);
+  $apiKeyId = isset($_POST['api_key_id']) ? intval($_POST['api_key_id']) : 0;
+  $actor = activity_log_current_actor($auth ?? null);
+  if ($apiKeyId > 0) {
+    $stmtInfo = $conn->prepare("SELECT name, status, notes, created_by_user_id, created_by_username FROM external_api_keys WHERE id=? LIMIT 1");
+    $stmtInfo->execute([$apiKeyId]);
+    $keyInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: null;
+    if ($keyInfo) {
+      $plainKey = external_api_generate_key();
+      $prefix = external_api_key_prefix($plainKey);
+      $stmt = $conn->prepare("
+        UPDATE external_api_keys
+        SET api_key_hash=?, api_key_prefix=?, updated_at=NOW()
+        WHERE id=?
+      ");
+      $stmt->execute([
+        external_api_hash_key($plainKey),
+        $prefix,
+        $apiKeyId
+      ]);
+      $_SESSION['generated_external_api_key'] = [
+        'name' => (string) ($keyInfo['name'] ?? 'API Key'),
+        'plain_key' => $plainKey,
+      ];
+      activity_log_write(
+        $conn,
+        'settings',
+        'api_key',
+        $apiKeyId,
+        'regenerate',
+        'API key diregenerate: ' . ($keyInfo['name'] ?? ('ID ' . $apiKeyId)),
+        'Prefix baru: ' . $prefix,
+        $actor
+      );
+    }
+  }
+  header('Location: admin.php?edit_api_key=' . $apiKeyId . '#api_access');
+  exit;
+}
+
 if (isset($_GET['delete_api_key'])) {
   external_api_ensure_table($conn);
   $id = intval($_GET['delete_api_key']);
@@ -1504,8 +1545,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=58">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=20">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=59">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=21">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
