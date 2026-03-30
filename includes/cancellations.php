@@ -46,8 +46,8 @@
           <th>Sumber</th>
           <th>Kategori</th>
           <th>Aksi</th>
-          <th>Ringkasan</th>
-          <th>Admin</th>
+          <th class="admin-log-summary-head">Ringkasan</th>
+          <th class="admin-log-actor-head">Pelaku</th>
         </tr>
       </thead>
       <tbody id="cancellations_tbody">

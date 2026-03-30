@@ -106,7 +106,7 @@ if (empty($rows)) {
             echo '    <div class="admin-log-details">' . htmlspecialchars($details) . '</div>';
         }
         echo '  </td>';
-        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($actor) . '</td>';
+        echo '  <td class="admin-log-actor-cell"><span class="admin-log-actor-badge actor-' . htmlspecialchars(strtolower($source)) . '">' . htmlspecialchars($actor) . '</span></td>';
         echo '</tr>';
     }
 }

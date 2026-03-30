@@ -8309,7 +8309,8 @@ body.admin-bootstrap-page .admin-logs-table .admin-log-summary {
 }
 
 body.admin-bootstrap-page .admin-logs-table .admin-log-summary-cell {
-    min-width: 20rem;
+    min-width: 30rem;
+    width: 42%;
 }
 
 body.admin-bootstrap-page .admin-log-badge {
@@ -8377,9 +8378,45 @@ body.admin-bootstrap-page .admin-log-summary-cell {
     line-height: 1.45;
 }
 
+body.admin-bootstrap-page .admin-log-summary-head {
+    min-width: 24rem;
+}
+
 body.admin-bootstrap-page .admin-log-time-cell,
 body.admin-bootstrap-page .admin-log-actor-cell {
     white-space: nowrap;
+}
+
+body.admin-bootstrap-page .admin-log-actor-head {
+    min-width: 10rem;
+}
+
+body.admin-bootstrap-page .admin-log-actor-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.42rem 0.72rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(88, 66, 55, 0.16);
+    white-space: nowrap;
+}
+
+body.admin-bootstrap-page .admin-log-actor-badge.actor-admin {
+    background: rgba(249, 115, 22, 0.14);
+    color: #ffb690;
+}
+
+body.admin-bootstrap-page .admin-log-actor-badge.actor-web {
+    background: rgba(14, 165, 233, 0.14);
+    color: #7dd3fc;
+}
+
+body.admin-bootstrap-page .admin-log-actor-badge.actor-system {
+    background: rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
 }
 
 body.admin-bootstrap-page .customers-table-link:hover {
