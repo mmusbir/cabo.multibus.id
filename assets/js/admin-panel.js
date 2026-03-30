@@ -310,7 +310,6 @@
         // Auto-load data for each section
         if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' }));
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
-        if (id === 'api_access') ajaxListLoad('api_access', { page: 1, per_page: parseInt(document.getElementById('api_access_per_page')?.value || '25', 10) });
         if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
         if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
         if (id === 'routes' && typeof window.switchRouteTab === 'function') {
@@ -417,43 +416,6 @@
         if (perPage) {
           perPage.onchange = function () {
             ajaxListLoad('customers', {
-              page: 1,
-              per_page: parseInt(this.value || '25', 10),
-              search: input?.value || ''
-            });
-          };
-        }
-      }
-
-      if (sectionId === 'api_access') {
-        const input = document.getElementById('search_api_access_input');
-        const btn = document.getElementById('searchApiAccessBtn');
-        const perPage = document.getElementById('api_access_per_page');
-        if (input && !input.dataset.boundLazy) {
-          input.dataset.boundLazy = '1';
-          input.addEventListener('input', function () {
-            const search = this.value;
-            debounce(function () {
-              ajaxListLoad('api_access', {
-                page: 1,
-                per_page: parseInt(perPage?.value || '25', 10),
-                search: search
-              });
-            }, 250);
-          });
-        }
-        if (btn) {
-          btn.onclick = function () {
-            ajaxListLoad('api_access', {
-              page: 1,
-              per_page: parseInt(perPage?.value || '25', 10),
-              search: input?.value || ''
-            });
-          };
-        }
-        if (perPage) {
-          perPage.onchange = function () {
-            ajaxListLoad('api_access', {
               page: 1,
               per_page: parseInt(this.value || '25', 10),
               search: input?.value || ''
@@ -861,15 +823,6 @@
         });
       };
     }
-    if (document.getElementById('api_access_per_page')) {
-      document.getElementById('api_access_per_page').onchange = function () {
-        ajaxListLoad('api_access', {
-          page: 1,
-          per_page: parseInt(this.value, 10),
-          search: document.getElementById('search_api_access_input')?.value || ''
-        });
-      };
-    }
     if (document.getElementById('bookings_per_page')) {
       document.getElementById('bookings_per_page').onchange = function () {
         const target = getActiveBookingTarget();
@@ -983,9 +936,6 @@
           } else if (target === 'customers') {
             params.per_page = parseInt(document.getElementById('customers_per_page')?.value || '25', 10);
             params.search = document.getElementById('search_customer_name_input')?.value || '';
-          } else if (target === 'api_access') {
-            params.per_page = parseInt(document.getElementById('api_access_per_page')?.value || '25', 10);
-            params.search = document.getElementById('search_api_access_input')?.value || '';
           } else if (target === 'routes') {
             params.per_page = parseInt(document.getElementById('routes_per_page')?.value || '25', 10);
             params.type = window.currentRouteType || 'reguler';
@@ -1082,27 +1032,6 @@
           per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10),
           search: search,
           type: document.getElementById('log_activity_type')?.value || ''
-        });
-      };
-    }
-    if (document.getElementById('searchApiAccessBtn')) {
-      document.getElementById('search_api_access_input')?.addEventListener('input', function () {
-        clearTimeout(searchDebounceTimer);
-        const search = this.value;
-        searchDebounceTimer = setTimeout(function () {
-          ajaxListLoad('api_access', {
-            page: 1,
-            per_page: parseInt(document.getElementById('api_access_per_page')?.value || '25', 10),
-            search: search
-          });
-        }, 300);
-      });
-      document.getElementById('searchApiAccessBtn').onclick = function () {
-        const search = document.getElementById('search_api_access_input')?.value || '';
-        ajaxListLoad('api_access', {
-          page: 1,
-          per_page: parseInt(document.getElementById('api_access_per_page')?.value || '25', 10),
-          search: search
         });
       };
     }

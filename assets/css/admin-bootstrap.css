@@ -3094,40 +3094,6 @@ body.admin-bootstrap-page .booking-payment-filter {
     min-width: 11rem;
 }
 
-body.admin-bootstrap-page .booking-creator-filter {
-    min-width: 12rem;
-}
-
-body.admin-bootstrap-page .api-access-secret-wrap {
-    display: flex;
-    align-items: stretch;
-    gap: 0.75rem;
-}
-
-body.admin-bootstrap-page .api-access-secret-wrap textarea {
-    min-height: 5rem;
-}
-
-body.admin-bootstrap-page .api-access-docs-wrap code {
-    font-size: 0.76rem;
-    white-space: normal;
-    word-break: break-all;
-}
-
-body.admin-bootstrap-page .api-access-code-block {
-    margin: 0;
-    padding: 0.95rem 1rem;
-    border-radius: 0.9rem;
-    background: #151821;
-    color: #dce2ec;
-    font-size: 0.78rem;
-    line-height: 1.55;
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow-x: auto;
-    border: 1px solid rgba(148, 163, 184, 0.14);
-}
-
 body.admin-bootstrap-page .booking-per-page-meta {
     min-width: 6.6rem;
 }
@@ -3950,23 +3916,6 @@ body.admin-bootstrap-page .kinetic-trip-line .fa-icon {
 body.admin-bootstrap-page .kinetic-trip-line strong {
     color: #dce2ec;
     font-weight: 600;
-}
-
-body.admin-bootstrap-page .kinetic-trip-creator-trigger {
-    cursor: help;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 0.12rem;
-}
-
-body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive {
-    cursor: pointer;
-}
-
-body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive:hover,
-body.admin-bootstrap-page .kinetic-trip-creator-trigger.is-interactive:focus-visible {
-    color: #f97316;
-    outline: none;
 }
 
 body.admin-bootstrap-page .kinetic-trip-actions {

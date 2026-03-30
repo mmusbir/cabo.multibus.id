@@ -31,7 +31,6 @@
         </button>
         <div class="kinetic-sidebar-links" id="settingsSidebarLinks">
           <a href="#customers" data-target="customers"><i class="fa-solid fa-users fa-icon"></i>Customers</a>
-          <a href="#api_access" data-target="api_access"><i class="fa-solid fa-key fa-icon"></i>API</a>
           <a href="#schedules" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i>Jadwal</a>
           <a href="#cancellations" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i>Logs</a>
           <a href="#routes" data-target="routes"><i class="fa-solid fa-route fa-icon"></i>Rute</a>
@@ -160,7 +159,6 @@
       <div class="menu-section-header">Pengaturan</div>
       <div class="menu-grid">
         <a href="#customers" class="nav-btn" data-target="customers"><i class="fa-solid fa-users fa-icon"></i><span class="nav-label">Customers</span></a>
-        <a href="#api_access" class="nav-btn" data-target="api_access"><i class="fa-solid fa-key fa-icon"></i><span class="nav-label">API</span></a>
         <a href="#schedules" class="nav-btn" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i><span class="nav-label">Jadwal</span></a>
         <a href="#cancellations" class="nav-btn" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i><span class="nav-label">Logs</span></a>
         <a href="#routes" class="nav-btn" data-target="routes"><i class="fa-solid fa-route fa-icon"></i><span class="nav-label">Rute</span></a>
@@ -199,7 +197,7 @@
     const settingsSidebarSection = document.getElementById('settingsSidebarSection');
     const settingsSidebarToggle = document.getElementById('settingsSidebarToggle');
     const settingsMenuStorageKey = 'adminSettingsMenuCollapsed';
-    const settingsTargets = ['customers', 'api_access', 'schedules', 'cancellations', 'routes', 'segments', 'luggage_services', 'units', 'drivers', 'users'];
+    const settingsTargets = ['customers', 'schedules', 'cancellations', 'routes', 'segments', 'luggage_services', 'units', 'drivers', 'users'];
 
     function syncDesktopSidebarButton() {
       const isHidden = document.body.classList.contains('sidebar-hidden');

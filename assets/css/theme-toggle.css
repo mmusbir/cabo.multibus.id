@@ -396,12 +396,6 @@ html[data-theme="light"] body.admin-bootstrap-page .charter-command-card:hover {
   border-color: rgba(249, 115, 22, 0.22) !important;
 }
 
-html[data-theme="light"] body.admin-bootstrap-page .api-access-code-block {
-  background: #f8fafc !important;
-  color: #0f172a !important;
-  border-color: rgba(148, 163, 184, 0.18) !important;
-}
-
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-main,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-title,
 html[data-theme="light"] body.admin-bootstrap-page .kinetic-trip-line,

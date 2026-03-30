@@ -50,7 +50,6 @@ require_once 'config/db.php';
 require_once 'config/auth_config.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
-require_once 'config/external_api.php';
 require_once 'Router.php';
 
 // Check Auth immediately BEFORE any HTML output
@@ -335,7 +334,6 @@ function renderAdminSectionSlot($sectionId) {
     'cancellations' => 'logs',
     'reports' => 'logs',
     'customers' => 'logs',
-    'api_access' => 'logs',
     'routes' => 'logs',
     'schedules' => 'logs',
     'drivers' => 'logs',
@@ -392,7 +390,6 @@ if ($isActionRequest) {
         'bookings' => __DIR__ . '/includes/bookings.php',
         'charter-create' => __DIR__ . '/includes/charter_create.php',
         'customers' => __DIR__ . '/includes/customers.php',
-        'api_access' => __DIR__ . '/includes/api_access.php',
         'routes' => __DIR__ . '/includes/routes.php',
         'schedules' => __DIR__ . '/includes/schedules.php',
         'drivers' => __DIR__ . '/includes/drivers.php',
@@ -419,10 +416,6 @@ if ($isActionRequest) {
       include $ajax_dir . 'customers.php';
     });
 
-    $router->get('api_accessPage', function () use ($ajax_dir) {
-      include $ajax_dir . 'api_access_page.php';
-    });
-    
     $router->get('chartersPage', function () use ($ajax_dir) {
       include $ajax_dir . 'charters.php';
     });
@@ -906,137 +899,6 @@ if (isset($_POST['add_user'])) {
   exit;
 }
 
-if (isset($_POST['save_api_key'])) {
-  external_api_ensure_table($conn);
-  $apiKeyId = isset($_POST['api_key_id']) ? intval($_POST['api_key_id']) : 0;
-  $name = trim((string) ($_POST['api_key_name'] ?? ''));
-  $status = trim((string) ($_POST['api_key_status'] ?? 'active')) === 'inactive' ? 'inactive' : 'active';
-  $notes = trim((string) ($_POST['api_key_notes'] ?? ''));
-  $actor = activity_log_current_actor($auth ?? null);
-
-  if ($name !== '') {
-    if ($apiKeyId > 0) {
-      $oldStmt = $conn->prepare("SELECT name, status FROM external_api_keys WHERE id=? LIMIT 1");
-      $oldStmt->execute([$apiKeyId]);
-      $oldKey = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-
-      $stmt = $conn->prepare("
-        UPDATE external_api_keys
-        SET name=?, status=?, notes=?, updated_at=NOW()
-        WHERE id=?
-      ");
-      $stmt->execute([$name, $status, $notes, $apiKeyId]);
-      activity_log_write(
-        $conn,
-        'settings',
-        'api_key',
-        $apiKeyId,
-        'update',
-        'API key diperbarui: ' . $name,
-        'Sebelumnya: ' . ($oldKey['name'] ?? '-') . ' | Status: ' . ($oldKey['status'] ?? '-') . ' -> ' . $status,
-        $actor
-      );
-    } else {
-      $plainKey = external_api_generate_key();
-      $prefix = external_api_key_prefix($plainKey);
-      $stmt = $conn->prepare("
-        INSERT INTO external_api_keys (name, api_key_hash, api_key_prefix, status, notes, created_by_user_id, created_by_username, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-      ");
-      $stmt->execute([
-        $name,
-        external_api_hash_key($plainKey),
-        $prefix,
-        $status,
-        $notes,
-        (int) ($auth['sub'] ?? 0) ?: null,
-        trim((string) ($auth['user'] ?? $actor)),
-      ]);
-      $_SESSION['generated_external_api_key'] = [
-        'name' => $name,
-        'plain_key' => $plainKey,
-      ];
-      activity_log_write(
-        $conn,
-        'settings',
-        'api_key',
-        $conn->lastInsertId(),
-        'create',
-        'API key dibuat: ' . $name,
-        'Prefix: ' . $prefix . ' | Status: ' . $status,
-        $actor
-      );
-    }
-  }
-  header('Location: admin.php#api_access');
-  exit;
-}
-
-if (isset($_POST['regenerate_api_key'])) {
-  external_api_ensure_table($conn);
-  $apiKeyId = isset($_POST['api_key_id']) ? intval($_POST['api_key_id']) : 0;
-  $actor = activity_log_current_actor($auth ?? null);
-  if ($apiKeyId > 0) {
-    $stmtInfo = $conn->prepare("SELECT name, status, notes, created_by_user_id, created_by_username FROM external_api_keys WHERE id=? LIMIT 1");
-    $stmtInfo->execute([$apiKeyId]);
-    $keyInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: null;
-    if ($keyInfo) {
-      $plainKey = external_api_generate_key();
-      $prefix = external_api_key_prefix($plainKey);
-      $stmt = $conn->prepare("
-        UPDATE external_api_keys
-        SET api_key_hash=?, api_key_prefix=?, updated_at=NOW()
-        WHERE id=?
-      ");
-      $stmt->execute([
-        external_api_hash_key($plainKey),
-        $prefix,
-        $apiKeyId
-      ]);
-      $_SESSION['generated_external_api_key'] = [
-        'name' => (string) ($keyInfo['name'] ?? 'API Key'),
-        'plain_key' => $plainKey,
-      ];
-      activity_log_write(
-        $conn,
-        'settings',
-        'api_key',
-        $apiKeyId,
-        'regenerate',
-        'API key diregenerate: ' . ($keyInfo['name'] ?? ('ID ' . $apiKeyId)),
-        'Prefix baru: ' . $prefix,
-        $actor
-      );
-    }
-  }
-  header('Location: admin.php?edit_api_key=' . $apiKeyId . '#api_access');
-  exit;
-}
-
-if (isset($_GET['delete_api_key'])) {
-  external_api_ensure_table($conn);
-  $id = intval($_GET['delete_api_key']);
-  $actor = activity_log_current_actor($auth ?? null);
-  $stmtInfo = $conn->prepare("SELECT name, api_key_prefix FROM external_api_keys WHERE id=? LIMIT 1");
-  $stmtInfo->execute([$id]);
-  $keyInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: [];
-  $stmt = $conn->prepare("DELETE FROM external_api_keys WHERE id=?");
-  $stmt->execute([$id]);
-  if ($stmt->rowCount() > 0) {
-    activity_log_write(
-      $conn,
-      'settings',
-      'api_key',
-      $id,
-      'delete',
-      'API key dihapus: ' . ($keyInfo['name'] ?? ('ID ' . $id)),
-      'Prefix: ' . ($keyInfo['api_key_prefix'] ?? '-'),
-      $actor
-    );
-  }
-  header('Location: admin.php#api_access');
-  exit;
-}
 if (isset($_GET['delete_user'])) {
   $id = intval($_GET['delete_user']);
   $actor = activity_log_current_actor($auth ?? null);
@@ -1545,7 +1407,7 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=59">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=60">
   <link rel="stylesheet" href="assets/css/theme-toggle.css?v=21">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
@@ -1624,7 +1486,6 @@ if (!isset($_REQUEST['action'])):
         <?php renderAdminSectionSlot('bookings'); ?>
         <?php renderAdminSectionSlot('charter-create'); ?>
         <?php renderAdminSectionSlot('customers'); ?>
-        <?php renderAdminSectionSlot('api_access'); ?>
         <?php renderAdminSectionSlot('routes'); ?>
         <?php renderAdminSectionSlot('schedules'); ?>
         <?php renderAdminSectionSlot('drivers'); ?>
@@ -1908,7 +1769,7 @@ if (!isset($_REQUEST['action'])):
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=4"></script>
+  <script src="assets/js/admin-panel.js?v=5"></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>

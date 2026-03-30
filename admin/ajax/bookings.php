@@ -14,7 +14,6 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $scope = isset($_GET['scope']) ? trim((string) $_GET['scope']) : 'active';
 $tanggalFilter = isset($_GET['tanggal']) ? trim((string) $_GET['tanggal']) : '';
 $paymentFilter = isset($_GET['payment']) ? trim((string) $_GET['payment']) : '';
-$creatorFilter = isset($_GET['creator']) ? trim((string) $_GET['creator']) : '';
 
 $currentMonthStart = date('Y-m-01');
 $currentMonthEnd = date('Y-m-t');
@@ -41,11 +40,6 @@ if ($scope === 'history') {
 if ($tanggalFilter !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalFilter)) {
     $bookingWhere .= " AND b.tanggal = ? ";
     $params[] = $tanggalFilter;
-}
-
-if ($creatorFilter !== '') {
-    $bookingWhere .= " AND COALESCE(NULLIF(TRIM(b.created_by_username), ''), '') = ? ";
-    $params[] = $creatorFilter;
 }
 
 if ($search !== '') {
@@ -88,7 +82,6 @@ if ($search !== '') {
         SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
         SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
         MAX(COALESCE(d.nama, '')) AS driver_name,
-        STRING_AGG(DISTINCT NULLIF(TRIM(COALESCE(b.created_by_username, '')), ''), ', ') AS creator_names
         $baseFrom
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
         $paymentHaving
@@ -130,7 +123,6 @@ if ($search !== '') {
             COUNT(*) AS total_pax,
             SUM(CASE WHEN b.pembayaran = 'Lunas' THEN 1 ELSE 0 END) AS paid_count,
             SUM(CASE WHEN b.pembayaran <> 'Lunas' OR b.pembayaran IS NULL THEN 1 ELSE 0 END) AS unpaid_count,
-            STRING_AGG(DISTINCT NULLIF(TRIM(COALESCE(b.created_by_username, '')), ''), ', ') AS creator_names
         FROM bookings b
         $bookingWhere
         GROUP BY b.rute, b.tanggal, b.jam, b.unit
@@ -145,7 +137,6 @@ if ($search !== '') {
         tb.paid_count,
         tb.unpaid_count,
         COALESCE(d.nama, '') AS driver_name,
-        tb.creator_names
     FROM trip_base tb
     LEFT JOIN trip_assignments ta
       ON ta.rute = tb.rute
@@ -183,20 +174,6 @@ if (empty($rows)) {
         $tripDate = !empty($tanggal) ? strtoupper(date('d M', strtotime($tanggal))) : '-';
         $tripHour = $jam !== '' ? $jam : '--:--';
         $driverName = trim($trip['driver_name'] ?? '') !== '' ? trim($trip['driver_name']) : '-';
-        $creatorNames = array_values(array_filter(array_map('trim', explode(',', (string) ($trip['creator_names'] ?? '')))));
-        if (empty($creatorNames)) {
-            $creatorSummary = 'Admin Panel';
-            $creatorFullList = 'Admin Panel';
-            $creatorInteractive = false;
-        } elseif (count($creatorNames) === 1) {
-            $creatorSummary = $creatorNames[0];
-            $creatorFullList = $creatorNames[0];
-            $creatorInteractive = false;
-        } else {
-            $creatorSummary = $creatorNames[0] . ' +' . (count($creatorNames) - 1);
-            $creatorFullList = implode(', ', $creatorNames);
-            $creatorInteractive = true;
-        }
         $totalPax = intval($trip['total_pax'] ?? 0);
         $paidCount = intval($trip['paid_count'] ?? 0);
         $unpaidCount = intval($trip['unpaid_count'] ?? 0);
@@ -219,7 +196,6 @@ if (empty($rows)) {
         echo '        <h4 class="kinetic-trip-title">' . htmlspecialchars($trip['rute']) . '</h4>';
         echo '        <div class="kinetic-trip-subtitle">Keberangkatan ' . htmlspecialchars(date('d M Y', strtotime($tanggal)) . ' - ' . $tripHour) . ' / Unit ' . $unit . '</div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user fa-icon"></i>Driver: <strong>' . htmlspecialchars($driverName) . '</strong></div>';
-        echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-user-pen fa-icon"></i>Dibuat oleh: <strong class="kinetic-trip-creator-trigger' . ($creatorInteractive ? ' is-interactive' : '') . '" title="' . htmlspecialchars($creatorFullList) . '"' . ($creatorInteractive ? ' role="button" tabindex="0" aria-label="Lihat daftar creator" data-full-creators="' . htmlspecialchars($creatorFullList) . '"' : '') . '>' . htmlspecialchars($creatorSummary) . '</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-users fa-icon"></i>Total booking customer: <strong>' . $totalPax . ' penumpang</strong></div>';
         echo '        <div class="kinetic-trip-line"><i class="fa-solid fa-wallet fa-icon"></i>Lunas ' . $paidCount . ' / Belum lunas ' . $unpaidCount . '</div>';
         echo '      </div>';
@@ -246,7 +222,6 @@ perf_finish('admin.bookingsPage', $perfStartedAt, [
     'search' => $search !== '',
     'tanggal' => $tanggalFilter !== '',
     'payment' => $paymentFilter !== '',
-    'creator' => $creatorFilter !== '',
     'rows' => count($rows),
     'total' => $total,
 ], 120);

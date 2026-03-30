@@ -43,7 +43,6 @@ require_once 'Router.php';
 require_once 'config/db.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
-require_once 'config/external_api.php';
 require_once 'middleware/auth.php';
 
 function apiRequireAdminUser(): array
@@ -56,21 +55,7 @@ function apiRequireAdminUser(): array
     return $auth;
 }
 
-function apiRequireExternalApiUser(PDO $conn): array
-{
-    $auth = external_api_authenticate($conn);
-    if (!$auth) {
-        apiError('unauthorized_api_key', 401);
-    }
-
-    return $auth;
-}
-
-$apiAction = trim((string) ($_REQUEST['action'] ?? ''));
-$externalApiActions = ['externalCreateBooking', 'externalUpdateBooking', 'externalCancelBooking'];
-$apiAuthUser = in_array($apiAction, $externalApiActions, true)
-    ? apiRequireExternalApiUser($conn)
-    : apiRequireAdminUser();
+$apiAuthUser = apiRequireAdminUser();
 
 // Create lazy tables
 $conn->exec("CREATE TABLE IF NOT EXISTS bookings (
@@ -92,7 +77,6 @@ $conn->exec("CREATE TABLE IF NOT EXISTS bookings (
 )");
 $conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_user_id INT NULL");
 $conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_username VARCHAR(255) NULL");
-external_api_ensure_table($conn);
 
 $conn->exec("CREATE TABLE IF NOT EXISTS customers (
     id SERIAL PRIMARY KEY,
@@ -827,30 +811,6 @@ $router->post('submitBooking', function () use ($conn) {
         apiError('invalid_json', 400);
     }
     apiSuccess(processBookingCreate($conn, $data, $auth), 201);
-});
-
-$router->post('externalCreateBooking', function () use ($conn, $apiAuthUser) {
-    $data = getJsonInput();
-    if (empty($data)) {
-        apiError('invalid_json', 400);
-    }
-    apiSuccess(processBookingCreate($conn, $data, $apiAuthUser), 201);
-});
-
-$router->post('externalUpdateBooking', function () use ($conn, $apiAuthUser) {
-    $data = getJsonInput();
-    if (empty($data)) {
-        apiError('invalid_json', 400);
-    }
-    apiSuccess(processBookingUpdate($conn, $data, $apiAuthUser));
-});
-
-$router->post('externalCancelBooking', function () use ($conn, $apiAuthUser) {
-    $data = getJsonInput();
-    if (empty($data)) {
-        apiError('invalid_json', 400);
-    }
-    apiSuccess(processBookingCancel($conn, $data, $apiAuthUser));
 });
 
 // Dispatch the request

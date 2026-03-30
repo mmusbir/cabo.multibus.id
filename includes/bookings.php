@@ -1,20 +1,3 @@
-<?php
-global $conn;
-
-$bookingCreatorOptions = [];
-try {
-    $bookingCreatorStmt = $conn->query("
-        SELECT DISTINCT NULLIF(TRIM(created_by_username), '') AS username
-        FROM bookings
-        WHERE NULLIF(TRIM(created_by_username), '') IS NOT NULL
-          AND NULLIF(TRIM(created_by_username), '') <> 'Admin Panel'
-        ORDER BY LOWER(NULLIF(TRIM(created_by_username), '')) ASC
-    ");
-    $bookingCreatorOptions = $bookingCreatorStmt ? $bookingCreatorStmt->fetchAll(PDO::FETCH_COLUMN) : [];
-} catch (Throwable $e) {
-    $bookingCreatorOptions = [];
-}
-?>
 <!-- BOOKINGS -->
 <section id="bookings" class="card kinetic-command-bookings" data-active-mode="bookings" style="display:none;">
   <div class="kinetic-command-header">
@@ -47,12 +30,6 @@ try {
           <option value="">Semua Pembayaran</option>
           <option value="paid">Lunas</option>
           <option value="unpaid">Belum Lunas</option>
-        </select>
-        <select id="booking_creator_filter" class="form-control kinetic-command-select booking-creator-filter" aria-label="Filter pembuat booking">
-          <option value="">Semua Creator</option>
-          <?php foreach ($bookingCreatorOptions as $creatorName): ?>
-            <option value="<?= htmlspecialchars((string) $creatorName) ?>"><?= htmlspecialchars((string) $creatorName) ?></option>
-          <?php endforeach; ?>
         </select>
         <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
           <i class="fa-solid fa-xmark fa-icon"></i>
@@ -134,7 +111,6 @@ try {
           scope: 'active',
           tanggal: '',
           payment: '',
-          creator: '',
         }
       }
     };
@@ -144,7 +120,7 @@ try {
         window.bookingDashboardState.filters = {};
       }
       if (!window.bookingDashboardState.filters.bookings) {
-        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '', payment: '', creator: '' };
+        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '', payment: '' };
       }
       return window.bookingDashboardState.filters.bookings;
     }
@@ -155,7 +131,6 @@ try {
       const filterControls = document.getElementById('bookingFilterControls');
       const dateInput = document.getElementById('booking_date_filter');
       const paymentInput = document.getElementById('booking_payment_filter');
-      const creatorInput = document.getElementById('booking_creator_filter');
       const pageTitle = document.getElementById('bookingPageTitle');
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
       const historyNote = document.getElementById('bookingHistoryNote');
@@ -175,9 +150,6 @@ try {
       }
       if (paymentInput) {
         paymentInput.value = filters.payment || '';
-      }
-      if (creatorInput) {
-        creatorInput.value = filters.creator || '';
       }
       if (bookingsMode && pageTitle) {
         pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
@@ -204,11 +176,6 @@ try {
         params.payment = filters.payment;
       } else {
         delete params.payment;
-      }
-      if (filters.creator) {
-        params.creator = filters.creator;
-      } else {
-        delete params.creator;
       }
       return params;
     }
@@ -463,17 +430,6 @@ try {
       }
     };
 
-    window.showBookingCreators = function (trigger) {
-      if (!trigger) return;
-      const fullList = trigger.getAttribute('data-full-creators') || trigger.getAttribute('title') || '';
-      if (!fullList) return;
-      if (typeof customAlert === 'function') {
-        customAlert('Dibuat oleh: ' + fullList);
-      } else {
-        window.alert('Dibuat oleh: ' + fullList);
-      }
-    };
-
     window.openBookingTripDetail = async function (trigger) {
       const rute = trigger.getAttribute('data-rute') || '';
       const tanggal = trigger.getAttribute('data-tanggal') || '';
@@ -552,7 +508,6 @@ try {
       const bookingRefreshBtn = document.getElementById('bookingToolbarRefresh');
       const bookingDateInput = document.getElementById('booking_date_filter');
       const bookingPaymentInput = document.getElementById('booking_payment_filter');
-      const bookingCreatorInput = document.getElementById('booking_creator_filter');
       const bookingDateReset = document.getElementById('bookingDateReset');
 
       document.querySelectorAll('.charter-filter-chip').forEach((chip) => {
@@ -560,21 +515,6 @@ try {
           document.querySelectorAll('.charter-filter-chip').forEach((item) => item.classList.remove('active'));
           chip.classList.add('active');
         });
-      });
-
-      document.addEventListener('click', (event) => {
-        const creatorTrigger = event.target.closest('.kinetic-trip-creator-trigger.is-interactive');
-        if (!creatorTrigger) return;
-        event.preventDefault();
-        window.showBookingCreators(creatorTrigger);
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        const creatorTrigger = event.target.closest('.kinetic-trip-creator-trigger.is-interactive');
-        if (!creatorTrigger) return;
-        event.preventDefault();
-        window.showBookingCreators(creatorTrigger);
       });
 
       document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
@@ -616,27 +556,13 @@ try {
         });
       }
 
-      if (bookingCreatorInput) {
-        bookingCreatorInput.addEventListener('change', () => {
-          const filters = getBookingFilters();
-          filters.creator = bookingCreatorInput.value || '';
-          ajaxListLoad('bookings', getBookingListQueryParams({
-            page: 1,
-            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-            search: ''
-          }));
-        });
-      }
-
       if (bookingDateReset) {
         bookingDateReset.addEventListener('click', () => {
           const filters = getBookingFilters();
           filters.tanggal = '';
           filters.payment = '';
-          filters.creator = '';
           if (bookingDateInput) bookingDateInput.value = '';
           if (bookingPaymentInput) bookingPaymentInput.value = '';
-          if (bookingCreatorInput) bookingCreatorInput.value = '';
           syncBookingFilterUi();
           ajaxListLoad('bookings', getBookingListQueryParams({
             page: 1,
