@@ -7,6 +7,7 @@ try {
         SELECT DISTINCT NULLIF(TRIM(created_by_username), '') AS username
         FROM bookings
         WHERE NULLIF(TRIM(created_by_username), '') IS NOT NULL
+          AND NULLIF(TRIM(created_by_username), '') <> 'Admin Panel'
         ORDER BY LOWER(NULLIF(TRIM(created_by_username), '')) ASC
     ");
     $bookingCreatorOptions = $bookingCreatorStmt ? $bookingCreatorStmt->fetchAll(PDO::FETCH_COLUMN) : [];
