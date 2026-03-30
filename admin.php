@@ -291,12 +291,25 @@ function renderAdminSectionSkeleton($type = 'default') {
     echo '<span class="admin-section-skeleton-field"></span>';
     echo '<span class="admin-section-skeleton-field admin-section-skeleton-field-short"></span>';
     echo '</div>';
-    echo '<div class="admin-section-skeleton-table">';
-    echo '<div class="admin-section-skeleton-table-head"></div>';
-    echo '<div class="admin-section-skeleton-table-row"></div>';
-    echo '<div class="admin-section-skeleton-table-row"></div>';
-    echo '<div class="admin-section-skeleton-table-row"></div>';
-    echo '<div class="admin-section-skeleton-table-row"></div>';
+    echo '<div class="admin-section-skeleton-table admin-section-skeleton-table-detailed">';
+    echo '<div class="admin-section-skeleton-table-head admin-section-skeleton-table-head-detailed">';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-time"></span>';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-source"></span>';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-category"></span>';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-action"></span>';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-summary"></span>';
+    echo '<span class="admin-section-skeleton-table-col admin-section-skeleton-table-col-actor"></span>';
+    echo '</div>';
+    for ($i = 0; $i < 4; $i++) {
+      echo '<div class="admin-section-skeleton-table-detail-row">';
+      echo '<span class="admin-section-skeleton-table-cell time"></span>';
+      echo '<span class="admin-section-skeleton-table-cell source"></span>';
+      echo '<span class="admin-section-skeleton-table-cell category"></span>';
+      echo '<span class="admin-section-skeleton-table-cell action"></span>';
+      echo '<span class="admin-section-skeleton-table-cell summary"></span>';
+      echo '<span class="admin-section-skeleton-table-cell actor"></span>';
+      echo '</div>';
+    }
     echo '</div>';
     echo '</div>';
     return;
@@ -1393,8 +1406,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=53">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=18">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=54">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=19">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {

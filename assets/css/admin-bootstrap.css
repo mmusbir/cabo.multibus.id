@@ -3611,6 +3611,8 @@ body.admin-bootstrap-page .admin-section-skeleton-trip-time,
 body.admin-bootstrap-page .admin-section-skeleton-trip-meta,
 body.admin-bootstrap-page .admin-section-skeleton-trip-title,
 body.admin-bootstrap-page .admin-section-skeleton-trip-line,
+body.admin-bootstrap-page .admin-section-skeleton-table-col,
+body.admin-bootstrap-page .admin-section-skeleton-table-cell,
 body.admin-bootstrap-page .admin-section-skeleton-table-head,
 body.admin-bootstrap-page .admin-section-skeleton-table-row,
 body.admin-bootstrap-page .admin-section-skeleton-list-card {
@@ -3629,6 +3631,8 @@ body.admin-bootstrap-page .admin-section-skeleton-trip-time::after,
 body.admin-bootstrap-page .admin-section-skeleton-trip-meta::after,
 body.admin-bootstrap-page .admin-section-skeleton-trip-title::after,
 body.admin-bootstrap-page .admin-section-skeleton-trip-line::after,
+body.admin-bootstrap-page .admin-section-skeleton-table-col::after,
+body.admin-bootstrap-page .admin-section-skeleton-table-cell::after,
 body.admin-bootstrap-page .admin-section-skeleton-table-head::after,
 body.admin-bootstrap-page .admin-section-skeleton-table-row::after,
 body.admin-bootstrap-page .admin-section-skeleton-list-card::after {
@@ -3737,14 +3741,56 @@ body.admin-bootstrap-page .admin-section-skeleton-table {
   display: grid;
   gap: 12px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-table-detailed {
+  gap: 10px;
+}
 body.admin-bootstrap-page .admin-section-skeleton-table-head {
   height: 54px;
   border-radius: 18px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-table-head-detailed {
+  display: grid;
+  grid-template-columns: 0.9fr 0.7fr 0.9fr 0.9fr 1.8fr 0.9fr;
+  gap: 12px;
+  padding: 12px 14px;
+  height: auto;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-col {
+  height: 12px;
+  border-radius: 999px;
+  align-self: center;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-col-time { width: 68%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-col-source { width: 72%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-col-category { width: 76%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-col-action { width: 74%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-col-summary { width: 88%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-col-actor { width: 70%; }
 body.admin-bootstrap-page .admin-section-skeleton-table-row {
   height: 74px;
   border-radius: 18px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row {
+  display: grid;
+  grid-template-columns: 0.9fr 0.7fr 0.9fr 0.9fr 1.8fr 0.9fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 78px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(31, 36, 48, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell {
+  height: 12px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.time { width: 76%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.source { width: 66%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.category { width: 70%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.action { width: 72%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.summary { width: 94%; }
+body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.actor { width: 68%; }
 @keyframes adminShellPulse {
   100% {
     transform: translateX(100%);
@@ -3807,6 +3853,16 @@ body.admin-bootstrap-page .admin-section-skeleton-table-row {
   body.admin-bootstrap-page .admin-section-skeleton-mini-btn,
   body.admin-bootstrap-page .admin-section-skeleton-mini-btn-primary {
     width: calc(50% - 5px);
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-table-head-detailed,
+  body.admin-bootstrap-page .admin-section-skeleton-table-detail-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-table-col-summary,
+  body.admin-bootstrap-page .admin-section-skeleton-table-col-actor,
+  body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.summary,
+  body.admin-bootstrap-page .admin-section-skeleton-table-detail-row .admin-section-skeleton-table-cell.actor {
+    grid-column: 1 / -1;
   }
   body.admin-bootstrap-page .admin-section-skeleton-grid-2 {
     grid-template-columns: 1fr;

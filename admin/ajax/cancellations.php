@@ -78,12 +78,17 @@ if (empty($rows)) {
         $tone = activity_log_tone($category, $action);
         $summary = trim((string) ($row['summary'] ?? '-'));
         $details = trim((string) ($row['details'] ?? ''));
-        $actor = trim((string) ($row['actor'] ?? 'system'));
+        $actor = trim((string) ($row['actor'] ?? ''));
         $source = 'ADMIN';
-        if (in_array(strtolower($actor), ['web', 'public'], true)) {
+        if ($actor === '' && in_array($category, ['booking', 'charter', 'luggage'], true)) {
             $source = 'WEB';
-        } elseif (in_array(strtolower($actor), ['system', 'cron'], true)) {
+            $actor = 'Web Booking';
+        } elseif (in_array(strtolower($actor), ['web', 'public'], true)) {
+            $source = 'WEB';
+            $actor = 'Web Booking';
+        } elseif (in_array(strtolower($actor), ['system', 'cron'], true) || $actor === '') {
             $source = 'SYSTEM';
+            $actor = 'System';
         }
         $absoluteTime = !empty($row['created_at']) ? date('d M Y H:i', strtotime((string) $row['created_at'])) . ' WITA' : '-';
 
@@ -101,7 +106,7 @@ if (empty($rows)) {
             echo '    <div class="admin-log-details">' . htmlspecialchars($details) . '</div>';
         }
         echo '  </td>';
-        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($source === 'ADMIN' ? $actor : '-') . '</td>';
+        echo '  <td class="admin-log-actor-cell">' . htmlspecialchars($actor) . '</td>';
         echo '</tr>';
     }
 }
