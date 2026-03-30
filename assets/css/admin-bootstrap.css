@@ -3430,12 +3430,25 @@ body.admin-bootstrap-page .admin-shell-loader-panel {
   display: grid;
   gap: 22px;
 }
+body.admin-bootstrap-page .admin-shell-loader-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+}
+body.admin-bootstrap-page .admin-shell-loader-title-wrap {
+  display: grid;
+  gap: 12px;
+}
 body.admin-bootstrap-page .admin-shell-loader-topbar,
 body.admin-bootstrap-page .admin-shell-loader-title,
 body.admin-bootstrap-page .admin-shell-loader-subtitle,
 body.admin-bootstrap-page .admin-shell-loader-metric,
 body.admin-bootstrap-page .admin-shell-loader-chart,
 body.admin-bootstrap-page .admin-shell-loader-side-card,
+body.admin-bootstrap-page .admin-shell-loader-export,
+body.admin-bootstrap-page .admin-shell-loader-panel-pill,
+body.admin-bootstrap-page .admin-shell-loader-revenue-card,
 body.admin-bootstrap-page .admin-section-skeleton-pill,
 body.admin-bootstrap-page .admin-section-skeleton-hero,
 body.admin-bootstrap-page .admin-section-skeleton-card {
@@ -3450,6 +3463,9 @@ body.admin-bootstrap-page .admin-shell-loader-subtitle::after,
 body.admin-bootstrap-page .admin-shell-loader-metric::after,
 body.admin-bootstrap-page .admin-shell-loader-chart::after,
 body.admin-bootstrap-page .admin-shell-loader-side-card::after,
+body.admin-bootstrap-page .admin-shell-loader-export::after,
+body.admin-bootstrap-page .admin-shell-loader-panel-pill::after,
+body.admin-bootstrap-page .admin-shell-loader-revenue-card::after,
 body.admin-bootstrap-page .admin-section-skeleton-pill::after,
 body.admin-bootstrap-page .admin-section-skeleton-hero::after,
 body.admin-bootstrap-page .admin-section-skeleton-card::after {
@@ -3464,12 +3480,18 @@ body.admin-bootstrap-page .admin-shell-loader-topbar {
   height: 56px;
   border-radius: 24px;
 }
-body.admin-bootstrap-page .admin-shell-loader-grid {
+body.admin-bootstrap-page .admin-shell-loader-export {
+  width: 196px;
+  height: 48px;
+  border-radius: 18px;
+  flex: 0 0 auto;
+}
+body.admin-bootstrap-page .admin-shell-loader-analytics {
   display: grid;
   grid-template-columns: minmax(0, 1.75fr) minmax(280px, 0.85fr);
   gap: 22px;
 }
-body.admin-bootstrap-page .admin-shell-loader-main,
+body.admin-bootstrap-page .admin-shell-loader-chart-panel,
 body.admin-bootstrap-page .admin-shell-loader-side {
   display: grid;
   gap: 18px;
@@ -3493,13 +3515,40 @@ body.admin-bootstrap-page .admin-shell-loader-metric {
   height: 96px;
   border-radius: 24px;
 }
+body.admin-bootstrap-page .admin-shell-loader-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+body.admin-bootstrap-page .admin-shell-loader-panel-pill {
+  width: 168px;
+  height: 15px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-shell-loader-panel-pill-short {
+  width: 92px;
+}
 body.admin-bootstrap-page .admin-shell-loader-chart {
   min-height: 340px;
   border-radius: 28px;
 }
+body.admin-bootstrap-page .admin-shell-loader-revenue-row,
+body.admin-bootstrap-page .admin-shell-loader-insights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+body.admin-bootstrap-page .admin-shell-loader-revenue-card {
+  min-height: 118px;
+  border-radius: 22px;
+}
 body.admin-bootstrap-page .admin-shell-loader-side-card {
   min-height: 176px;
   border-radius: 28px;
+}
+body.admin-bootstrap-page .admin-shell-loader-side-card-tall {
+  min-height: 516px;
 }
 body.admin-bootstrap-page .admin-section-slot.is-loading .admin-lazy-section {
   display: block !important;
@@ -3615,14 +3664,28 @@ body.admin-bootstrap-page .admin-section-skeleton-table-row {
   body.admin-bootstrap-page .admin-shell-loader {
     padding: 94px 16px 16px 16px;
   }
-  body.admin-bootstrap-page .admin-shell-loader-grid {
+  body.admin-bootstrap-page .admin-shell-loader-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-export {
+    width: 100%;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-analytics {
     grid-template-columns: 1fr;
   }
   body.admin-bootstrap-page .admin-shell-loader-side {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
   body.admin-bootstrap-page .admin-shell-loader-chart {
     min-height: 240px;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-side-card-tall {
+    min-height: 180px;
+  }
+  body.admin-bootstrap-page .admin-shell-loader-revenue-row,
+  body.admin-bootstrap-page .admin-shell-loader-insights {
+    grid-template-columns: 1fr;
   }
   body.admin-bootstrap-page .admin-section-skeleton-grid-2 {
     grid-template-columns: 1fr;

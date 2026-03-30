@@ -1362,8 +1362,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=49">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=15">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=50">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=16">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1394,21 +1394,40 @@ if (!isset($_REQUEST['action'])):
   <div class="admin-shell-loader" id="adminShellLoader" aria-hidden="true">
     <div class="admin-shell-loader-panel">
       <div class="admin-shell-loader-topbar"></div>
-      <div class="admin-shell-loader-grid">
-        <div class="admin-shell-loader-main">
+      <div class="admin-shell-loader-head">
+        <div class="admin-shell-loader-title-wrap">
           <div class="admin-shell-loader-title"></div>
           <div class="admin-shell-loader-subtitle"></div>
-          <div class="admin-shell-loader-metrics">
-            <span class="admin-shell-loader-metric"></span>
-            <span class="admin-shell-loader-metric"></span>
-            <span class="admin-shell-loader-metric"></span>
+        </div>
+        <div class="admin-shell-loader-export"></div>
+      </div>
+      <div class="admin-shell-loader-metrics">
+        <span class="admin-shell-loader-metric"></span>
+        <span class="admin-shell-loader-metric"></span>
+        <span class="admin-shell-loader-metric"></span>
+        <span class="admin-shell-loader-metric"></span>
+      </div>
+      <div class="admin-shell-loader-analytics">
+        <div class="admin-shell-loader-chart-panel">
+          <div class="admin-shell-loader-panel-head">
+            <span class="admin-shell-loader-panel-pill"></span>
+            <span class="admin-shell-loader-panel-pill admin-shell-loader-panel-pill-short"></span>
           </div>
           <div class="admin-shell-loader-chart"></div>
+          <div class="admin-shell-loader-revenue-row">
+            <span class="admin-shell-loader-revenue-card"></span>
+            <span class="admin-shell-loader-revenue-card"></span>
+            <span class="admin-shell-loader-revenue-card"></span>
+          </div>
         </div>
         <div class="admin-shell-loader-side">
-          <div class="admin-shell-loader-side-card"></div>
-          <div class="admin-shell-loader-side-card"></div>
+          <div class="admin-shell-loader-side-card admin-shell-loader-side-card-tall"></div>
         </div>
+      </div>
+      <div class="admin-shell-loader-insights">
+        <div class="admin-shell-loader-side-card"></div>
+        <div class="admin-shell-loader-side-card"></div>
+        <div class="admin-shell-loader-side-card"></div>
       </div>
     </div>
   </div>
