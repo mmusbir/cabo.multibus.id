@@ -9,10 +9,13 @@
 if (!isset($conn)) {
   require_once __DIR__ . '/config/db.php';
 }
+require_once __DIR__ . '/config/external_api.php';
 
 // ==================== TABLE SETUP ====================
 
 // 1. Ensure all tables exist first
+external_api_ensure_table($conn);
+
 $conn->exec("CREATE TABLE IF NOT EXISTS charters (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

@@ -3098,6 +3098,22 @@ body.admin-bootstrap-page .booking-creator-filter {
     min-width: 12rem;
 }
 
+body.admin-bootstrap-page .api-access-secret-wrap {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+body.admin-bootstrap-page .api-access-secret-wrap textarea {
+    min-height: 5rem;
+}
+
+body.admin-bootstrap-page .api-access-docs-wrap code {
+    font-size: 0.76rem;
+    white-space: normal;
+    word-break: break-all;
+}
+
 body.admin-bootstrap-page .booking-per-page-meta {
     min-width: 6.6rem;
 }
