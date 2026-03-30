@@ -5638,11 +5638,19 @@ body.admin-bootstrap-page .kinetic-sidebar-section-toggle {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+}
+
+body.admin-bootstrap-page .kinetic-sidebar-section-title .fa-icon {
+    font-size: 0.82rem;
+    color: #f97316;
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-section-caret {
@@ -7241,6 +7249,9 @@ body.admin-bootstrap-page .kinetic-sidebar-section {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-section-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0 0.75rem 0.35rem;
     font-size: 0.62rem;
 }

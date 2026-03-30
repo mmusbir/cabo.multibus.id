@@ -24,9 +24,9 @@
         <a href="#reports" data-target="reports" data-nav-key="reports"><i class="fa-solid fa-chart-column fa-icon"></i>Laporan</a>
       </nav>
 
-      <div class="kinetic-sidebar-section kinetic-sidebar-submenu" id="settingsSidebarSection">
-        <button class="kinetic-sidebar-section-toggle" id="settingsSidebarToggle" type="button" aria-expanded="true" aria-controls="settingsSidebarLinks">
-          <span class="kinetic-sidebar-section-title">Pengaturan</span>
+      <div class="kinetic-sidebar-section kinetic-sidebar-submenu is-collapsed" id="settingsSidebarSection">
+        <button class="kinetic-sidebar-section-toggle" id="settingsSidebarToggle" type="button" aria-expanded="false" aria-controls="settingsSidebarLinks">
+          <span class="kinetic-sidebar-section-title"><i class="fa-solid fa-gear fa-icon"></i><span>Pengaturan</span></span>
           <i class="fa-solid fa-chevron-down fa-icon kinetic-sidebar-section-caret"></i>
         </button>
         <div class="kinetic-sidebar-links" id="settingsSidebarLinks">
@@ -431,8 +431,11 @@
       if (window.matchMedia('(min-width: 992px)').matches && window.localStorage.getItem(sidebarStorageKey) === '1') {
         document.body.classList.add('sidebar-hidden');
       }
-      if (window.localStorage.getItem(settingsMenuStorageKey) === '1' && !isSettingsTarget(initialTarget)) {
+      const storedSettingsState = window.localStorage.getItem(settingsMenuStorageKey);
+      if (storedSettingsState === '1' || (!storedSettingsState && !isSettingsTarget(initialTarget))) {
         setSettingsMenuCollapsed(true, false);
+      } else if (storedSettingsState === '0') {
+        setSettingsMenuCollapsed(false, false);
       }
     } catch (err) {
       // Ignore unavailable storage.

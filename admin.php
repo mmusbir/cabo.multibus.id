@@ -1393,7 +1393,7 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=52">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=53">
   <link rel="stylesheet" href="assets/css/theme-toggle.css?v=18">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
