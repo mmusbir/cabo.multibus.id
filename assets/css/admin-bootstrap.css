@@ -3530,9 +3530,81 @@ body.admin-bootstrap-page .admin-section-skeleton-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-grid-2 {
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.85fr);
+}
 body.admin-bootstrap-page .admin-section-skeleton-card {
   min-height: 140px;
   border-radius: 22px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-card-wide {
+  min-height: 180px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-hero-tall {
+  min-height: 160px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+body.admin-bootstrap-page .admin-section-skeleton-chip,
+body.admin-bootstrap-page .admin-section-skeleton-field,
+body.admin-bootstrap-page .admin-section-skeleton-table-head,
+body.admin-bootstrap-page .admin-section-skeleton-table-row,
+body.admin-bootstrap-page .admin-section-skeleton-list-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(31, 36, 48, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+body.admin-bootstrap-page .admin-section-skeleton-chip::after,
+body.admin-bootstrap-page .admin-section-skeleton-field::after,
+body.admin-bootstrap-page .admin-section-skeleton-table-head::after,
+body.admin-bootstrap-page .admin-section-skeleton-table-row::after,
+body.admin-bootstrap-page .admin-section-skeleton-list-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.11), transparent);
+  animation: adminShellPulse 1.35s ease-in-out infinite;
+}
+body.admin-bootstrap-page .admin-section-skeleton-chip {
+  width: 98px;
+  height: 34px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-field {
+  width: min(240px, 100%);
+  height: 42px;
+  border-radius: 16px;
+  flex: 1 1 220px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-field-short {
+  max-width: 120px;
+  flex-basis: 120px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-list {
+  display: grid;
+  gap: 16px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-list-card {
+  min-height: 132px;
+  border-radius: 24px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table {
+  display: grid;
+  gap: 12px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-head {
+  height: 54px;
+  border-radius: 18px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-table-row {
+  height: 74px;
+  border-radius: 18px;
 }
 @keyframes adminShellPulse {
   100% {
@@ -3551,6 +3623,9 @@ body.admin-bootstrap-page .admin-section-skeleton-card {
   }
   body.admin-bootstrap-page .admin-shell-loader-chart {
     min-height: 240px;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-grid-2 {
+    grid-template-columns: 1fr;
   }
   body.admin-bootstrap-page .admin-section-skeleton-grid {
     grid-template-columns: 1fr;

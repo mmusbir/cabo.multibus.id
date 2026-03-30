@@ -217,15 +217,60 @@ function renderAdminSectionFragmentFile($file) {
   return ob_get_clean();
 }
 
-function renderAdminSectionSlot($sectionId) {
-  $safeId = preg_replace('/[^a-z0-9\-_]/i', '', (string) $sectionId);
-  echo '<div id="section-slot-' . htmlspecialchars($safeId) . '" class="admin-section-slot" data-section-slot="' . htmlspecialchars($safeId) . '" data-loaded="0">';
-  echo '<section id="' . htmlspecialchars($safeId) . '" class="card admin-lazy-section" style="display:none;">';
-  echo '<div class="admin-section-skeleton" aria-hidden="true">';
+function renderAdminSectionSkeleton($type = 'default') {
+  echo '<div class="admin-section-skeleton admin-section-skeleton-' . htmlspecialchars($type) . '" aria-hidden="true">';
   echo '<div class="admin-section-skeleton-head">';
   echo '<span class="admin-section-skeleton-pill"></span>';
   echo '<span class="admin-section-skeleton-pill admin-section-skeleton-pill-short"></span>';
   echo '</div>';
+
+  if ($type === 'booking') {
+    echo '<div class="admin-section-skeleton-toolbar">';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-field"></span>';
+    echo '<span class="admin-section-skeleton-field admin-section-skeleton-field-short"></span>';
+    echo '</div>';
+    echo '<div class="admin-section-skeleton-list">';
+    echo '<div class="admin-section-skeleton-list-card"></div>';
+    echo '<div class="admin-section-skeleton-list-card"></div>';
+    echo '</div>';
+    echo '</div>';
+    return;
+  }
+
+  if ($type === 'charter') {
+    echo '<div class="admin-section-skeleton-toolbar">';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '</div>';
+    echo '<div class="admin-section-skeleton-hero admin-section-skeleton-hero-tall"></div>';
+    echo '<div class="admin-section-skeleton-grid admin-section-skeleton-grid-2">';
+    echo '<div class="admin-section-skeleton-card admin-section-skeleton-card-wide"></div>';
+    echo '<div class="admin-section-skeleton-card"></div>';
+    echo '</div>';
+    echo '</div>';
+    return;
+  }
+
+  if ($type === 'logs') {
+    echo '<div class="admin-section-skeleton-toolbar">';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-field"></span>';
+    echo '<span class="admin-section-skeleton-field admin-section-skeleton-field-short"></span>';
+    echo '</div>';
+    echo '<div class="admin-section-skeleton-table">';
+    echo '<div class="admin-section-skeleton-table-head"></div>';
+    echo '<div class="admin-section-skeleton-table-row"></div>';
+    echo '<div class="admin-section-skeleton-table-row"></div>';
+    echo '<div class="admin-section-skeleton-table-row"></div>';
+    echo '<div class="admin-section-skeleton-table-row"></div>';
+    echo '</div>';
+    echo '</div>';
+    return;
+  }
+
   echo '<div class="admin-section-skeleton-hero"></div>';
   echo '<div class="admin-section-skeleton-grid">';
   echo '<div class="admin-section-skeleton-card"></div>';
@@ -233,6 +278,30 @@ function renderAdminSectionSlot($sectionId) {
   echo '<div class="admin-section-skeleton-card"></div>';
   echo '</div>';
   echo '</div>';
+}
+
+function renderAdminSectionSlot($sectionId) {
+  $safeId = preg_replace('/[^a-z0-9\-_]/i', '', (string) $sectionId);
+  $skeletonMap = [
+    'bookings' => 'booking',
+    'booking-detail' => 'booking',
+    'charter-create' => 'charter',
+    'luggage' => 'charter',
+    'cancellations' => 'logs',
+    'reports' => 'logs',
+    'customers' => 'logs',
+    'routes' => 'logs',
+    'schedules' => 'logs',
+    'drivers' => 'logs',
+    'segments' => 'logs',
+    'users' => 'logs',
+    'units' => 'logs',
+    'luggage_services' => 'logs'
+  ];
+  $skeletonType = $skeletonMap[$safeId] ?? 'default';
+  echo '<div id="section-slot-' . htmlspecialchars($safeId) . '" class="admin-section-slot" data-section-slot="' . htmlspecialchars($safeId) . '" data-loaded="0">';
+  echo '<section id="' . htmlspecialchars($safeId) . '" class="card admin-lazy-section" style="display:none;">';
+  renderAdminSectionSkeleton($skeletonType);
   echo '</section>';
   echo '</div>';
 }
@@ -1293,8 +1362,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=48">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=14">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=49">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=15">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
@@ -1636,7 +1705,7 @@ if (!isset($_REQUEST['action'])):
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=2"></script>
+  <script src="assets/js/admin-panel.js?v=3"></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>

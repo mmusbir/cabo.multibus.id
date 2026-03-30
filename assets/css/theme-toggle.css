@@ -1395,7 +1395,12 @@ html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-chart,
 html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-side-card,
 html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-pill,
 html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-hero,
-html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card {
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-chip,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-field,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-table-head,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-table-row,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-list-card {
   background: rgba(255, 255, 255, 0.94);
   border-color: rgba(148, 163, 184, 0.18);
 }
@@ -1408,6 +1413,11 @@ html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-chart::af
 html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader-side-card::after,
 html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-pill::after,
 html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-hero::after,
-html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card::after {
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-card::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-chip::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-field::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-table-head::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-table-row::after,
+html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-list-card::after {
   background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.22), transparent);
 }
