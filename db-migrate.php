@@ -202,6 +202,12 @@ if (!db_column_exists($conn, 'bookings', 'segment_id')) {
   $conn->exec("ALTER TABLE bookings ADD COLUMN price NUMERIC(15,2) DEFAULT 0");
   $conn->exec("ALTER TABLE bookings ADD COLUMN discount NUMERIC(15,2) DEFAULT 0");
 }
+if (!db_column_exists($conn, 'bookings', 'created_by_user_id')) {
+  $conn->exec("ALTER TABLE bookings ADD COLUMN created_by_user_id INT NULL");
+}
+if (!db_column_exists($conn, 'bookings', 'created_by_username')) {
+  $conn->exec("ALTER TABLE bookings ADD COLUMN created_by_username VARCHAR(255) NULL");
+}
 if (!db_column_exists($conn, 'segments', 'origin')) {
   $conn->exec("ALTER TABLE segments ADD COLUMN origin VARCHAR(255)");
   $conn->exec("ALTER TABLE segments ADD COLUMN destination VARCHAR(255)");
