@@ -3094,6 +3094,10 @@ body.admin-bootstrap-page .booking-payment-filter {
     min-width: 11rem;
 }
 
+body.admin-bootstrap-page .booking-creator-filter {
+    min-width: 12rem;
+}
+
 body.admin-bootstrap-page .booking-per-page-meta {
     min-width: 6.6rem;
 }
@@ -3916,6 +3920,13 @@ body.admin-bootstrap-page .kinetic-trip-line .fa-icon {
 body.admin-bootstrap-page .kinetic-trip-line strong {
     color: #dce2ec;
     font-weight: 600;
+}
+
+body.admin-bootstrap-page .kinetic-trip-creator-trigger {
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.12rem;
 }
 
 body.admin-bootstrap-page .kinetic-trip-actions {
