@@ -208,6 +208,17 @@ if (!db_column_exists($conn, 'bookings', 'created_by_user_id')) {
 if (!db_column_exists($conn, 'bookings', 'created_by_username')) {
   $conn->exec("ALTER TABLE bookings ADD COLUMN created_by_username VARCHAR(255) NULL");
 }
+
+try {
+  $conn->exec("
+    UPDATE bookings
+    SET created_by_username = 'Admin Panel'
+    WHERE COALESCE(NULLIF(TRIM(created_by_username), ''), '') = ''
+  ");
+} catch (PDOException $e) {
+  // Silent fail
+}
+
 if (!db_column_exists($conn, 'segments', 'origin')) {
   $conn->exec("ALTER TABLE segments ADD COLUMN origin VARCHAR(255)");
   $conn->exec("ALTER TABLE segments ADD COLUMN destination VARCHAR(255)");
