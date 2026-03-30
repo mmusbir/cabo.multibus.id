@@ -18,10 +18,12 @@ $html = file_get_contents($htmlPath);
 if ($auth) {
     $html = str_replace(
         ['{{USER_NAME}}', '{{USER_INITIAL}}'], 
-        [htmlspecialchars($auth['user']), htmlspecialchars(strtoupper(substr($auth['user'], 0, 1)))], 
+        [
+            htmlspecialchars((string) ($auth['user'] ?? 'Admin')),
+            htmlspecialchars(strtoupper(substr((string) ($auth['user'] ?? 'A'), 0, 1)))
+        ], 
         $html
     );
 }
 echo $html;
 exit;
-

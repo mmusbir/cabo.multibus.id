@@ -75,6 +75,8 @@ $conn->exec("CREATE TABLE IF NOT EXISTS bookings (
     discount NUMERIC(15,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW()
 )");
+$conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_user_id INT NULL");
+$conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_username VARCHAR(255) NULL");
 
 $conn->exec("CREATE TABLE IF NOT EXISTS customers (
     id SERIAL PRIMARY KEY,
@@ -687,14 +689,29 @@ $router->post('submitBooking', function () use ($conn) {
 
         // Insert bookings
         $insert_stmt = $conn->prepare("
-            INSERT INTO bookings (rute, tanggal, jam, unit, seat, name, phone, pickup_point, pembayaran, status, created_at, segment_id, price, discount) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), ?, ?, ?)
+            INSERT INTO bookings (rute, tanggal, jam, unit, seat, name, phone, pickup_point, pembayaran, status, created_at, segment_id, price, discount, created_by_user_id, created_by_username) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), ?, ?, ?, ?, ?)
         ");
 
         foreach ($seats as $s) {
             $seatStr = (string) $s;
             try {
-                $insert_stmt->execute([$rute, $tanggal, $jam, $unit, $seatStr, $name, $phone, $pickup_point, $pembayaran, $segment_id, $price, $discountPerSeat]);
+                $insert_stmt->execute([
+                    $rute,
+                    $tanggal,
+                    $jam,
+                    $unit,
+                    $seatStr,
+                    $name,
+                    $phone,
+                    $pickup_point,
+                    $pembayaran,
+                    $segment_id,
+                    $price,
+                    $discountPerSeat,
+                    (int) ($auth['sub'] ?? 0) ?: null,
+                    trim((string) ($actor ?? ($auth['user'] ?? '')))
+                ]);
             } catch (PDOException $e) {
                 if ($e->getCode() == '23505') {
                     $conflict[] = $seatStr;

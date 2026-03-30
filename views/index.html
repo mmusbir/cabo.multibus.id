@@ -1750,6 +1750,24 @@
         text-transform: uppercase;
       }
 
+      .mobile-slate-topbar-title-wrap {
+        display: grid;
+        justify-items: center;
+        gap: 0.1rem;
+      }
+
+      .mobile-slate-topbar-operator {
+        font-size: 0.56rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.9);
+        max-width: 10rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       #main-card {
         border: 0;
         box-shadow: none;
@@ -2172,6 +2190,24 @@
     .desktop-terminal-mark {
       font-size: 0.72rem;
       letter-spacing: 0.18em;
+    }
+
+    .desktop-terminal-operator {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      max-width: 18rem;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.12);
+      color: rgba(226, 232, 240, 0.88);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .desktop-terminal-topbar-right {
@@ -3415,6 +3451,7 @@
       <div class="desktop-terminal-brand-copy">
         <div class="desktop-terminal-brand">Cahaya Bone</div>
         <div class="desktop-terminal-mark">Booking Kursi</div>
+        <div class="desktop-terminal-operator">Operator: {{USER_NAME}}</div>
       </div>
     </div>
     <div class="desktop-terminal-topbar-right">
@@ -3453,7 +3490,10 @@
     <a class="mobile-slate-topbar-action" href="admin.php" aria-label="Buka admin">
       <i class="fa-solid fa-bars fa-icon"></i>
     </a>
-    <div class="mobile-slate-topbar-title">Booking Kursi</div>
+    <div class="mobile-slate-topbar-title-wrap">
+      <div class="mobile-slate-topbar-title">Booking Kursi</div>
+      <div class="mobile-slate-topbar-operator">{{USER_NAME}}</div>
+    </div>
     <div class="flex-center-gap">
       <button class="mobile-slate-topbar-action theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
         <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
