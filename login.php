@@ -85,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (err) {}
         })();
     </script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="assets/lib/tailwind/tailwind.browser.min.js?v=1"></script>
+    <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
     <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
     <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13">
     <script id="tailwind-config">
