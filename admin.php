@@ -225,15 +225,46 @@ function renderAdminSectionSkeleton($type = 'default') {
   echo '</div>';
 
   if ($type === 'booking') {
-    echo '<div class="admin-section-skeleton-toolbar">';
-    echo '<span class="admin-section-skeleton-chip"></span>';
-    echo '<span class="admin-section-skeleton-chip"></span>';
-    echo '<span class="admin-section-skeleton-field"></span>';
+    echo '<div class="admin-section-skeleton-toolbar admin-section-skeleton-toolbar-booking">';
+    echo '<span class="admin-section-skeleton-button"></span>';
+    echo '<span class="admin-section-skeleton-field admin-section-skeleton-field-search"></span>';
     echo '<span class="admin-section-skeleton-field admin-section-skeleton-field-short"></span>';
+    echo '<span class="admin-section-skeleton-icon-btn"></span>';
+    echo '</div>';
+    echo '<div class="admin-section-skeleton-subbar">';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-chip"></span>';
+    echo '<span class="admin-section-skeleton-chip admin-section-skeleton-chip-wide"></span>';
     echo '</div>';
     echo '<div class="admin-section-skeleton-list">';
-    echo '<div class="admin-section-skeleton-list-card"></div>';
-    echo '<div class="admin-section-skeleton-list-card"></div>';
+    echo '<div class="admin-section-skeleton-trip-card">';
+    echo '<div class="admin-section-skeleton-trip-time"></div>';
+    echo '<div class="admin-section-skeleton-trip-content">';
+    echo '<div class="admin-section-skeleton-trip-meta"></div>';
+    echo '<div class="admin-section-skeleton-trip-title"></div>';
+    echo '<div class="admin-section-skeleton-trip-line"></div>';
+    echo '<div class="admin-section-skeleton-trip-line admin-section-skeleton-trip-line-short"></div>';
+    echo '<div class="admin-section-skeleton-trip-actions">';
+    echo '<span class="admin-section-skeleton-mini-btn"></span>';
+    echo '<span class="admin-section-skeleton-mini-btn"></span>';
+    echo '<span class="admin-section-skeleton-mini-btn admin-section-skeleton-mini-btn-primary"></span>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="admin-section-skeleton-trip-card">';
+    echo '<div class="admin-section-skeleton-trip-time"></div>';
+    echo '<div class="admin-section-skeleton-trip-content">';
+    echo '<div class="admin-section-skeleton-trip-meta"></div>';
+    echo '<div class="admin-section-skeleton-trip-title"></div>';
+    echo '<div class="admin-section-skeleton-trip-line"></div>';
+    echo '<div class="admin-section-skeleton-trip-line admin-section-skeleton-trip-line-short"></div>';
+    echo '<div class="admin-section-skeleton-trip-actions">';
+    echo '<span class="admin-section-skeleton-mini-btn"></span>';
+    echo '<span class="admin-section-skeleton-mini-btn"></span>';
+    echo '<span class="admin-section-skeleton-mini-btn admin-section-skeleton-mini-btn-primary"></span>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
     echo '</div>';
     echo '</div>';
     return;
@@ -1362,8 +1393,8 @@ if (!isset($_REQUEST['action'])):
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=50">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=16">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=51">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=17">
   <style>
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {

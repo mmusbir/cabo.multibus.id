@@ -3598,8 +3598,19 @@ body.admin-bootstrap-page .admin-section-skeleton-toolbar {
   gap: 12px;
   flex-wrap: wrap;
 }
+body.admin-bootstrap-page .admin-section-skeleton-toolbar-booking {
+  align-items: stretch;
+}
 body.admin-bootstrap-page .admin-section-skeleton-chip,
 body.admin-bootstrap-page .admin-section-skeleton-field,
+body.admin-bootstrap-page .admin-section-skeleton-button,
+body.admin-bootstrap-page .admin-section-skeleton-icon-btn,
+body.admin-bootstrap-page .admin-section-skeleton-mini-btn,
+body.admin-bootstrap-page .admin-section-skeleton-trip-card,
+body.admin-bootstrap-page .admin-section-skeleton-trip-time,
+body.admin-bootstrap-page .admin-section-skeleton-trip-meta,
+body.admin-bootstrap-page .admin-section-skeleton-trip-title,
+body.admin-bootstrap-page .admin-section-skeleton-trip-line,
 body.admin-bootstrap-page .admin-section-skeleton-table-head,
 body.admin-bootstrap-page .admin-section-skeleton-table-row,
 body.admin-bootstrap-page .admin-section-skeleton-list-card {
@@ -3610,6 +3621,14 @@ body.admin-bootstrap-page .admin-section-skeleton-list-card {
 }
 body.admin-bootstrap-page .admin-section-skeleton-chip::after,
 body.admin-bootstrap-page .admin-section-skeleton-field::after,
+body.admin-bootstrap-page .admin-section-skeleton-button::after,
+body.admin-bootstrap-page .admin-section-skeleton-icon-btn::after,
+body.admin-bootstrap-page .admin-section-skeleton-mini-btn::after,
+body.admin-bootstrap-page .admin-section-skeleton-trip-card::after,
+body.admin-bootstrap-page .admin-section-skeleton-trip-time::after,
+body.admin-bootstrap-page .admin-section-skeleton-trip-meta::after,
+body.admin-bootstrap-page .admin-section-skeleton-trip-title::after,
+body.admin-bootstrap-page .admin-section-skeleton-trip-line::after,
 body.admin-bootstrap-page .admin-section-skeleton-table-head::after,
 body.admin-bootstrap-page .admin-section-skeleton-table-row::after,
 body.admin-bootstrap-page .admin-section-skeleton-list-card::after {
@@ -3625,15 +3644,39 @@ body.admin-bootstrap-page .admin-section-skeleton-chip {
   height: 34px;
   border-radius: 999px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-chip-wide {
+  width: 138px;
+}
 body.admin-bootstrap-page .admin-section-skeleton-field {
   width: min(240px, 100%);
   height: 42px;
   border-radius: 16px;
   flex: 1 1 220px;
 }
+body.admin-bootstrap-page .admin-section-skeleton-field-search {
+  min-width: 260px;
+}
 body.admin-bootstrap-page .admin-section-skeleton-field-short {
   max-width: 120px;
   flex-basis: 120px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-button {
+  width: 186px;
+  height: 44px;
+  border-radius: 16px;
+  flex: 0 0 auto;
+}
+body.admin-bootstrap-page .admin-section-skeleton-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  flex: 0 0 auto;
+}
+body.admin-bootstrap-page .admin-section-skeleton-subbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 body.admin-bootstrap-page .admin-section-skeleton-list {
   display: grid;
@@ -3642,6 +3685,53 @@ body.admin-bootstrap-page .admin-section-skeleton-list {
 body.admin-bootstrap-page .admin-section-skeleton-list-card {
   min-height: 132px;
   border-radius: 24px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-card {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 0;
+  min-height: 156px;
+  border-radius: 26px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-time {
+  min-height: 156px;
+  border-radius: 26px 0 0 26px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-content {
+  display: grid;
+  gap: 12px;
+  padding: 18px 18px 18px 16px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-meta {
+  width: 240px;
+  height: 14px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-title {
+  width: min(360px, 74%);
+  height: 24px;
+  border-radius: 14px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-line {
+  width: min(420px, 82%);
+  height: 12px;
+  border-radius: 999px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-line-short {
+  width: min(300px, 60%);
+}
+body.admin-bootstrap-page .admin-section-skeleton-trip-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+body.admin-bootstrap-page .admin-section-skeleton-mini-btn {
+  width: 132px;
+  height: 40px;
+  border-radius: 14px;
+}
+body.admin-bootstrap-page .admin-section-skeleton-mini-btn-primary {
+  width: 118px;
 }
 body.admin-bootstrap-page .admin-section-skeleton-table {
   display: grid;
@@ -3686,6 +3776,37 @@ body.admin-bootstrap-page .admin-section-skeleton-table-row {
   body.admin-bootstrap-page .admin-shell-loader-revenue-row,
   body.admin-bootstrap-page .admin-shell-loader-insights {
     grid-template-columns: 1fr;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-button,
+  body.admin-bootstrap-page .admin-section-skeleton-field-search,
+  body.admin-bootstrap-page .admin-section-skeleton-field-short {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex-basis: auto;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-icon-btn {
+    width: 100%;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-trip-card {
+    grid-template-columns: 1fr;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-trip-time {
+    min-height: 84px;
+    border-radius: 26px 26px 0 0;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-trip-meta,
+  body.admin-bootstrap-page .admin-section-skeleton-trip-title,
+  body.admin-bootstrap-page .admin-section-skeleton-trip-line,
+  body.admin-bootstrap-page .admin-section-skeleton-trip-line-short {
+    width: 100%;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-trip-actions {
+    flex-wrap: wrap;
+  }
+  body.admin-bootstrap-page .admin-section-skeleton-mini-btn,
+  body.admin-bootstrap-page .admin-section-skeleton-mini-btn-primary {
+    width: calc(50% - 5px);
   }
   body.admin-bootstrap-page .admin-section-skeleton-grid-2 {
     grid-template-columns: 1fr;
