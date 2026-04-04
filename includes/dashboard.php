@@ -1,85 +1,7 @@
 <?php
-$dashboard = [
-    'total_bookings' => 0,
-    'pending' => 0,
-    'confirmed' => 0,
-    'canceled' => 0,
-    'top_route' => '-',
-    'top_route_count' => 0,
-    'live_fleet' => 0,
-    'revenue_today' => 0,
-    'revenue_booking_month' => 0,
-    'revenue_charter_month' => 0,
-    'revenue_luggage_month' => 0,
-    'trend_labels' => [],
-    'trend_revenues' => [],
-    'trend_dates' => [],
-    'recent_activity' => [],
-];
-
-try {
-    $dashboard['total_bookings'] = (int) ($conn->query("SELECT COUNT(*) FROM bookings WHERE status != 'canceled' AND tanggal >= CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['pending'] = (int) ($conn->query("SELECT COUNT(*) FROM bookings WHERE status != 'canceled' AND tanggal >= CURRENT_DATE AND (pembayaran IS NULL OR pembayaran = 'Belum Lunas')")->fetchColumn() ?? 0);
-    $dashboard['confirmed'] = (int) ($conn->query("SELECT COUNT(*) FROM bookings WHERE status != 'canceled' AND tanggal >= CURRENT_DATE AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka')")->fetchColumn() ?? 0);
-    $dashboard['canceled'] = (int) ($conn->query("SELECT COUNT(*) FROM bookings WHERE status = 'canceled' AND tanggal >= CURRENT_DATE")->fetchColumn() ?? 0);
-
-    $topRouteStmt = $conn->query("SELECT rute, COUNT(*) AS total FROM bookings WHERE status != 'canceled' AND tanggal >= CURRENT_DATE GROUP BY rute ORDER BY total DESC LIMIT 1");
-    if ($topRouteStmt && ($topRoute = $topRouteStmt->fetch(PDO::FETCH_ASSOC))) {
-        $dashboard['top_route'] = $topRoute['rute'] ?: '-';
-        $dashboard['top_route_count'] = (int) ($topRoute['total'] ?? 0);
-    }
-
-    $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT (tanggal::text || '|' || jam::text || '|' || unit::text)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['revenue_booking_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_TRUNC('month', tanggal) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
-    $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
-    $dashboard['revenue_luggage_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM luggages WHERE payment_status = 'Lunas' AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
-
-    // Revenue trend per day (last 7 days), only counting paid bookings
-    $revTrendStmt = $conn->query("SELECT tanggal, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY tanggal ORDER BY tanggal ASC");
-    $revTrendMap = [];
-    if ($revTrendStmt) {
-        while ($row = $revTrendStmt->fetch(PDO::FETCH_ASSOC)) {
-            $dateKey = !empty($row['tanggal']) ? date('Y-m-d', strtotime((string) $row['tanggal'])) : '';
-            if ($dateKey !== '') {
-                $revTrendMap[$dateKey] = (float) ($row['revenue'] ?? 0);
-            }
-        }
-    }
-
-    for ($i = 6; $i >= 0; $i--) {
-        $dateKey = date('Y-m-d', strtotime('-' . $i . ' days'));
-        $dashboard['trend_labels'][] = strtoupper(date('D', strtotime($dateKey)));
-        $dashboard['trend_revenues'][] = $revTrendMap[$dateKey] ?? 0;
-        $dashboard['trend_dates'][] = date('d M', strtotime($dateKey));
-    }
-
-    activity_log_ensure_table($conn);
-    $activityStmt = $conn->query("SELECT category, action, summary, details, actor, created_at FROM activity_logs ORDER BY created_at DESC, id DESC LIMIT 5");
-    while ($act = $activityStmt->fetch(PDO::FETCH_ASSOC)) {
-        $category = strtolower(trim((string) ($act['category'] ?? 'settings')));
-        $action = strtolower(trim((string) ($act['action'] ?? 'update')));
-        $dashboard['recent_activity'][] = [
-            'title' => (string) ($act['summary'] ?? '-'),
-            'meta' => trim((string) ($act['details'] ?? '')) ?: ('Admin: ' . trim((string) ($act['actor'] ?? 'system'))),
-            'time' => activity_log_relative_time($act['created_at'] ?? ''),
-            'tone' => activity_log_tone($category, $action),
-            'tag' => strtoupper($category)
-        ];
-    }
-
-} catch (Throwable $e) {
-    // Keep dashboard resilient even if a query fails.
-}
-
+// Dashboard — async loaded via AJAX for faster initial page render.
+// Data is fetched from admin.php?action=dashboardData after the HTML shell is visible.
 $todayLabel = strtoupper(date('l, d F Y'));
-$maxRevenue = max($dashboard['trend_revenues'] ?: [0]);
-$trendHeights = array_map(static function ($rev) use ($maxRevenue) {
-    if ($maxRevenue <= 0 || $rev <= 0) {
-        return 0;
-    }
-    return round(($rev / $maxRevenue) * 100, 2);
-}, $dashboard['trend_revenues']);
 ?>
 <section id="dashboard" class="card kinetic-admin-dashboard">
   <div class="kinetic-dash-shell">
@@ -87,7 +9,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
       <div>
         <p class="kinetic-dash-kicker">Admin Panel</p>
         <h1 class="kinetic-dash-title">Dashboard</h1>
-        <p class="kinetic-dash-date"><?php echo htmlspecialchars($todayLabel); ?></p>
+        <p class="kinetic-dash-date" id="dashDateLabel"><?php echo htmlspecialchars($todayLabel); ?></p>
       </div>
       <button type="button" class="kinetic-dash-export" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('reports');window.location.hash='#reports';}">
         <i class="fa-solid fa-file-arrow-down fa-icon"></i>
@@ -98,19 +20,19 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
     <section class="kinetic-dash-stats">
       <div class="kinetic-stat-card is-primary">
         <p>Total Booking</p>
-        <div><strong><?php echo number_format($dashboard['total_bookings'], 0, ',', '.'); ?></strong><i class="fa-solid fa-arrow-trend-up fa-icon"></i></div>
+        <div><strong id="dashTotalBookings">—</strong><i class="fa-solid fa-arrow-trend-up fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-warning">
         <p>Belum Lunas</p>
-        <div><strong><?php echo number_format($dashboard['pending'], 0, ',', '.'); ?></strong><i class="fa-solid fa-clock fa-icon"></i></div>
+        <div><strong id="dashPending">—</strong><i class="fa-solid fa-clock fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-success">
         <p>Lunas Semua</p>
-        <div><strong><?php echo number_format($dashboard['confirmed'], 0, ',', '.'); ?></strong><i class="fa-solid fa-circle-check fa-icon"></i></div>
+        <div><strong id="dashConfirmed">—</strong><i class="fa-solid fa-circle-check fa-icon"></i></div>
       </div>
       <div class="kinetic-stat-card is-danger">
         <p>Dibatalkan</p>
-        <div><strong><?php echo number_format($dashboard['canceled'], 0, ',', '.'); ?></strong><i class="fa-solid fa-circle-xmark fa-icon"></i></div>
+        <div><strong id="dashCanceled">—</strong><i class="fa-solid fa-circle-xmark fa-icon"></i></div>
       </div>
     </section>
 
@@ -121,31 +43,26 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
             <h2>Tren Revenue Harian</h2>
             <span class="kinetic-dash-chip">7 Hari Terakhir</span>
           </div>
-          <div class="kinetic-dash-chart-bars">
-            <?php foreach ($dashboard['trend_labels'] as $idx => $label): ?>
-              <div class="kinetic-dash-bar-group <?php echo $idx === array_key_last($dashboard['trend_labels']) ? 'is-active' : ''; ?>"
-                   data-revenue="<?php echo (int) $dashboard['trend_revenues'][$idx]; ?>"
-                   data-date="<?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?>">
-                <div class="kinetic-dash-bar-tooltip">
-                  <span class="tooltip-date"><?php echo htmlspecialchars($dashboard['trend_dates'][$idx]); ?></span>
-                  <span class="tooltip-amount">Rp <?php echo number_format($dashboard['trend_revenues'][$idx], 0, ',', '.'); ?></span>
-                </div>
+          <div class="kinetic-dash-chart-bars" id="dashChartBars">
+            <!-- Skeleton bars while loading -->
+            <?php for ($i = 0; $i < 7; $i++): ?>
+              <div class="kinetic-dash-bar-group">
                 <div class="kinetic-dash-bar-shell">
-                  <div class="kinetic-dash-bar <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? 'is-zero' : ''; ?>" style="height: <?php echo ($dashboard['trend_revenues'][$idx] ?? 0) <= 0 ? '0.35rem' : htmlspecialchars((string) $trendHeights[$idx]) . '%'; ?>;"></div>
+                  <div class="kinetic-dash-bar is-zero" style="height: 0.35rem;"></div>
                 </div>
-                <span><?php echo htmlspecialchars($label); ?></span>
+                <span>—</span>
               </div>
-            <?php endforeach; ?>
+            <?php endfor; ?>
           </div>
         </section>
 
-        <section class="kinetic-dash-revenue-splits">
+        <section class="kinetic-dash-revenue-splits" id="dashRevenueSplits">
           <article class="kinetic-revenue-split-card is-booking">
             <div class="kinetic-revenue-split-head">
               <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-receipt fa-icon"></i></span>
               <h3>Booking</h3>
             </div>
-            <strong>Rp <?php echo number_format($dashboard['revenue_booking_month'], 0, ',', '.'); ?></strong>
+            <strong id="dashRevenueBooking">Rp —</strong>
             <span>Bulan ini · booking lunas</span>
           </article>
           <article class="kinetic-revenue-split-card is-charter">
@@ -153,7 +70,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
               <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-bus fa-icon"></i></span>
               <h3>Carter</h3>
             </div>
-            <strong>Rp <?php echo number_format($dashboard['revenue_charter_month'], 0, ',', '.'); ?></strong>
+            <strong id="dashRevenueCharter">Rp —</strong>
             <span>Bulan ini · seluruh carter</span>
           </article>
           <article class="kinetic-revenue-split-card is-luggage">
@@ -161,7 +78,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
               <span class="kinetic-revenue-split-icon"><i class="fa-solid fa-suitcase-rolling fa-icon"></i></span>
               <h3>Bagasi</h3>
             </div>
-            <strong>Rp <?php echo number_format($dashboard['revenue_luggage_month'], 0, ',', '.'); ?></strong>
+            <strong id="dashRevenueLuggage">Rp —</strong>
             <span>Bulan ini · bagasi lunas</span>
           </article>
         </section>
@@ -174,26 +91,8 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
             Lihat Semua Activity
           </button>
         </div>
-        <div class="kinetic-dash-activity-list">
-          <?php if (empty($dashboard['recent_activity'])): ?>
-            <div class="admin-empty-state view-empty-state">Belum ada aktivitas terbaru.</div>
-          <?php else: ?>
-            <?php foreach ($dashboard['recent_activity'] as $activity): ?>
-              <div class="kinetic-activity-item tone-<?php echo htmlspecialchars($activity['tone']); ?>">
-                <div class="kinetic-activity-dot"></div>
-                <div>
-                  <p><?php echo htmlspecialchars($activity['title']); ?></p>
-                  <div class="kinetic-activity-meta">
-                    <span><?php echo htmlspecialchars($activity['time']); ?></span>
-                    <span class="kinetic-meta-divider"></span>
-                    <span><?php echo htmlspecialchars($activity['meta']); ?></span>
-                    <span class="kinetic-meta-divider"></span>
-                    <span><?php echo htmlspecialchars($activity['tag']); ?></span>
-                  </div>
-                </div>
-              </div>
-            <?php endforeach; ?>
-          <?php endif; ?>
+        <div class="kinetic-dash-activity-list" id="dashActivityList">
+          <div class="admin-empty-state view-empty-state">Memuat aktivitas...</div>
         </div>
       </section>
     </div>
@@ -203,8 +102,8 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <h3>Rute Teratas</h3>
         <div class="kinetic-insight-body">
           <div>
-            <p><?php echo htmlspecialchars($dashboard['top_route']); ?></p>
-            <span><?php echo number_format($dashboard['top_route_count'], 0, ',', '.'); ?> BOOKING</span>
+            <p id="dashTopRoute">—</p>
+            <span id="dashTopRouteCount">— BOOKING</span>
           </div>
           <i class="fa-solid fa-route fa-icon"></i>
         </div>
@@ -213,7 +112,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <h3>Armada Aktif</h3>
         <div class="kinetic-insight-body">
           <div>
-            <p><?php echo number_format($dashboard['live_fleet'], 0, ',', '.'); ?> Unit Beroperasi</p>
+            <p id="dashLiveFleet">— Unit Beroperasi</p>
             <span>0 INSIDEN DILAPORKAN</span>
           </div>
           <i class="fa-solid fa-bus-simple fa-icon"></i>
@@ -223,7 +122,7 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
         <h3>Pendapatan Hari Ini</h3>
         <div class="kinetic-insight-body">
           <div>
-            <p>Rp <?php echo number_format($dashboard['revenue_today'], 0, ',', '.'); ?></p>
+            <p id="dashRevenueToday">Rp —</p>
             <span>AKUMULASI HARI INI</span>
           </div>
           <i class="fa-solid fa-wallet fa-icon"></i>
@@ -232,3 +131,117 @@ $trendHeights = array_map(static function ($rev) use ($maxRevenue) {
     </section>
   </div>
 </section>
+
+<script>
+(function() {
+  var dashLoaded = false;
+
+  function formatNumber(n) {
+    return new Intl.NumberFormat('id-ID').format(n);
+  }
+
+  function populateDashboard(data) {
+    if (dashLoaded) return;
+    dashLoaded = true;
+
+    // Stats
+    var el;
+    el = document.getElementById('dashTotalBookings'); if (el) el.textContent = formatNumber(data.total_bookings || 0);
+    el = document.getElementById('dashPending'); if (el) el.textContent = formatNumber(data.pending || 0);
+    el = document.getElementById('dashConfirmed'); if (el) el.textContent = formatNumber(data.confirmed || 0);
+    el = document.getElementById('dashCanceled'); if (el) el.textContent = formatNumber(data.canceled || 0);
+
+    // Date label
+    if (data.today_label) {
+      el = document.getElementById('dashDateLabel'); if (el) el.textContent = data.today_label;
+    }
+
+    // Revenue splits
+    el = document.getElementById('dashRevenueBooking'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_booking_month || 0);
+    el = document.getElementById('dashRevenueCharter'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_charter_month || 0);
+    el = document.getElementById('dashRevenueLuggage'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_luggage_month || 0);
+
+    // Insights
+    el = document.getElementById('dashTopRoute'); if (el) el.textContent = data.top_route || '-';
+    el = document.getElementById('dashTopRouteCount'); if (el) el.textContent = formatNumber(data.top_route_count || 0) + ' BOOKING';
+    el = document.getElementById('dashLiveFleet'); if (el) el.textContent = formatNumber(data.live_fleet || 0) + ' Unit Beroperasi';
+    el = document.getElementById('dashRevenueToday'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_today || 0);
+
+    // Chart bars
+    var chartContainer = document.getElementById('dashChartBars');
+    if (chartContainer && data.trend_labels && data.trend_labels.length) {
+      var maxRevenue = Math.max.apply(null, data.trend_revenues.length ? data.trend_revenues : [0]);
+      var html = '';
+      for (var i = 0; i < data.trend_labels.length; i++) {
+        var rev = data.trend_revenues[i] || 0;
+        var height = (maxRevenue <= 0 || rev <= 0) ? '0.35rem' : (Math.round((rev / maxRevenue) * 10000) / 100) + '%';
+        var isActive = (i === data.trend_labels.length - 1) ? ' is-active' : '';
+        var isZero = rev <= 0 ? ' is-zero' : '';
+        html += '<div class="kinetic-dash-bar-group' + isActive + '" data-revenue="' + Math.round(rev) + '" data-date="' + (data.trend_dates[i] || '') + '">';
+        html += '<div class="kinetic-dash-bar-tooltip">';
+        html += '<span class="tooltip-date">' + (data.trend_dates[i] || '') + '</span>';
+        html += '<span class="tooltip-amount">Rp ' + formatNumber(rev) + '</span>';
+        html += '</div>';
+        html += '<div class="kinetic-dash-bar-shell">';
+        html += '<div class="kinetic-dash-bar' + isZero + '" style="height: ' + height + ';"></div>';
+        html += '</div>';
+        html += '<span>' + (data.trend_labels[i] || '') + '</span>';
+        html += '</div>';
+      }
+      chartContainer.innerHTML = html;
+    }
+
+    // Activity list
+    var activityList = document.getElementById('dashActivityList');
+    if (activityList) {
+      if (!data.recent_activity || data.recent_activity.length === 0) {
+        activityList.innerHTML = '<div class="admin-empty-state view-empty-state">Belum ada aktivitas terbaru.</div>';
+      } else {
+        var actHtml = '';
+        for (var j = 0; j < data.recent_activity.length; j++) {
+          var a = data.recent_activity[j];
+          actHtml += '<div class="kinetic-activity-item tone-' + (a.tone || 'info') + '">';
+          actHtml += '<div class="kinetic-activity-dot"></div>';
+          actHtml += '<div>';
+          actHtml += '<p>' + escapeHtml(a.title || '-') + '</p>';
+          actHtml += '<div class="kinetic-activity-meta">';
+          actHtml += '<span>' + escapeHtml(a.time || '') + '</span>';
+          actHtml += '<span class="kinetic-meta-divider"></span>';
+          actHtml += '<span>' + escapeHtml(a.meta || '') + '</span>';
+          actHtml += '<span class="kinetic-meta-divider"></span>';
+          actHtml += '<span>' + escapeHtml(a.tag || '') + '</span>';
+          actHtml += '</div></div></div>';
+        }
+        activityList.innerHTML = actHtml;
+      }
+    }
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  window.loadDashboardData = function() {
+    if (dashLoaded) return;
+    fetch('admin.php?action=dashboardData', { credentials: 'same-origin' })
+      .then(function(res) { return res.json(); })
+      .then(function(json) {
+        if (json.success && json.data) {
+          populateDashboard(json.data);
+        }
+      })
+      .catch(function(err) {
+        console.error('Dashboard load error:', err);
+      });
+  };
+
+  // Auto-load when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.loadDashboardData);
+  } else {
+    window.loadDashboardData();
+  }
+})();
+</script>

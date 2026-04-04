@@ -56,10 +56,22 @@ require_once 'Router.php';
 $auth = null;
 if (!isset($_REQUEST['action'])) {
   $auth = requireAdminAuth();
-  // ==================== DATABASE MIGRATION ====================
-  // Only run for page loads, not for AJAX requests
-  // AJAX requests assume tables were created during initial page load
-  require_once 'db-migrate.php';
+  // ==================== DATABASE MIGRATION (CACHED) ====================
+  // Schema is stable — only run migration if not done yet.
+  // Migration version is cached in the `settings` table.
+  $migVersion = '0';
+  try {
+    $migStmt = $conn->query("SELECT value FROM settings WHERE key='migration_version' LIMIT 1");
+    $migVersion = $migStmt ? ($migStmt->fetchColumn() ?: '0') : '0';
+  } catch (PDOException $e) {
+    $migVersion = '0'; // Table doesn't exist yet — must run migration
+  }
+  if ((int) $migVersion < 7) {
+    require_once 'db-migrate.php';
+    try {
+      $conn->exec("INSERT INTO settings (key, value) VALUES ('migration_version', '7') ON CONFLICT (key) DO UPDATE SET value='7'");
+    } catch (PDOException $e) { /* silent */ }
+  }
 }
 
 // ==================== HELPERS ====================
@@ -376,6 +388,10 @@ if ($isActionRequest) {
     // ===== AJAX ROUTES - Include Files =====
     // These routes include specific files that handle the logic
     
+    $router->get('dashboardData', function () use ($ajax_dir) {
+      include $ajax_dir . 'dashboard_data.php';
+    });
+    
     $router->get('routesPage', function () use ($ajax_dir) {
       include $ajax_dir . 'routes.php';
     });
@@ -548,11 +564,16 @@ if (isset($_GET['logout'])) {
 // Code di sini dipangil ketika non-AJAX page loads
 // ... (preserved dari original)
 
-// Fetch All Segments for Dropdowns
-$globalSegments = [];
-$resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
-while ($rs = $resSeg->fetch()) {
-  $globalSegments[] = $rs;
+// Fetch All Segments for Dropdowns — lazy loaded
+$globalSegments = null;
+function getGlobalSegments() {
+  global $conn, $globalSegments;
+  if ($globalSegments === null) {
+    $globalSegments = [];
+    $resSeg = $conn->query("SELECT id, rute, harga FROM segments ORDER BY rute ASC");
+    while ($rs = $resSeg->fetch()) $globalSegments[] = $rs;
+  }
+  return $globalSegments;
 }
 
 // ========================================
@@ -1349,32 +1370,36 @@ if (isset($_POST['create_charter_submit'])) {
   }
 }
 
-/********** DATA FOR RENDER **********/
-$routes = [];
-$res = $conn->query("SELECT id,name FROM routes ORDER BY id");
-while ($r = $res->fetch())
-  $routes[] = $r;
+/********** DATA FOR RENDER (OPTIMIZED) **********/
+// Routes — deferred, only loaded when HTML is rendered
+$routes = null;
+function getRoutes() {
+  global $conn, $routes;
+  if ($routes === null) {
+    $routes = [];
+    $res = $conn->query("SELECT id,name FROM routes ORDER BY id");
+    while ($r = $res->fetch()) $routes[] = $r;
+  }
+  return $routes;
+}
 $import_msg = $_SESSION['import_msg'] ?? '';
 unset($_SESSION['import_msg']);
 $booking_msg = $_SESSION['booking_msg'] ?? '';
 unset($_SESSION['booking_msg']);
 $settings_saved = $_SESSION['settings_saved'] ?? false;
 unset($_SESSION['settings_saved']);
+// Cancellations — loaded via AJAX lazy sections, no eager loading needed
 $cancellations = [];
-if (db_table_exists($conn, 'cancellations')) {
-  $res = $conn->query("SELECT id,booking_id,admin_user,reason,created_at FROM cancellations ORDER BY created_at DESC LIMIT 200");
-  while ($r = $res->fetch())
-    $cancellations[] = $r;
-}
 
 /* Load feature flags */
 $enable_claude_haiku_4_5 = getSetting($conn, 'enable_claude_haiku_4_5', '0');
 
-/* UNITS LOGIC */
-include 'includes/units_logic.php';
+/* UNITS LOGIC — deferred to conditional block below */
 
 /********** CONDITIONAL: ONLY RENDER HTML FOR NON-AJAX REQUESTS **********/
-if (!isset($_REQUEST['action'])): 
+if (!isset($_REQUEST['action'])):
+// Include units logic only for page loads, not AJAX
+include 'includes/units_logic.php'; 
 ?>
 <!doctype html>
 <html lang="id" class="light" data-default-theme="light">
@@ -1429,6 +1454,12 @@ if (!isset($_REQUEST['action'])):
   </style>
 
 </head>
+<?php
+// Early flush: send <head> to browser so it can start downloading CSS/JS
+// while PHP continues processing the body.
+if (ob_get_level()) { ob_end_flush(); }
+flush();
+?>
 
 <body class="admin-bootstrap-page app-admin">
 
@@ -1567,7 +1598,7 @@ if (!isset($_REQUEST['action'])):
             <label class="admin-modal-label">Segment Rute</label>
             <select id="edit_segment_id" name="segment_id" class="form-control admin-modal-control">
               <option value="0">-- Default Rute --</option>
-              <?php foreach ($globalSegments as $gs): ?>
+              <?php foreach (getGlobalSegments() as $gs): ?>
                 <option value="<?= $gs['id'] ?>" data-price="<?= $gs['harga'] ?>">
                   <?= htmlspecialchars($gs['rute']) ?> (Rp <?= number_format($gs['harga'], 0, ',', '.') ?>)
                 </option>

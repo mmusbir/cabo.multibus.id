@@ -1,4 +1,4 @@
-﻿    // --- Custom Modal Utilities ---
+    // --- Custom Modal Utilities ---
     window.customAlert = function (message, title = 'Pemberitahuan') {
       const modal = document.getElementById('globalAlertModal');
       document.getElementById('alertTitle').textContent = title;
@@ -308,6 +308,7 @@
         }
         bindAdminLazyControls(id);
         // Auto-load data for each section
+        if (id === 'dashboard' && typeof window.loadDashboardData === 'function') window.loadDashboardData();
         if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' }));
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
         if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
