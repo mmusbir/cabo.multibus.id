@@ -5,8 +5,9 @@
  * Called via: admin.php?action=dashboardData
  */
 
-require_once __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../config/activity_log.php';
+
+global $conn;
 
 $dashboard = [
     'total_bookings' => 0,
