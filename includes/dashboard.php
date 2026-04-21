@@ -11,10 +11,16 @@ $todayLabel = strtoupper(date('l, d F Y'));
         <h1 class="kinetic-dash-title">Dashboard</h1>
         <p class="kinetic-dash-date" id="dashDateLabel"><?php echo htmlspecialchars($todayLabel); ?></p>
       </div>
-      <button type="button" class="kinetic-dash-export" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('reports');window.location.hash='#reports';}">
-        <i class="fa-solid fa-file-arrow-down fa-icon"></i>
-        Export Laporan
-      </button>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="dashLiveIndicator" title="Status koneksi realtime" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--neu-muted,#94a3b8);opacity:0.6;transition:opacity .3s;">
+          <span id="dashLiveDot" style="width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block;transition:background .4s;"></span>
+          <span id="dashLiveText">Memuat...</span>
+        </div>
+        <button type="button" class="kinetic-dash-export" onclick="if(typeof window.showSectionById==='function'){window.showSectionById('reports');window.location.hash='#reports';}">
+          <i class="fa-solid fa-file-arrow-down fa-icon"></i>
+          Export Laporan
+        </button>
+      </div>
     </section>
 
     <section class="kinetic-dash-stats">
@@ -152,111 +158,28 @@ $todayLabel = strtoupper(date('l, d F Y'));
 
 <script>
 (function() {
-  var dashLoaded = false;
+  // =============================================
+  // DASHBOARD REALTIME POLLING ENGINE
+  // Polls admin.php?action=dashboardData every 30s
+  // Pauses when tab is hidden (Page Visibility API)
+  // Animates number changes with smooth transition
+  // =============================================
 
-  function formatNumber(n) {
-    return new Intl.NumberFormat('id-ID').format(n);
+  var POLL_INTERVAL_MS  = 30000; // 30 detik
+  var RETRY_DELAY_MS    = 10000; // Retry 10 detik jika gagal
+  var _pollTimer        = null;
+  var _lastData         = null;
+  var _initialLoaded    = false;
+  var _fetching         = false;
+
+  // ---- Helpers ----
+
+  function formatRupiah(n) {
+    return 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(n || 0));
   }
 
-  function populateDashboard(data) {
-    if (dashLoaded) return;
-    dashLoaded = true;
-
-    // Stats
-    var el;
-    el = document.getElementById('dashTotalBookings'); if (el) el.textContent = formatNumber(data.total_bookings || 0);
-    el = document.getElementById('dashPending'); if (el) el.textContent = formatNumber(data.pending || 0);
-    el = document.getElementById('dashConfirmed'); if (el) el.textContent = formatNumber(data.confirmed || 0);
-    el = document.getElementById('dashCanceled'); if (el) el.textContent = formatNumber(data.canceled || 0);
-
-    // Date label
-    if (data.today_label) {
-      el = document.getElementById('dashDateLabel'); if (el) el.textContent = data.today_label;
-    }
-
-    // Revenue splits
-    el = document.getElementById('dashRevenueBooking'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_booking_month || 0);
-    el = document.getElementById('dashRevenueCharter'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_charter_month || 0);
-    el = document.getElementById('dashRevenueLuggage'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_luggage_month || 0);
-
-    // Insights
-    el = document.getElementById('dashTopRoute'); if (el) el.textContent = data.top_route || '-';
-    el = document.getElementById('dashTopRouteCount'); if (el) el.textContent = formatNumber(data.top_route_count || 0) + ' BOOKING';
-    el = document.getElementById('dashLiveFleet'); if (el) el.textContent = formatNumber(data.live_fleet || 0) + ' Unit Beroperasi';
-    el = document.getElementById('dashRevenueToday'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_today || 0);
-
-    // Chart bars (Daily)
-    var chartContainer = document.getElementById('dashChartBars');
-    if (chartContainer && data.trend_labels && data.trend_labels.length) {
-      var maxRevenue = Math.max.apply(null, data.trend_revenues.length ? data.trend_revenues : [0]);
-      var html = '';
-      for (var i = 0; i < data.trend_labels.length; i++) {
-        var rev = data.trend_revenues[i] || 0;
-        var height = (maxRevenue <= 0 || rev <= 0) ? '0.35rem' : (Math.round((rev / maxRevenue) * 10000) / 100) + '%';
-        var isActive = (i === data.trend_labels.length - 1) ? ' is-active' : '';
-        var isZero = rev <= 0 ? ' is-zero' : '';
-        html += '<div class="kinetic-dash-bar-group' + isActive + '" data-revenue="' + Math.round(rev) + '" data-date="' + (data.trend_dates[i] || '') + '">';
-        html += '<div class="kinetic-dash-bar-tooltip">';
-        html += '<span class="tooltip-date">' + (data.trend_dates[i] || '') + '</span>';
-        html += '<span class="tooltip-amount">Rp ' + formatNumber(rev) + '</span>';
-        html += '</div>';
-        html += '<div class="kinetic-dash-bar-shell">';
-        html += '<div class="kinetic-dash-bar' + isZero + '" style="height: ' + height + ';"></div>';
-        html += '</div>';
-        html += '<span>' + (data.trend_labels[i] || '') + '</span>';
-        html += '</div>';
-      }
-      chartContainer.innerHTML = html;
-    }
-
-    // Chart bars (Monthly)
-    var monthlyChartContainer = document.getElementById('dashChartBarsMonthly');
-    if (monthlyChartContainer && data.monthly_labels && data.monthly_labels.length) {
-      var maxMonthlyRevenue = Math.max.apply(null, data.monthly_revenues.length ? data.monthly_revenues : [0]);
-      var mHtml = '';
-      for (var k = 0; k < data.monthly_labels.length; k++) {
-        var mRev = data.monthly_revenues[k] || 0;
-        var mHeight = (maxMonthlyRevenue <= 0 || mRev <= 0) ? '0.35rem' : (Math.round((mRev / maxMonthlyRevenue) * 10000) / 100) + '%';
-        var mIsActive = (k === data.monthly_labels.length - 1) ? ' is-active' : '';
-        var mIsZero = mRev <= 0 ? ' is-zero' : '';
-        mHtml += '<div class="kinetic-dash-bar-group' + mIsActive + '" data-revenue="' + Math.round(mRev) + '" data-date="' + (data.monthly_names[k] || '') + '">';
-        mHtml += '<div class="kinetic-dash-bar-tooltip">';
-        mHtml += '<span class="tooltip-date">' + (data.monthly_names[k] || '') + '</span>';
-        mHtml += '<span class="tooltip-amount">Rp ' + formatNumber(mRev) + '</span>';
-        mHtml += '</div>';
-        mHtml += '<div class="kinetic-dash-bar-shell">';
-        mHtml += '<div class="kinetic-dash-bar' + mIsZero + '" style="height: ' + mHeight + ';"></div>';
-        mHtml += '</div>';
-        mHtml += '<span>' + (data.monthly_labels[k] || '') + '</span>';
-        mHtml += '</div>';
-      }
-      monthlyChartContainer.innerHTML = mHtml;
-    }
-
-    // Activity list
-    var activityList = document.getElementById('dashActivityList');
-    if (activityList) {
-      if (!data.recent_activity || data.recent_activity.length === 0) {
-        activityList.innerHTML = '<div class="admin-empty-state view-empty-state">Belum ada aktivitas terbaru.</div>';
-      } else {
-        var actHtml = '';
-        for (var j = 0; j < data.recent_activity.length; j++) {
-          var a = data.recent_activity[j];
-          actHtml += '<div class="kinetic-activity-item tone-' + (a.tone || 'info') + '">';
-          actHtml += '<div class="kinetic-activity-dot"></div>';
-          actHtml += '<div>';
-          actHtml += '<p>' + escapeHtml(a.title || '-') + '</p>';
-          actHtml += '<div class="kinetic-activity-meta">';
-          actHtml += '<span>' + escapeHtml(a.time || '') + '</span>';
-          actHtml += '<span class="kinetic-meta-divider"></span>';
-          actHtml += '<span>' + escapeHtml(a.meta || '') + '</span>';
-          actHtml += '<span class="kinetic-meta-divider"></span>';
-          actHtml += '<span>' + escapeHtml(a.tag || '') + '</span>';
-          actHtml += '</div></div></div>';
-        }
-        activityList.innerHTML = actHtml;
-      }
-    }
+  function formatNumber(n) {
+    return new Intl.NumberFormat('id-ID').format(n || 0);
   }
 
   function escapeHtml(str) {
@@ -265,25 +188,287 @@ $todayLabel = strtoupper(date('l, d F Y'));
     return div.innerHTML;
   }
 
-  window.loadDashboardData = function() {
-    if (dashLoaded) return;
+  // Animate number from current displayed value → new target value
+  function animateValue(el, newVal, isRupiah) {
+    if (!el) return;
+    var currentText = el.dataset.rawValue !== undefined ? parseFloat(el.dataset.rawValue) : 0;
+    var target = parseFloat(newVal) || 0;
+    if (currentText === target) return; // no change, skip
+
+    el.dataset.rawValue = target;
+
+    // Highlight flash on change
+    el.style.transition = 'color 0.3s';
+    el.style.color = target > currentText ? 'var(--bs-success, #22c55e)' : 'var(--bs-danger, #ef4444)';
+    setTimeout(function() { el.style.color = ''; }, 900);
+
+    // Smooth count animation (60fps, ~600ms)
+    var duration = 600;
+    var start    = performance.now();
+    var from     = currentText;
+    function step(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      var ease     = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      var current  = from + (target - from) * ease;
+      el.textContent = isRupiah ? formatRupiah(current) : formatNumber(Math.round(current));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Set text only if changed
+  function setText(id, text) {
+    var el = document.getElementById(id);
+    if (el && el.textContent !== text) el.textContent = text;
+  }
+
+  // ---- Live Indicator ----
+
+  function setIndicator(state) {
+    // state: 'loading' | 'live' | 'error' | 'paused'
+    var dot   = document.getElementById('dashLiveDot');
+    var label = document.getElementById('dashLiveText');
+    var wrap  = document.getElementById('dashLiveIndicator');
+    if (!dot || !label || !wrap) return;
+
+    var configs = {
+      loading: { color: '#f59e0b', text: 'Memuat...', opacity: '0.7', pulse: true  },
+      live:    { color: '#22c55e', text: 'Live',      opacity: '1',   pulse: true  },
+      error:   { color: '#ef4444', text: 'Gagal',     opacity: '0.8', pulse: false },
+      paused:  { color: '#94a3b8', text: 'Jeda',      opacity: '0.5', pulse: false }
+    };
+    var cfg = configs[state] || configs['paused'];
+    dot.style.background = cfg.color;
+    label.textContent    = cfg.text;
+    wrap.style.opacity   = cfg.opacity;
+
+    // Pulse animation via keyframe trick
+    dot.style.animation = cfg.pulse ? 'dashDotPulse 2s ease-in-out infinite' : 'none';
+  }
+
+  // Inject pulse keyframe once
+  (function injectPulse() {
+    if (document.getElementById('dashPulseStyle')) return;
+    var s = document.createElement('style');
+    s.id  = 'dashPulseStyle';
+    s.textContent = '@keyframes dashDotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}';
+    document.head.appendChild(s);
+  })();
+
+  // ---- Chart renderers ----
+
+  function renderDailyChart(data) {
+    var container = document.getElementById('dashChartBars');
+    if (!container || !data.trend_labels || !data.trend_labels.length) return;
+    var maxR = Math.max.apply(null, data.trend_revenues.length ? data.trend_revenues : [0]);
+    var html = '';
+    for (var i = 0; i < data.trend_labels.length; i++) {
+      var rev      = data.trend_revenues[i] || 0;
+      var h        = (maxR <= 0 || rev <= 0) ? '0.35rem' : (Math.round((rev / maxR) * 10000) / 100) + '%';
+      var isActive = (i === data.trend_labels.length - 1) ? ' is-active' : '';
+      var isZero   = rev <= 0 ? ' is-zero' : '';
+      html += '<div class="kinetic-dash-bar-group' + isActive + '" data-revenue="' + Math.round(rev) + '" data-date="' + escapeHtml(data.trend_dates[i] || '') + '">';
+      html += '<div class="kinetic-dash-bar-tooltip">';
+      html += '<span class="tooltip-date">' + escapeHtml(data.trend_dates[i] || '') + '</span>';
+      html += '<span class="tooltip-amount">' + formatRupiah(rev) + '</span>';
+      html += '</div>';
+      html += '<div class="kinetic-dash-bar-shell"><div class="kinetic-dash-bar' + isZero + '" style="height:' + h + ';"></div></div>';
+      html += '<span>' + escapeHtml(data.trend_labels[i] || '') + '</span>';
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  }
+
+  function renderMonthlyChart(data) {
+    var container = document.getElementById('dashChartBarsMonthly');
+    if (!container || !data.monthly_labels || !data.monthly_labels.length) return;
+    var maxR = Math.max.apply(null, data.monthly_revenues.length ? data.monthly_revenues : [0]);
+    var html = '';
+    for (var k = 0; k < data.monthly_labels.length; k++) {
+      var rev      = data.monthly_revenues[k] || 0;
+      var h        = (maxR <= 0 || rev <= 0) ? '0.35rem' : (Math.round((rev / maxR) * 10000) / 100) + '%';
+      var isActive = (k === data.monthly_labels.length - 1) ? ' is-active' : '';
+      var isZero   = rev <= 0 ? ' is-zero' : '';
+      html += '<div class="kinetic-dash-bar-group' + isActive + '" data-revenue="' + Math.round(rev) + '" data-date="' + escapeHtml(data.monthly_names[k] || '') + '">';
+      html += '<div class="kinetic-dash-bar-tooltip">';
+      html += '<span class="tooltip-date">' + escapeHtml(data.monthly_names[k] || '') + '</span>';
+      html += '<span class="tooltip-amount">' + formatRupiah(rev) + '</span>';
+      html += '</div>';
+      html += '<div class="kinetic-dash-bar-shell"><div class="kinetic-dash-bar' + isZero + '" style="height:' + h + ';"></div></div>';
+      html += '<span>' + escapeHtml(data.monthly_labels[k] || '') + '</span>';
+      html += '</div>';
+    }
+    container.innerHTML = html;
+  }
+
+  function renderActivity(data) {
+    var list = document.getElementById('dashActivityList');
+    if (!list) return;
+    if (!data.recent_activity || data.recent_activity.length === 0) {
+      list.innerHTML = '<div class="admin-empty-state view-empty-state">Belum ada aktivitas terbaru.</div>';
+      return;
+    }
+    // Only re-render if activity changed (compare first item title+time)
+    var firstNew = data.recent_activity[0];
+    var firstCur = list.querySelector('.kinetic-activity-item p');
+    if (firstCur && firstCur.textContent === (firstNew.title || '')) return;
+
+    var html = '';
+    for (var j = 0; j < data.recent_activity.length; j++) {
+      var a = data.recent_activity[j];
+      html += '<div class="kinetic-activity-item tone-' + escapeHtml(a.tone || 'info') + '">';
+      html += '<div class="kinetic-activity-dot"></div>';
+      html += '<div><p>' + escapeHtml(a.title || '-') + '</p>';
+      html += '<div class="kinetic-activity-meta">';
+      html += '<span>' + escapeHtml(a.time || '') + '</span>';
+      html += '<span class="kinetic-meta-divider"></span>';
+      html += '<span>' + escapeHtml(a.meta || '') + '</span>';
+      html += '<span class="kinetic-meta-divider"></span>';
+      html += '<span>' + escapeHtml(a.tag || '') + '</span>';
+      html += '</div></div></div>';
+    }
+    list.innerHTML = html;
+  }
+
+  // ---- Core Populate (smart diff-update) ----
+
+  function populateDashboard(data, isRefresh) {
+    var prev = _lastData;
+    _lastData = data;
+
+    // Date label (static, set once)
+    if (!isRefresh && data.today_label) setText('dashDateLabel', data.today_label);
+
+    // Stat cards — animate only if values changed on refresh
+    var numFields = [
+      { id: 'dashTotalBookings', key: 'total_bookings', rupiah: false },
+      { id: 'dashPending',       key: 'pending',        rupiah: false },
+      { id: 'dashConfirmed',     key: 'confirmed',      rupiah: false },
+      { id: 'dashCanceled',      key: 'canceled',       rupiah: false },
+    ];
+    numFields.forEach(function(f) {
+      var el = document.getElementById(f.id);
+      if (!el) return;
+      var newVal = data[f.key] || 0;
+      if (!isRefresh || !prev || prev[f.key] !== newVal) {
+        animateValue(el, newVal, f.rupiah);
+      }
+    });
+
+    // Revenue splits
+    var revFields = [
+      { id: 'dashRevenueBooking', key: 'revenue_booking_month' },
+      { id: 'dashRevenueCharter', key: 'revenue_charter_month' },
+      { id: 'dashRevenueLuggage', key: 'revenue_luggage_month' },
+      { id: 'dashRevenueToday',   key: 'revenue_today'         },
+    ];
+    revFields.forEach(function(f) {
+      var el = document.getElementById(f.id);
+      if (!el) return;
+      var newVal = data[f.key] || 0;
+      if (!isRefresh || !prev || prev[f.key] !== newVal) {
+        animateValue(el, newVal, true);
+      }
+    });
+
+    // Insights
+    setText('dashTopRoute', data.top_route || '-');
+    setText('dashTopRouteCount', formatNumber(data.top_route_count || 0) + ' BOOKING');
+    setText('dashLiveFleet', formatNumber(data.live_fleet || 0) + ' Unit Beroperasi');
+
+    // Charts — only re-render on first load or if revenue changed
+    var revenueChanged = !prev ||
+      JSON.stringify(prev.trend_revenues)   !== JSON.stringify(data.trend_revenues) ||
+      JSON.stringify(prev.monthly_revenues) !== JSON.stringify(data.monthly_revenues);
+
+    if (!isRefresh || revenueChanged) {
+      renderDailyChart(data);
+      renderMonthlyChart(data);
+    }
+
+    // Activity list
+    renderActivity(data);
+  }
+
+  // ---- Fetch ----
+
+  function fetchDashboard(isRefresh) {
+    if (_fetching) return;
+    _fetching = true;
+    setIndicator('loading');
+
     fetch('admin.php?action=dashboardData', { credentials: 'same-origin' })
-      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
       .then(function(json) {
+        _fetching = false;
         if (json.success && json.data) {
-          populateDashboard(json.data);
+          populateDashboard(json.data, isRefresh);
+          _initialLoaded = true;
+          setIndicator('live');
+          scheduleNext(POLL_INTERVAL_MS);
+        } else {
+          throw new Error('Invalid response');
         }
       })
       .catch(function(err) {
-        console.error('Dashboard load error:', err);
+        _fetching = false;
+        console.warn('[Dashboard] Fetch error:', err);
+        setIndicator('error');
+        scheduleNext(RETRY_DELAY_MS); // retry sooner on error
       });
+  }
+
+  // ---- Scheduler ----
+
+  function scheduleNext(delay) {
+    clearTimeout(_pollTimer);
+    if (document.hidden) {
+      setIndicator('paused');
+      return; // Don't schedule while tab is hidden
+    }
+    _pollTimer = setTimeout(function() {
+      fetchDashboard(true);
+    }, delay);
+  }
+
+  // ---- Page Visibility API — pause/resume ----
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      clearTimeout(_pollTimer);
+      setIndicator('paused');
+    } else {
+      // Tab became visible again — refresh immediately then resume schedule
+      fetchDashboard(true);
+    }
+  });
+
+  // ---- Public API ----
+
+  // Called by admin.php when dashboard section becomes active
+  window.loadDashboardData = function() {
+    if (!_initialLoaded) {
+      fetchDashboard(false);
+    }
   };
 
-  // Auto-load when DOM is ready
+  // Manual refresh (e.g. button)
+  window.refreshDashboard = function() {
+    clearTimeout(_pollTimer);
+    fetchDashboard(true);
+  };
+
+  // ---- Bootstrap ----
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', window.loadDashboardData);
+    document.addEventListener('DOMContentLoaded', function() { fetchDashboard(false); });
   } else {
-    window.loadDashboardData();
+    fetchDashboard(false);
   }
+
 })();
 </script>
+

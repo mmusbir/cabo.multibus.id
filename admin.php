@@ -53,10 +53,10 @@ if (!isset($_REQUEST['action'])) {
   } catch (PDOException $e) {
     $migVersion = '0'; // Table doesn't exist yet — must run migration
   }
-  if ((int) $migVersion < 7) {
+  if ((int) $migVersion < 8) {
     require_once 'db-migrate.php';
     try {
-      $conn->exec("INSERT INTO settings (key, value) VALUES ('migration_version', '7') ON CONFLICT (key) DO UPDATE SET value='7'");
+      $conn->exec("INSERT INTO settings (key, value) VALUES ('migration_version', '8') ON CONFLICT (key) DO UPDATE SET value='8'");
     } catch (PDOException $e) { /* silent */ }
   }
 }

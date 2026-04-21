@@ -111,151 +111,169 @@
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const btnGenerate = document.getElementById('btnGenerateReport');
-    const btnExport = document.getElementById('btnExportCsv');
-    const generateButtonContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-      <span>Generate</span>
-    `;
+(function () {
+  var btnGenerate = document.getElementById('btnGenerateReport');
+  var btnExport   = document.getElementById('btnExportCsv');
 
-    if (btnGenerate) {
-      btnGenerate.onclick = async function () {
-        const start = document.getElementById('report_start_date').value;
-        const end = document.getElementById('report_end_date').value;
+  var generateButtonContent = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span>Generate</span>';
 
-        if (!start || !end) {
-          customAlert('Pilih tanggal mulai dan akhir.', 'Filter Belum Lengkap');
-          return;
-        }
+  function formatRp(n) {
+    return 'Rp ' + parseInt(n || 0, 10).toLocaleString('id-ID');
+  }
 
-        btnGenerate.disabled = true;
-        btnGenerate.innerHTML = '<span class="spinner-small"></span><span>Generating...</span>';
+  function showAlert(msg, title) {
+    if (typeof window.customAlert === 'function') {
+      window.customAlert(msg, title);
+    } else {
+      alert(title + ': ' + msg);
+    }
+  }
 
-        try {
-          const type = document.getElementById('report_type_select').value;
-          const res = await fetch(`admin.php?action=reportsPage&start_date=${start}&end_date=${end}&type=${type}`);
-          const data = await res.json();
+  if (btnGenerate && !btnGenerate.dataset.reportBound) {
+    btnGenerate.dataset.reportBound = '1';
 
-          if (data.success) {
-            document.getElementById('report_summary_container').style.display = 'grid';
+    btnGenerate.addEventListener('click', function () {
+      var start = document.getElementById('report_start_date') ? document.getElementById('report_start_date').value : '';
+      var end   = document.getElementById('report_end_date')   ? document.getElementById('report_end_date').value   : '';
+      var type  = document.getElementById('report_type_select') ? document.getElementById('report_type_select').value : 'reguler';
 
-            document.getElementById('total_reguler_income').textContent = 'Rp ' + parseInt(data.reguler_total || 0, 10).toLocaleString('id-ID');
-            document.getElementById('total_reguler_count').textContent = (data.reguler_count || 0) + ' bookings';
-            document.getElementById('total_reguler_discount').textContent = 'Rp ' + parseInt(data.reguler_discount_total || 0, 10).toLocaleString('id-ID');
+      if (!start || !end) {
+        showAlert('Pilih tanggal mulai dan akhir.', 'Filter Belum Lengkap');
+        return;
+      }
 
-            document.getElementById('total_carter_income').textContent = 'Rp ' + parseInt(data.carter_total || 0, 10).toLocaleString('id-ID');
-            document.getElementById('total_carter_count').textContent = (data.carter_count || 0) + ' charters';
+      btnGenerate.disabled = true;
+      btnGenerate.innerHTML = '<span class="spinner-small"></span><span>Generating...</span>';
 
-            document.getElementById('total_luggage_income').textContent = 'Rp ' + parseInt(data.luggage_total || 0, 10).toLocaleString('id-ID');
-            document.getElementById('total_luggage_count').textContent = (data.luggage_count || 0) + ' shipments';
+      fetch('admin.php?action=reportsPage&start_date=' + encodeURIComponent(start) + '&end_date=' + encodeURIComponent(end) + '&type=' + encodeURIComponent(type), {
+        credentials: 'same-origin'
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          if (!data.success) {
+            if (btnExport) btnExport.style.display = 'none';
+            var summaryEl = document.getElementById('report_summary_container');
+            if (summaryEl) summaryEl.style.display = 'none';
+            showAlert('Gagal mengambil data laporan: ' + (data.error || 'Unknown error'), 'Gagal Memuat Laporan');
+            return;
+          }
 
-            const grandTotal =
-              parseInt(data.reguler_total || 0, 10) +
-              parseInt(data.carter_total || 0, 10) +
-              parseInt(data.luggage_total || 0, 10);
-            document.getElementById('total_grand_income').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+          // Summary cards
+          var summaryEl = document.getElementById('report_summary_container');
+          if (summaryEl) summaryEl.style.display = 'grid';
 
-            const thName = document.getElementById('th_name');
-            const thPhone = document.getElementById('th_phone');
-            const thRoute = document.getElementById('th_route');
-            const thDiscount = document.getElementById('th_discount');
+          var el;
+          el = document.getElementById('total_reguler_income');   if (el) el.textContent = formatRp(data.reguler_total);
+          el = document.getElementById('total_reguler_count');    if (el) el.textContent = (data.reguler_count || 0) + ' bookings';
+          el = document.getElementById('total_reguler_discount'); if (el) el.textContent = formatRp(data.reguler_discount_total);
+          el = document.getElementById('total_carter_income');    if (el) el.textContent = formatRp(data.carter_total);
+          el = document.getElementById('total_carter_count');     if (el) el.textContent = (data.carter_count || 0) + ' charters';
+          el = document.getElementById('total_luggage_income');   if (el) el.textContent = formatRp(data.luggage_total);
+          el = document.getElementById('total_luggage_count');    if (el) el.textContent = (data.luggage_count || 0) + ' shipments';
 
-            if (type === 'reguler') {
-              document.getElementById('card_reguler_income').style.display = 'block';
-              document.getElementById('card_reguler_discount').style.display = 'block';
-              document.getElementById('card_carter_income').style.display = 'none';
-              document.getElementById('card_luggage_income').style.display = 'none';
-              thDiscount.style.display = 'table-cell';
-              thName.textContent = 'Nama';
-              thPhone.textContent = 'No. HP';
-              thRoute.textContent = 'Rute / Unit';
-            } else if (type === 'bagasi') {
-              document.getElementById('card_reguler_income').style.display = 'none';
-              document.getElementById('card_reguler_discount').style.display = 'none';
-              document.getElementById('card_carter_income').style.display = 'none';
-              document.getElementById('card_luggage_income').style.display = 'block';
-              thDiscount.style.display = 'none';
-              thName.textContent = 'Pengirim';
-              thPhone.textContent = 'Penerima';
-              thRoute.textContent = 'Layanan';
-            } else {
-              document.getElementById('card_reguler_income').style.display = 'none';
-              document.getElementById('card_reguler_discount').style.display = 'none';
-              document.getElementById('card_carter_income').style.display = 'block';
-              document.getElementById('card_luggage_income').style.display = 'none';
-              thDiscount.style.display = 'none';
-              thName.textContent = 'Nama';
-              thPhone.textContent = 'No. HP';
-              thRoute.textContent = 'Rute / Unit';
-            }
+          var grandTotal = parseInt(data.reguler_total || 0) + parseInt(data.carter_total || 0) + parseInt(data.luggage_total || 0);
+          el = document.getElementById('total_grand_income'); if (el) el.textContent = formatRp(grandTotal);
 
-            let title = 'Detail Penumpang (Reguler)';
-            if (type === 'carter') title = 'Detail Penyewa (Carter)';
-            if (type === 'bagasi') title = 'Detail Pengiriman (Bagasi)';
-            document.getElementById('report_details_title').textContent = title;
+          // Column headers & card visibility
+          var thName     = document.getElementById('th_name');
+          var thPhone    = document.getElementById('th_phone');
+          var thRoute    = document.getElementById('th_route');
+          var thDiscount = document.getElementById('th_discount');
 
-            const tbody = document.getElementById('report_details_tbody');
+          var cardReguler  = document.getElementById('card_reguler_income');
+          var cardDiscount = document.getElementById('card_reguler_discount');
+          var cardCarter   = document.getElementById('card_carter_income');
+          var cardLuggage  = document.getElementById('card_luggage_income');
+
+          if (type === 'reguler') {
+            if (cardReguler)  cardReguler.style.display  = 'block';
+            if (cardDiscount) cardDiscount.style.display = 'block';
+            if (cardCarter)   cardCarter.style.display   = 'none';
+            if (cardLuggage)  cardLuggage.style.display  = 'none';
+            if (thDiscount)   thDiscount.style.display   = 'table-cell';
+            if (thName)  thName.textContent  = 'Nama';
+            if (thPhone) thPhone.textContent = 'No. HP';
+            if (thRoute) thRoute.textContent = 'Rute / Unit';
+          } else if (type === 'bagasi') {
+            if (cardReguler)  cardReguler.style.display  = 'none';
+            if (cardDiscount) cardDiscount.style.display = 'none';
+            if (cardCarter)   cardCarter.style.display   = 'none';
+            if (cardLuggage)  cardLuggage.style.display  = 'block';
+            if (thDiscount)   thDiscount.style.display   = 'none';
+            if (thName)  thName.textContent  = 'Pengirim';
+            if (thPhone) thPhone.textContent = 'Penerima';
+            if (thRoute) thRoute.textContent = 'Layanan';
+          } else {
+            if (cardReguler)  cardReguler.style.display  = 'none';
+            if (cardDiscount) cardDiscount.style.display = 'none';
+            if (cardCarter)   cardCarter.style.display   = 'block';
+            if (cardLuggage)  cardLuggage.style.display  = 'none';
+            if (thDiscount)   thDiscount.style.display   = 'none';
+            if (thName)  thName.textContent  = 'Nama';
+            if (thPhone) thPhone.textContent = 'No. HP';
+            if (thRoute) thRoute.textContent = 'Rute / Unit';
+          }
+
+          // Detail title
+          var titleMap = { reguler: 'Detail Penumpang (Reguler)', carter: 'Detail Penyewa (Carter)', bagasi: 'Detail Pengiriman (Bagasi)' };
+          el = document.getElementById('report_details_title');
+          if (el) el.textContent = titleMap[type] || 'Detail Transaksi';
+
+          // Detail table
+          var tbody = document.getElementById('report_details_tbody');
+          if (tbody) {
             if (data.details && data.details.length > 0) {
-              let html = '';
-              data.details.forEach(item => {
-                const discountCell = type === 'reguler'
-                  ? `<td class="report-cell-discount">Rp ${parseInt(item.discount || 0, 10).toLocaleString('id-ID')}</td>`
+              var html = '';
+              data.details.forEach(function (item) {
+                var discCell = (type === 'reguler')
+                  ? '<td class="report-cell-discount">' + formatRp(item.discount || 0) + '</td>'
                   : '';
-
-                html += `<tr>
-                  <td class="report-cell-muted">${item.tanggal}</td>
-                  <td class="report-cell-strong">${item.name}</td>
-                  <td class="report-cell-base">${item.phone}</td>
-                  <td class="report-cell-strong">${item.rute}</td>
-                  ${discountCell}
-                  <td class="report-cell-amount">Rp ${parseInt(item.final_price || 0, 10).toLocaleString('id-ID')}</td>
-                </tr>`;
+                html += '<tr>';
+                html += '<td class="report-cell-muted">'   + (item.tanggal    || '-') + '</td>';
+                html += '<td class="report-cell-strong">'  + (item.name       || '-') + '</td>';
+                html += '<td class="report-cell-base">'    + (item.phone      || '-') + '</td>';
+                html += '<td class="report-cell-strong">'  + (item.rute       || '-') + '</td>';
+                html += discCell;
+                html += '<td class="report-cell-amount">'  + formatRp(item.final_price) + '</td>';
+                html += '</tr>';
               });
               tbody.innerHTML = html;
             } else {
-              tbody.innerHTML = `<tr><td colspan="${type === 'reguler' ? 6 : 5}" class="report-table-empty">Tidak ada data pada periode ini.</td></tr>`;
+              tbody.innerHTML = '<tr><td colspan="' + (type === 'reguler' ? 6 : 5) + '" class="report-table-empty">Tidak ada data pada periode ini.</td></tr>';
             }
+          }
 
-            if (btnExport) {
-              btnExport.style.display = 'inline-flex';
-            }
-          } else {
-            if (btnExport) {
-              btnExport.style.display = 'none';
-            }
-            document.getElementById('report_summary_container').style.display = 'none';
-            customAlert('Gagal mengambil data laporan: ' + (data.error || 'Unknown error'), 'Gagal Memuat Laporan');
-          }
-        } catch (e) {
-          console.error(e);
-          if (btnExport) {
-            btnExport.style.display = 'none';
-          }
-          customAlert('Terjadi kesalahan koneksi.', 'Network Error');
-        } finally {
+          if (btnExport) btnExport.style.display = 'inline-flex';
+        })
+        .catch(function (err) {
+          console.error('[Reports] Error:', err);
+          if (btnExport) btnExport.style.display = 'none';
+          showAlert('Terjadi kesalahan koneksi: ' + err.message, 'Network Error');
+        })
+        .finally(function () {
           btnGenerate.disabled = false;
           btnGenerate.innerHTML = generateButtonContent;
-        }
-      };
-    }
+        });
+    });
+  }
 
-    if (btnExport) {
-      btnExport.onclick = function () {
-        const start = document.getElementById('report_start_date').value;
-        const end = document.getElementById('report_end_date').value;
-        const type = document.getElementById('report_type_select').value;
-
-        if (!start || !end) {
-          customAlert('Pilih tanggal mulai dan akhir.', 'Filter Belum Lengkap');
-          return;
-        }
-
-        window.location.href = `admin.php?action=exportReportCsv&start_date=${start}&end_date=${end}&type=${type}`;
-      };
-    }
-  });
+  if (btnExport && !btnExport.dataset.reportBound) {
+    btnExport.dataset.reportBound = '1';
+    btnExport.addEventListener('click', function () {
+      var start = document.getElementById('report_start_date') ? document.getElementById('report_start_date').value : '';
+      var end   = document.getElementById('report_end_date')   ? document.getElementById('report_end_date').value   : '';
+      var type  = document.getElementById('report_type_select') ? document.getElementById('report_type_select').value : 'reguler';
+      if (!start || !end) {
+        showAlert('Pilih tanggal mulai dan akhir.', 'Filter Belum Lengkap');
+        return;
+      }
+      window.location.href = 'admin.php?action=exportReportCsv&start_date=' + encodeURIComponent(start) + '&end_date=' + encodeURIComponent(end) + '&type=' + encodeURIComponent(type);
+    });
+  }
+})();
 </script>
+
+
