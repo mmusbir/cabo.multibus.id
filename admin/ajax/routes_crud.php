@@ -1,5 +1,5 @@
 <?php
-if (!isset($conn)) exit;
+global $conn;
 require_once __DIR__ . '/../../config/activity_log.php';
 
 $subAction = $_REQUEST['subAction'] ?? '';
