@@ -1,5 +1,6 @@
 <?php
 if (!isset($conn)) exit;
+require_once __DIR__ . '/../../config/activity_log.php';
 
 $subAction = $_REQUEST['subAction'] ?? '';
 $type = $_REQUEST['type'] ?? 'reguler';
