@@ -24,14 +24,12 @@ if (empty($services)) {
 } else {
     foreach ($services as $s) {
         echo '<tr>';
-        echo '  <td><span class="customers-table-id">#' . intval($s['id']) . '</span></td>';
-        echo '  <td class="customers-table-name">' . htmlspecialchars($s['name']) . '</td>';
-        echo '  <td class="customers-table-phone">Rp ' . number_format($s['price'], 0, ',', '.') . '</td>';
-        echo '  <td><span class="admin-status-pill warning">Aktif</span></td>';
-        echo '  <td>';
-        echo '    <div class="customers-table-actions">';
-        echo '      <a href="#" class="acc-btn luggage-service-action" data-action="edit" data-id="' . intval($s['id']) . '" data-name="' . htmlspecialchars($s['name']) . '" data-price="' . htmlspecialchars($s['price']) . '" title="Edit layanan">Edit</a>';
-        echo '      <a href="#" class="acc-btn danger luggage-service-action" data-action="delete" data-id="' . intval($s['id']) . '" title="Hapus layanan">Hapus</a>';
+        echo '  <td class="fw-bold"><i class="fa-solid fa-box text-muted me-2" style="font-size:12px;"></i>' . htmlspecialchars($s['name']) . '</td>';
+        echo '  <td class="text-end fw-bold text-primary">Rp ' . number_format($s['price'], 0, ',', '.') . '</td>';
+        echo '  <td class="text-center">';
+        echo '    <div class="d-flex gap-1 justify-content-center">';
+        echo '      <button class="kinetic-icon-btn sm luggage-service-action" data-action="edit" data-id="' . intval($s['id']) . '" data-name="' . htmlspecialchars($s['name']) . '" data-price="' . htmlspecialchars($s['price']) . '" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>';
+        echo '      <button class="kinetic-icon-btn sm danger luggage-service-action" data-action="delete" data-id="' . intval($s['id']) . '" title="Hapus"><i class="fa-solid fa-trash"></i></button>';
         echo '    </div>';
         echo '  </td>';
         echo '</tr>';
@@ -44,5 +42,5 @@ if (ob_get_length()) {
     ob_clean();
 }
 header('Content-Type: application/json');
-echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total]);
+echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total, 'data' => $services]);
 exit;

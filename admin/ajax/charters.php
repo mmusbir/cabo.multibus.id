@@ -54,7 +54,16 @@ $per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 25;
 $offset = ($page - 1) * $per_page;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-$where = "WHERE start_date >= CURRENT_DATE";
+$scope = isset($_GET['scope']) ? $_GET['scope'] : 'active';
+
+if ($scope === 'history') {
+    // History: past charters or completed charters
+    $where = "WHERE (start_date < CURRENT_DATE AND bop_status = 'done')";
+} else {
+    // Active: upcoming, today, or unpaid
+    $where = "WHERE (start_date >= CURRENT_DATE OR bop_status != 'done')";
+}
+
 $params = [];
 
 if ($search !== '') {
@@ -102,12 +111,9 @@ if (empty($rows)) {
     foreach ($rows as $index => $r) {
         $priceRaw = floatval($r['price'] ?? 0);
         $price = 'Rp ' . number_format($priceRaw, 0, ',', '.');
-        $vehicle = trim(($r['nopol'] ?? '-') . ' ' . ($r['merek'] ?? ''));
-        $tripDate = !empty($r['start_date']) ? date('d M Y', strtotime($r['start_date'])) : '-';
-        $tripDateShort = !empty($r['start_date']) ? strtoupper(date('d M', strtotime($r['start_date']))) : '-';
+        $vehicle = trim(($r['nopol'] ?? '-') . ' - ' . ($r['merek'] ?? 'Unit'));
+        $tripDate = !empty($r['start_date']) ? strtoupper(date('d M', strtotime($r['start_date']))) : '-';
         $tripHour = !empty($r['departure_time']) ? substr($r['departure_time'], 0, 5) : '--:--';
-        $depTimeFormatted = formatTimeWithLabel($r['departure_time']);
-        $createdAgo = charter_relative_time($r['created_at'] ?? '');
 
         $startDate = new DateTime($r['start_date']);
         $endDate = new DateTime($r['end_date']);
@@ -116,23 +122,12 @@ if (empty($rows)) {
 
         $bopStatus = $r['bop_status'] ?? 'pending';
         $bopLabel = ($bopStatus === 'done') ? 'Lunas Semua' : 'Belum Lunas';
-        $stateClass = ($bopStatus === 'done') ? 'ready' : 'warning';
+        $statusClass = ($bopStatus === 'done') ? 'paid' : 'pending';
         $layanan = $r['layanan'] ?? 'Regular';
-        $routeLine = trim(($r['pickup_point'] ?? '-') . ' - ' . ($r['drop_point'] ?? '-'));
         $driverName = trim($r['driver_name'] ?? '-') !== '' ? $r['driver_name'] : '-';
-        $sourceLabel = !empty($r['company_name']) ? 'ADMIN' : 'END USER';
+        $sourceLabel = !empty($r['company_name']) ? 'ADMIN' : 'USER';
         $routeFrom = trim($r['pickup_point'] ?? '-');
         $routeTo = trim($r['drop_point'] ?? '-');
-        $routeFromShort = charter_short_place($routeFrom);
-        $routeToShort = charter_short_place($routeTo);
-        $cardVariantCycle = $index % 4;
-        $cardVariantClass = match ($cardVariantCycle) {
-            0 => 'is-wide',
-            1 => 'is-side',
-            2 => 'is-compact',
-            default => 'is-detail',
-        };
-        $borderTone = ($bopStatus === 'done') ? 'tone-primary' : 'tone-danger';
 
         $dataAttrs = 'data-id="' . intval($r['id']) . '" ';
         $dataAttrs .= 'data-name="' . charter_h($r['name'] ?? '') . '" ';
@@ -140,10 +135,9 @@ if (empty($rows)) {
         $dataAttrs .= 'data-phone="' . charter_h($r['phone'] ?? '') . '" ';
         $dataAttrs .= 'data-start="' . charter_h($r['start_date'] ?? '') . '" ';
         $dataAttrs .= 'data-end="' . charter_h($r['end_date'] ?? '') . '" ';
-        $dataAttrs .= 'data-deptime="' . charter_h($r['departure_time'] ? substr($r['departure_time'], 0, 5) : '') . '" ';
-        $dataAttrs .= 'data-deptime-formatted="' . charter_h($depTimeFormatted) . '" ';
-        $dataAttrs .= 'data-pickup="' . charter_h($r['pickup_point'] ?? '') . '" ';
-        $dataAttrs .= 'data-drop="' . charter_h($r['drop_point'] ?? '') . '" ';
+        $dataAttrs .= 'data-deptime="' . charter_h($tripHour) . '" ';
+        $dataAttrs .= 'data-pickup="' . charter_h($routeFrom) . '" ';
+        $dataAttrs .= 'data-drop="' . charter_h($routeTo) . '" ';
         $dataAttrs .= 'data-unit="' . charter_h($r['unit_id'] ?? '') . '" ';
         $dataAttrs .= 'data-driver="' . charter_h($r['driver_name'] ?? '') . '" ';
         $dataAttrs .= 'data-price="' . $priceRaw . '" ';
@@ -153,78 +147,101 @@ if (empty($rows)) {
         $dataAttrs .= 'data-duration="' . $durationDays . '" ';
         $dataAttrs .= 'data-bop="' . charter_h($bopStatus) . '"';
 
-        echo '<article class="admin-card-compact charter-command-card ' . $cardVariantClass . ' ' . $borderTone . '" ' . $dataAttrs . '>';
-        echo '  <div class="charter-command-card-body">';
-        echo '    <div class="charter-command-top">';
-        echo '      <div class="charter-command-top-copy">';
-        echo '        <span class="charter-command-code">' . charter_h('CRT-' . date('Ymd', strtotime($r['start_date'])) . '-' . str_pad((string) intval($r['id']), 3, '0', STR_PAD_LEFT)) . '</span>';
-        echo '        <div class="charter-command-badges">';
-        echo '          <span class="charter-command-badge source">' . charter_h($sourceLabel) . '</span>';
-        echo '          <span class="charter-command-age">' . charter_h($createdAgo) . '</span>';
+        $code = charter_h('CRT-' . date('ymd', strtotime($r['start_date'])) . '-' . str_pad((string) intval($r['id']), 3, '0', STR_PAD_LEFT));
+
+        $accentColor = $bopStatus === 'done' ? '#10b981' : '#f59e0b';
+        $accentBg = $bopStatus === 'done' ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)';
+
+        echo '<div class="admin-bs-card mb-3" style="border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); position: relative; background: var(--card-bg); grid-column: 1 / -1;" ' . $dataAttrs . '>';
+        
+        // Left accent bar
+        echo '  <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: ' . $accentColor . ';"></div>';
+
+        // Header
+        echo '  <div class="d-flex justify-content-between align-items-center" style="padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.01);">';
+        echo '    <div class="d-flex align-items-center gap-3">';
+        echo '      <div style="background: ' . $accentBg . '; color: ' . $accentColor . '; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px;">';
+        echo '        <i class="fa-solid fa-file-contract"></i>';
+        echo '      </div>';
+        echo '      <span style="font-weight: 700; color: var(--text-main); font-size: 15px; letter-spacing: -0.2px;">' . $code . '</span>';
+        if ($sourceLabel === 'ADMIN') {
+            echo '  <span style="background: rgba(var(--neu-primary-rgb), 0.1); color: var(--neu-primary); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700;">ADMIN</span>';
+        }
+        echo '    </div>';
+        echo '    <div style="background: ' . ($bopStatus === 'done' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)') . '; color: ' . $accentColor . '; padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">' . htmlspecialchars($bopLabel) . '</div>';
+        echo '  </div>';
+
+        // Body
+        echo '  <div style="padding: 20px 20px 20px 26px;">';
+        
+        echo '    <div class="row g-4">';
+        
+        // Left: Customer & Route
+        echo '      <div class="col-md-7">';
+        echo '        <div style="margin-bottom: 20px;">';
+        echo '          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">Customer</div>';
+        echo '          <h4 style="margin: 0; font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">' . charter_h($r['name']) . '</h4>';
+        echo '          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-phone" style="margin-right: 8px; font-size: 12px;"></i>' . charter_h($r['phone']) . '</div>';
+        echo '        </div>';
+
+        echo '        <div style="position: relative; padding-left: 20px;">';
+        echo '          <div style="position: absolute; left: 4px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(to bottom, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);"></div>';
+        echo '          <div style="margin-bottom: 12px; position: relative;">';
+        echo '            <div style="position: absolute; left: -20px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary-color); border: 2px solid var(--card-bg);"></div>';
+        echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Penjemputan</div>';
+        echo '            <div style="font-weight: 600; color: var(--text-main); font-size: 14px;">' . charter_h($routeFrom) . '</div>';
+        echo '          </div>';
+        echo '          <div style="position: relative;">';
+        echo '            <div style="position: absolute; left: -20px; top: 4px; width: 10px; height: 10px; border-radius: 2px; background: #ef4444; border: 2px solid var(--card-bg);"></div>';
+        echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Tujuan / Destinasi</div>';
+        echo '            <div style="font-weight: 600; color: var(--text-main); font-size: 14px;">' . charter_h($routeTo) . '</div>';
+        echo '          </div>';
         echo '        </div>';
         echo '      </div>';
-        echo '      <div class="charter-command-state ' . $stateClass . '"><span class="charter-state-dot"></span>' . charter_h($bopLabel) . '</div>';
-        echo '    </div>';
 
-        echo '    <div class="charter-command-main">';
-        echo '      <div class="charter-command-customer">';
-        echo '        <h4 class="charter-command-name">' . charter_h($r['name']) . '</h4>';
-        if (!empty($r['company_name'])) {
-            echo '        <div class="charter-command-company">' . charter_h($r['company_name']) . '</div>';
-        } else {
-            echo '        <div class="charter-command-company">' . charter_h($layanan) . '</div>';
-        }
+        // Right: Schedule & Info
+        echo '      <div class="col-md-5">';
+        echo '        <div style="background: var(--bg-body); border-radius: 16px; padding: 16px; height: 100%; border: 1px solid var(--border-color);">';
+        echo '          <div style="margin-bottom: 16px;">';
+        echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Waktu & Durasi</div>';
+        echo '            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">';
+        echo '              <div style="background: var(--primary-color); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 15px;">' . charter_h($tripDate) . '</div>';
+        echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 15px;"><i class="fa-regular fa-clock" style="margin-right: 6px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
+        echo '            </div>';
+        echo '            <div style="font-size: 13px; font-weight: 600; color: var(--text-main);"><span style="color: var(--primary-color);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';
+        echo '          </div>';
+
+        echo '          <div style="display: flex; flex-direction: column; gap: 8px;">';
+        echo '            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-main);">';
+        echo '              <i class="fa-solid fa-bus" style="width: 16px; color: var(--text-muted);"></i> <span>' . charter_h($vehicle) . '</span>';
+        echo '            </div>';
+        echo '            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-main);">';
+        echo '              <i class="fa-solid fa-user-tie" style="width: 16px; color: var(--text-muted);"></i> <span>' . charter_h($driverName) . '</span>';
+        echo '            </div>';
+        echo '          </div>';
+        echo '        </div>';
         echo '      </div>';
-
-        if ($cardVariantClass === 'is-wide') {
-            echo '      <div class="charter-command-route-wide">';
-            echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Departure</span><strong>' . charter_h($routeFrom) . '</strong></div>';
-            echo '        <i class="fa-solid fa-arrow-right fa-icon"></i>';
-            echo '        <div class="charter-command-route-stop"><span class="charter-command-label">Destination</span><strong>' . charter_h($routeTo) . '</strong></div>';
-            echo '      </div>';
-            echo '      <div class="charter-command-schedule-box">';
-            echo '        <span class="charter-command-label">Date &amp; Time</span>';
-            echo '        <strong>' . charter_h($tripDate) . '</strong>';
-            echo '        <em>' . charter_h($tripHour . ' WITA') . '</em>';
-            echo '      </div>';
-        } elseif ($cardVariantClass === 'is-side') {
-            echo '      <div class="charter-command-side-stack">';
-            echo '        <div class="charter-command-inline-row"><span>Route</span><strong>' . charter_h($routeFromShort) . ' <span class="charter-arrow">→</span> ' . charter_h($routeToShort) . '</strong></div>';
-            echo '        <div class="charter-command-inline-row"><span>Scheduled</span><strong>' . charter_h($tripDate) . '</strong></div>';
-            echo '      </div>';
-        } elseif ($cardVariantClass === 'is-compact') {
-            echo '      <p class="charter-command-caption">' . charter_h($layanan) . ' - ' . charter_h($durationDays) . ' hari</p>';
-            echo '      <div class="charter-command-date-split">';
-            echo '        <div><span class="charter-command-label">Depart</span><strong>' . charter_h($tripDateShort) . '</strong></div>';
-            echo '        <i class="fa-solid fa-right-left fa-icon"></i>';
-            echo '        <div><span class="charter-command-label">Return</span><strong>' . charter_h(!empty($r['end_date']) ? strtoupper(date('d M', strtotime($r['end_date']))) : '-') . '</strong></div>';
-            echo '      </div>';
-        } else {
-            echo '      <div class="charter-command-detail-grid">';
-            echo '        <div><span class="charter-command-label">Customer</span><strong>' . charter_h($r['name']) . '</strong></div>';
-            echo '        <div><span class="charter-command-label">Route Status</span><div class="charter-command-route-inline"><i class="fa-solid fa-truck fa-icon"></i><strong>' . charter_h($routeFromShort) . ' → ' . charter_h($routeToShort) . '</strong></div></div>';
-            echo '      </div>';
-        }
+        
         echo '    </div>';
 
-        echo '    <div class="charter-command-footer">';
-        echo '      <div class="charter-command-meta">';
-        echo '        <span class="charter-command-pill">' . charter_h($sourceLabel) . '</span>';
-        echo '        <span class="charter-command-note">' . charter_h($driverName) . ' • ' . charter_h($vehicle) . ' • ' . charter_h($price) . '</span>';
-        echo '      </div>';
-        echo '      <div class="charter-command-meta-end">' . charter_h($tripDate . ' • ' . $tripHour) . '</div>';
-        echo '    </div>';
+        echo '  </div>'; // End Body
 
-        echo '    <div class="charter-command-actions">';
+        // Footer
+        echo '  <div style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--neu-primary-rgb), 0.02);">';
+        echo '    <div>';
+        echo '      <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>';
+        echo '      <div style="font-size: 22px; font-weight: 900; color: var(--primary-color); letter-spacing: -0.5px;">' . $price . '</div>';
+        echo '    </div>';
+        echo '    <div style="display: flex; gap: 8px;">';
         if ($bopStatus !== 'done') {
-            echo '      <a href="#" class="charter-command-action success bop-done-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-circle-check fa-icon"></i>BOP</a>';
+            echo '      <button class="btn bop-done-btn" data-id="' . intval($r['id']) . '" title="Tandai BOP Lunas" style="background: #10b981; color: #fff; border-radius: 12px; padding: 8px 16px; font-size: 13px; font-weight: 700; border: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);"><i class="fa-solid fa-check-double" style="margin-right: 6px;"></i> Lunas</button>';
         }
-        echo '      <a href="#" class="charter-command-action copy-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-copy fa-icon"></i>Copy</a>';
-        echo '      <a href="#" class="charter-command-action edit-charter-btn" data-id="' . intval($r['id']) . '"><i class="fa-solid fa-pen-to-square fa-icon"></i>Edit</a>';
-        echo '      <a href="#" class="charter-command-action danger delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '"><i class="fa-solid fa-trash-can fa-icon"></i>Hapus</a>';
+        echo '      <button class="btn copy-charter-btn" data-id="' . intval($r['id']) . '" title="Salin Detail" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-copy"></i></button>';
+        echo '      <button class="btn edit-charter-btn" data-id="' . intval($r['id']) . '" title="Edit Charter" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-pen-to-square"></i></button>';
+        echo '      <button class="btn delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '" title="Hapus" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-trash"></i></button>';
         echo '    </div>';
         echo '  </div>';
-        echo '</article>';
+        echo '</div>';
     }
 }
 $rows_html = ob_get_clean();

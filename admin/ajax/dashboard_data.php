@@ -24,6 +24,9 @@ $dashboard = [
     'trend_labels' => [],
     'trend_revenues' => [],
     'trend_dates' => [],
+    'monthly_labels' => [],
+    'monthly_revenues' => [],
+    'monthly_names' => [],
     'recent_activity' => [],
 ];
 
@@ -62,6 +65,30 @@ try {
         $dashboard['trend_labels'][] = strtoupper(date('D', strtotime($dateKey)));
         $dashboard['trend_revenues'][] = $revTrendMap[$dateKey] ?? 0;
         $dashboard['trend_dates'][] = date('d M', strtotime($dateKey));
+    }
+
+    // Revenue trend per month (current year)
+    $monthlyTrendStmt = $conn->query("SELECT DATE_TRUNC('month', tanggal) AS bulan, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_PART('year', tanggal) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan ORDER BY bulan ASC");
+    $monthlyTrendMap = [];
+    if ($monthlyTrendStmt) {
+        while ($row = $monthlyTrendStmt->fetch(PDO::FETCH_ASSOC)) {
+            $monthKey = !empty($row['bulan']) ? date('Y-m', strtotime((string) $row['bulan'])) : '';
+            if ($monthKey !== '') {
+                $monthlyTrendMap[$monthKey] = (float) ($row['revenue'] ?? 0);
+            }
+        }
+    }
+
+    $dashboard['monthly_labels'] = [];
+    $dashboard['monthly_revenues'] = [];
+    $dashboard['monthly_names'] = [];
+    $currentYear = date('Y');
+    $currentMonth = (int) date('n');
+    for ($i = 1; $i <= $currentMonth; $i++) {
+        $monthKey = $currentYear . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
+        $dashboard['monthly_labels'][] = strtoupper(date('M', strtotime($monthKey . '-01')));
+        $dashboard['monthly_revenues'][] = $monthlyTrendMap[$monthKey] ?? 0;
+        $dashboard['monthly_names'][] = date('F Y', strtotime($monthKey . '-01'));
     }
 
     activity_log_ensure_table($conn);

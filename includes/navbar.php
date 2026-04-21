@@ -24,16 +24,28 @@
         <a href="#reports" data-target="reports" data-nav-key="reports"><i class="fa-solid fa-chart-column fa-icon"></i>Laporan</a>
       </nav>
 
+      <div class="kinetic-sidebar-section kinetic-sidebar-submenu is-collapsed" id="customerSidebarSection">
+        <button class="kinetic-sidebar-section-toggle" id="customerSidebarToggle" type="button" aria-expanded="false" aria-controls="customerSidebarLinks">
+          <span class="kinetic-sidebar-section-title"><i class="fa-solid fa-users fa-icon"></i><span>Customer</span></span>
+          <i class="fa-solid fa-chevron-down fa-icon kinetic-sidebar-section-caret"></i>
+        </button>
+        <div class="kinetic-sidebar-links" id="customerSidebarLinks">
+          <a href="#customers" data-target="customers"><i class="fa-solid fa-user-check fa-icon"></i>Reguler</a>
+          <a href="#customer_bagasi" data-target="customer_bagasi"><i class="fa-solid fa-users-viewfinder fa-icon"></i>Bagasi</a>
+          <a href="#customer_charter" data-target="customer_charter"><i class="fa-solid fa-users-rectangle fa-icon"></i>Carter</a>
+        </div>
+      </div>
+
       <div class="kinetic-sidebar-section kinetic-sidebar-submenu is-collapsed" id="settingsSidebarSection">
         <button class="kinetic-sidebar-section-toggle" id="settingsSidebarToggle" type="button" aria-expanded="false" aria-controls="settingsSidebarLinks">
           <span class="kinetic-sidebar-section-title"><i class="fa-solid fa-gear fa-icon"></i><span>Pengaturan</span></span>
           <i class="fa-solid fa-chevron-down fa-icon kinetic-sidebar-section-caret"></i>
         </button>
         <div class="kinetic-sidebar-links" id="settingsSidebarLinks">
-          <a href="#customers" data-target="customers"><i class="fa-solid fa-users fa-icon"></i>Customers</a>
           <a href="#schedules" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i>Jadwal</a>
           <a href="#cancellations" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i>Logs</a>
-          <a href="#routes" data-target="routes"><i class="fa-solid fa-route fa-icon"></i>Rute</a>
+          <a href="#routes" data-target="routes"><i class="fa-solid fa-route fa-icon"></i>Rute Reguler</a>
+          <a href="#routes_carter" data-target="routes_carter"><i class="fa-solid fa-map-location-dot fa-icon"></i>Rute Carter</a>
           <a href="#segments" data-target="segments"><i class="fa-solid fa-shuffle fa-icon"></i>Segment</a>
           <a href="#luggage_services" data-target="luggage_services"><i class="fa-solid fa-suitcase-rolling fa-icon"></i>Layanan Bagasi</a>
           <a href="#units" data-target="units"><i class="fa-solid fa-van-shuttle fa-icon"></i>Unit Kendaraan</a>
@@ -156,12 +168,19 @@
     <div class="bottom-more-content">
       <div class="sheet-handle"></div>
 
+      <div class="menu-section-header">Customer</div>
+      <div class="menu-grid">
+        <a href="#customers" class="nav-btn" data-target="customers"><i class="fa-solid fa-users fa-icon"></i><span class="nav-label">Reguler</span></a>
+        <a href="#customer_bagasi" class="nav-btn" data-target="customer_bagasi"><i class="fa-solid fa-users-viewfinder fa-icon"></i><span class="nav-label">Bagasi</span></a>
+        <a href="#customer_charter" class="nav-btn" data-target="customer_charter"><i class="fa-solid fa-users-rectangle fa-icon"></i><span class="nav-label">Carter</span></a>
+      </div>
+
       <div class="menu-section-header">Pengaturan</div>
       <div class="menu-grid">
-        <a href="#customers" class="nav-btn" data-target="customers"><i class="fa-solid fa-users fa-icon"></i><span class="nav-label">Customers</span></a>
         <a href="#schedules" class="nav-btn" data-target="schedules"><i class="fa-solid fa-calendar-days fa-icon"></i><span class="nav-label">Jadwal</span></a>
         <a href="#cancellations" class="nav-btn" data-target="cancellations"><i class="fa-solid fa-clock-rotate-left fa-icon"></i><span class="nav-label">Logs</span></a>
-        <a href="#routes" class="nav-btn" data-target="routes"><i class="fa-solid fa-route fa-icon"></i><span class="nav-label">Rute</span></a>
+        <a href="#routes" class="nav-btn" data-target="routes"><i class="fa-solid fa-route fa-icon"></i><span class="nav-label">Rute Reguler</span></a>
+        <a href="#routes_carter" class="nav-btn" data-target="routes_carter"><i class="fa-solid fa-map-location-dot fa-icon"></i><span class="nav-label">Rute Carter</span></a>
         <a href="#segments" class="nav-btn" data-target="segments"><i class="fa-solid fa-shuffle fa-icon"></i><span class="nav-label">Segment</span></a>
         <a href="#luggage_services" class="nav-btn" data-target="luggage_services"><i class="fa-solid fa-suitcase-rolling fa-icon"></i><span class="nav-label">Bagasi</span></a>
         <a href="#units" class="nav-btn" data-target="units"><i class="fa-solid fa-van-shuttle fa-icon"></i><span class="nav-label">Unit</span></a>
@@ -197,7 +216,12 @@
     const settingsSidebarSection = document.getElementById('settingsSidebarSection');
     const settingsSidebarToggle = document.getElementById('settingsSidebarToggle');
     const settingsMenuStorageKey = 'adminSettingsMenuCollapsed';
-    const settingsTargets = ['customers', 'schedules', 'cancellations', 'routes', 'segments', 'luggage_services', 'units', 'drivers', 'users'];
+    const settingsTargets = ['schedules', 'cancellations', 'routes', 'routes_carter', 'segments', 'luggage_services', 'units', 'drivers', 'users'];
+
+    const customerSidebarSection = document.getElementById('customerSidebarSection');
+    const customerSidebarToggle = document.getElementById('customerSidebarToggle');
+    const customerMenuStorageKey = 'adminCustomerMenuCollapsed';
+    const customerTargets = ['customers', 'customer_bagasi', 'customer_charter'];
 
     function syncDesktopSidebarButton() {
       const isHidden = document.body.classList.contains('sidebar-hidden');
@@ -238,6 +262,23 @@
       }
     }
 
+    function isCustomerTarget(target) {
+      return customerTargets.includes(target);
+    }
+
+    function setCustomerMenuCollapsed(isCollapsed, persist = true) {
+      if (!customerSidebarSection || !customerSidebarToggle) return;
+      customerSidebarSection.classList.toggle('is-collapsed', !!isCollapsed);
+      customerSidebarToggle.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+      if (persist) {
+        try {
+          window.localStorage.setItem(customerMenuStorageKey, isCollapsed ? '1' : '0');
+        } catch (err) {
+          // Ignore unavailable storage.
+        }
+      }
+    }
+
     function getPrimaryNavKey(target) {
       if (target === 'dashboard') return 'dashboard';
       if (target === 'reports') return 'reports';
@@ -265,6 +306,9 @@
 
       if (isSettingsTarget(target)) {
         setSettingsMenuCollapsed(false, false);
+      }
+      if (isCustomerTarget(target)) {
+        setCustomerMenuCollapsed(false, false);
       }
     }
 
@@ -324,6 +368,13 @@
       settingsSidebarToggle.addEventListener('click', function () {
         const willCollapse = !settingsSidebarSection.classList.contains('is-collapsed');
         setSettingsMenuCollapsed(willCollapse, true);
+      });
+    }
+
+    if (customerSidebarToggle) {
+      customerSidebarToggle.addEventListener('click', function () {
+        const willCollapse = !customerSidebarSection.classList.contains('is-collapsed');
+        setCustomerMenuCollapsed(willCollapse, true);
       });
     }
 
@@ -431,11 +482,19 @@
       if (window.matchMedia('(min-width: 992px)').matches && window.localStorage.getItem(sidebarStorageKey) === '1') {
         document.body.classList.add('sidebar-hidden');
       }
+      
       const storedSettingsState = window.localStorage.getItem(settingsMenuStorageKey);
       if (storedSettingsState === '1' || (!storedSettingsState && !isSettingsTarget(initialTarget))) {
         setSettingsMenuCollapsed(true, false);
       } else if (storedSettingsState === '0') {
         setSettingsMenuCollapsed(false, false);
+      }
+
+      const storedCustomerState = window.localStorage.getItem(customerMenuStorageKey);
+      if (storedCustomerState === '1' || (!storedCustomerState && !isCustomerTarget(initialTarget))) {
+        setCustomerMenuCollapsed(true, false);
+      } else if (storedCustomerState === '0') {
+        setCustomerMenuCollapsed(false, false);
       }
     } catch (err) {
       // Ignore unavailable storage.

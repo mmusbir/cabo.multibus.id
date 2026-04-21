@@ -56,6 +56,24 @@ $todayLabel = strtoupper(date('l, d F Y'));
           </div>
         </section>
 
+        <section class="kinetic-dash-panel kinetic-dash-chart is-monthly">
+          <div class="kinetic-dash-panel-head">
+            <h2>Tren Revenue Bulanan</h2>
+            <span class="kinetic-dash-chip">Tahun <?php echo date('Y'); ?></span>
+          </div>
+          <div class="kinetic-dash-chart-bars" id="dashChartBarsMonthly">
+            <!-- Skeleton bars while loading -->
+            <?php for ($i = 0; $i < 12; $i++): ?>
+              <div class="kinetic-dash-bar-group">
+                <div class="kinetic-dash-bar-shell">
+                  <div class="kinetic-dash-bar is-zero" style="height: 0.35rem;"></div>
+                </div>
+                <span>—</span>
+              </div>
+            <?php endfor; ?>
+          </div>
+        </section>
+
         <section class="kinetic-dash-revenue-splits" id="dashRevenueSplits">
           <article class="kinetic-revenue-split-card is-booking">
             <div class="kinetic-revenue-split-head">
@@ -167,7 +185,7 @@ $todayLabel = strtoupper(date('l, d F Y'));
     el = document.getElementById('dashLiveFleet'); if (el) el.textContent = formatNumber(data.live_fleet || 0) + ' Unit Beroperasi';
     el = document.getElementById('dashRevenueToday'); if (el) el.textContent = 'Rp ' + formatNumber(data.revenue_today || 0);
 
-    // Chart bars
+    // Chart bars (Daily)
     var chartContainer = document.getElementById('dashChartBars');
     if (chartContainer && data.trend_labels && data.trend_labels.length) {
       var maxRevenue = Math.max.apply(null, data.trend_revenues.length ? data.trend_revenues : [0]);
@@ -189,6 +207,30 @@ $todayLabel = strtoupper(date('l, d F Y'));
         html += '</div>';
       }
       chartContainer.innerHTML = html;
+    }
+
+    // Chart bars (Monthly)
+    var monthlyChartContainer = document.getElementById('dashChartBarsMonthly');
+    if (monthlyChartContainer && data.monthly_labels && data.monthly_labels.length) {
+      var maxMonthlyRevenue = Math.max.apply(null, data.monthly_revenues.length ? data.monthly_revenues : [0]);
+      var mHtml = '';
+      for (var k = 0; k < data.monthly_labels.length; k++) {
+        var mRev = data.monthly_revenues[k] || 0;
+        var mHeight = (maxMonthlyRevenue <= 0 || mRev <= 0) ? '0.35rem' : (Math.round((mRev / maxMonthlyRevenue) * 10000) / 100) + '%';
+        var mIsActive = (k === data.monthly_labels.length - 1) ? ' is-active' : '';
+        var mIsZero = mRev <= 0 ? ' is-zero' : '';
+        mHtml += '<div class="kinetic-dash-bar-group' + mIsActive + '" data-revenue="' + Math.round(mRev) + '" data-date="' + (data.monthly_names[k] || '') + '">';
+        mHtml += '<div class="kinetic-dash-bar-tooltip">';
+        mHtml += '<span class="tooltip-date">' + (data.monthly_names[k] || '') + '</span>';
+        mHtml += '<span class="tooltip-amount">Rp ' + formatNumber(mRev) + '</span>';
+        mHtml += '</div>';
+        mHtml += '<div class="kinetic-dash-bar-shell">';
+        mHtml += '<div class="kinetic-dash-bar' + mIsZero + '" style="height: ' + mHeight + ';"></div>';
+        mHtml += '</div>';
+        mHtml += '<span>' + (data.monthly_labels[k] || '') + '</span>';
+        mHtml += '</div>';
+      }
+      monthlyChartContainer.innerHTML = mHtml;
     }
 
     // Activity list

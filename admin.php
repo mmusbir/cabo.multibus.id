@@ -15,21 +15,8 @@ if ($isActionRequest) {
   ini_set('display_startup_errors', 1);
 }
 error_reporting(E_ALL);
-// admin.php Ã¢â‚¬â€ Router-based ACTION handling (v2.0)
-// IMPORTANT: remove the DEBUG / AUTO-LOGIN block before deploying to production.
+// admin.php — Router-based ACTION handling (v2.0)
 
-// Error reporting - disable in production
-/* 
-if (getenv('APP_ENV') === 'production') {
-  ini_set('display_errors', 0);
-  ini_set('display_startup_errors', 0);
-  error_reporting(0);
-} else {
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
-}
-*/
 if (!$isActionRequest) {
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
@@ -182,6 +169,40 @@ function renderAdminSectionFragmentFile($file) {
 
   if ($basename === 'customers.php') {
     $fragmentData['import_msg'] = $_SESSION['import_msg'] ?? '';
+    $fragmentData['edit_customer'] = [];
+    if (isset($conn) && isset($_GET['edit_customer'])) {
+      $editId = intval($_GET['edit_customer']);
+      if ($editId > 0) {
+        $editStmt = $conn->prepare("SELECT * FROM customers WHERE id=? LIMIT 1");
+        $editStmt->execute([$editId]);
+        $fragmentData['edit_customer'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+      }
+    }
+  }
+
+  if ($basename === 'routes_carter.php') {
+    $fragmentData['edit_carter'] = [];
+    if (isset($conn) && isset($_GET['edit_carter'])) {
+      $editId = intval($_GET['edit_carter']);
+      if ($editId > 0) {
+        $editStmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+        $editStmt->execute([$editId]);
+        $fragmentData['edit_carter'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+      }
+    }
+  }
+
+
+  if ($basename === 'customer_bagasi.php') {
+    $fragmentData['edit_customer_bagasi'] = [];
+    if (isset($conn) && isset($_GET['edit_customer_bagasi'])) {
+      $editId = intval($_GET['edit_customer_bagasi']);
+      if ($editId > 0) {
+        $editStmt = $conn->prepare("SELECT * FROM customer_bagasi WHERE id=? LIMIT 1");
+        $editStmt->execute([$editId]);
+        $fragmentData['edit_customer_bagasi'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+      }
+    }
   }
 
   if ($basename === 'schedules.php') {
@@ -347,12 +368,15 @@ function renderAdminSectionSlot($sectionId) {
     'reports' => 'logs',
     'customers' => 'logs',
     'routes' => 'logs',
+    'routes_carter' => 'logs',
     'schedules' => 'logs',
     'drivers' => 'logs',
     'segments' => 'logs',
     'users' => 'logs',
     'units' => 'logs',
-    'luggage_services' => 'logs'
+    'luggage_services' => 'logs',
+    'customer_bagasi' => 'logs',
+    'customer_charter' => 'logs'
   ];
   $skeletonType = $skeletonMap[$safeId] ?? 'default';
   echo '<div id="section-slot-' . htmlspecialchars($safeId) . '" class="admin-section-slot" data-section-slot="' . htmlspecialchars($safeId) . '" data-loaded="0">';
@@ -405,8 +429,10 @@ if ($isActionRequest) {
       $map = [
         'bookings' => __DIR__ . '/includes/bookings.php',
         'charter-create' => __DIR__ . '/includes/charter_create.php',
+        'luggage-create' => __DIR__ . '/includes/luggage_create.php',
         'customers' => __DIR__ . '/includes/customers.php',
         'routes' => __DIR__ . '/includes/routes.php',
+        'routes_carter' => __DIR__ . '/includes/routes_carter.php',
         'schedules' => __DIR__ . '/includes/schedules.php',
         'drivers' => __DIR__ . '/includes/drivers.php',
         'segments' => __DIR__ . '/includes/segments.php',
@@ -416,6 +442,8 @@ if ($isActionRequest) {
         'cancellations' => __DIR__ . '/includes/cancellations.php',
         'reports' => __DIR__ . '/includes/reports.php',
         'luggage_services' => __DIR__ . '/includes/luggage_services.php',
+        'customer_bagasi' => __DIR__ . '/includes/customer_bagasi.php',
+        'customer_charter' => __DIR__ . '/includes/customer_charter.php',
         'luggage' => __DIR__ . '/includes/luggage.php',
       ];
 
@@ -428,7 +456,20 @@ if ($isActionRequest) {
       echo json_encode(['success' => true, 'html' => $html]);
     });
     
+    $router->any('routes_crud', function () use ($ajax_dir) {
+      include $ajax_dir . 'routes_crud.php';
+    });
+
+    $router->get('routes_carterPage', function () use ($ajax_dir) {
+      $_GET['type'] = 'carter';
+      include $ajax_dir . 'routes.php';
+    });
+
     $router->get('customersPage', function () use ($ajax_dir) {
+      include $ajax_dir . 'customers.php';
+    });
+
+    $router->get('customers', function () use ($ajax_dir) {
       include $ajax_dir . 'customers.php';
     });
 
@@ -449,19 +490,51 @@ if ($isActionRequest) {
     });
     
     $router->get('luggagePage', function () use ($ajax_dir) {
-      include $ajax_dir . 'luggage_data_page.php';
+      include $ajax_dir . 'luggage_page.php';
     });
     
     $router->get('reportsPage', function () use ($ajax_dir) {
       include $ajax_dir . 'reports.php';
     });
     
-    $router->get('luggageServicesPage', function () use ($ajax_dir) {
+    $router->get('luggage_servicesPage', function () use ($ajax_dir) {
       include $ajax_dir . 'luggage_services_page.php';
     });
     
-    $router->get('luggageServiceCRUD', function () use ($ajax_dir) {
+    $router->get('luggagePriceMappingPage', function () use ($ajax_dir) {
       include $ajax_dir . 'luggage_service_crud.php';
+    });
+    
+    $router->any('luggageServiceCRUD', function () use ($ajax_dir) {
+      include $ajax_dir . 'luggage_service_crud.php';
+    });
+    
+    $router->get('customer_bagasiPage', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_bagasi_page.php';
+    });
+
+    $router->get('customer_bagasi', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_bagasi_page.php';
+    });
+
+    $router->any('customer_crud', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_crud.php';
+    });
+
+    $router->any('customer_bagasi_crud', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_bagasi_crud.php';
+    });
+
+    $router->get('customer_charterPage', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_charter_page.php';
+    });
+
+    $router->get('customer_charter', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_charter_page.php';
+    });
+
+    $router->any('customer_charterCRUD', function () use ($ajax_dir) {
+      include $ajax_dir . 'customer_charter_crud.php';
     });
     
     $router->get('getSchedules', function () use ($ajax_dir) {
@@ -538,6 +611,37 @@ if ($isActionRequest) {
       include $ajax_dir . 'luggage_actions.php';
     });
     
+    $router->post('inputLuggageRaw', function () use ($ajax_dir) {
+      include $ajax_dir . 'luggage_actions.php';
+    });
+    
+    $router->get('getTrackingLogs', function () use ($ajax_dir) {
+      include $ajax_dir . 'luggage_actions.php';
+    });
+    
+    $router->get('getLuggageFormData', function () use ($conn) {
+      header('Content-Type: application/json');
+      try {
+        $services = $conn->query("SELECT id, name, price FROM luggage_services ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $routes = $conn->query("SELECT id, name FROM routes ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $mapping = $conn->query("SELECT rute_id, layanan_id, harga FROM harga_bagasi")->fetchAll(PDO::FETCH_ASSOC);
+        $customers = $conn->query("SELECT id, nama, no_hp, alamat, tipe FROM customer_bagasi ORDER BY nama ASC")->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode([
+          'success' => true,
+          'services' => $services,
+          'routes' => $routes,
+          'mapping' => $mapping,
+          'customers' => $customers
+        ]);
+      } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+      }
+      exit;
+    });
+    
+    // Clear any stray output (whitespace, BOM, notices) captured since ob_start()
+    if (ob_get_level() > 0) ob_end_clean();
+    
     // Dispatch request
     $router->dispatch();
     
@@ -560,10 +664,6 @@ if (isset($_GET['logout'])) {
   exit;
 }
 
-/********** EDIT-FETCH HANDLERS (dari halaman form) **********/
-// Code di sini dipangil ketika non-AJAX page loads
-// ... (preserved dari original)
-
 // Fetch All Segments for Dropdowns — lazy loaded
 $globalSegments = null;
 function getGlobalSegments() {
@@ -583,9 +683,6 @@ function getGlobalSegments() {
 // NOTE: Handlers di bawah ini masih menggunakan $_POST checks
 // Jika ingin full routing, bisa dimigrasikan ke POST routes juga
 // Untuk sekarang, kami preserve original logic untuk stability
-
-// (Include sisa dari admin.php.backup untuk handlers non-AJAX)
-// Baca dari admin.php.backup dari baris 550 ke akhir untuk mencakup semua POST handlers
 
 if (isset($_POST['save_route'])) {
   $route_id = isset($_POST['route_id']) ? intval($_POST['route_id']) : 0;
@@ -629,7 +726,9 @@ if (isset($_POST['save_route'])) {
         }
       }
     }
-      } else {
+    header('Location: admin.php#routes_carter');
+    exit;
+  } else {
     if ($origin && $destination) {
       $name = "$origin - $destination";
     }
@@ -655,9 +754,9 @@ if (isset($_POST['save_route'])) {
         }
       }
     }
+    header('Location: admin.php#routes');
+    exit;
   }
-  header('Location: admin.php#routes');
-  exit;
 }
 if (isset($_GET['delete_route'])) {
   $id = intval($_GET['delete_route']);
@@ -684,7 +783,7 @@ if (isset($_GET['delete_carter'])) {
   if ($stmt->rowCount() > 0) {
     activity_log_write($conn, 'settings', 'master_carter', $id, 'delete', 'Master carter dihapus: ' . ($routeName ?: ('ID ' . $id)), '', $actor);
   }
-  header('Location: admin.php#routes');
+  header('Location: admin.php#routes_carter');
   exit;
 }
 
@@ -946,58 +1045,7 @@ if (isset($_POST['save_settings'])) {
 }
 
 /* CUSTOMERS save/delete/import */
-if (isset($_POST['save_customer'])) {
-  $cid = isset($_POST['customer_id']) ? intval($_POST['customer_id']) : 0;
-  $actor = activity_log_current_actor($auth ?? null);
-  $name = trim($_POST['cust_name'] ?? '');
-  $name = strtoupper($name); // Force Uppercase
 
-  $phone = trim($_POST['cust_phone'] ?? '');
-  $phone = preg_replace('/\D/', '', $phone); // Remove non-digits
-  if (substr($phone, 0, 2) === '62')
-    $phone = '0' . substr($phone, 2);
-  if (substr($phone, 0, 1) === '8')
-    $phone = '0' . $phone;
-  if (strlen($phone) > 13)
-    $phone = substr($phone, 0, 13);
-
-  $pickup = trim($_POST['cust_pickup'] ?? '');
-  $address = trim($_POST['cust_address'] ?? '');
-  if ($name && $phone) {
-    // Check duplicate phone
-    $stmtC = $conn->prepare("SELECT id, name FROM customers WHERE phone=? LIMIT 1");
-    $stmtC->execute([$phone]);
-    $existing = $stmtC->fetch();
-
-    if ($existing) {
-      if ($cid > 0 && $existing['id'] != $cid) {
-        $_SESSION['import_msg'] = "Gagal: No HP $phone sudah terdaftar atas nama " . $existing['name'];
-        header('Location: admin.php#customers');
-        exit;
-      }
-      if ($cid == 0) {
-        $_SESSION['import_msg'] = "Gagal: No HP $phone sudah terdaftar atas nama " . $existing['name'];
-        header('Location: admin.php#customers');
-        exit;
-      }
-    }
-
-    if ($cid > 0) {
-      $oldStmt = $conn->prepare("SELECT name, phone FROM customers WHERE id=? LIMIT 1");
-      $oldStmt->execute([$cid]);
-      $oldCustomer = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-      $stmt = $conn->prepare("UPDATE customers SET name=?, phone=?, pickup_point=?, address=? WHERE id=?");
-      $stmt->execute([$name, $phone, $pickup, $address, $cid]);
-      activity_log_write($conn, 'settings', 'customer', $cid, 'update', 'Customer diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCustomer['name'] ?? '-') . ' | ' . ($oldCustomer['phone'] ?? '-'), $actor);
-    } else {
-      $stmt = $conn->prepare("INSERT INTO customers (name,phone,address,pickup_point) VALUES(?,?,?,?) ON CONFLICT (phone) DO UPDATE SET address=EXCLUDED.address, pickup_point=EXCLUDED.pickup_point");
-      $stmt->execute([$name, $phone, $address, $pickup]);
-      activity_log_write($conn, 'settings', 'customer', $conn->lastInsertId(), 'create', 'Customer disimpan: ' . $name, $phone, $actor);
-    }
-  }
-  header('Location: admin.php');
-  exit;
-}
 
 if (isset($_POST['export_customers'])) {
   header('Content-Type: text/csv; charset=utf-8');
@@ -1024,20 +1072,12 @@ if (isset($_POST['export_customers'])) {
   exit;
 }
 
-if (isset($_GET['delete_customer'])) {
-  $id = intval($_GET['delete_customer']);
-  $actor = activity_log_current_actor($auth ?? null);
-  $stmtInfo = $conn->prepare("SELECT name, phone FROM customers WHERE id=? LIMIT 1");
-  $stmtInfo->execute([$id]);
-  $customerInfo = $stmtInfo->fetch(PDO::FETCH_ASSOC) ?: [];
-  $stmt = $conn->prepare("DELETE FROM customers WHERE id=?");
-  $stmt->execute([$id]);
-  if ($stmt->rowCount() > 0) {
-    activity_log_write($conn, 'settings', 'customer', $id, 'delete', 'Customer dihapus: ' . ($customerInfo['name'] ?? ('ID ' . $id)), $customerInfo['phone'] ?? '', $actor);
-  }
-  header('Location: admin.php');
-  exit;
-}
+
+
+/* CUSTOMER BAGASI save/delete */
+
+
+
 
 /* DRIVERS save/delete */
 if (isset($_POST['save_driver'])) {
@@ -1270,7 +1310,8 @@ if (isset($_POST['create_charter_submit'])) {
     'name' => trim((string) ($_POST['name'] ?? '')),
     'phone' => trim((string) ($_POST['phone'] ?? '')),
     'email' => trim((string) ($_POST['email'] ?? '')),
-    'route_text' => trim((string) ($_POST['route_text'] ?? '')),
+    'pickup_point' => trim((string) ($_POST['pickup_point'] ?? '')),
+    'drop_point' => trim((string) ($_POST['drop_point'] ?? '')),
     'start_date' => trim((string) ($_POST['start_date'] ?? date('Y-m-d'))),
     'duration_days' => trim((string) ($_POST['duration_days'] ?? '3')),
     'departure_time' => trim((string) ($_POST['departure_time'] ?? '08:30')),
@@ -1310,7 +1351,8 @@ if (isset($_POST['create_charter_submit'])) {
   $errors = [];
   $name = strtoupper($charterForm['name']);
   $phone = preg_replace('/\s+/', '', $charterForm['phone']);
-  $routeText = $charterForm['route_text'];
+  $pickupPoint = $charterForm['pickup_point'];
+  $dropPoint = $charterForm['drop_point'];
   $startDate = $charterForm['start_date'];
   $durationDays = max(1, (int) $charterForm['duration_days']);
   $departureTime = $charterForm['departure_time'] ?: '08:30';
@@ -1323,8 +1365,10 @@ if (isset($_POST['create_charter_submit'])) {
     $errors[] = 'Nama lengkap wajib diisi.';
   if ($phone === '')
     $errors[] = 'Nomor telepon wajib diisi.';
-  if ($routeText === '')
-    $errors[] = 'Rute perjalanan wajib diisi.';
+  if ($pickupPoint === '')
+    $errors[] = 'Lokasi penjemputan wajib diisi.';
+  if ($dropPoint === '')
+    $errors[] = 'Tujuan / destinasi wajib diisi.';
   if ($startDate === '')
     $errors[] = 'Tanggal keberangkatan wajib diisi.';
   if ($unitId <= 0)
@@ -1337,7 +1381,6 @@ if (isset($_POST['create_charter_submit'])) {
     exit;
   }
 
-  [$pickupPoint, $dropPoint] = $parseRoute($routeText);
   $endDate = date('Y-m-d', strtotime($startDate . ' +' . max(0, $durationDays - 1) . ' days'));
   $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
@@ -1432,9 +1475,25 @@ include 'includes/units_logic.php';
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=60">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=21">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=71">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=22">
   <style>
+    /* Critical: ensure shell loader is always hidden on ready */
+    .admin-shell-ready .admin-shell-loader,
+    .admin-shell-loader.is-hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      display: none !important;
+    }
+
+
+
+
+    <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=60">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=61">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=21">
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
       input,
@@ -1461,52 +1520,23 @@ if (ob_get_level()) { ob_end_flush(); }
 flush();
 ?>
 
-<body class="admin-bootstrap-page app-admin">
+<body class="admin-bootstrap-page app-admin admin-shell-ready">
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <?php include 'includes/navbar.php'; ?>
 
-  <div class="admin-shell-loader" id="adminShellLoader" aria-hidden="true">
-    <div class="admin-shell-loader-panel">
-      <div class="admin-shell-loader-topbar"></div>
-      <div class="admin-shell-loader-head">
-        <div class="admin-shell-loader-title-wrap">
-          <div class="admin-shell-loader-title"></div>
-          <div class="admin-shell-loader-subtitle"></div>
-        </div>
-        <div class="admin-shell-loader-export"></div>
-      </div>
-      <div class="admin-shell-loader-metrics">
-        <span class="admin-shell-loader-metric"></span>
-        <span class="admin-shell-loader-metric"></span>
-        <span class="admin-shell-loader-metric"></span>
-        <span class="admin-shell-loader-metric"></span>
-      </div>
-      <div class="admin-shell-loader-analytics">
-        <div class="admin-shell-loader-chart-panel">
-          <div class="admin-shell-loader-panel-head">
-            <span class="admin-shell-loader-panel-pill"></span>
-            <span class="admin-shell-loader-panel-pill admin-shell-loader-panel-pill-short"></span>
-          </div>
-          <div class="admin-shell-loader-chart"></div>
-          <div class="admin-shell-loader-revenue-row">
-            <span class="admin-shell-loader-revenue-card"></span>
-            <span class="admin-shell-loader-revenue-card"></span>
-            <span class="admin-shell-loader-revenue-card"></span>
-          </div>
-        </div>
-        <div class="admin-shell-loader-side">
-          <div class="admin-shell-loader-side-card admin-shell-loader-side-card-tall"></div>
-        </div>
-      </div>
-      <div class="admin-shell-loader-insights">
-        <div class="admin-shell-loader-side-card"></div>
-        <div class="admin-shell-loader-side-card"></div>
-        <div class="admin-shell-loader-side-card"></div>
-      </div>
-    </div>
-  </div>
+  <script>
+    (function () {
+      function hideAdminShellLoader() {
+        document.body.classList.add('admin-shell-ready');
+      }
+
+      window.setTimeout(hideAdminShellLoader, 50);
+      window.addEventListener('load', hideAdminShellLoader, { once: true });
+      window.hideAdminShellLoader = hideAdminShellLoader;
+    })();
+  </script>
 
   <main class="container container-fluid admin-bootstrap-container">
     <div class="layout admin-bootstrap-grid">
@@ -1516,8 +1546,10 @@ flush();
 
         <?php renderAdminSectionSlot('bookings'); ?>
         <?php renderAdminSectionSlot('charter-create'); ?>
+        <?php renderAdminSectionSlot('luggage-create'); ?>
         <?php renderAdminSectionSlot('customers'); ?>
         <?php renderAdminSectionSlot('routes'); ?>
+        <?php renderAdminSectionSlot('routes_carter'); ?>
         <?php renderAdminSectionSlot('schedules'); ?>
         <?php renderAdminSectionSlot('drivers'); ?>
         <?php renderAdminSectionSlot('segments'); ?>
@@ -1527,6 +1559,8 @@ flush();
         <?php renderAdminSectionSlot('cancellations'); ?>
         <?php renderAdminSectionSlot('reports'); ?>
         <?php renderAdminSectionSlot('luggage_services'); ?>
+        <?php renderAdminSectionSlot('customer_bagasi'); ?>
+        <?php renderAdminSectionSlot('customer_charter'); ?>
         <?php renderAdminSectionSlot('luggage'); ?>
 
       </div>
@@ -1800,7 +1834,7 @@ flush();
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=5"></script>
+  <script src="assets/js/admin-panel.js?v=11"></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>

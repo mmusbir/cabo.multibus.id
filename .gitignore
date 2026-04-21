@@ -3,7 +3,6 @@
 !.env.example
 node_modules/
 vendor/
-debug_actions.log
 .vercel/
 *.log
 *.sql
@@ -15,3 +14,11 @@ Thumbs.db
 .vscode/
 temp/
 tmp/
+scratch/
+
+# Test & debug files
+test_*.php
+debug_*.php
+temp_*.html
+*_test.php
+*_debug.php

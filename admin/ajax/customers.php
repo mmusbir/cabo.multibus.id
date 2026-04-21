@@ -13,7 +13,7 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 if ($search !== '') {
     $like = '%' . $search . '%';
     try {
-        $stmtc = $conn->prepare("SELECT COUNT(*) AS cnt FROM customers WHERE name LIKE ? OR phone LIKE ? OR pickup_point LIKE ?");
+        $stmtc = $conn->prepare("SELECT COUNT(*) AS cnt FROM customers WHERE name ILIKE ? OR phone LIKE ? OR pickup_point ILIKE ?");
         $stmtc->execute([$like, $like, $like]);
         $rc = $stmtc->fetch();
         $total = intval($rc['cnt']);
@@ -21,7 +21,7 @@ if ($search !== '') {
         echo json_encode(['success' => false, 'error' => 'db_error', 'detail' => $e->getMessage()]);
         exit;
     }
-    $stmt = $conn->prepare("SELECT id,name,phone,address,pickup_point,created_at FROM customers WHERE name LIKE ? OR phone LIKE ? OR pickup_point LIKE ? ORDER BY name LIMIT ? OFFSET ?");
+    $stmt = $conn->prepare("SELECT id,name,phone,address,pickup_point,created_at FROM customers WHERE name ILIKE ? OR phone LIKE ? OR pickup_point ILIKE ? ORDER BY name LIMIT ? OFFSET ?");
     $params = [$like, $like, $like, $per_page, $offset];
 } else {
     $resCount = $conn->query("SELECT COUNT(*) AS cnt FROM customers");
@@ -62,8 +62,8 @@ if (empty($rows)) {
         echo '  </td>';
         echo '  <td>';
         echo '    <div class="customers-table-actions">';
-        echo '      <a class="acc-btn" href="admin.php?edit_customer=' . intval($c['id']) . '#customers">Edit</a>';
-        echo '      <a class="acc-btn danger" href="admin.php?delete_customer=' . intval($c['id']) . '#customers" onclick="event.preventDefault(); customConfirm(\'Hapus penumpang?\', () => { window.location.href = this.href; }, \'Hapus Penumpang\', \'danger\')">Hapus</a>';
+        echo '      <button type="button" class="acc-btn edit-customer-btn" data-id="' . intval($c['id']) . '">Edit</button>';
+        echo '      <button type="button" class="acc-btn danger delete-customer-btn" data-id="' . intval($c['id']) . '">Hapus</button>';
         echo '    </div>';
         echo '  </td>';
         echo '</tr>';

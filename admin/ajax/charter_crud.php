@@ -42,7 +42,8 @@ function charter_parse_route_text(string $value): array
 if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = strtoupper(trim($_POST['name'] ?? ''));
     $phone = preg_replace('/\s+/', '', trim($_POST['phone'] ?? ''));
-    $routeText = trim($_POST['route_text'] ?? '');
+    $pickupPoint = trim($_POST['pickup_point'] ?? '');
+    $dropPoint = trim($_POST['drop_point'] ?? '');
     $startDate = trim($_POST['start_date'] ?? '');
     $durationDays = max(1, (int) ($_POST['duration_days'] ?? 1));
     $departureTime = trim($_POST['departure_time'] ?? '08:30') ?: '08:30';
@@ -58,8 +59,11 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($phone === '') {
         $errors[] = 'Nomor telepon wajib diisi.';
     }
-    if ($routeText === '') {
-        $errors[] = 'Rute perjalanan wajib diisi.';
+    if ($pickupPoint === '') {
+        $errors[] = 'Lokasi penjemputan wajib diisi.';
+    }
+    if ($dropPoint === '') {
+        $errors[] = 'Tujuan destinasi wajib diisi.';
     }
     if ($startDate === '') {
         $errors[] = 'Tanggal keberangkatan wajib diisi.';
@@ -69,11 +73,13 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($errors) {
+        $_SESSION['charter_create_errors'] = $errors;
+        $_SESSION['charter_create_old'] = $_POST;
         header('Location: admin.php?open=charter-create#charter-create');
         exit;
     }
 
-    [$pickupPoint, $dropPoint] = charter_parse_route_text($routeText);
+
     $endDate = date('Y-m-d', strtotime($startDate . ' +' . max(0, $durationDays - 1) . ' days'));
 
     $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
@@ -95,9 +101,13 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             0,
         ]);
         activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
+        $_SESSION['booking_msg'] = 'Data carter berhasil disimpan.';
+        unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
         header('Location: admin.php?booking_mode=charters#bookings');
         exit;
     } catch (PDOException $e) {
+        $_SESSION['charter_create_errors'] = ['Gagal menyimpan carter: ' . $e->getMessage()];
+        $_SESSION['charter_create_old'] = $_POST;
         header('Location: admin.php?open=charter-create#charter-create');
         exit;
     }

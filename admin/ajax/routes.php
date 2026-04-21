@@ -18,7 +18,7 @@ $params = [];
 
 if ($search !== '') {
     $like = '%' . $search . '%';
-    $where .= " AND (name LIKE ? OR origin LIKE ? OR destination LIKE ?)";
+    $where .= " AND (name ILIKE ? OR origin ILIKE ? OR destination ILIKE ?)";
     $params[] = $like;
     $params[] = $like;
     $params[] = $like;
@@ -50,6 +50,8 @@ try {
                 ? 'Rp ' . number_format($r['rental_price'] ?? 0, 0, ',', '.')
                 : '-';
 
+            $hash = ($type === 'carter') ? '#routes_carter' : '#routes';
+
             echo '<tr>';
             echo '  <td><span class="customers-table-id">#' . intval($r['id']) . '</span></td>';
             echo '  <td class="customers-table-name">' . htmlspecialchars($r['name']) . '</td>';
@@ -59,15 +61,15 @@ try {
             echo '  <td class="customers-table-phone">' . $price . '</td>';
             echo '  <td>';
             echo '    <div class="customers-table-actions">';
-            echo '      <a class="acc-btn" href="admin.php?' . $edit_param . '=' . intval($r['id']) . '#routes">Edit</a>';
-            echo '      <a class="acc-btn danger" href="admin.php?' . $del_param . '=' . intval($r['id']) . '#routes" onclick="event.preventDefault(); customConfirm(\'Hapus rute?\', () => { window.location.href = this.href; }, \'Hapus Rute\', \'danger\')">Hapus</a>';
+            echo '      <button type="button" class="acc-btn edit-route-btn" data-id="' . intval($r['id']) . '" data-type="' . $type . '">Edit</button>';
+            echo '      <button type="button" class="acc-btn danger delete-route-btn" data-id="' . intval($r['id']) . '" data-type="' . $type . '">Hapus</button>';
             echo '    </div>';
             echo '  </td>';
             echo '</tr>';
         }
     }
     $rows_html = ob_get_clean();
-    $pag_html = render_pagination_ajax($total, $per_page, $page, 'routes');
+    $pag_html = render_pagination_ajax($total, $per_page, $page, ($type === 'carter' ? 'routes_carter' : 'routes'));
 
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'rows' => $rows_html, 'pagination' => $pag_html, 'total' => $total]);

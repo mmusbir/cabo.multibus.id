@@ -368,6 +368,10 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-scope-chip:hover {
   box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.2) !important;
 }
 
+html[data-theme="light"] body.admin-bootstrap-page .charter-command-filters > .charter-scope-toggle {
+  border-right-color: rgba(148, 163, 184, 0.22) !important;
+}
+
 html[data-theme="light"] body.admin-bootstrap-page .booking-date-filter .small {
   color: #64748b !important;
 }
@@ -1419,6 +1423,33 @@ html[data-theme="dark"] body.admin-bootstrap-page .theme-toggle-btn {
   color: #e2e2eb;
 }
 
+/* Fix Dark Mode Headings and Section Titles */
+html[data-theme="dark"] body.admin-bootstrap-page h1,
+html[data-theme="dark"] body.admin-bootstrap-page h2,
+html[data-theme="dark"] body.admin-bootstrap-page h3,
+html[data-theme="dark"] body.admin-bootstrap-page h4,
+html[data-theme="dark"] body.admin-bootstrap-page h5,
+html[data-theme="dark"] body.admin-bootstrap-page h6,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-section-title,
+html[data-theme="dark"] body.admin-bootstrap-page .form-title,
+html[data-theme="dark"] body.admin-bootstrap-page #form-title,
+html[data-theme="dark"] body.admin-bootstrap-page .acc-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .admin-section-subtitle,
+html[data-theme="dark"] body.admin-bootstrap-page .admin-bs-input-label,
+html[data-theme="dark"] body.admin-bootstrap-page .form-label {
+  color: rgba(224, 192, 177, 0.82) !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .admin-bs-chip {
+  background: rgba(249, 115, 22, 0.15) !important;
+  color: #ffb690 !important;
+  border-color: rgba(249, 115, 22, 0.2) !important;
+}
+
+
 html[data-theme="light"] body.admin-bootstrap-page .admin-shell-loader {
   background: rgba(239, 244, 251, 0.72);
 }
@@ -1487,3 +1518,24 @@ html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-table
 html[data-theme="light"] body.admin-bootstrap-page .admin-section-skeleton-list-card::after {
   background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.22), transparent);
 }
+
+/* ===== DARK MODE: LUGGAGE COMPONENTS ===== */
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-grid-item,
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-card {
+    background: #1e293b !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-resi-badge {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-price-display {
+    color: #f8fafc !important;
+}
+
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.25); }
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-status-paid { background: rgba(34, 197, 94, 0.15); color: #4ade80; border-color: rgba(34, 197, 94, 0.25); }
+html[data-theme="dark"] body.admin-bootstrap-page .luggage-status-canceled { background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.25); }

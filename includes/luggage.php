@@ -2,126 +2,192 @@
 <section id="luggage" class="card" style="display:none;">
     <div class="admin-section-header">
       <div>
-        <h3 class="admin-section-title">Data Bagasi</h3>
-        <p class="admin-section-subtitle">Kelola data pengiriman bagasi penumpang</p>
+        <h3 class="admin-section-title"><i class="fa-solid fa-boxes-stacked fa-icon" style="color:var(--neu-primary); margin-right:8px;"></i> Data Bagasi</h3>
+        <p class="admin-section-subtitle">Monitoring dan pengelolaan status pengiriman paket/bagasi</p>
       </div>
-      <button class="btn btn-primary btn-modern" type="button" onclick="openLuggageModal()">
-        <i class="fa-solid fa-plus fa-icon" style="font-size:18px;vertical-align:middle;"></i> Tambah Bagasi
-      </button>
+      <a href="#luggage-create" class="btn btn-primary btn-modern" data-target="luggage-create">
+        <i class="fa-solid fa-plus fa-icon"></i> Tambah Bagasi
+      </a>
     </div>
 
-    <!-- Filters -->
-    <div class="admin-bs-meta admin-meta-gap">
-       <div class="d-flex align-items-center gap-2 flex-grow-1">
-          <input type="text" id="luggage_search" class="form-control modern-input" placeholder="Cari nama pengirim/penerima..." oninput="ajaxListLoad('luggage', { page: 1, search: this.value })">
+    <!-- Enhanced Filters -->
+    <div class="admin-bs-panel mb-4">
+       <div class="modern-form-grid" style="grid-template-columns: auto 1fr auto auto; gap: 1rem;">
+          <div class="admin-bs-field d-flex align-items-center">
+             <div class="booking-scope-toggle" role="tablist" style="margin: 0;">
+                <button type="button" class="booking-scope-chip active" id="luggage_scope_active" onclick="setLuggageScope('active')">Aktif</button>
+                <button type="button" class="booking-scope-chip" id="luggage_scope_history" onclick="setLuggageScope('history')">History</button>
+             </div>
+             <input type="hidden" id="luggage_scope_input" value="active">
+          </div>
+          <div class="admin-bs-field">
+             <div class="search-bar-modern" style="width:100%;">
+                <input type="text" id="luggage_search" class="search-input-modern" placeholder="Cari Nama Pengirim, Penerima, atau Resi..." oninput="loadLuggageData(1)">
+                <button type="button" class="search-btn-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+             </div>
+          </div>
+          <div class="admin-bs-field d-flex align-items-center">
+             <div id="luggage_standalone_info" class="admin-bs-chip">Memuat...</div>
+          </div>
        </div>
-       <div class="small" id="luggage_info">Memuat data bagasi...</div>
     </div>
 
-    <div id="luggage_spinner_wrap" class="spinner-wrap" style="display:none">
+    <div id="luggage_standalone_spinner_wrap" class="spinner-wrap" style="display:none">
         <div class="ajax-spinner"></div>
     </div>
 
-    <div id="luggage_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
-        <div class="small admin-grid-message">Loading...</div>
+    <div id="luggage_standalone_tbody" class="booking-cards-grid admin-bs-card-grid admin-list-grid">
+        <div class="small admin-grid-message"><div class="ajax-spinner" style="display:inline-block;margin-right:8px;"></div> Memuat data...</div>
     </div>
     
-    <div id="luggage_pagination" class="pagination-outer"></div>
+    <div id="luggage_standalone_pagination" class="pagination-outer"></div>
 
-    <!-- Add Modal -->
-    <div class="bottom-more-modal admin-modal-overlay" id="luggageModal">
-      <div class="modal-popup-content admin-modal-card admin-modal-card-lg admin-modal-card-form">
-        <h3 class="modal-popup-title admin-modal-heading">Input Bagasi Baru</h3>
-        <form id="luggageForm" novalidate class="admin-modal-form">
-          <div id="luggageErrorMsg" class="admin-modal-error"></div>
-          <!-- (Form fields preserved from original) -->
-          <div class="admin-modal-grid admin-modal-grid-2">
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">Nama Pengirim</label>
-                <input type="text" id="lug_sender_name" name="sender_name" class="form-control admin-modal-control" required>
-              </div>
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">HP Pengirim</label>
-                <input type="tel" id="lug_sender_phone" name="sender_phone" class="form-control admin-modal-control" required>
-              </div>
+    <!-- Tracking Modal -->
+    <div id="trackingModal" class="modal-modern" style="display:none;">
+      <div class="modal-content-modern">
+        <div class="modal-header-modern">
+          <h4 class="modal-title-modern">Riwayat Tracking Bagasi</h4>
+          <button type="button" class="btn-close-modern" onclick="document.getElementById('trackingModal').style.display='none'">&times;</button>
+        </div>
+        <div class="modal-body-modern">
+          <div id="trackingResiTitle" style="font-weight:bold; margin-bottom:15px; font-size:16px;"></div>
+          <div id="trackingLogsWrap" class="tracking-logs-wrap">
+            <div class="small">Memuat riwayat...</div>
           </div>
-          <div class="admin-modal-field">
-            <label class="admin-modal-label">Alamat Pengirim</label>
-            <input type="text" id="lug_sender_address" name="sender_address" class="form-control admin-modal-control">
-          </div>
-          <hr class="my-2 opacity-25">
-          <div class="admin-modal-grid admin-modal-grid-2">
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">Nama Penerima</label>
-                <input type="text" id="lug_receiver_name" name="receiver_name" class="form-control admin-modal-control" required>
-              </div>
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">HP Penerima</label>
-                <input type="tel" id="lug_receiver_phone" name="receiver_phone" class="form-control admin-modal-control" required>
-              </div>
-          </div>
-          <div class="admin-modal-field">
-            <label class="admin-modal-label">Alamat Penerima</label>
-            <input type="text" id="lug_receiver_address" name="receiver_address" class="form-control admin-modal-control">
-          </div>
-          <hr class="my-2 opacity-25">
-          <div class="admin-modal-grid admin-modal-grid-3">
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">Layanan / Tipe</label>
-                <select id="lug_service_id" name="service_id" class="form-control admin-modal-control" required>
-                  <?php
-                    $lsList = $conn->query("SELECT * FROM luggage_services ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
-                    foreach ($lsList as $ls) {
-                      echo '<option value="' . intval($ls['id']) . '" data-price="' . htmlspecialchars($ls['price']) . '">' . htmlspecialchars($ls['name']) . '</option>';
-                    }
-                  ?>
-                </select>
-              </div>
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">Jumlah (Koli)</label>
-                <input type="number" id="lug_quantity" name="quantity" class="form-control admin-modal-control" value="1" min="1" required>
-              </div>
-              <div class="admin-modal-field">
-                <label class="admin-modal-label">Total Harga (Rp)</label>
-                <input type="number" id="lug_price" name="price" class="form-control admin-modal-control" required>
-              </div>
-          </div>
-          <div class="admin-modal-actions">
-            <button type="submit" class="btn btn-primary btn-modern">Simpan Bagasi</button>
-            <button type="button" class="btn btn-outline-secondary btn-modern secondary" onclick="closeLuggageModal()">Batal</button>
-          </div>
-        </form>
+        </div>
+        <div class="modal-footer-modern">
+          <button type="button" class="btn btn-secondary btn-modern" onclick="document.getElementById('trackingModal').style.display='none'">Tutup</button>
+        </div>
       </div>
     </div>
 
     <script>
-      function openLuggageModal() {
-        document.getElementById('luggageForm').reset();
-        const modal = document.getElementById('luggageModal');
+      function setLuggageScope(scope) {
+        document.getElementById('luggage_scope_input').value = scope;
+        document.getElementById('luggage_scope_active').classList.toggle('active', scope === 'active');
+        document.getElementById('luggage_scope_history').classList.toggle('active', scope === 'history');
+        loadLuggageData(1);
+      }
+
+      function loadLuggageData(page = 1) {
+        const perPage = 25;
+        const search = document.getElementById('luggage_search')?.value || '';
+        const scope = document.getElementById('luggage_scope_input')?.value || 'active';
+        
+        // Show spinner
+        const spinnerWrap = document.getElementById('luggage_standalone_spinner_wrap');
+        if (spinnerWrap) spinnerWrap.style.display = 'flex';
+        
+        const url = new URL('admin.php', window.location.origin);
+        url.searchParams.set('action', 'luggagePage');
+        url.searchParams.set('page', page);
+        url.searchParams.set('per_page', perPage);
+        url.searchParams.set('scope', scope);
+        if (search) url.searchParams.set('search', search);
+        
+        fetch(url.toString(), { credentials: 'same-origin' })
+          .then(res => res.json())
+          .then(js => {
+            const tbody = document.getElementById('luggage_standalone_tbody');
+            const pagination = document.getElementById('luggage_standalone_pagination');
+            const info = document.getElementById('luggage_standalone_info');
+            
+            if (js.success) {
+              tbody.innerHTML = js.rows || '';
+              pagination.innerHTML = js.pagination || '';
+              info.textContent = 'Total: ' + (js.total || 0);
+              
+              // Attach event handlers to the luggage action buttons
+              if (typeof attachLuggageHandlers === 'function') {
+                attachLuggageHandlers();
+              }
+            } else {
+              tbody.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">Error: ' + (js.error || 'Gagal memuat data') + '</div>';
+            }
+          })
+          .catch(err => {
+            const tbody = document.getElementById('luggage_standalone_tbody');
+            tbody.innerHTML = '<div class="small admin-grid-message admin-grid-message-error">Kesalahan koneksi</div>';
+            console.error('Error loading luggage data:', err);
+          })
+          .finally(() => {
+            if (spinnerWrap) spinnerWrap.style.display = 'none';
+          });
+      }
+      
+      window.loadLuggageData = loadLuggageData;
+
+      function attachLuggageHandlers() {
+        document.querySelectorAll('.luggage-action').forEach(btn => {
+          btn.onclick = function(e) {
+            e.preventDefault();
+            const action = this.dataset.action;
+            const id = this.dataset.id;
+            const resi = this.dataset.resi;
+
+            if (action === 'trackBagasi') {
+              showTracking(resi);
+              return;
+            }
+
+            // Other actions (Input, Bayar, Batal)
+            if (action === 'inputLuggage' || action === 'markLuggagePaid' || action === 'cancelLuggage') {
+              const confirmMsg = action === 'cancelLuggage' ? 'Batalkan bagasi ini?' : (action === 'markLuggagePaid' ? 'Tandai lunas?' : 'Input bagasi?');
+              const confirmTitle = action === 'cancelLuggage' ? 'Batalkan' : (action === 'markLuggagePaid' ? 'Bayar' : 'Input');
+              const confirmType = action === 'cancelLuggage' ? 'danger' : 'success';
+
+              customConfirm(confirmMsg, async () => {
+                const fd = new FormData();
+                fd.append('id', id);
+                try {
+                  const r = await fetch('admin.php?action=' + action, { method: 'POST', body: fd });
+                  const js = await r.json();
+                  if (js.success) {
+                    await customAlert(js.message || 'Berhasil', 'Sukses');
+                    loadLuggageData();
+                  } else {
+                    customAlert('Gagal: ' + (js.error || 'Terjadi kesalahan'), 'Gagal');
+                  }
+                } catch (err) { console.error(err); }
+              }, confirmTitle, confirmType);
+            }
+          };
+        });
+      }
+
+      async function showTracking(resi) {
+        if (!resi) return;
+        const modal = document.getElementById('trackingModal');
+        const title = document.getElementById('trackingResiTitle');
+        const logsWrap = document.getElementById('trackingLogsWrap');
+
+        title.innerText = 'Resi: ' + resi;
+        logsWrap.innerHTML = '<div class="ajax-spinner"></div>';
         modal.style.display = 'flex';
-        setTimeout(() => modal.classList.add('show'), 10);
-      }
-      function closeLuggageModal() {
-        const modal = document.getElementById('luggageModal');
-        modal.classList.remove('show');
-        setTimeout(() => { modal.style.display = 'none'; }, 300);
-      }
-      // Simple handler for calculations
-      document.getElementById('lug_service_id').addEventListener('change', function() {
-        const price = this.options[this.selectedIndex].getAttribute('data-price') || 0;
-        document.getElementById('lug_price').value = price * (document.getElementById('lug_quantity').value || 1);
-      });
-      document.getElementById('luggageForm').onsubmit = async function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const res = await fetch('admin.php?action=inputLuggage', { method: 'POST', body: formData });
-        const js = await res.json();
-        if (js.success) {
-           closeLuggageModal();
-           ajaxListLoad('luggage', { page: 1 });
-        } else {
-           alert(js.error || 'Gagal');
+
+        try {
+          const r = await fetch('admin.php?action=getTrackingLogs&resi=' + encodeURIComponent(resi));
+          const js = await r.json();
+          if (js.success && js.logs && js.logs.length > 0) {
+            let html = '<ul class="tracking-history-list">';
+            js.logs.forEach(log => {
+              const date = new Date(log.created_at).toLocaleString('id-ID');
+              html += `<li style="margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
+                <div style="font-weight:bold; color:var(--primary-color);">${log.status}</div>
+                <div style="font-size:14px;">${log.notes}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${date} - ${log.created_by_username}</div>
+              </li>`;
+            });
+            html += '</ul>';
+            logsWrap.innerHTML = html;
+          } else {
+            logsWrap.innerHTML = '<div class="small">Belum ada riwayat status.</div>';
+          }
+        } catch (err) {
+          logsWrap.innerHTML = '<div class="small text-danger">Gagal memuat riwayat.</div>';
         }
-      };
+      }
+      
+      window.attachLuggageHandlers = attachLuggageHandlers;
     </script>
 </section>

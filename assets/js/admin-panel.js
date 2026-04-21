@@ -177,8 +177,10 @@
     const adminLazySections = new Set([
       'bookings',
       'charter-create',
+      'luggage-create',
       'customers',
       'routes',
+      'routes_carter',
       'schedules',
       'drivers',
       'segments',
@@ -188,7 +190,9 @@
       'cancellations',
       'reports',
       'luggage_services',
-      'luggage'
+      'luggage',
+      'customer_bagasi',
+      'customer_charter'
     ]);
     const adminSectionLoadPromises = {};
 
@@ -311,11 +315,12 @@
         if (id === 'dashboard' && typeof window.loadDashboardData === 'function') window.loadDashboardData();
         if (id === 'bookings') ajaxListLoad('bookings', buildAdminListParams('bookings', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' }));
         if (id === 'customers') ajaxListLoad('customers', { page: 1, per_page: parseInt(document.getElementById('customers_per_page')?.value || '25', 10) });
+        if (id === 'customer_bagasi') ajaxListLoad('customer_bagasi', { page: 1, per_page: parseInt(document.getElementById('customer_bagasi_per_page')?.value || '25', 10) });
+        if (id === 'customer_charter') ajaxListLoad('customer_charter', { page: 1, per_page: parseInt(document.getElementById('customer_charter_per_page')?.value || '25', 10) });
         if (id === 'schedules') ajaxListLoad('schedules', { page: 1, per_page: parseInt(document.getElementById('schedules_per_page')?.value || '25', 10) });
         if (id === 'users') ajaxListLoad('users', { page: 1, per_page: parseInt(document.getElementById('users_per_page')?.value || '25', 10) });
-        if (id === 'routes' && typeof window.switchRouteTab === 'function') {
-          window.switchRouteTab(window.currentRouteType || 'reguler');
-        }
+        if (id === 'routes') ajaxListLoad('routes', { page: 1, per_page: parseInt(document.getElementById('routes_per_page')?.value || '25', 10), type: 'reguler' });
+        if (id === 'routes_carter') ajaxListLoad('routes_carter', { page: 1, per_page: parseInt(document.getElementById('routes_carter_per_page')?.value || '25', 10), type: 'carter' });
         if (id === 'cancellations') ajaxListLoad('cancellations', { page: 1, per_page: parseInt(document.getElementById('cancellations_per_page')?.value || '25', 10) });
         if (id === 'reports' && document.getElementById('btnGenerateReport')) {
           // Reports section is ready after its script is injected; no auto-fetch here.
@@ -350,6 +355,19 @@
           window.location.hash = '#' + a.getAttribute('data-target');
         };
       });
+      
+      // Global delegate handler for content section links with data-target
+      document.addEventListener('click', function (e) {
+        const link = e.target.closest('[data-target]:not(.nav a)');
+        if (link && link.tagName === 'A') {
+          e.preventDefault();
+          const target = link.getAttribute('data-target');
+          if (target) {
+            showSection(target);
+            window.location.hash = '#' + target;
+          }
+        }
+      });
       // More menu (desktop) moved to includes/navbar.php
     });
     async function parseAdminApiResponse(res) {
@@ -377,8 +395,8 @@
           }
         }
 
-        const excerpt = trimmed.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 220);
-        throw new Error(excerpt || 'Respon server tidak valid.');
+        const excerpt = trimmed.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 100);
+        throw new Error(excerpt ? `[RAW]: ${excerpt}` : 'Respon server kosong atau tidak valid.');
       }
     }
     window.parseAdminApiResponse = parseAdminApiResponse;
@@ -425,6 +443,43 @@
         }
       }
 
+      if (sectionId === 'customer_bagasi') {
+        const input = document.getElementById('search_customer_bagasi_input');
+        const btn = document.getElementById('searchCustomerBagasiBtn');
+        const perPage = document.getElementById('customer_bagasi_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('customer_bagasi', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('customer_bagasi', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('customer_bagasi', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+      }
+
       if (sectionId === 'routes') {
         const input = document.getElementById('search_route_input');
         const btn = document.getElementById('searchRouteBtn');
@@ -460,6 +515,46 @@
               per_page: parseInt(this.value || '25', 10),
               search: input?.value || '',
               type: window.currentRouteType || 'reguler'
+            });
+          };
+        }
+      }
+      
+      if (sectionId === 'routes_carter') {
+        const input = document.getElementById('search_route_carter_input');
+        const btn = document.getElementById('searchRouteCarterBtn');
+        const perPage = document.getElementById('routes_carter_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('routes_carter', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search,
+                type: 'carter'
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('routes_carter', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || '',
+              type: 'carter'
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('routes_carter', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || '',
+              type: 'carter'
             });
           };
         }
@@ -575,6 +670,79 @@
               per_page: parseInt(this.value || '25', 10),
               search: input?.value || '',
               type: typeInput?.value || ''
+            });
+          };
+        }
+      }
+
+      if (sectionId === 'customer_bagasi') {
+        const input = document.getElementById('search_customer_bagasi_input');
+        const btn = document.getElementById('searchCustomerBagasiBtn');
+        const perPage = document.getElementById('customer_bagasi_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('customer_bagasi', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('customer_bagasi', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('customer_bagasi', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+      }
+      if (sectionId === 'customer_charter') {
+        const input = document.getElementById('search_customer_charter_input');
+        const btn = document.getElementById('searchCustomerCharterBtn');
+        const perPage = document.getElementById('customer_charter_per_page');
+        if (input && !input.dataset.boundLazy) {
+          input.dataset.boundLazy = '1';
+          input.addEventListener('input', function () {
+            const search = this.value;
+            debounce(function () {
+              ajaxListLoad('customer_charter', {
+                page: 1,
+                per_page: parseInt(perPage?.value || '25', 10),
+                search: search
+              });
+            }, 250);
+          });
+        }
+        if (btn) {
+          btn.onclick = function () {
+            ajaxListLoad('customer_charter', {
+              page: 1,
+              per_page: parseInt(perPage?.value || '25', 10),
+              search: input?.value || ''
+            });
+          };
+        }
+        if (perPage) {
+          perPage.onchange = function () {
+            ajaxListLoad('customer_charter', {
+              page: 1,
+              per_page: parseInt(this.value || '25', 10),
+              search: input?.value || ''
             });
           };
         }
@@ -766,6 +934,7 @@
       }
       finally { if (spinnerWrap) spinnerWrap.style.display = 'none'; }
     }
+    window.ajaxListLoad = ajaxListLoad;
     // Search handlers
     let searchDebounceTimer = null;
     // Helper: determine which booking target to search
@@ -941,6 +1110,10 @@
             params.per_page = parseInt(document.getElementById('routes_per_page')?.value || '25', 10);
             params.type = window.currentRouteType || 'reguler';
             params.search = document.getElementById('search_route_input')?.value || '';
+          } else if (target === 'routes_carter') {
+            params.per_page = parseInt(document.getElementById('routes_carter_per_page')?.value || '25', 10);
+            params.type = 'carter';
+            params.search = document.getElementById('search_route_carter_input')?.value || '';
           } else if (target === 'schedules') {
             params.per_page = parseInt(document.getElementById('schedules_per_page')?.value || '25', 10);
           } else if (target === 'users') {

@@ -29,6 +29,68 @@ body.admin-bootstrap-page .muted {
     color: #94a3b8;
 }
 
+/* Luggage Premium UI Components */
+.luggage-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    position: relative;
+    overflow: hidden;
+}
+
+.luggage-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.luggage-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.luggage-status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+.luggage-status-paid { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+.luggage-status-canceled { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
+
+.luggage-grid-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.luggage-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+.luggage-resi-badge {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.luggage-price-display {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
 body.admin-bootstrap-page .layout,
 body.admin-bootstrap-page .admin-bootstrap-grid {
     display: flex;
@@ -5201,6 +5263,20 @@ body.admin-bootstrap-page .kinetic-dash-bar-group.is-active > span {
     color: #f97316;
 }
 
+/* Monthly Chart Specific Colors */
+body.admin-bootstrap-page .kinetic-dash-panel.is-monthly .kinetic-dash-bar-group.is-active .kinetic-dash-bar,
+body.admin-bootstrap-page .kinetic-dash-panel.is-monthly .kinetic-dash-bar-group:hover .kinetic-dash-bar {
+    background: #0ea5e9;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel.is-monthly .kinetic-dash-bar-group.is-active > span {
+    color: #0ea5e9;
+}
+
+body.admin-bootstrap-page .kinetic-dash-panel.is-monthly .kinetic-dash-bar-tooltip .tooltip-amount {
+    color: #0ea5e9;
+}
+
 body.admin-bootstrap-page .kinetic-revenue-split-card {
     padding: 1.2rem 1.1rem;
     border-radius: 1rem;
@@ -6514,6 +6590,27 @@ body.admin-bootstrap-page .charter-filter-chip:hover {
     background: #f97316;
     border-color: #f97316;
     color: #341100;
+}
+
+body.admin-bootstrap-page .charter-scope-toggle {
+    flex-shrink: 0;
+}
+
+body.admin-bootstrap-page .charter-payment-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+body.admin-bootstrap-page .charter-command-filters {
+    gap: 0.75rem;
+}
+
+body.admin-bootstrap-page .charter-command-filters > .charter-scope-toggle {
+    margin-right: 0.25rem;
+    padding-right: 1rem;
+    border-right: 1px solid rgba(88, 66, 55, 0.2);
 }
 
 body.admin-bootstrap-page #charters_tbody.kinetic-command-list {
@@ -8649,3 +8746,118 @@ body.admin-bootstrap-page .charter-create-error ul {
         position: static;
     }
 }
+
+/* Bagasi Specific Styles */
+body.admin-bootstrap-page .tracking-history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.admin-bootstrap-page .tracking-history-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 20px;
+}
+
+body.admin-bootstrap-page .tracking-history-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: var(--neu-primary);
+    border-radius: 50%;
+    z-index: 2;
+}
+
+body.admin-bootstrap-page .tracking-history-list li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 15px;
+    width: 2px;
+    height: calc(100% + 5px);
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+body.admin-bootstrap-page .log-status {
+    font-weight: 700;
+    color: var(--neu-primary);
+    font-size: 0.95rem;
+}
+
+body.admin-bootstrap-page .log-notes {
+    font-size: 0.88rem;
+    color: #475569;
+}
+
+body.admin-bootstrap-page .log-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+body.admin-bootstrap-page .modal-modern {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+body.admin-bootstrap-page .modal-content-modern {
+    background: #fff;
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+body.admin-bootstrap-page .modal-header-modern {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.admin-bootstrap-page .modal-body-modern {
+    padding: 1.5rem;
+    flex: 1;
+}
+
+body.admin-bootstrap-page .modal-footer-modern {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: flex-end;
+}
+
+body.admin-bootstrap-page .btn-close-modern {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+body.admin-bootstrap-page .btn-close-modern:hover {
+    color: #475569;
+}
+
+body.admin-bootstrap-page .customers-table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+

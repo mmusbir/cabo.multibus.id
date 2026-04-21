@@ -176,6 +176,41 @@ $conn->exec("CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT NOW()
 )");
 
+$conn->exec("CREATE TABLE IF NOT EXISTS customer_bagasi (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    no_hp VARCHAR(50) NOT NULL,
+    alamat TEXT,
+    tipe VARCHAR(50) DEFAULT 'keduanya', 
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+$conn->exec("CREATE TABLE IF NOT EXISTS customer_charter (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    perusahaan VARCHAR(255),
+    no_hp VARCHAR(50) NOT NULL,
+    alamat TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+)");
+
+$conn->exec("CREATE TABLE IF NOT EXISTS harga_bagasi (
+    id SERIAL PRIMARY KEY,
+    rute_id INT NOT NULL,
+    layanan_id INT NOT NULL,
+    harga NUMERIC(15,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(rute_id, layanan_id)
+)");
+
+$conn->exec("CREATE TABLE IF NOT EXISTS bagasi_logs (
+    id SERIAL PRIMARY KEY,
+    kode_resi VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    notes TEXT,
+    created_by_username VARCHAR(100),
+    created_at TIMESTAMP DEFAULT NOW()
+)");
 
 // ==================== COLUMN ALTERATIONS ====================
 
@@ -236,6 +271,29 @@ if (!db_column_exists($conn, 'routes', 'origin')) {
   $conn->exec("ALTER TABLE routes ADD COLUMN destination VARCHAR(255)");
 }
 
+// Add logistic info to luggages if not exists
+if (!db_column_exists($conn, 'luggages', 'rute')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN rute VARCHAR(100)");
+  $conn->exec("ALTER TABLE luggages ADD COLUMN tanggal DATE");
+  $conn->exec("ALTER TABLE luggages ADD COLUMN unit_id INT");
+}
+
+if (!db_column_exists($conn, 'luggages', 'kode_resi')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN kode_resi VARCHAR(50)");
+}
+if (!db_column_exists($conn, 'luggages', 'pengirim_id')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN pengirim_id INT");
+}
+if (!db_column_exists($conn, 'luggages', 'penerima_id')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN penerima_id INT");
+}
+if (!db_column_exists($conn, 'luggages', 'rute_id')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN rute_id INT");
+}
+if (!db_column_exists($conn, 'luggages', 'layanan_id')) {
+  $conn->exec("ALTER TABLE luggages ADD COLUMN layanan_id INT");
+}
+
 // ==================== OTHER CONSTRAINTS & DATA ====================
 
 try {
@@ -275,7 +333,7 @@ if ($userCheck->rowCount() === 0) {
 // This runs on every migration to keep sequences in sync with actual data.
 $seq_tables = ['charters','drivers','segments','trip_assignments','bookings',
                'customers','schedules','units','cancellations','luggage_services',
-               'luggages','routes','master_carter','users','settings'];
+               'luggages','routes','master_carter','users','settings','customer_bagasi','harga_bagasi','bagasi_logs','customer_charter'];
 foreach ($seq_tables as $tbl) {
     try {
         $max = (int) $conn->query("SELECT COALESCE(MAX(id), 0) FROM $tbl")->fetchColumn();

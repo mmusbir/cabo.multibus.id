@@ -65,9 +65,15 @@
   </div>
 
   <div id="charterFilterRow" class="charter-command-filters no-scrollbar" style="display:none">
-    <button type="button" class="charter-filter-chip active">Semua</button>
-    <button type="button" class="charter-filter-chip">Belum Lunas</button>
-    <button type="button" class="charter-filter-chip">Lunas Semua</button>
+    <div class="booking-scope-toggle charter-scope-toggle" role="tablist" aria-label="Mode daftar carter">
+      <button type="button" class="booking-scope-chip charter-scope-chip active" data-charter-scope="active">Aktif</button>
+      <button type="button" class="booking-scope-chip charter-scope-chip" data-charter-scope="history">History</button>
+    </div>
+    <div class="charter-payment-chips">
+      <button type="button" class="charter-filter-chip active">Semua</button>
+      <button type="button" class="charter-filter-chip">Belum Lunas</button>
+      <button type="button" class="charter-filter-chip">Lunas Semua</button>
+    </div>
   </div>
 
   <div id="bookings_spinner_wrap" class="spinner-wrap" style="display:none">
@@ -111,6 +117,9 @@
           scope: 'active',
           tanggal: '',
           payment: '',
+        },
+        charters: {
+          scope: 'active',
         }
       }
     };
@@ -125,9 +134,22 @@
       return window.bookingDashboardState.filters.bookings;
     }
 
+    function getCharterFilters() {
+      if (!window.bookingDashboardState.filters) {
+        window.bookingDashboardState.filters = {};
+      }
+      if (!window.bookingDashboardState.filters.charters) {
+        window.bookingDashboardState.filters.charters = { scope: 'active' };
+      }
+      return window.bookingDashboardState.filters.charters;
+    }
+
     function syncBookingFilterUi() {
       const filters = getBookingFilters();
-      const bookingsMode = window.bookingDashboardState.active === 'bookings';
+      const charterFilters = getCharterFilters();
+      const currentMode = window.bookingDashboardState.active;
+      const bookingsMode = currentMode === 'bookings';
+      const chartersMode = currentMode === 'charters';
       const filterControls = document.getElementById('bookingFilterControls');
       const dateInput = document.getElementById('booking_date_filter');
       const paymentInput = document.getElementById('booking_payment_filter');
@@ -142,6 +164,10 @@
       document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
         chip.classList.toggle('active', chip.getAttribute('data-booking-scope') === filters.scope);
       });
+      // Sync charter scope toggle
+      document.querySelectorAll('[data-charter-scope]').forEach((chip) => {
+        chip.classList.toggle('active', chip.getAttribute('data-charter-scope') === charterFilters.scope);
+      });
       if (dateInput) {
         dateInput.value = filters.tanggal || '';
       }
@@ -154,11 +180,18 @@
       if (bookingsMode && pageTitle) {
         pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
       }
+      if (chartersMode && pageTitle) {
+        pageTitle.textContent = charterFilters.scope === 'history' ? 'History Carter' : 'Data Carter';
+      }
       if (historyNote) {
         historyNote.style.display = bookingsMode && filters.scope === 'history' ? 'block' : 'none';
       }
       if (bookingsMode && mobileListTitle) {
         const titleText = filters.scope === 'history' ? 'History Bulan Ini' : 'Jadwal Mendatang';
+        mobileListTitle.innerHTML = getBookingListTitleIconHtml() + titleText;
+      }
+      if (chartersMode && mobileListTitle) {
+        const titleText = charterFilters.scope === 'history' ? 'History Carter' : 'Data Carter';
         mobileListTitle.innerHTML = getBookingListTitleIconHtml() + titleText;
       }
     }
@@ -181,6 +214,12 @@
     }
 
     window.getAdminListParams = function (target, baseParams = {}) {
+      if (target === 'charters') {
+        const charterFilters = getCharterFilters();
+        const params = Object.assign({}, baseParams);
+        params.scope = charterFilters.scope || 'active';
+        return params;
+      }
       if (target !== 'bookings') {
         return baseParams;
       }
@@ -471,6 +510,9 @@
       };
       if (target === 'bookings') {
         params = getBookingListQueryParams(params);
+      } else if (target === 'charters') {
+        const charterFilters = getCharterFilters();
+        params.scope = charterFilters.scope || 'active';
       }
       ajaxListLoad(target, params);
     }
@@ -487,8 +529,9 @@
 
       if (mode === 'charters') {
         document.getElementById('charters_tbody').style.display = 'grid';
+        const charterFilters = getCharterFilters();
         if (document.getElementById('charters_tbody').children.length <= 1) {
-          ajaxListLoad('charters', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '' });
+          ajaxListLoad('charters', { page: 1, per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10), search: '', scope: charterFilters.scope || 'active' });
         }
       } else if (mode === 'luggage') {
         document.getElementById('luggage_tbody').style.display = 'grid';
@@ -517,41 +560,62 @@
         });
       });
 
+      // Charter scope toggle (Active / History)
+      document.querySelectorAll('[data-charter-scope]').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const nextScope = chip.getAttribute('data-charter-scope') || 'active';
+          const charterFilters = getCharterFilters();
+          charterFilters.scope = nextScope;
+          syncBookingFilterUi();
+          ajaxListLoad('charters', {
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: document.getElementById('search_name_input')?.value || '',
+            scope: nextScope
+          });
+        });
+      });
+
       document.querySelectorAll('[data-booking-scope]').forEach((chip) => {
         chip.addEventListener('click', () => {
           const nextScope = chip.getAttribute('data-booking-scope') || 'active';
           const filters = getBookingFilters();
           filters.scope = nextScope;
           syncBookingFilterUi();
-          ajaxListLoad('bookings', getBookingListQueryParams({
+          
+          const currentMode = window.bookingDashboardState.active || 'bookings';
+          ajaxListLoad(currentMode, getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-            search: ''
+            search: document.getElementById('search_name_input')?.value || ''
           }));
         });
       });
 
-      if (bookingDateInput) {
-        bookingDateInput.addEventListener('change', () => {
+      const dateFilter = document.getElementById('booking_date_filter');
+      if (dateFilter) {
+        dateFilter.addEventListener('change', () => {
           const filters = getBookingFilters();
-          filters.tanggal = bookingDateInput.value || '';
-          syncBookingFilterUi();
-          ajaxListLoad('bookings', getBookingListQueryParams({
+          filters.tanggal = dateFilter.value;
+          const currentMode = window.bookingDashboardState.active || 'bookings';
+          ajaxListLoad(currentMode, getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-            search: ''
+            search: document.getElementById('search_name_input')?.value || ''
           }));
         });
       }
 
-      if (bookingPaymentInput) {
-        bookingPaymentInput.addEventListener('change', () => {
+      const paymentFilter = document.getElementById('booking_payment_filter');
+      if (paymentFilter) {
+        paymentFilter.addEventListener('change', () => {
           const filters = getBookingFilters();
-          filters.payment = bookingPaymentInput.value || '';
-          ajaxListLoad('bookings', getBookingListQueryParams({
+          filters.payment = paymentFilter.value;
+          const currentMode = window.bookingDashboardState.active || 'bookings';
+          ajaxListLoad(currentMode, getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-            search: ''
+            search: document.getElementById('search_name_input')?.value || ''
           }));
         });
       }
@@ -570,10 +634,6 @@
             search: ''
           }));
         });
-      }
-
-      if (mobileRefreshBtn) {
-        mobileRefreshBtn.addEventListener('click', refreshActiveBookingMode);
       }
       if (bookingRefreshBtn) {
         bookingRefreshBtn.addEventListener('click', refreshActiveBookingMode);
