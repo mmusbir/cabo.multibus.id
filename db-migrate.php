@@ -237,6 +237,13 @@ if (!db_column_exists($conn, 'charters', 'payment_status')) {
   $conn->exec("ALTER TABLE charters ADD COLUMN payment_status VARCHAR(30) DEFAULT 'Belum Bayar'");
 }
 
+// Add unique constraint to customer_charter no_hp if not exists
+try {
+  $conn->exec("ALTER TABLE customer_charter ADD CONSTRAINT customer_charter_no_hp_key UNIQUE (no_hp)");
+} catch (PDOException $e) {
+  // Constraint might already exist
+}
+
 // Add segment_id, price, discount to bookings if not exists
 if (!db_column_exists($conn, 'bookings', 'segment_id')) {
   $conn->exec("ALTER TABLE bookings ADD COLUMN segment_id INT");

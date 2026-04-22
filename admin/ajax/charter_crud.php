@@ -80,7 +80,13 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($errors) {
         $_SESSION['charter_create_errors'] = $errors;
         $_SESSION['charter_create_old'] = $_POST;
-        header('Location: admin.php?open=charter-create#charter-create');
+        
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => implode(' ', $errors)]);
+        } else {
+            header('Location: admin.php?open=charter-create#charter-create');
+        }
         exit;
     }
 
@@ -102,7 +108,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt->execute([
             $name,
-            'ADMIN',
+            $perusahaan,
             $phone,
             $startDate,
             $endDate,
@@ -139,7 +145,13 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['booking_msg'] = 'Data carter berhasil disimpan.';
         unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
-        header('Location: admin.php?booking_mode=charters#bookings');
+        
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'id' => $newCharterId, 'message' => 'Data carter berhasil disimpan.']);
+        } else {
+            header('Location: admin.php?booking_mode=charters#bookings');
+        }
         exit;
     } catch (PDOException $e) {
         $_SESSION['charter_create_errors'] = ['Gagal menyimpan carter: ' . $e->getMessage()];
@@ -205,7 +217,7 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     $name = trim($_POST['name'] ?? '');
-    $company_name = trim($_POST['company_name'] ?? '');
+    $company_name = trim($_POST['perusahaan'] ?? $_POST['company_name'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
     $start_date = $_POST['start_date'] ?? '';
     $end_date = $_POST['end_date'] ?? '';
@@ -214,19 +226,26 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $drop_point = trim($_POST['drop_point'] ?? '');
     $unit_id = intval($_POST['unit_id'] ?? 0);
     $driver_name = trim($_POST['driver_name'] ?? '');
-    $price = floatval($_POST['price'] ?? 0);
-    $layanan = trim($_POST['layanan'] ?? 'Regular');
+    $price = charter_parse_currency_input((string) ($_POST['price'] ?? '0'));
+    $down_payment = charter_parse_currency_input((string) ($_POST['down_payment'] ?? '0'));
+    $payment_status = trim($_POST['payment_status'] ?? 'Belum Bayar');
+    $layanan = trim($_POST['bus_type'] ?? $_POST['layanan'] ?? 'Big Bus');
     $bop_price = floatval($_POST['bop_price'] ?? 0);
 
     $oldStmt = $conn->prepare("SELECT name, pickup_point, drop_point FROM charters WHERE id=? LIMIT 1");
     $oldStmt->execute([$id]);
     $oldCharter = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-    $stmt = $conn->prepare("UPDATE charters SET name=?, company_name=?, phone=?, start_date=?, end_date=?, departure_time=?, pickup_point=?, drop_point=?, unit_id=?, driver_name=?, price=?, layanan=?, bop_price=? WHERE id=?");
+    $stmt = $conn->prepare("UPDATE charters SET name=?, company_name=?, phone=?, start_date=?, end_date=?, departure_time=?, pickup_point=?, drop_point=?, unit_id=?, driver_name=?, price=?, layanan=?, bop_price=?, down_payment=?, payment_status=? WHERE id=?");
     try {
-        $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $id]);
+        $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $down_payment, $payment_status, $id]);
+        
+        // Auto-upsert to customer_charter
+        $actor = $_SESSION['username'] ?? 'system';
+        $upsertCust = $conn->prepare("INSERT INTO customer_charter (nama, no_hp, perusahaan, created_at) VALUES (?, ?, ?, NOW()) ON CONFLICT (no_hp) DO UPDATE SET nama = EXCLUDED.nama, perusahaan = EXCLUDED.perusahaan");
+        $upsertCust->execute([$name, $phone, $company_name]);
         activity_log_write($conn, 'charter', 'charter', $id, 'update', 'Carter diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCharter['name'] ?? '-') . ' | ' . ($oldCharter['pickup_point'] ?? '-') . ' -> ' . ($oldCharter['drop_point'] ?? '-'), $actor);
         header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'message' => 'Data carter berhasil diperbarui.']);
     } catch (PDOException $e) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);

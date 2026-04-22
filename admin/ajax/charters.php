@@ -212,12 +212,12 @@ if (empty($rows)) {
                 echo '          <div style="margin-bottom: 16px;">';
         echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Jadwal Perjalanan</div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">';
-        echo '              <i class="fa-solid fa-plane-departure" style="color: var(--primary-color); font-size: 11px; width: 14px;"></i>';
+        echo '              <i class="fa-solid fa-bus" style="color: var(--primary-color); font-size: 11px; width: 14px;"></i>';
         echo '              <div style="background: var(--primary-color); color: #fff; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
         echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 12px;"><i class="fa-regular fa-clock" style="margin-right: 4px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
         echo '            </div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">';
-        echo '              <i class="fa-solid fa-plane-arrival" style="color: #ef4444; font-size: 11px; width: 14px;"></i>';
+        echo '              <i class="fa-solid fa-location-dot" style="color: #ef4444; font-size: 11px; width: 14px;"></i>';
         echo '              <div style="background: rgba(239,68,68,0.12); color: #ef4444; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripEndDate) . '</div>';
         echo '            </div>';
         echo '            <div style="font-size: 12px; font-weight: 600; color: var(--text-main);"><span style="color: var(--primary-color);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';

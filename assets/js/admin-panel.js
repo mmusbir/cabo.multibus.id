@@ -1989,84 +1989,71 @@
             const js = await parseAdminApiResponse(res);
             if (js.success) {
               const d = js.data;
-              document.getElementById('edit_charter_id').value = d.id;
-              document.getElementById('edit_charter_name').value = d.name || '';
-              document.getElementById('edit_charter_company').value = d.company_name || '';
-              document.getElementById('edit_charter_phone').value = d.phone || '';
-              document.getElementById('edit_charter_price').value = d.price || 0;
-              document.getElementById('edit_charter_start').value = d.start_date || '';
-              document.getElementById('edit_charter_end').value = d.end_date || '';
-              document.getElementById('edit_charter_time').value = (d.departure_time || '08:00').substring(0, 5);
-              document.getElementById('edit_charter_pickup').value = d.pickup_point || '';
-              document.getElementById('edit_charter_drop').value = d.drop_point || '';
-              document.getElementById('edit_charter_layanan').value = d.layanan || '';
-              document.getElementById('edit_charter_bop_val').value = d.bop_price || 0;
-
-              // Populate Unit Select
-              const unitRes = await fetch('admin.php?action=get_units');
-              const unitJs = await parseAdminApiResponse(unitRes);
-              const uSelect = document.getElementById('edit_charter_unit');
-              if (unitJs.success && uSelect) {
-                uSelect.innerHTML = '<option value="">-- Unit --</option>';
-                unitJs.units.forEach(u => {
-                  const opt = document.createElement('option');
-                  opt.value = u.id;
-                  opt.textContent = (u.nopol || '-') + ' - ' + (u.merek || 'Unit');
-                  if (String(u.id) === String(d.unit_id)) opt.selected = true;
-                  uSelect.appendChild(opt);
-                });
+              
+              if (typeof window.showSectionById === 'function') {
+                window.showSectionById('charter-create');
+                window.location.hash = '#charter-create';
               }
 
-              // Populate Driver Select
-              const driverRes = await fetch('admin.php?action=get_drivers');
-              const driverJs = await parseAdminApiResponse(driverRes);
-              const drSelect = document.getElementById('edit_charter_driver');
-              if (driverJs.success && drSelect) {
-                drSelect.innerHTML = '<option value="">-- Pilih Driver --</option>';
-                driverJs.drivers.forEach(dr => {
-                  const opt = document.createElement('option');
-                  opt.value = dr.nama;
-                  opt.textContent = dr.nama;
-                  if (dr.nama === d.driver_name) opt.selected = true;
-                  drSelect.appendChild(opt);
-                });
-              }
+              const formTitle = document.getElementById('charter_form_title');
+              if (formTitle) formTitle.textContent = 'Edit Data Carter';
+              const formSubtitle = document.getElementById('charter_form_subtitle');
+              if (formSubtitle) formSubtitle.textContent = 'Perbarui informasi reservasi carter #' + d.id;
+              const submitText = document.getElementById('charter_submit_text');
+              if (submitText) submitText.textContent = 'SIMPAN PERUBAHAN';
+              const formAction = document.getElementById('charter_form_action');
+              if (formAction) formAction.value = 'update_charter';
+              const formId = document.getElementById('charter_form_id');
+              if (formId) formId.value = d.id;
 
-              // Master Routes
-              const routeRes = await fetch('admin.php?action=get_charter_routes');
-              const routeJs = await parseAdminApiResponse(routeRes);
-              const rSelect = document.getElementById('edit_charter_route_id');
-              if (routeJs.success && rSelect) {
-                rSelect.innerHTML = '<option value="">-- Master Rute Carter --</option>';
-                routeJs.routes.forEach(r => {
-                  const opt = document.createElement('option');
-                  opt.value = r.id;
-                  opt.textContent = r.name || (r.origin + ' - ' + r.destination);
-                  opt.dataset.pickup = r.origin;
-                  opt.dataset.drop = r.destination;
-                  opt.dataset.price = r.rental_price;
-                  opt.dataset.bop = r.bop_price;
-                  rSelect.appendChild(opt);
-                });
-                rSelect.onchange = function() {
-                  const sel = this.options[this.selectedIndex];
-                  if (!sel.value) return;
-                  document.getElementById('edit_charter_pickup').value = sel.dataset.pickup || '';
-                  document.getElementById('edit_charter_drop').value = sel.dataset.drop || '';
-                  document.getElementById('edit_charter_price').value = sel.dataset.price || 0;
-                  document.getElementById('edit_charter_bop_val').value = sel.dataset.bop || 0;
-                };
+              if (document.getElementById('charter_name_input')) document.getElementById('charter_name_input').value = d.name || '';
+              if (document.getElementById('charter_phone_input')) document.getElementById('charter_phone_input').value = d.phone || '';
+              if (document.getElementById('charter_perusahaan_input')) document.getElementById('charter_perusahaan_input').value = d.company_name || '';
+              if (document.getElementById('charter_pickup_point')) document.getElementById('charter_pickup_point').value = d.pickup_point || '';
+              if (document.getElementById('charter_drop_point')) document.getElementById('charter_drop_point').value = d.drop_point || '';
+              if (document.getElementById('charter_start_date')) document.getElementById('charter_start_date').value = d.start_date || '';
+              if (document.getElementById('charter_end_date')) document.getElementById('charter_end_date').value = d.end_date || '';
+              if (document.querySelector('input[name="departure_time"]')) document.querySelector('input[name="departure_time"]').value = (d.departure_time || '08:30').substring(0, 5);
+              if (document.getElementById('charter_bus_type')) document.getElementById('charter_bus_type').value = d.layanan || 'Big Bus';
+              
+              if (document.getElementById('charter_price_input')) {
+                document.getElementById('charter_price_input').value = d.price || 0;
+                const priceLabel = document.getElementById('charterSummaryPriceLabel');
+                if (priceLabel) {
+                   priceLabel.textContent = new Intl.NumberFormat('id-ID').format(d.price || 0);
+                }
               }
+              if (document.querySelector('input[name="down_payment"]')) document.querySelector('input[name="down_payment"]').value = d.down_payment || 0;
+              
+              const payRadios = document.getElementsByName('payment_status');
+              payRadios.forEach(r => {
+                if (r.value === d.payment_status) r.checked = true;
+              });
 
-              const modal = document.getElementById('editCharterModal');
-              modal.style.display = 'flex';
-              setTimeout(() => modal.classList.add('show'), 10);
+              const uSelect = document.querySelector('select[name="unit_id"]');
+              if (uSelect) uSelect.value = d.unit_id || '';
+              
+              const drSelect = document.querySelector('select[name="driver_name"]');
+              if (drSelect) drSelect.value = d.driver_name || '';
+
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           } catch (err) {
+            console.error(err);
             customAlert('Gagal mengambil data carter.');
           }
         };
       });
+
+      // Hook into the "Tambah Carter" primary action button to reset the form
+      const primaryAction = document.getElementById('bookingPrimaryAction');
+      if (primaryAction) {
+        primaryAction.addEventListener('click', function() {
+          if (this.getAttribute('data-target') === 'charter-create' && typeof window.resetCharterForm === 'function') {
+            window.resetCharterForm();
+          }
+        });
+      }
 
       document.querySelectorAll('.delete-charter-btn').forEach(btn => {
         btn.onclick = function (e) {

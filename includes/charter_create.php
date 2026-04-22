@@ -54,8 +54,8 @@ $charterCreateForm = array_merge([
 <section id="charter-create" class="card" style="display:none; background:transparent !important; box-shadow:none !important; border:none !important; padding:0 !important;">
     <div class="admin-section-header mb-4">
       <div>
-        <h3 class="admin-section-title"><i class="fa-solid fa-van-shuttle fa-icon" style="color:var(--neu-primary); margin-right:8px;"></i> Tambah Carter Baru</h3>
-        <p class="admin-section-subtitle">Buat reservasi carter unit bus baru</p>
+        <h3 class="admin-section-title"><i class="fa-solid fa-van-shuttle fa-icon" style="color:var(--neu-primary); margin-right:8px;"></i> <span id="charter_form_title">Tambah Carter Baru</span></h3>
+        <p class="admin-section-subtitle" id="charter_form_subtitle">Buat reservasi carter unit bus baru</p>
       </div>
       <a href="#bookings" class="btn btn-outline-secondary btn-modern secondary" data-target="bookings" data-booking-mode="charters">
         <i class="fa-solid fa-arrow-left fa-icon"></i> Kembali ke Daftar
@@ -72,8 +72,9 @@ $charterCreateForm = array_merge([
       </div>
     <?php endif; ?>
 
-    <form method="post" class="modern-form-container">
-      <input type="hidden" name="action" value="create_charter">
+    <form method="post" class="modern-form-container" id="charterMainForm">
+      <input type="hidden" name="action" id="charter_form_action" value="create_charter">
+      <input type="hidden" name="id" id="charter_form_id" value="">
 
       <div class="row g-4">
         <!-- Panel Kiri: Informasi Penyewa & Rute -->
@@ -217,11 +218,11 @@ $charterCreateForm = array_merge([
             <!-- Tanggal Keberangkatan & Kepulangan -->
             <div class="row g-3 mb-3">
               <div class="col-6">
-                <label class="admin-bs-input-label"><i class="fa-solid fa-plane-departure me-1" style="color:var(--primary-color);"></i>Tgl. Berangkat</label>
+                <label class="admin-bs-input-label"><i class="fa-solid fa-bus me-1" style="color:var(--primary-color);"></i>Tgl. Berangkat</label>
                 <input type="date" id="charter_start_date" name="start_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['start_date']); ?>" required>
               </div>
               <div class="col-6">
-                <label class="admin-bs-input-label"><i class="fa-solid fa-plane-arrival me-1" style="color:#ef4444;"></i>Tgl. Kepulangan</label>
+                <label class="admin-bs-input-label"><i class="fa-solid fa-location-dot me-1" style="color:#ef4444;"></i>Tgl. Kepulangan</label>
                 <input type="date" id="charter_end_date" name="end_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['end_date']); ?>" required>
               </div>
             </div>
@@ -312,7 +313,7 @@ $charterCreateForm = array_merge([
             </div>
 
             <button type="submit" name="create_charter_submit" id="charter_submit_btn" class="btn btn-primary btn-modern w-100 py-3 shadow-lg" style="font-size:18px; border-radius:15px; background: linear-gradient(135deg, #0d6efd 0%, #0052cc 100%);">
-              <i class="fa-solid fa-check-circle me-2"></i> KONFIRMASI & SIMPAN
+              <i class="fa-solid fa-check-circle me-2"></i> <span id="charter_submit_text">KONFIRMASI & SIMPAN</span>
             </button>
           </div>
         </div>
@@ -428,6 +429,90 @@ $charterCreateForm = array_merge([
       // Initial sync
       calcDuration();
       syncSummary();
+
+      // Handle Customer Selection
+      const custSelect = document.getElementById('charter_customer_select');
+      if (custSelect) {
+        custSelect.addEventListener('change', function() {
+          const opt = this.options[this.selectedIndex];
+          if (!opt.value) return;
+          if (document.getElementById('charter_name_input')) document.getElementById('charter_name_input').value = opt.dataset.nama || '';
+          if (document.getElementById('charter_phone_input')) document.getElementById('charter_phone_input').value = opt.dataset.phone || '';
+          if (document.getElementById('charter_perusahaan_input')) document.getElementById('charter_perusahaan_input').value = opt.dataset.perusahaan || '';
+          syncSummary();
+        });
+      }
+
+      // Handle Form Submission (AJAX)
+      if (form) {
+        form.onsubmit = async function (e) {
+          e.preventDefault();
+          const actionInput = document.getElementById('charter_form_action');
+          const action = actionInput ? actionInput.value : 'create_charter';
+          const formData = new FormData(this);
+          
+          try {
+            const res = await fetch('admin.php?action=' + action, {
+              method: 'POST',
+              body: formData,
+              headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const js = await parseAdminApiResponse(res);
+            if (js.success) {
+              await customAlert(js.message || 'Data carter berhasil disimpan.', 'Sukses');
+              if (typeof window.showSectionById === 'function') {
+                window.showSectionById('bookings');
+                window.location.hash = '#bookings';
+                if (window.bookingDashboardState) window.bookingDashboardState.active = 'charters';
+                if (typeof ajaxListLoad === 'function') {
+                    ajaxListLoad('charters', { page: 1 });
+                }
+              } else {
+                window.location.href = 'admin.php?booking_mode=charters#bookings';
+                location.reload();
+              }
+            } else {
+              customAlert('Gagal menyimpan: ' + (js.error || 'Terjadi kesalahan internal.'));
+            }
+          } catch (err) {
+            console.error(err);
+            customAlert('Kesalahan koneksi saat menyimpan data carter.');
+          }
+        };
+      }
+
+      window.resetCharterForm = function() {
+        if (!form) return;
+        
+        // Reset basic fields
+        form.reset();
+        
+        // Explicitly clear hidden fields
+        const idField = document.getElementById('charter_form_id');
+        if (idField) idField.value = '';
+        const actionField = document.getElementById('charter_form_action');
+        if (actionField) actionField.value = 'create_charter';
+        
+        // Reset Labels
+        const title = document.getElementById('charter_form_title');
+        if (title) title.textContent = 'Tambah Carter Baru';
+        const subtitle = document.getElementById('charter_form_subtitle');
+        if (subtitle) subtitle.textContent = 'Buat reservasi carter unit bus baru';
+        const submitText = document.getElementById('charter_submit_text');
+        if (submitText) submitText.textContent = 'KONFIRMASI & SIMPAN';
+        
+        // Reset pricing summary
+        syncSummary();
+        
+        // Reset dates to default (today / +2 days)
+        if (startInput) startInput.value = new Date().toISOString().split('T')[0];
+        if (endInput) {
+            const d = new Date();
+            d.setDate(d.getDate() + 2);
+            endInput.value = d.toISOString().split('T')[0];
+        }
+        calcDuration();
+      };
     })();
   </script>
 </section>
