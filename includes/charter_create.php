@@ -319,48 +319,39 @@ $charterCreateForm = array_merge([
         </div>
       </div>
     </form>
-
   <script>
     (function () {
-      const pickupInput   = document.getElementById('charter_pickup_point');
-      const dropInput     = document.getElementById('charter_drop_point');
-      const startInput    = document.getElementById('charter_start_date');
-      const endInput      = document.getElementById('charter_end_date');
+      const form        = document.getElementById('charterMainForm');
+      const pickupInput = document.getElementById('charter_pickup_point');
+      const dropInput   = document.getElementById('charter_drop_point');
+      const startInput  = document.getElementById('charter_start_date');
+      const endInput    = document.getElementById('charter_end_date');
       const durationInput = document.getElementById('charter_duration_days');
-      const busSelect     = document.getElementById('charter_bus_type');
-      const priceInput    = document.getElementById('charter_price_input');
-      const priceLabel    = document.getElementById('charterSummaryPriceLabel');
-      const custSelect    = document.getElementById('charter_customer_select');
-      const nameInput     = document.getElementById('charter_name_input');
-      const phoneInput    = document.getElementById('charter_phone_input');
-      const perusInput    = document.getElementById('charter_perusahaan_input');
+      const priceInput  = document.getElementById('charter_price_input');
+      const priceLabel  = document.getElementById('charterSummaryPriceLabel');
+      const custSelect  = document.getElementById('charter_customer_select');
+      const nameInput   = document.getElementById('charter_name_input');
+      const phoneInput  = document.getElementById('charter_phone_input');
+      const perusInput  = document.getElementById('charter_perusahaan_input');
 
       function formatRupiah(amount) {
-          try {
-              let parsed = parseFloat(amount);
-              if (isNaN(parsed)) return '0';
-              return new Intl.NumberFormat('id-ID').format(parsed);
-          } catch (e) { return amount; }
+        const parsed = parseFloat(String(amount).replace(/[^0-9,.-]/g, '').replace('.', '').replace(',', '.'));
+        return isNaN(parsed) ? '0' : new Intl.NumberFormat('id-ID').format(parsed);
       }
 
       function syncSummary() {
-        if (priceLabel && priceInput) {
-            priceLabel.textContent = formatRupiah(priceInput.value);
-        }
+        if (priceLabel && priceInput) priceLabel.textContent = formatRupiah(priceInput.value);
       }
 
-      // Auto-calculate duration days from start and end date
       function calcDuration() {
         if (!startInput || !endInput || !durationInput) return;
         const s = new Date(startInput.value);
         const e = new Date(endInput.value);
         if (!isNaN(s) && !isNaN(e) && e >= s) {
-          const diff = Math.round((e - s) / 86400000) + 1;
-          durationInput.value = diff;
+          durationInput.value = Math.round((e - s) / 86400000) + 1;
         }
       }
 
-      // Ensure end date >= start date
       function onStartChange() {
         if (endInput && startInput.value && endInput.value < startInput.value) {
           endInput.value = startInput.value;
@@ -371,41 +362,39 @@ $charterCreateForm = array_merge([
 
       if (startInput) {
         startInput.addEventListener('change', onStartChange);
-        if (startInput.value) endInput && (endInput.min = startInput.value);
+        if (startInput.value && endInput) endInput.min = startInput.value;
       }
       if (endInput) endInput.addEventListener('change', calcDuration);
 
-      // Customer select auto-fill
+      // Customer autocomplete — data-hp (bukan data-phone)
       if (custSelect) {
         custSelect.addEventListener('change', function () {
           const opt = this.options[this.selectedIndex];
-          if (this.value && opt) {
-            if (nameInput)  nameInput.value  = opt.dataset.nama  || '';
-            if (phoneInput) phoneInput.value = opt.dataset.hp    || '';
-            if (perusInput) perusInput.value = opt.dataset.perusahaan || '';
-          }
+          if (!this.value || !opt) return;
+          if (nameInput)  nameInput.value  = opt.dataset.nama       || '';
+          if (phoneInput) phoneInput.value = opt.dataset.hp         || '';
+          if (perusInput) perusInput.value = opt.dataset.perusahaan || '';
+          syncSummary();
         });
       }
 
-      // Route preset buttons
+      // Route preset chips
       document.querySelectorAll('.charter-route-preset').forEach(btn => {
         btn.addEventListener('click', function () {
           if (pickupInput) pickupInput.value = this.dataset.pickup || '';
           if (dropInput)   dropInput.value   = this.dataset.drop   || '';
-          // Set duration and recompute end date
-          if (durationInput && this.dataset.duration) {
-            const dur = parseInt(this.dataset.duration, 10) || 1;
-            if (startInput && startInput.value) {
-              const s = new Date(startInput.value);
-              s.setDate(s.getDate() + dur - 1);
-              if (endInput) endInput.value = s.toISOString().split('T')[0];
-            }
-            durationInput.value = dur;
+          const dur = parseInt(this.dataset.duration, 10) || 1;
+          if (durationInput) durationInput.value = dur;
+          if (startInput && startInput.value && endInput) {
+            const s = new Date(startInput.value);
+            s.setDate(s.getDate() + dur - 1);
+            endInput.value = s.toISOString().split('T')[0];
           }
-          if (priceInput && this.dataset.price) {
-            priceInput.value = this.dataset.price;
-          }
+          if (priceInput && this.dataset.price) priceInput.value = this.dataset.price;
           syncSummary();
+          // Highlight selected button
+          document.querySelectorAll('.charter-route-preset').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
         });
       });
 
@@ -414,11 +403,10 @@ $charterCreateForm = array_merge([
         priceInput.addEventListener('change', syncSummary);
       }
 
+      // Kembali ke daftar: pastikan tab charter aktif
       document.querySelectorAll('#charter-create [data-target="bookings"]').forEach(link => {
         link.addEventListener('click', function () {
-          if (window.bookingDashboardState) {
-            window.bookingDashboardState.active = 'charters';
-          }
+          if (window.bookingDashboardState) window.bookingDashboardState.active = 'charters';
         });
       });
 
@@ -430,88 +418,77 @@ $charterCreateForm = array_merge([
       calcDuration();
       syncSummary();
 
-      // Handle Customer Selection
-      const custSelect = document.getElementById('charter_customer_select');
-      if (custSelect) {
-        custSelect.addEventListener('change', function() {
-          const opt = this.options[this.selectedIndex];
-          if (!opt.value) return;
-          if (document.getElementById('charter_name_input')) document.getElementById('charter_name_input').value = opt.dataset.nama || '';
-          if (document.getElementById('charter_phone_input')) document.getElementById('charter_phone_input').value = opt.dataset.phone || '';
-          if (document.getElementById('charter_perusahaan_input')) document.getElementById('charter_perusahaan_input').value = opt.dataset.perusahaan || '';
-          syncSummary();
-        });
-      }
-
-      // Handle Form Submission (AJAX)
+      // Form Submission via AJAX dengan konfirmasi
       if (form) {
         form.onsubmit = async function (e) {
           e.preventDefault();
           const actionInput = document.getElementById('charter_form_action');
-          const action = actionInput ? actionInput.value : 'create_charter';
-          const formData = new FormData(this);
-          
-          try {
-            const res = await fetch('admin.php?action=' + action, {
-              method: 'POST',
-              body: formData,
-              headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
-            const js = await parseAdminApiResponse(res);
-            if (js.success) {
-              await customAlert(js.message || 'Data carter berhasil disimpan.', 'Sukses');
-              if (typeof window.showSectionById === 'function') {
-                window.showSectionById('bookings');
-                window.location.hash = '#bookings';
-                if (window.bookingDashboardState) window.bookingDashboardState.active = 'charters';
-                if (typeof ajaxListLoad === 'function') {
-                    ajaxListLoad('charters', { page: 1 });
+          const action      = actionInput ? actionInput.value : 'create_charter';
+          const isEdit      = action === 'update_charter';
+          const label       = isEdit ? 'Simpan perubahan data carter ini?' : 'Konfirmasi dan simpan data carter baru?';
+
+          customConfirm(label, async () => {
+            const btn = document.getElementById('charter_submit_btn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Menyimpan...'; }
+
+            try {
+              const res = await fetch('admin.php?action=' + action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+              });
+              const js = await parseAdminApiResponse(res);
+              if (js.success) {
+                await customAlert(js.message || 'Data carter berhasil disimpan.', 'Sukses');
+                if (typeof window.showSectionById === 'function') {
+                  window.showSectionById('bookings');
+                  window.location.hash = '#bookings';
+                  if (window.bookingDashboardState) window.bookingDashboardState.active = 'charters';
+                  if (typeof ajaxListLoad === 'function') ajaxListLoad('charters', { page: 1 });
+                } else {
+                  window.location.href = 'admin.php?booking_mode=charters#bookings';
                 }
               } else {
-                window.location.href = 'admin.php?booking_mode=charters#bookings';
-                location.reload();
+                await customAlert('Gagal menyimpan: ' + (js.error || 'Terjadi kesalahan.'), 'Error');
               }
-            } else {
-              customAlert('Gagal menyimpan: ' + (js.error || 'Terjadi kesalahan internal.'));
+            } catch (err) {
+              console.error(err);
+              await customAlert('Kesalahan koneksi saat menyimpan data carter.', 'Error');
+            } finally {
+              if (btn) {
+                btn.disabled = false;
+                const txt = document.getElementById('charter_submit_text');
+                btn.innerHTML = '<i class="fa-solid fa-check-circle me-2"></i><span id="charter_submit_text">' + (txt ? txt.textContent : 'KONFIRMASI & SIMPAN') + '</span>';
+              }
             }
-          } catch (err) {
-            console.error(err);
-            customAlert('Kesalahan koneksi saat menyimpan data carter.');
-          }
+          }, isEdit ? 'Simpan Perubahan' : 'Tambah Carter', 'success');
         };
       }
 
-      window.resetCharterForm = function() {
+      // Reset form ke mode tambah baru
+      window.resetCharterForm = function () {
         if (!form) return;
-        
-        // Reset basic fields
         form.reset();
-        
-        // Explicitly clear hidden fields
         const idField = document.getElementById('charter_form_id');
         if (idField) idField.value = '';
         const actionField = document.getElementById('charter_form_action');
         if (actionField) actionField.value = 'create_charter';
-        
-        // Reset Labels
         const title = document.getElementById('charter_form_title');
         if (title) title.textContent = 'Tambah Carter Baru';
         const subtitle = document.getElementById('charter_form_subtitle');
         if (subtitle) subtitle.textContent = 'Buat reservasi carter unit bus baru';
         const submitText = document.getElementById('charter_submit_text');
         if (submitText) submitText.textContent = 'KONFIRMASI & SIMPAN';
-        
-        // Reset pricing summary
-        syncSummary();
-        
-        // Reset dates to default (today / +2 days)
+        if (custSelect) custSelect.value = '';
         if (startInput) startInput.value = new Date().toISOString().split('T')[0];
         if (endInput) {
-            const d = new Date();
-            d.setDate(d.getDate() + 2);
-            endInput.value = d.toISOString().split('T')[0];
+          const d = new Date(); d.setDate(d.getDate() + 2);
+          endInput.value = d.toISOString().split('T')[0];
         }
+        document.querySelectorAll('.charter-route-preset').forEach(b => b.classList.remove('active'));
         calcDuration();
+        syncSummary();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       };
     })();
   </script>
