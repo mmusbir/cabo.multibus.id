@@ -230,6 +230,12 @@ if (!db_column_exists($conn, 'charters', 'layanan')) {
 if (!db_column_exists($conn, 'charters', 'bop_price')) {
   $conn->exec("ALTER TABLE charters ADD COLUMN bop_price NUMERIC(15,2) DEFAULT 0");
 }
+if (!db_column_exists($conn, 'charters', 'down_payment')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN down_payment NUMERIC(15,2) DEFAULT 0");
+}
+if (!db_column_exists($conn, 'charters', 'payment_status')) {
+  $conn->exec("ALTER TABLE charters ADD COLUMN payment_status VARCHAR(30) DEFAULT 'Belum Bayar'");
+}
 
 // Add segment_id, price, discount to bookings if not exists
 if (!db_column_exists($conn, 'bookings', 'segment_id')) {

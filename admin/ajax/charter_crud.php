@@ -45,12 +45,17 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $pickupPoint = trim($_POST['pickup_point'] ?? '');
     $dropPoint = trim($_POST['drop_point'] ?? '');
     $startDate = trim($_POST['start_date'] ?? '');
+    // Accept end_date directly; fallback to duration_days if not provided
+    $endDateRaw = trim($_POST['end_date'] ?? '');
     $durationDays = max(1, (int) ($_POST['duration_days'] ?? 1));
     $departureTime = trim($_POST['departure_time'] ?? '08:30') ?: '08:30';
     $busType = trim($_POST['bus_type'] ?? 'Big Bus') ?: 'Big Bus';
     $unitId = intval($_POST['unit_id'] ?? 0);
     $driverName = trim($_POST['driver_name'] ?? '');
     $price = charter_parse_currency_input((string) ($_POST['price'] ?? '0'));
+    $downPayment = charter_parse_currency_input((string) ($_POST['down_payment'] ?? '0'));
+    $paymentStatus = trim($_POST['payment_status'] ?? 'Belum Bayar');
+    $perusahaan = trim($_POST['perusahaan'] ?? '');
 
     $errors = [];
     if ($name === '') {
@@ -79,10 +84,20 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Compute end date: prefer explicit end_date field, else use start_date + duration
+    if ($endDateRaw !== '' && strtotime($endDateRaw)) {
+        $endDate = date('Y-m-d', strtotime($endDateRaw));
+    } else {
+        $endDate = date('Y-m-d', strtotime($startDate . ' +' . max(0, $durationDays - 1) . ' days'));
+    }
 
-    $endDate = date('Y-m-d', strtotime($startDate . ' +' . max(0, $durationDays - 1) . ' days'));
+    // Validate allowed payment statuses
+    $allowedStatuses = ['Lunas', 'DP', 'Belum Bayar'];
+    if (!in_array($paymentStatus, $allowedStatuses)) {
+        $paymentStatus = 'Belum Bayar';
+    }
 
-    $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, down_payment, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
     try {
         $stmt->execute([
@@ -99,8 +114,29 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $price,
             $busType,
             0,
+            $downPayment,
+            $paymentStatus,
         ]);
-        activity_log_write($conn, 'charter', 'charter', $conn->lastInsertId(), 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
+        $newCharterId = $conn->lastInsertId();
+        activity_log_write($conn, 'charter', 'charter', $newCharterId, 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
+
+        // Upsert customer into customer_charter table
+        try {
+            $existCheck = $conn->prepare("SELECT id FROM customer_charter WHERE no_hp = ? LIMIT 1");
+            $existCheck->execute([$phone]);
+            $existCustomer = $existCheck->fetchColumn();
+            if ($existCustomer) {
+                // Update name/perusahaan if exists
+                $conn->prepare("UPDATE customer_charter SET nama = ?, perusahaan = COALESCE(NULLIF(?, ''), perusahaan) WHERE id = ?")
+                     ->execute([$name, $perusahaan, $existCustomer]);
+            } else {
+                $conn->prepare("INSERT INTO customer_charter (nama, perusahaan, no_hp, alamat) VALUES (?, ?, ?, ?)")
+                     ->execute([$name, $perusahaan, $phone, '']);
+            }
+        } catch (Throwable $ce) {
+            // Non-fatal: continue even if customer upsert fails
+        }
+
         $_SESSION['booking_msg'] = 'Data carter berhasil disimpan.';
         unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
         header('Location: admin.php?booking_mode=charters#bookings');

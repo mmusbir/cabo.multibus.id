@@ -112,8 +112,13 @@ if (empty($rows)) {
         $priceRaw = floatval($r['price'] ?? 0);
         $price = 'Rp ' . number_format($priceRaw, 0, ',', '.');
         $vehicle = trim(($r['nopol'] ?? '-') . ' - ' . ($r['merek'] ?? 'Unit'));
-        $tripDate = !empty($r['start_date']) ? strtoupper(date('d M', strtotime($r['start_date']))) : '-';
+        $tripDate = !empty($r['start_date']) ? strtoupper(date('d M Y', strtotime($r['start_date']))) : '-';
+        $tripEndDate = !empty($r['end_date']) ? strtoupper(date('d M Y', strtotime($r['end_date']))) : '-';
         $tripHour = !empty($r['departure_time']) ? substr($r['departure_time'], 0, 5) : '--:--';
+        $dpRaw = floatval($r['down_payment'] ?? 0);
+        $dpFmt = 'Rp ' . number_format($dpRaw, 0, ',', '.');
+        $payStatus = trim($r['payment_status'] ?? 'Belum Bayar');
+        $payStatusColor = match($payStatus) { 'Lunas' => '#10b981', 'DP' => '#f59e0b', default => '#94a3b8' };
 
         $startDate = new DateTime($r['start_date']);
         $endDate = new DateTime($r['end_date']);
@@ -145,6 +150,8 @@ if (empty($rows)) {
         $dataAttrs .= 'data-bop_price="' . floatval($r['bop_price'] ?? 0) . '" ';
         $dataAttrs .= 'data-vehicle="' . charter_h($vehicle) . '" ';
         $dataAttrs .= 'data-duration="' . $durationDays . '" ';
+        $dataAttrs .= 'data-dp="' . $dpRaw . '" ';
+        $dataAttrs .= 'data-payment_status="' . charter_h($payStatus) . '" ';
         $dataAttrs .= 'data-bop="' . charter_h($bopStatus) . '"';
 
         $code = charter_h('CRT-' . date('ymd', strtotime($r['start_date'])) . '-' . str_pad((string) intval($r['id']), 3, '0', STR_PAD_LEFT));
@@ -202,13 +209,18 @@ if (empty($rows)) {
         // Right: Schedule & Info
         echo '      <div class="col-md-5">';
         echo '        <div style="background: var(--bg-body); border-radius: 16px; padding: 16px; height: 100%; border: 1px solid var(--border-color);">';
-        echo '          <div style="margin-bottom: 16px;">';
-        echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Waktu & Durasi</div>';
-        echo '            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">';
-        echo '              <div style="background: var(--primary-color); color: #fff; padding: 4px 10px; border-radius: 8px; font-weight: 800; font-size: 15px;">' . charter_h($tripDate) . '</div>';
-        echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 15px;"><i class="fa-regular fa-clock" style="margin-right: 6px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
+                echo '          <div style="margin-bottom: 16px;">';
+        echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Jadwal Perjalanan</div>';
+        echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">';
+        echo '              <i class="fa-solid fa-plane-departure" style="color: var(--primary-color); font-size: 11px; width: 14px;"></i>';
+        echo '              <div style="background: var(--primary-color); color: #fff; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
+        echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 12px;"><i class="fa-regular fa-clock" style="margin-right: 4px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
         echo '            </div>';
-        echo '            <div style="font-size: 13px; font-weight: 600; color: var(--text-main);"><span style="color: var(--primary-color);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';
+        echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">';
+        echo '              <i class="fa-solid fa-plane-arrival" style="color: #ef4444; font-size: 11px; width: 14px;"></i>';
+        echo '              <div style="background: rgba(239,68,68,0.12); color: #ef4444; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripEndDate) . '</div>';
+        echo '            </div>';
+        echo '            <div style="font-size: 12px; font-weight: 600; color: var(--text-main);"><span style="color: var(--primary-color);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';
         echo '          </div>';
 
         echo '          <div style="display: flex; flex-direction: column; gap: 8px;">';
@@ -228,9 +240,18 @@ if (empty($rows)) {
 
         // Footer
         echo '  <div style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--neu-primary-rgb), 0.02);">';
-        echo '    <div>';
-        echo '      <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>';
-        echo '      <div style="font-size: 22px; font-weight: 900; color: var(--primary-color); letter-spacing: -0.5px;">' . $price . '</div>';
+        echo '    <div style="display: flex; gap: 20px; align-items: flex-end;">';
+        echo '      <div>';
+        echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>';
+        echo '        <div style="font-size: 20px; font-weight: 900; color: var(--primary-color); letter-spacing: -0.5px;">' . $price . '</div>';
+        echo '      </div>';
+        echo '      <div>';
+        echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">DP Dibayar</div>';
+        echo '        <div style="display: flex; align-items: center; gap: 6px;">';
+        echo '          <span style="font-size: 15px; font-weight: 800; color: var(--text-main);">' . charter_h($dpFmt) . '</span>';
+        echo '          <span style="background: ' . $payStatusColor . '22; color: ' . $payStatusColor . '; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; text-transform: uppercase;">' . charter_h($payStatus) . '</span>';
+        echo '        </div>';
+        echo '      </div>';
         echo '    </div>';
         echo '    <div style="display: flex; gap: 8px;">';
         if ($bopStatus !== 'done') {

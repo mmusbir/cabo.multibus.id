@@ -45,7 +45,7 @@ try {
     $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT (tanggal::text || '|' || jam::text || '|' || unit::text)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
     $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
     $dashboard['revenue_booking_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_TRUNC('month', tanggal) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
-    $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
+    $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', start_date) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
     $dashboard['revenue_luggage_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM luggages WHERE payment_status = 'Lunas' AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
 
     // Revenue trend per day (last 7 days), only counting paid bookings

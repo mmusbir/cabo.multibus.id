@@ -24,13 +24,23 @@ try {
   $charterCreateRoutes = [];
 }
 
+// Load existing customers from customer_charter for autocomplete
+$charterExistingCustomers = [];
+try {
+  $charterExistingCustomers = $conn->query("SELECT id, nama, no_hp, perusahaan FROM customer_charter ORDER BY nama")->fetchAll();
+} catch (Throwable $e) {
+  $charterExistingCustomers = [];
+}
+
 $charterCreateForm = array_merge([
   'name' => '',
   'phone' => '',
   'email' => '',
+  'perusahaan' => '',
   'pickup_point' => '',
   'drop_point' => '',
   'start_date' => date('Y-m-d'),
+  'end_date' => date('Y-m-d', strtotime('+2 days')),
   'duration_days' => '3',
   'departure_time' => '08:30',
   'bus_type' => 'Big Bus',
@@ -63,13 +73,6 @@ $charterCreateForm = array_merge([
     <?php endif; ?>
 
     <form method="post" class="modern-form-container">
-      <!-- We need this hidden action so the PHP POST handler in admin/ajax/charter_crud.php intercepts it? 
-           Actually, the form submits to admin.php (by default). The charter_crud.php handles AJAX. 
-           Wait, looking at the previous version, the form had method="post" and the submit button had name="create_charter_submit". 
-           Let's check admin/ajax/charter_crud.php — it expects `action === 'create_charter'`. 
-           Wait, let's look at how it submitted before. It had `<form method="post" class="charter-create-layout" novalidate>` 
-           and a button `<button type="submit" name="create_charter_submit"...>`. 
-           Wait, there must have been an action parameter? Let me check admin.php. -->
       <input type="hidden" name="action" value="create_charter">
 
       <div class="row g-4">
@@ -86,28 +89,58 @@ $charterCreateForm = array_merge([
                </div>
             </div>
 
+            <!-- Pilih Customer Tersimpan -->
+            <?php if (!empty($charterExistingCustomers)): ?>
+            <div class="mb-3">
+              <label class="admin-bs-input-label"><i class="fa-solid fa-address-book me-1" style="color:var(--neu-primary);"></i>Pilih dari Customer Carter Tersimpan</label>
+              <div class="input-group-modern">
+                <span class="input-icon"><i class="fa-solid fa-search"></i></span>
+                <select id="charter_customer_select" class="form-select modern-input ps-5">
+                  <option value="">-- Ketik nama baru / pilih customer lama --</option>
+                  <?php foreach ($charterExistingCustomers as $cust): ?>
+                    <option value="<?= intval($cust['id']) ?>"
+                      data-nama="<?= htmlspecialchars(strtoupper($cust['nama'])) ?>"
+                      data-hp="<?= htmlspecialchars($cust['no_hp']) ?>"
+                      data-perusahaan="<?= htmlspecialchars($cust['perusahaan'] ?? '') ?>">
+                      <?= htmlspecialchars($cust['nama']) ?><?= !empty($cust['perusahaan']) ? ' (' . htmlspecialchars($cust['perusahaan']) . ')' : '' ?> — <?= htmlspecialchars($cust['no_hp']) ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+              <div class="mt-1 small text-muted">Memilih customer akan mengisi otomatis nama & nomor HP di bawah</div>
+            </div>
+            <hr style="border-color: var(--border-color); margin: 12px 0 20px;">
+            <?php endif; ?>
+
             <!-- Identitas Penyewa -->
             <div class="customer-section mb-4 p-3 rounded-4" style="background: rgba(148, 163, 184, 0.05); border: 1px solid rgba(148, 163, 184, 0.1);">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="admin-bs-input-label">Nama Lengkap</label>
+                  <label class="admin-bs-input-label">Nama Lengkap <span class="text-danger">*</span></label>
                   <div class="input-group-modern">
                     <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-                    <input type="text" name="name" value="<?php echo htmlspecialchars($charterCreateForm['name']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Budi Santoso" required>
+                    <input type="text" id="charter_name_input" name="name" value="<?php echo htmlspecialchars($charterCreateForm['name']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Budi Santoso" required>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="admin-bs-input-label">Nomor Telepon</label>
+                  <label class="admin-bs-input-label">Nomor Telepon <span class="text-danger">*</span></label>
                   <div class="input-group-modern">
                     <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
-                    <input type="tel" name="phone" value="<?php echo htmlspecialchars($charterCreateForm['phone']); ?>" class="form-control modern-input ps-5" placeholder="+62 812-xxxx-xxxx" required>
+                    <input type="tel" id="charter_phone_input" name="phone" value="<?php echo htmlspecialchars($charterCreateForm['phone']); ?>" class="form-control modern-input ps-5" placeholder="+62 812-xxxx-xxxx" required>
                   </div>
                 </div>
-                <div class="col-12">
+                <div class="col-md-6">
                   <label class="admin-bs-input-label">Email <small class="text-muted">(Opsional)</small></label>
                   <div class="input-group-modern">
                     <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
                     <input type="email" name="email" value="<?php echo htmlspecialchars($charterCreateForm['email']); ?>" class="form-control modern-input ps-5" placeholder="budi@example.com">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="admin-bs-input-label">Perusahaan <small class="text-muted">(Opsional)</small></label>
+                  <div class="input-group-modern">
+                    <span class="input-icon"><i class="fa-solid fa-building"></i></span>
+                    <input type="text" id="charter_perusahaan_input" name="perusahaan" value="<?php echo htmlspecialchars($charterCreateForm['perusahaan']); ?>" class="form-control modern-input ps-5" placeholder="Nama perusahaan (opsional)">
                   </div>
                 </div>
               </div>
@@ -181,23 +214,32 @@ $charterCreateForm = array_merge([
                </div>
             </div>
 
+            <!-- Tanggal Keberangkatan & Kepulangan -->
             <div class="row g-3 mb-3">
               <div class="col-6">
-                <label class="admin-bs-input-label">Tgl. Berangkat</label>
-                <input type="date" name="start_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['start_date']); ?>" required>
+                <label class="admin-bs-input-label"><i class="fa-solid fa-plane-departure me-1" style="color:var(--primary-color);"></i>Tgl. Berangkat</label>
+                <input type="date" id="charter_start_date" name="start_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['start_date']); ?>" required>
               </div>
               <div class="col-6">
-                <label class="admin-bs-input-label">Jam</label>
+                <label class="admin-bs-input-label"><i class="fa-solid fa-plane-arrival me-1" style="color:#ef4444;"></i>Tgl. Kepulangan</label>
+                <input type="date" id="charter_end_date" name="end_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['end_date']); ?>" required>
+              </div>
+            </div>
+
+            <!-- Durasi (auto-calculated) + Jam -->
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="admin-bs-input-label">Durasi (Hari)</label>
+                <input type="number" id="charter_duration_days" name="duration_days" class="form-control modern-input" min="1" value="<?php echo htmlspecialchars($charterCreateForm['duration_days']); ?>" readonly style="background: rgba(148,163,184,0.07); cursor: default;">
+              </div>
+              <div class="col-6">
+                <label class="admin-bs-input-label">Jam Berangkat</label>
                 <input type="time" name="departure_time" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['departure_time']); ?>">
               </div>
             </div>
 
             <div class="row g-3 mb-3">
-              <div class="col-6">
-                <label class="admin-bs-input-label">Durasi (Hari)</label>
-                <input type="number" id="charter_duration_days" name="duration_days" class="form-control modern-input" min="1" value="<?php echo htmlspecialchars($charterCreateForm['duration_days']); ?>">
-              </div>
-              <div class="col-6">
+              <div class="col-12">
                 <label class="admin-bs-input-label">Tipe Bus</label>
                 <select name="bus_type" id="charter_bus_type" class="form-select modern-input">
                   <?php foreach (['Big Bus', 'Medium Bus', 'Mini Bus'] as $busType): ?>
@@ -279,21 +321,25 @@ $charterCreateForm = array_merge([
 
   <script>
     (function () {
-      const pickupInput = document.getElementById('charter_pickup_point');
-      const dropInput = document.getElementById('charter_drop_point');
+      const pickupInput   = document.getElementById('charter_pickup_point');
+      const dropInput     = document.getElementById('charter_drop_point');
+      const startInput    = document.getElementById('charter_start_date');
+      const endInput      = document.getElementById('charter_end_date');
       const durationInput = document.getElementById('charter_duration_days');
-      const busSelect = document.getElementById('charter_bus_type');
-      const priceInput = document.getElementById('charter_price_input');
-      const priceLabel = document.getElementById('charterSummaryPriceLabel');
+      const busSelect     = document.getElementById('charter_bus_type');
+      const priceInput    = document.getElementById('charter_price_input');
+      const priceLabel    = document.getElementById('charterSummaryPriceLabel');
+      const custSelect    = document.getElementById('charter_customer_select');
+      const nameInput     = document.getElementById('charter_name_input');
+      const phoneInput    = document.getElementById('charter_phone_input');
+      const perusInput    = document.getElementById('charter_perusahaan_input');
 
       function formatRupiah(amount) {
           try {
               let parsed = parseFloat(amount);
-              if(isNaN(parsed)) return '0';
+              if (isNaN(parsed)) return '0';
               return new Intl.NumberFormat('id-ID').format(parsed);
-          } catch (e) {
-              return amount;
-          }
+          } catch (e) { return amount; }
       }
 
       function syncSummary() {
@@ -302,13 +348,61 @@ $charterCreateForm = array_merge([
         }
       }
 
+      // Auto-calculate duration days from start and end date
+      function calcDuration() {
+        if (!startInput || !endInput || !durationInput) return;
+        const s = new Date(startInput.value);
+        const e = new Date(endInput.value);
+        if (!isNaN(s) && !isNaN(e) && e >= s) {
+          const diff = Math.round((e - s) / 86400000) + 1;
+          durationInput.value = diff;
+        }
+      }
+
+      // Ensure end date >= start date
+      function onStartChange() {
+        if (endInput && startInput.value && endInput.value < startInput.value) {
+          endInput.value = startInput.value;
+        }
+        if (endInput) endInput.min = startInput.value;
+        calcDuration();
+      }
+
+      if (startInput) {
+        startInput.addEventListener('change', onStartChange);
+        if (startInput.value) endInput && (endInput.min = startInput.value);
+      }
+      if (endInput) endInput.addEventListener('change', calcDuration);
+
+      // Customer select auto-fill
+      if (custSelect) {
+        custSelect.addEventListener('change', function () {
+          const opt = this.options[this.selectedIndex];
+          if (this.value && opt) {
+            if (nameInput)  nameInput.value  = opt.dataset.nama  || '';
+            if (phoneInput) phoneInput.value = opt.dataset.hp    || '';
+            if (perusInput) perusInput.value = opt.dataset.perusahaan || '';
+          }
+        });
+      }
+
+      // Route preset buttons
       document.querySelectorAll('.charter-route-preset').forEach(btn => {
         btn.addEventListener('click', function () {
           if (pickupInput) pickupInput.value = this.dataset.pickup || '';
-          if (dropInput) dropInput.value = this.dataset.drop || '';
-          if (durationInput && this.dataset.duration) durationInput.value = this.dataset.duration;
+          if (dropInput)   dropInput.value   = this.dataset.drop   || '';
+          // Set duration and recompute end date
+          if (durationInput && this.dataset.duration) {
+            const dur = parseInt(this.dataset.duration, 10) || 1;
+            if (startInput && startInput.value) {
+              const s = new Date(startInput.value);
+              s.setDate(s.getDate() + dur - 1);
+              if (endInput) endInput.value = s.toISOString().split('T')[0];
+            }
+            durationInput.value = dur;
+          }
           if (priceInput && this.dataset.price) {
-             priceInput.value = this.dataset.price;
+            priceInput.value = this.dataset.price;
           }
           syncSummary();
         });
@@ -331,6 +425,8 @@ $charterCreateForm = array_merge([
         window.bookingDashboardState.active = 'charters';
       }
 
+      // Initial sync
+      calcDuration();
       syncSummary();
     })();
   </script>
