@@ -103,7 +103,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $paymentStatus = 'Belum Bayar';
     }
 
-    $stmt = $conn->prepare("INSERT INTO charters (name, company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, down_payment, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt = $conn->prepare("INSERT INTO charters (\"name\", \"company_name\", \"phone\", \"start_date\", \"end_date\", \"departure_time\", \"pickup_point\", \"drop_point\", \"unit_id\", \"driver_name\", \"price\", \"layanan\", \"bop_price\", \"down_payment\", \"payment_status\", \"created_at\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
     try {
         $stmt->execute([
@@ -235,7 +235,7 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldStmt = $conn->prepare("SELECT name, pickup_point, drop_point FROM charters WHERE id=? LIMIT 1");
     $oldStmt->execute([$id]);
     $oldCharter = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-    $stmt = $conn->prepare("UPDATE charters SET name=?, company_name=?, phone=?, start_date=?, end_date=?, departure_time=?, pickup_point=?, drop_point=?, unit_id=?, driver_name=?, price=?, layanan=?, bop_price=?, down_payment=?, payment_status=? WHERE id=?");
+    $stmt = $conn->prepare("UPDATE charters SET \"name\"=?, \"company_name\"=?, \"phone\"=?, \"start_date\"=?, \"end_date\"=?, \"departure_time\"=?, \"pickup_point\"=?, \"drop_point\"=?, \"unit_id\"=?, \"driver_name\"=?, \"price\"=?, \"layanan\"=?, \"bop_price\"=?, \"down_payment\"=?, \"payment_status\"=? WHERE \"id\"=?");
     try {
         $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $down_payment, $payment_status, $id]);
         
