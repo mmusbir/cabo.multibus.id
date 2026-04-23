@@ -239,10 +239,22 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $down_payment, $payment_status, $id]);
         
-        // Auto-upsert to customer_charter
+        // Auto-upsert to customer_charter (MySQL-compatible)
         $actor = $_SESSION['username'] ?? 'system';
-        $upsertCust = $conn->prepare("INSERT INTO customer_charter (nama, no_hp, perusahaan, created_at) VALUES (?, ?, ?, NOW()) ON CONFLICT (no_hp) DO UPDATE SET nama = EXCLUDED.nama, perusahaan = EXCLUDED.perusahaan");
-        $upsertCust->execute([$name, $phone, $company_name]);
+        try {
+            $existStmt = $conn->prepare("SELECT id FROM customer_charter WHERE no_hp = ? LIMIT 1");
+            $existStmt->execute([$phone]);
+            $existId = $existStmt->fetchColumn();
+            if ($existId) {
+                $conn->prepare("UPDATE customer_charter SET nama = ?, perusahaan = ? WHERE id = ?")
+                     ->execute([$name, $company_name, $existId]);
+            } else {
+                $conn->prepare("INSERT INTO customer_charter (nama, no_hp, perusahaan, created_at) VALUES (?, ?, ?, NOW())")
+                     ->execute([$name, $phone, $company_name]);
+            }
+        } catch (Throwable $ce) {
+            // Non-fatal
+        }
         activity_log_write($conn, 'charter', 'charter', $id, 'update', 'Carter diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCharter['name'] ?? '-') . ' | ' . ($oldCharter['pickup_point'] ?? '-') . ' -> ' . ($oldCharter['drop_point'] ?? '-'), $actor);
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'message' => 'Data carter berhasil diperbarui.']);

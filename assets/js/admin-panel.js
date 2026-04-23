@@ -1987,57 +1987,93 @@
           try {
             const res = await fetch('admin.php?action=get_charter&id=' + id);
             const js = await parseAdminApiResponse(res);
-            if (js.success) {
-              const d = js.data;
-              
-              if (typeof window.showSectionById === 'function') {
-                window.showSectionById('charter-create');
-                window.location.hash = '#charter-create';
-              }
-
-              const formTitle = document.getElementById('charter_form_title');
-              if (formTitle) formTitle.textContent = 'Edit Data Carter';
-              const formSubtitle = document.getElementById('charter_form_subtitle');
-              if (formSubtitle) formSubtitle.textContent = 'Perbarui informasi reservasi carter #' + d.id;
-              const submitText = document.getElementById('charter_submit_text');
-              if (submitText) submitText.textContent = 'SIMPAN PERUBAHAN';
-              const formAction = document.getElementById('charter_form_action');
-              if (formAction) formAction.value = 'update_charter';
-              const formId = document.getElementById('charter_form_id');
-              if (formId) formId.value = d.id;
-
-              if (document.getElementById('charter_name_input')) document.getElementById('charter_name_input').value = d.name || '';
-              if (document.getElementById('charter_phone_input')) document.getElementById('charter_phone_input').value = d.phone || '';
-              if (document.getElementById('charter_perusahaan_input')) document.getElementById('charter_perusahaan_input').value = d.company_name || '';
-              if (document.getElementById('charter_pickup_point')) document.getElementById('charter_pickup_point').value = d.pickup_point || '';
-              if (document.getElementById('charter_drop_point')) document.getElementById('charter_drop_point').value = d.drop_point || '';
-              if (document.getElementById('charter_start_date')) document.getElementById('charter_start_date').value = d.start_date || '';
-              if (document.getElementById('charter_end_date')) document.getElementById('charter_end_date').value = d.end_date || '';
-              if (document.querySelector('input[name="departure_time"]')) document.querySelector('input[name="departure_time"]').value = (d.departure_time || '08:30').substring(0, 5);
-              if (document.getElementById('charter_bus_type')) document.getElementById('charter_bus_type').value = d.layanan || 'Big Bus';
-              
-              if (document.getElementById('charter_price_input')) {
-                document.getElementById('charter_price_input').value = d.price || 0;
-                const priceLabel = document.getElementById('charterSummaryPriceLabel');
-                if (priceLabel) {
-                   priceLabel.textContent = new Intl.NumberFormat('id-ID').format(d.price || 0);
-                }
-              }
-              if (document.querySelector('input[name="down_payment"]')) document.querySelector('input[name="down_payment"]').value = d.down_payment || 0;
-              
-              const payRadios = document.getElementsByName('payment_status');
-              payRadios.forEach(r => {
-                if (r.value === d.payment_status) r.checked = true;
-              });
-
-              const uSelect = document.querySelector('select[name="unit_id"]');
-              if (uSelect) uSelect.value = d.unit_id || '';
-              
-              const drSelect = document.querySelector('select[name="driver_name"]');
-              if (drSelect) drSelect.value = d.driver_name || '';
-
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (!js.success) {
+              customAlert('Gagal mengambil data carter: ' + (js.error || 'Unknown error'));
+              return;
             }
+            const d = js.data;
+
+            // 1. Tampilkan section charter-create terlebih dahulu (await agar DOM siap)
+            if (typeof window.showSectionById === 'function') {
+              await window.showSectionById('charter-create');
+              window.location.hash = '#charter-create';
+            }
+
+            // 2. Update judul & metadata form
+            const formTitle = document.getElementById('charter_form_title');
+            if (formTitle) formTitle.textContent = 'Edit Data Carter';
+            const formSubtitle = document.getElementById('charter_form_subtitle');
+            if (formSubtitle) formSubtitle.textContent = 'Perbarui informasi reservasi carter #' + d.id;
+            const submitText = document.getElementById('charter_submit_text');
+            if (submitText) submitText.textContent = 'SIMPAN PERUBAHAN';
+            const formAction = document.getElementById('charter_form_action');
+            if (formAction) formAction.value = 'update_charter';
+            const formId = document.getElementById('charter_form_id');
+            if (formId) formId.value = d.id;
+
+            // 3. Isi field identitas & rute
+            if (document.getElementById('charter_name_input')) document.getElementById('charter_name_input').value = d.name || '';
+            if (document.getElementById('charter_phone_input')) document.getElementById('charter_phone_input').value = d.phone || '';
+            if (document.getElementById('charter_perusahaan_input')) document.getElementById('charter_perusahaan_input').value = d.company_name || '';
+            if (document.getElementById('charter_pickup_point')) document.getElementById('charter_pickup_point').value = d.pickup_point || '';
+            if (document.getElementById('charter_drop_point')) document.getElementById('charter_drop_point').value = d.drop_point || '';
+
+            // 4. Isi tanggal & picu kalkulasi durasi otomatis
+            const startInput = document.getElementById('charter_start_date');
+            const endInput = document.getElementById('charter_end_date');
+            if (startInput) {
+              startInput.value = d.start_date || '';
+              startInput.dispatchEvent(new Event('change'));
+            }
+            if (endInput) {
+              endInput.value = d.end_date || '';
+              endInput.dispatchEvent(new Event('change'));
+            }
+
+            // 5. Jam keberangkatan
+            const depTimeInput = document.querySelector('input[name="departure_time"]');
+            if (depTimeInput) depTimeInput.value = (d.departure_time || '08:30').substring(0, 5);
+
+            // 6. Tipe bus
+            const busTypeSelect = document.getElementById('charter_bus_type');
+            if (busTypeSelect) busTypeSelect.value = d.layanan || 'Big Bus';
+
+            // 7. Harga
+            const priceInput = document.getElementById('charter_price_input');
+            if (priceInput) {
+              priceInput.value = d.price || 0;
+              priceInput.dispatchEvent(new Event('input'));
+            }
+
+            // 8. Down payment
+            const dpInput = document.querySelector('input[name="down_payment"]');
+            if (dpInput) dpInput.value = d.down_payment || 0;
+
+            // 9. Status pembayaran — uncheck semua dulu, baru set yang sesuai
+            const payRadios = document.getElementsByName('payment_status');
+            payRadios.forEach(r => {
+              r.checked = false;
+              const label = r.closest('label');
+              if (label) label.querySelector('span')?.classList.remove('active');
+            });
+            payRadios.forEach(r => {
+              if (r.value === d.payment_status) {
+                r.checked = true;
+              }
+            });
+
+            // 10. Unit kendaraan
+            const uSelect = document.querySelector('select[name="unit_id"]');
+            if (uSelect) uSelect.value = d.unit_id || '';
+
+            // 11. Driver
+            const drSelect = document.querySelector('select[name="driver_name"]');
+            if (drSelect) drSelect.value = d.driver_name || '';
+
+            // 12. Scroll ke atas setelah semua terisi
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('charter-create')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
           } catch (err) {
             console.error(err);
             customAlert('Gagal mengambil data carter.');

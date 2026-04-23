@@ -1828,7 +1828,7 @@ flush();
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=11"></script>
+  <script src="assets/js/admin-panel.js?v=12"></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>
