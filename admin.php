@@ -34,6 +34,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'middleware/auth.php';
 require_once 'config/db.php';
+// Auto-sync schema once per session (idempotent — uses IF NOT EXISTS / db_column_exists checks)
+if (empty($_SESSION['_schema_migrated'])) {
+  require_once 'db-migrate.php';
+  $_SESSION['_schema_migrated'] = true;
+}
 require_once 'config/auth_config.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
