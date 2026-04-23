@@ -287,7 +287,8 @@
     document.addEventListener('DOMContentLoaded', function () {
       // Show only active section and load data
       async function showSection(id) {
-        document.querySelectorAll('.card').forEach(function (card) {
+        // Hanya sembunyikan .card yang merupakan container utama section
+        document.querySelectorAll('.admin-main-column > .card, .admin-main-column > .admin-section-slot > .card').forEach(function (card) {
           card.style.display = 'none';
         });
 
