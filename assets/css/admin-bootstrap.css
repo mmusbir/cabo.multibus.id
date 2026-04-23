@@ -312,6 +312,17 @@ body.admin-bootstrap-page .booking-cards-grid {
     gap: 1rem;
 }
 
+/* Specific Two-Column Layout for Charters */
+#charters_tbody {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+@media (max-width: 991px) {
+    #charters_tbody {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 body.admin-bootstrap-page .bc-status {
     display: inline-flex;
     align-items: center;

@@ -1475,7 +1475,7 @@ include 'includes/units_logic.php';
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=72">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=73">
   <link rel="stylesheet" href="assets/css/theme-toggle.css?v=23">
   <style>
     /* Critical: ensure shell loader is always hidden on ready */

@@ -213,7 +213,7 @@ if (empty($rows)) {
         echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Jadwal Perjalanan</div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">';
         echo '              <i class="fa-solid fa-bus" style="color: var(--neu-primary, #0d6efd); font-size: 11px; width: 14px;"></i>';
-        echo '              <div style="background: var(--neu-primary, #0d6efd); color: #fff; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
+        echo '              <div style="background: rgba(13, 110, 253, 0.12); color: var(--neu-primary, #0d6efd); padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
         echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 12px;"><i class="fa-regular fa-clock" style="margin-right: 4px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
         echo '            </div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">';
