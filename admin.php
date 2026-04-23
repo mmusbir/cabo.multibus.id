@@ -1475,8 +1475,8 @@ include 'includes/units_logic.php';
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=71">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=22">
+  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=72">
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=23">
   <style>
     /* Critical: ensure shell loader is always hidden on ready */
     .admin-shell-ready .admin-shell-loader,
@@ -1488,12 +1488,6 @@ include 'includes/units_logic.php';
     }
 
 
-
-
-    <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=60">
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=61">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=21">
     /* iOS Safari Auto-Zoom Prevention */
     @media (max-width: 768px) {
       input,

@@ -8861,3 +8861,13 @@ body.admin-bootstrap-page .customers-table-actions {
     gap: 0.5rem;
 }
 
+/* ===== CHARTER CARD GRID: 2 kolom di desktop, 1 kolom di mobile ===== */
+body.admin-bootstrap-page #charters_tbody {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 900px) {
+    body.admin-bootstrap-page #charters_tbody {
+        grid-template-columns: 1fr;
+    }
+}
