@@ -218,7 +218,7 @@ $charterCreateForm = array_merge([
             <!-- Tanggal Keberangkatan & Kepulangan -->
             <div class="row g-3 mb-3">
               <div class="col-6">
-                <label class="admin-bs-input-label"><i class="fa-solid fa-bus me-1" style="color:var(--primary-color);"></i>Tgl. Berangkat</label>
+                <label class="admin-bs-input-label"><i class="fa-solid fa-bus me-1" style="color:var(--neu-primary, #0d6efd);"></i>Tgl. Berangkat</label>
                 <input type="date" id="charter_start_date" name="start_date" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['start_date']); ?>" required>
               </div>
               <div class="col-6">

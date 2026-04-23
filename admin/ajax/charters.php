@@ -159,7 +159,7 @@ if (empty($rows)) {
         $accentColor = $bopStatus === 'done' ? '#10b981' : '#f59e0b';
         $accentBg = $bopStatus === 'done' ? 'rgba(16, 185, 129, 0.05)' : 'rgba(245, 158, 11, 0.05)';
 
-        echo '<div class="admin-bs-card mb-3" style="border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); position: relative; background: var(--card-bg); grid-column: 1 / -1;" ' . $dataAttrs . '>';
+        echo '<div class="admin-bs-card mb-3" style="border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); position: relative; background: var(--card-bg);" ' . $dataAttrs . '>';
         
         // Left accent bar
         echo '  <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: ' . $accentColor . ';"></div>';
@@ -194,7 +194,7 @@ if (empty($rows)) {
         echo '        <div style="position: relative; padding-left: 20px;">';
         echo '          <div style="position: absolute; left: 4px; top: 8px; bottom: 8px; width: 2px; background: repeating-linear-gradient(to bottom, var(--border-color), var(--border-color) 4px, transparent 4px, transparent 8px);"></div>';
         echo '          <div style="margin-bottom: 12px; position: relative;">';
-        echo '            <div style="position: absolute; left: -20px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary-color); border: 2px solid var(--card-bg);"></div>';
+        echo '            <div style="position: absolute; left: -20px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--neu-primary, #0d6efd); border: 2px solid var(--card-bg);"></div>';
         echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Penjemputan</div>';
         echo '            <div style="font-weight: 600; color: var(--text-main); font-size: 14px;">' . charter_h($routeFrom) . '</div>';
         echo '          </div>';
@@ -209,18 +209,18 @@ if (empty($rows)) {
         // Right: Schedule & Info
         echo '      <div class="col-md-5">';
         echo '        <div style="background: var(--bg-body); border-radius: 16px; padding: 16px; height: 100%; border: 1px solid var(--border-color);">';
-                echo '          <div style="margin-bottom: 16px;">';
+        echo '          <div style="margin-bottom: 16px;">';
         echo '            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Jadwal Perjalanan</div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">';
-        echo '              <i class="fa-solid fa-bus" style="color: var(--primary-color); font-size: 11px; width: 14px;"></i>';
-        echo '              <div style="background: var(--primary-color); color: #fff; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
+        echo '              <i class="fa-solid fa-bus" style="color: var(--neu-primary, #0d6efd); font-size: 11px; width: 14px;"></i>';
+        echo '              <div style="background: var(--neu-primary, #0d6efd); color: #fff; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripDate) . '</div>';
         echo '              <div style="font-weight: 700; color: var(--text-main); font-size: 12px;"><i class="fa-regular fa-clock" style="margin-right: 4px; color: var(--text-muted);"></i>' . charter_h($tripHour) . '</div>';
         echo '            </div>';
         echo '            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">';
         echo '              <i class="fa-solid fa-location-dot" style="color: #ef4444; font-size: 11px; width: 14px;"></i>';
         echo '              <div style="background: rgba(239,68,68,0.12); color: #ef4444; padding: 3px 9px; border-radius: 7px; font-weight: 800; font-size: 12px;">' . charter_h($tripEndDate) . '</div>';
         echo '            </div>';
-        echo '            <div style="font-size: 12px; font-weight: 600; color: var(--text-main);"><span style="color: var(--primary-color);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';
+        echo '            <div style="font-size: 12px; font-weight: 600; color: var(--text-main);"><span style="color: var(--neu-primary, #0d6efd);">' . charter_h($durationDays) . ' Hari</span> &bull; ' . charter_h($layanan) . '</div>';
         echo '          </div>';
 
         echo '          <div style="display: flex; flex-direction: column; gap: 8px;">';
@@ -239,11 +239,11 @@ if (empty($rows)) {
         echo '  </div>'; // End Body
 
         // Footer
-        echo '  <div style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(var(--neu-primary-rgb), 0.02);">';
+        echo '  <div style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(13, 110, 253, 0.02);">';
         echo '    <div style="display: flex; gap: 20px; align-items: flex-end;">';
         echo '      <div>';
         echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>';
-        echo '        <div style="font-size: 20px; font-weight: 900; color: var(--primary-color); letter-spacing: -0.5px;">' . $price . '</div>';
+        echo '        <div style="font-size: 20px; font-weight: 900; color: var(--neu-primary, #0d6efd); letter-spacing: -0.5px;">' . $price . '</div>';
         echo '      </div>';
         echo '      <div>';
         echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">DP Dibayar</div>';
