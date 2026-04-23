@@ -175,7 +175,6 @@ if (empty($rows)) {
             echo '  <span style="background: rgba(var(--neu-primary-rgb), 0.1); color: var(--neu-primary); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700;">ADMIN</span>';
         }
         echo '    </div>';
-        echo '    <div style="background: ' . ($bopStatus === 'done' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)') . '; color: ' . $accentColor . '; padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">' . htmlspecialchars($bopLabel) . '</div>';
         echo '  </div>';
 
         // Body
@@ -254,9 +253,6 @@ if (empty($rows)) {
         echo '      </div>';
         echo '    </div>';
         echo '    <div style="display: flex; gap: 8px;">';
-        if ($bopStatus !== 'done') {
-            echo '      <button class="btn bop-done-btn" data-id="' . intval($r['id']) . '" title="Tandai BOP Lunas" style="background: #10b981; color: #fff; border-radius: 12px; padding: 8px 16px; font-size: 13px; font-weight: 700; border: none; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);"><i class="fa-solid fa-check-double" style="margin-right: 6px;"></i> Lunas</button>';
-        }
         echo '      <button class="btn copy-charter-btn" data-id="' . intval($r['id']) . '" title="Salin Detail" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-copy"></i></button>';
         echo '      <button class="btn edit-charter-btn" data-id="' . intval($r['id']) . '" title="Edit Charter" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-pen-to-square"></i></button>';
         echo '      <button class="btn delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '" title="Hapus" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-trash"></i></button>';
