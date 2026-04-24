@@ -159,6 +159,30 @@ $charterCreateForm = array_merge([
 
             <!-- Rute Perjalanan -->
             <div class="customer-section mb-4 p-3 rounded-4" style="background: rgba(148, 163, 184, 0.05); border: 1px solid rgba(148, 163, 184, 0.1);">
+              <div class="mb-3">
+                <label class="admin-bs-input-label">Pilih Layanan Rute (Auto-fill)</label>
+                <div class="input-group-modern">
+                  <span class="input-icon"><i class="fa-solid fa-search"></i></span>
+                  <select id="charter_route_select" class="form-select modern-input ps-5">
+                    <option value="">-- Ketik / Pilih Rute Tersedia --</option>
+                    <?php foreach ($charterCreateRoutes as $route): ?>
+                      <?php
+                      $routeLabel = trim(($route['origin'] ?? '') . ' - ' . ($route['destination'] ?? ''));
+                      if ($routeLabel === ' - ')
+                        $routeLabel = trim((string) ($route['name'] ?? ''));
+                      ?>
+                      <option value="<?php echo htmlspecialchars($routeLabel); ?>"
+                        data-pickup="<?php echo htmlspecialchars((string) ($route['origin'] ?? '')); ?>"
+                        data-drop="<?php echo htmlspecialchars((string) ($route['destination'] ?? '')); ?>"
+                        data-duration="<?php echo htmlspecialchars((string) ($route['duration'] ?? '3')); ?>"
+                        data-price="<?php echo htmlspecialchars((string) intval($route['rental_price'] ?? 0)); ?>"
+                        data-bop="<?php echo htmlspecialchars((string) intval($route['bop_price'] ?? 0)); ?>">
+                        <?php echo htmlspecialchars($routeLabel); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+              </div>
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Lokasi Penjemputan (From)</label>
@@ -185,30 +209,6 @@ $charterCreateForm = array_merge([
                     <option value="3D2N">3D2N</option>
                     <option value="4D3N">4D3N</option>
                     <option value="5D4N">5D4N</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mt-3">
-                <label class="admin-bs-input-label">Pilih Layanan Rute (Auto-fill)</label>
-                <div class="input-group-modern">
-                  <span class="input-icon"><i class="fa-solid fa-search"></i></span>
-                  <select id="charter_route_select" class="form-select modern-input ps-5">
-                    <option value="">-- Ketik / Pilih Rute Tersedia --</option>
-                    <?php foreach ($charterCreateRoutes as $route): ?>
-                      <?php
-                      $routeLabel = trim(($route['origin'] ?? '') . ' - ' . ($route['destination'] ?? ''));
-                      if ($routeLabel === ' - ')
-                        $routeLabel = trim((string) ($route['name'] ?? ''));
-                      ?>
-                      <option value="<?php echo htmlspecialchars($routeLabel); ?>"
-                        data-pickup="<?php echo htmlspecialchars((string) ($route['origin'] ?? '')); ?>"
-                        data-drop="<?php echo htmlspecialchars((string) ($route['destination'] ?? '')); ?>"
-                        data-duration="<?php echo htmlspecialchars((string) ($route['duration'] ?? '3')); ?>"
-                        data-price="<?php echo htmlspecialchars((string) intval($route['rental_price'] ?? 0)); ?>"
-                        data-bop="<?php echo htmlspecialchars((string) intval($route['bop_price'] ?? 0)); ?>">
-                        <?php echo htmlspecialchars($routeLabel); ?>
-                      </option>
-                    <?php endforeach; ?>
                   </select>
                 </div>
               </div>
