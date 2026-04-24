@@ -2078,6 +2078,10 @@
           const dpInput = document.querySelector('#charter-create input[name="down_payment"]');
           if (dpInput) dpInput.value = d.down_payment || 0;
 
+          // BOP price
+          const bopInput = document.getElementById('charter_bop_input');
+          if (bopInput) bopInput.value = d.bop_price || 0;
+
           // Status pembayaran — uncheck semua dulu, baru set yang sesuai
           document.querySelectorAll('#charter-create input[name="payment_status"]').forEach(r => {
             r.checked = (r.value === d.payment_status);

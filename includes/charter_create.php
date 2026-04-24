@@ -19,7 +19,7 @@ try {
 
 $charterCreateRoutes = [];
 try {
-  $charterCreateRoutes = $conn->query("SELECT name, origin, destination, duration, rental_price FROM master_carter ORDER BY name")->fetchAll();
+  $charterCreateRoutes = $conn->query("SELECT name, origin, destination, duration, rental_price, bop_price FROM master_carter ORDER BY name")->fetchAll();
 } catch (Throwable $e) {
   $charterCreateRoutes = [];
 }
@@ -176,24 +176,27 @@ $charterCreateForm = array_merge([
                 </div>
               </div>
               <div class="mt-3">
-                <label class="admin-bs-input-label">Pilih dari Master Rute</label>
-                <div class="d-flex flex-wrap gap-2">
-                  <?php foreach ($charterCreateRoutes as $route): ?>
-                    <?php
-                    $routeLabel = trim(($route['origin'] ?? '') . ' - ' . ($route['destination'] ?? ''));
-                    if ($routeLabel === ' - ')
-                      $routeLabel = trim((string) ($route['name'] ?? ''));
-                    ?>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-primary charter-route-preset rounded-pill"
-                      data-pickup="<?php echo htmlspecialchars((string) ($route['origin'] ?? '')); ?>"
-                      data-drop="<?php echo htmlspecialchars((string) ($route['destination'] ?? '')); ?>"
-                      data-duration="<?php echo htmlspecialchars((string) ($route['duration'] ?? '3')); ?>"
-                      data-price="<?php echo htmlspecialchars((string) intval($route['rental_price'] ?? 0)); ?>">
-                      <?php echo htmlspecialchars($routeLabel); ?>
-                    </button>
-                  <?php endforeach; ?>
+                <label class="admin-bs-input-label">Pilih Layanan Rute (Auto-fill)</label>
+                <div class="input-group-modern">
+                  <span class="input-icon"><i class="fa-solid fa-search"></i></span>
+                  <select id="charter_route_select" class="form-select modern-input ps-5">
+                    <option value="">-- Ketik / Pilih Rute Tersedia --</option>
+                    <?php foreach ($charterCreateRoutes as $route): ?>
+                      <?php
+                      $routeLabel = trim(($route['origin'] ?? '') . ' - ' . ($route['destination'] ?? ''));
+                      if ($routeLabel === ' - ')
+                        $routeLabel = trim((string) ($route['name'] ?? ''));
+                      ?>
+                      <option value="<?php echo htmlspecialchars($routeLabel); ?>"
+                        data-pickup="<?php echo htmlspecialchars((string) ($route['origin'] ?? '')); ?>"
+                        data-drop="<?php echo htmlspecialchars((string) ($route['destination'] ?? '')); ?>"
+                        data-duration="<?php echo htmlspecialchars((string) ($route['duration'] ?? '3')); ?>"
+                        data-price="<?php echo htmlspecialchars((string) intval($route['rental_price'] ?? 0)); ?>"
+                        data-bop="<?php echo htmlspecialchars((string) intval($route['bop_price'] ?? 0)); ?>">
+                        <?php echo htmlspecialchars($routeLabel); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
                 </div>
               </div>
             </div>
@@ -291,11 +294,18 @@ $charterCreateForm = array_merge([
             </div>
 
             <div class="row g-3 mb-4">
-              <div class="col-12">
+              <div class="col-6">
                 <label class="admin-bs-input-label">Uang Muka (DP)</label>
                 <div class="input-group-modern">
                   <span class="input-icon fw-bold ps-3" style="font-size:14px; top:12px;">Rp</span>
-                  <input type="text" name="down_payment" class="form-control modern-input ps-5" value="<?php echo htmlspecialchars($charterCreateForm['down_payment']); ?>" placeholder="0">
+                  <input type="text" name="down_payment" class="form-control modern-input ps-5" value="<?php echo htmlspecialchars($charterCreateForm['down_payment'] ?? ''); ?>" placeholder="0">
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="admin-bs-input-label">BOP (Operasional)</label>
+                <div class="input-group-modern">
+                  <span class="input-icon fw-bold ps-3" style="font-size:14px; top:12px;">Rp</span>
+                  <input type="text" id="charter_bop_input" name="bop_price" class="form-control modern-input ps-5" value="<?php echo htmlspecialchars($charterCreateForm['bop_price'] ?? ''); ?>" placeholder="0">
                 </div>
               </div>
             </div>
@@ -330,9 +340,11 @@ $charterCreateForm = array_merge([
       const priceInput  = document.getElementById('charter_price_input');
       const priceLabel  = document.getElementById('charterSummaryPriceLabel');
       const custSelect  = document.getElementById('charter_customer_select');
+      const routeSelect = document.getElementById('charter_route_select');
       const nameInput   = document.getElementById('charter_name_input');
       const phoneInput  = document.getElementById('charter_phone_input');
       const perusInput  = document.getElementById('charter_perusahaan_input');
+      const bopInput    = document.getElementById('charter_bop_input');
 
       function formatRupiah(amount) {
         const parsed = parseFloat(String(amount).replace(/[^0-9,.-]/g, '').replace('.', '').replace(',', '.'));
@@ -378,25 +390,37 @@ $charterCreateForm = array_merge([
         });
       }
 
-      // Route preset chips
-      document.querySelectorAll('.charter-route-preset').forEach(btn => {
-        btn.addEventListener('click', function () {
-          if (pickupInput) pickupInput.value = this.dataset.pickup || '';
-          if (dropInput)   dropInput.value   = this.dataset.drop   || '';
-          const dur = parseInt(this.dataset.duration, 10) || 1;
+      // Route dropdown select auto-fill
+      if (routeSelect) {
+        routeSelect.addEventListener('change', function () {
+          const opt = this.options[this.selectedIndex];
+          if (!this.value || !opt) return;
+          
+          if (pickupInput) pickupInput.value = opt.dataset.pickup || '';
+          if (dropInput)   dropInput.value   = opt.dataset.drop   || '';
+          
+          let durStr = opt.dataset.duration || '3';
+          let dur = 3; // default
+          // Parse duration if it's text like "3D2N" to days
+          if (durStr.toUpperCase().includes('D')) {
+             let dMatch = durStr.match(/(\d+)D/i);
+             if (dMatch) dur = parseInt(dMatch[1], 10);
+          } else {
+             dur = parseInt(durStr, 10) || 1;
+          }
+
           if (durationInput) durationInput.value = dur;
+          
           if (startInput && startInput.value && endInput) {
             const s = new Date(startInput.value);
             s.setDate(s.getDate() + dur - 1);
             endInput.value = s.toISOString().split('T')[0];
           }
-          if (priceInput && this.dataset.price) priceInput.value = this.dataset.price;
+          if (priceInput && opt.dataset.price) priceInput.value = opt.dataset.price;
+          if (bopInput && opt.dataset.bop) bopInput.value = opt.dataset.bop;
           syncSummary();
-          // Highlight selected button
-          document.querySelectorAll('.charter-route-preset').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
         });
-      });
+      }
 
       if (priceInput) {
         priceInput.addEventListener('input', syncSummary);
@@ -485,7 +509,7 @@ $charterCreateForm = array_merge([
           const d = new Date(); d.setDate(d.getDate() + 2);
           endInput.value = d.toISOString().split('T')[0];
         }
-        document.querySelectorAll('.charter-route-preset').forEach(b => b.classList.remove('active'));
+        if (routeSelect) routeSelect.value = '';
         calcDuration();
         syncSummary();
         window.scrollTo({ top: 0, behavior: 'smooth' });

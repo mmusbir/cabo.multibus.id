@@ -53,6 +53,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $unitId = intval($_POST['unit_id'] ?? 0);
     $driverName = trim($_POST['driver_name'] ?? '');
     $price = charter_parse_currency_input((string) ($_POST['price'] ?? '0'));
+    $bopPrice = charter_parse_currency_input((string) ($_POST['bop_price'] ?? '0'));
     $downPayment = charter_parse_currency_input((string) ($_POST['down_payment'] ?? '0'));
     $paymentStatus = trim($_POST['payment_status'] ?? 'Belum Bayar');
     $perusahaan = trim($_POST['perusahaan'] ?? '');
@@ -119,12 +120,25 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $driverName,
             $price,
             $busType,
-            0,
+            $bopPrice,
             $downPayment,
             $paymentStatus,
         ]);
         $newCharterId = $conn->lastInsertId();
         activity_log_write($conn, 'charter', 'charter', $newCharterId, 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
+
+        // Auto-save new route to master_carter if it doesn't exist
+        try {
+            $routeCheck = $conn->prepare("SELECT id FROM master_carter WHERE origin ILIKE ? AND destination ILIKE ? LIMIT 1");
+            $routeCheck->execute([$pickupPoint, $dropPoint]);
+            if (!$routeCheck->fetchColumn()) {
+                $routeName = $pickupPoint . ' - ' . $dropPoint;
+                $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price) VALUES (?, ?, ?, ?, ?, ?)")
+                     ->execute([$routeName, $pickupPoint, $dropPoint, $durationDays . ' Hari', $price, $bopPrice]);
+            }
+        } catch (Throwable $e) {
+            // Non-fatal, continue
+        }
 
         // Upsert customer into customer_charter table
         try {
@@ -255,6 +269,21 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable $ce) {
             // Non-fatal
         }
+
+        // Auto-save new route to master_carter if it doesn't exist
+        try {
+            $routeCheck = $conn->prepare("SELECT id FROM master_carter WHERE origin ILIKE ? AND destination ILIKE ? LIMIT 1");
+            $routeCheck->execute([$pickup_point, $drop_point]);
+            if (!$routeCheck->fetchColumn()) {
+                $routeName = $pickup_point . ' - ' . $drop_point;
+                $durDays = max(1, round((strtotime($end_date) - strtotime($start_date)) / 86400) + 1);
+                $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price) VALUES (?, ?, ?, ?, ?, ?)")
+                     ->execute([$routeName, $pickup_point, $drop_point, $durDays . ' Hari', $price, $bop_price]);
+            }
+        } catch (Throwable $e) {
+            // Non-fatal, continue
+        }
+
         activity_log_write($conn, 'charter', 'charter', $id, 'update', 'Carter diperbarui: ' . $name, 'Sebelumnya: ' . ($oldCharter['name'] ?? '-') . ' | ' . ($oldCharter['pickup_point'] ?? '-') . ' -> ' . ($oldCharter['drop_point'] ?? '-'), $actor);
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'message' => 'Data carter berhasil diperbarui.']);
