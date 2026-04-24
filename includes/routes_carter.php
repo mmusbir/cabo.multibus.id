@@ -99,12 +99,13 @@
           <th scope="col">Tujuan</th>
           <th scope="col">Layanan</th>
           <th scope="col">Harga</th>
+          <th scope="col">BOP</th>
           <th scope="col">Aksi</th>
         </tr>
       </thead>
-      <tbody id="routes_carter_tbody" data-colspan="7">
+      <tbody id="routes_carter_tbody" data-colspan="8">
         <tr>
-          <td colspan="7" class="customers-table-empty">Loading...</td>
+          <td colspan="8" class="customers-table-empty">Loading...</td>
         </tr>
       </tbody>
     </table>

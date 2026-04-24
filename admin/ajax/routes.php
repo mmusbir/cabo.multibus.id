@@ -40,7 +40,8 @@ try {
 
     ob_start();
     if (empty($rows)) {
-        echo '<tr><td colspan="7" class="customers-table-empty">Data tidak ditemukan</td></tr>';
+        $cols = ($type === 'carter') ? 8 : 7;
+        echo '<tr><td colspan="' . $cols . '" class="customers-table-empty">Data tidak ditemukan</td></tr>';
     } else {
         foreach ($rows as $r) {
             $edit_param = ($type === 'carter') ? 'edit_carter' : 'edit_route';
@@ -59,6 +60,12 @@ try {
             echo '  <td>' . htmlspecialchars($r['destination'] ?? '-') . '</td>';
             echo '  <td>' . $service . '</td>';
             echo '  <td class="customers-table-phone">' . $price . '</td>';
+            
+            if ($type === 'carter') {
+                $bop_val = 'Rp ' . number_format($r['bop_price'] ?? 0, 0, ',', '.');
+                echo '  <td class="customers-table-phone">' . $bop_val . '</td>';
+            }
+            
             echo '  <td>';
             echo '    <div class="customers-table-actions">';
             echo '      <button type="button" class="acc-btn edit-route-btn" data-id="' . intval($r['id']) . '" data-type="' . $type . '">Edit</button>';
