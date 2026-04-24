@@ -95,8 +95,7 @@ $charterCreateForm = array_merge([
             <div class="mb-3">
               <label class="admin-bs-input-label"><i class="fa-solid fa-address-book me-1" style="color:var(--neu-primary);"></i>Pilih dari Customer Carter Tersimpan</label>
               <div class="input-group-modern">
-                <span class="input-icon"><i class="fa-solid fa-search"></i></span>
-                <select id="charter_customer_select" class="form-select modern-input ps-5">
+                <select id="charter_customer_select" class="form-select modern-input">
                   <option value="">-- Ketik nama baru / pilih customer lama --</option>
                   <?php foreach ($charterExistingCustomers as $cust): ?>
                     <option value="<?= intval($cust['id']) ?>"
@@ -119,29 +118,25 @@ $charterCreateForm = array_merge([
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Nama Lengkap <span class="text-danger">*</span></label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-                    <input type="text" id="charter_name_input" name="name" value="<?php echo htmlspecialchars($charterCreateForm['name']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Budi Santoso" required>
+                    <input type="text" id="charter_name_input" name="name" value="<?php echo htmlspecialchars($charterCreateForm['name']); ?>" class="form-control modern-input" placeholder="Contoh: Budi Santoso" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Nomor Telepon <span class="text-danger">*</span></label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
-                    <input type="tel" id="charter_phone_input" name="phone" value="<?php echo htmlspecialchars($charterCreateForm['phone']); ?>" class="form-control modern-input ps-5" placeholder="+62 812-xxxx-xxxx" required>
+                    <input type="tel" id="charter_phone_input" name="phone" value="<?php echo htmlspecialchars($charterCreateForm['phone']); ?>" class="form-control modern-input" placeholder="+62 812-xxxx-xxxx" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Email <small class="text-muted">(Opsional)</small></label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
-                    <input type="email" name="email" value="<?php echo htmlspecialchars($charterCreateForm['email']); ?>" class="form-control modern-input ps-5" placeholder="budi@example.com">
+                    <input type="email" name="email" value="<?php echo htmlspecialchars($charterCreateForm['email']); ?>" class="form-control modern-input" placeholder="budi@example.com">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Perusahaan <small class="text-muted">(Opsional)</small></label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-building"></i></span>
-                    <input type="text" id="charter_perusahaan_input" name="perusahaan" value="<?php echo htmlspecialchars($charterCreateForm['perusahaan']); ?>" class="form-control modern-input ps-5" placeholder="Nama perusahaan (opsional)">
+                    <input type="text" id="charter_perusahaan_input" name="perusahaan" value="<?php echo htmlspecialchars($charterCreateForm['perusahaan']); ?>" class="form-control modern-input" placeholder="Nama perusahaan (opsional)">
                   </div>
                 </div>
               </div>
@@ -162,8 +157,7 @@ $charterCreateForm = array_merge([
               <div class="mb-3">
                 <label class="admin-bs-input-label">Pilih Layanan Rute (Auto-fill)</label>
                 <div class="input-group-modern">
-                  <span class="input-icon"><i class="fa-solid fa-search"></i></span>
-                  <select id="charter_route_select" class="form-select modern-input ps-5">
+                  <select id="charter_route_select" class="form-select modern-input">
                     <option value="">-- Ketik / Pilih Rute Tersedia --</option>
                     <?php foreach ($charterCreateRoutes as $route): ?>
                       <?php
@@ -187,15 +181,13 @@ $charterCreateForm = array_merge([
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Lokasi Penjemputan (From)</label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-map-location-dot"></i></span>
-                    <input type="text" id="charter_pickup_point" name="pickup_point" value="<?php echo htmlspecialchars($charterCreateForm['pickup_point']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Jakarta" required>
+                    <input type="text" id="charter_pickup_point" name="pickup_point" value="<?php echo htmlspecialchars($charterCreateForm['pickup_point']); ?>" class="form-control modern-input" placeholder="Contoh: Jakarta" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="admin-bs-input-label">Tujuan / Destinasi (To)</label>
                   <div class="input-group-modern">
-                    <span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
-                    <input type="text" id="charter_drop_point" name="drop_point" value="<?php echo htmlspecialchars($charterCreateForm['drop_point']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Yogyakarta" required>
+                    <input type="text" id="charter_drop_point" name="drop_point" value="<?php echo htmlspecialchars($charterCreateForm['drop_point']); ?>" class="form-control modern-input" placeholder="Contoh: Yogyakarta" required>
                   </div>
                 </div>
                 <div class="col-md-12">
@@ -310,15 +302,13 @@ $charterCreateForm = array_merge([
               <div class="col-6">
                 <label class="admin-bs-input-label">Uang Muka (DP)</label>
                 <div class="input-group-modern">
-                  <span class="input-icon fw-bold ps-3" style="font-size:14px; top:12px;">Rp</span>
-                  <input type="text" name="down_payment" class="form-control modern-input ps-5" value="<?php echo htmlspecialchars($charterCreateForm['down_payment'] ?? ''); ?>" placeholder="0">
+                  <input type="text" name="down_payment" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['down_payment'] ?? ''); ?>" placeholder="0">
                 </div>
               </div>
               <div class="col-6">
                 <label class="admin-bs-input-label">BOP (Operasional)</label>
                 <div class="input-group-modern">
-                  <span class="input-icon fw-bold ps-3" style="font-size:14px; top:12px;">Rp</span>
-                  <input type="text" id="charter_bop_input" name="bop_price" class="form-control modern-input ps-5" value="<?php echo htmlspecialchars($charterCreateForm['bop_price'] ?? ''); ?>" placeholder="0">
+                  <input type="text" id="charter_bop_input" name="bop_price" class="form-control modern-input" value="<?php echo htmlspecialchars($charterCreateForm['bop_price'] ?? ''); ?>" placeholder="0">
                 </div>
               </div>
             </div>
