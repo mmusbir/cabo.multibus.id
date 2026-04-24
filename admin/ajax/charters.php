@@ -117,6 +117,8 @@ if (empty($rows)) {
         $tripHour = !empty($r['departure_time']) ? substr($r['departure_time'], 0, 5) : '--:--';
         $dpRaw = floatval($r['down_payment'] ?? 0);
         $dpFmt = 'Rp ' . number_format($dpRaw, 0, ',', '.');
+        $bopRaw = floatval($r['bop_price'] ?? 0);
+        $bopFmt = 'Rp ' . number_format($bopRaw, 0, ',', '.');
         $payStatus = trim($r['payment_status'] ?? 'Belum Bayar');
         $payStatusColor = match($payStatus) { 'Lunas' => '#10b981', 'DP' => '#f59e0b', default => '#94a3b8' };
 
@@ -239,19 +241,23 @@ if (empty($rows)) {
 
         // Footer
         echo '  <div style="padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(13, 110, 253, 0.02);">';
-        echo '    <div style="display: flex; gap: 20px; align-items: flex-end;">';
-        echo '      <div>';
-        echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>';
-        echo '        <div style="font-size: 20px; font-weight: 900; color: var(--neu-primary, #0d6efd); letter-spacing: -0.5px;">' . $price . '</div>';
-        echo '      </div>';
-        echo '      <div>';
-        echo '        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">DP Dibayar</div>';
-        echo '        <div style="display: flex; align-items: center; gap: 6px;">';
-        echo '          <span style="font-size: 15px; font-weight: 800; color: var(--text-main);">' . charter_h($dpFmt) . '</span>';
-        echo '          <span style="background: ' . $payStatusColor . '22; color: ' . $payStatusColor . '; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; text-transform: uppercase;">' . charter_h($payStatus) . '</span>';
-        echo '        </div>';
-        echo '      </div>';
-        echo '    </div>';
+        echo '    <div style="display: flex; gap: 20px; align-items: flex-end;">
+      <div>
+        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">Total Biaya Carter</div>
+        <div style="font-size: 20px; font-weight: 900; color: var(--neu-primary, #0d6efd); letter-spacing: -0.5px;">' . $price . '</div>
+      </div>
+      <div>
+        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">BOP (Operasional)</div>
+        <div style="font-size: 15px; font-weight: 800; color: #ef4444;">' . $bopFmt . '</div>
+      </div>
+      <div>
+        <div style="font-size: 10px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; letter-spacing: 0.5px;">DP Dibayar</div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 15px; font-weight: 800; color: var(--text-main);">' . charter_h($dpFmt) . '</span>
+          <span style="background: ' . $payStatusColor . '22; color: ' . $payStatusColor . '; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; text-transform: uppercase;">' . charter_h($payStatus) . '</span>
+        </div>
+      </div>
+    </div>';
         echo '    <div style="display: flex; gap: 8px;">';
         echo '      <button class="btn copy-charter-btn" data-id="' . intval($r['id']) . '" title="Salin Detail" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-copy"></i></button>';
         echo '      <button class="btn edit-charter-btn" data-id="' . intval($r['id']) . '" title="Edit Charter" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-pen-to-square"></i></button>';
