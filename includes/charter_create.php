@@ -174,6 +174,19 @@ $charterCreateForm = array_merge([
                     <input type="text" id="charter_drop_point" name="drop_point" value="<?php echo htmlspecialchars($charterCreateForm['drop_point']); ?>" class="form-control modern-input ps-5" placeholder="Contoh: Yogyakarta" required>
                   </div>
                 </div>
+                <div class="col-md-12">
+                  <label class="admin-bs-input-label">Jenis Layanan</label>
+                  <select name="duration" id="charter_route_duration" class="form-select modern-input">
+                    <option value="">-- Pilih Layanan --</option>
+                    <option value="DROP OFF">DROP OFF</option>
+                    <option value="HALF DAY">HALF DAY</option>
+                    <option value="FULL DAY">FULL DAY</option>
+                    <option value="2D1N">2D1N</option>
+                    <option value="3D2N">3D2N</option>
+                    <option value="4D3N">4D3N</option>
+                    <option value="5D4N">5D4N</option>
+                  </select>
+                </div>
               </div>
               <div class="mt-3">
                 <label class="admin-bs-input-label">Pilih Layanan Rute (Auto-fill)</label>
@@ -341,6 +354,7 @@ $charterCreateForm = array_merge([
       const priceLabel  = document.getElementById('charterSummaryPriceLabel');
       const custSelect  = document.getElementById('charter_customer_select');
       const routeSelect = document.getElementById('charter_route_select');
+      const routeDurationSelect = document.getElementById('charter_route_duration');
       const nameInput   = document.getElementById('charter_name_input');
       const phoneInput  = document.getElementById('charter_phone_input');
       const perusInput  = document.getElementById('charter_perusahaan_input');
@@ -418,6 +432,7 @@ $charterCreateForm = array_merge([
           }
           if (priceInput && opt.dataset.price) priceInput.value = opt.dataset.price;
           if (bopInput && opt.dataset.bop) bopInput.value = opt.dataset.bop;
+          if (routeDurationSelect) routeDurationSelect.value = opt.dataset.duration || '';
           syncSummary();
         });
       }
@@ -510,6 +525,7 @@ $charterCreateForm = array_merge([
           endInput.value = d.toISOString().split('T')[0];
         }
         if (routeSelect) routeSelect.value = '';
+        if (routeDurationSelect) routeDurationSelect.value = '';
         calcDuration();
         syncSummary();
         window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -151,7 +151,8 @@ if (empty($rows)) {
         $dataAttrs .= 'data-layanan="' . charter_h($layanan) . '" ';
         $dataAttrs .= 'data-bop_price="' . floatval($r['bop_price'] ?? 0) . '" ';
         $dataAttrs .= 'data-vehicle="' . charter_h($vehicle) . '" ';
-        $dataAttrs .= 'data-duration="' . $durationDays . '" ';
+        $dataAttrs .= 'data-duration_days="' . $durationDays . '" ';
+        $dataAttrs .= 'data-duration_service="' . charter_h($r['duration'] ?? '') . '" ';
         $dataAttrs .= 'data-dp="' . $dpRaw . '" ';
         $dataAttrs .= 'data-payment_status="' . charter_h($payStatus) . '" ';
         $dataAttrs .= 'data-bop="' . charter_h($bopStatus) . '"';

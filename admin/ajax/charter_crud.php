@@ -57,6 +57,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $downPayment = charter_parse_currency_input((string) ($_POST['down_payment'] ?? '0'));
     $paymentStatus = trim($_POST['payment_status'] ?? 'Belum Bayar');
     $perusahaan = trim($_POST['perusahaan'] ?? '');
+    $duration = trim($_POST['duration'] ?? ''); // Jenis Layanan (e.g. DROP OFF, 2D1N)
 
     $errors = [];
     if ($name === '') {
@@ -104,7 +105,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $paymentStatus = 'Belum Bayar';
     }
 
-    $stmt = $conn->prepare("INSERT INTO charters (\"name\", \"company_name\", \"phone\", \"start_date\", \"end_date\", \"departure_time\", \"pickup_point\", \"drop_point\", \"unit_id\", \"driver_name\", \"price\", \"layanan\", \"bop_price\", \"down_payment\", \"payment_status\", \"created_at\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt = $conn->prepare("INSERT INTO charters (\"name\", \"company_name\", \"phone\", \"start_date\", \"end_date\", \"departure_time\", \"pickup_point\", \"drop_point\", \"unit_id\", \"driver_name\", \"price\", \"layanan\", \"bop_price\", \"down_payment\", \"payment_status\", \"duration\", \"created_at\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
     try {
         $stmt->execute([
@@ -123,6 +124,7 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $bopPrice,
             $downPayment,
             $paymentStatus,
+            $duration,
         ]);
         $newCharterId = $conn->lastInsertId();
         activity_log_write($conn, 'charter', 'charter', $newCharterId, 'create', 'Carter ditambahkan: ' . $name, $pickupPoint . ' -> ' . $dropPoint . ' | ' . $startDate . ' ' . $departureTime, $actor);
@@ -133,8 +135,9 @@ if ($action === 'create_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $routeCheck->execute([$pickupPoint, $dropPoint]);
             if (!$routeCheck->fetchColumn()) {
                 $routeName = $pickupPoint . ' - ' . $dropPoint;
+                $serviceType = $duration !== '' ? $duration : ($durationDays . ' Hari');
                 $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price) VALUES (?, ?, ?, ?, ?, ?)")
-                     ->execute([$routeName, $pickupPoint, $dropPoint, $durationDays . ' Hari', $price, $bopPrice]);
+                     ->execute([$routeName, $pickupPoint, $dropPoint, $serviceType, $price, $bopPrice]);
             }
         } catch (Throwable $e) {
             // Non-fatal, continue
@@ -244,14 +247,15 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $down_payment = charter_parse_currency_input((string) ($_POST['down_payment'] ?? '0'));
     $payment_status = trim($_POST['payment_status'] ?? 'Belum Bayar');
     $layanan = trim($_POST['bus_type'] ?? $_POST['layanan'] ?? 'Big Bus');
+    $duration = trim($_POST['duration'] ?? ''); // Jenis Layanan
     $bop_price = floatval($_POST['bop_price'] ?? 0);
 
     $oldStmt = $conn->prepare("SELECT name, pickup_point, drop_point FROM charters WHERE id=? LIMIT 1");
     $oldStmt->execute([$id]);
     $oldCharter = $oldStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-    $stmt = $conn->prepare("UPDATE charters SET \"name\"=?, \"company_name\"=?, \"phone\"=?, \"start_date\"=?, \"end_date\"=?, \"departure_time\"=?, \"pickup_point\"=?, \"drop_point\"=?, \"unit_id\"=?, \"driver_name\"=?, \"price\"=?, \"layanan\"=?, \"bop_price\"=?, \"down_payment\"=?, \"payment_status\"=? WHERE \"id\"=?");
+    $stmt = $conn->prepare("UPDATE charters SET \"name\"=?, \"company_name\"=?, \"phone\"=?, \"start_date\"=?, \"end_date\"=?, \"departure_time\"=?, \"pickup_point\"=?, \"drop_point\"=?, \"unit_id\"=?, \"driver_name\"=?, \"price\"=?, \"layanan\"=?, \"bop_price\"=?, \"down_payment\"=?, \"payment_status\"=?, \"duration\"=? WHERE \"id\"=?");
     try {
-        $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $down_payment, $payment_status, $id]);
+        $stmt->execute([$name, $company_name, $phone, $start_date, $end_date, $departure_time, $pickup_point, $drop_point, $unit_id, $driver_name, $price, $layanan, $bop_price, $down_payment, $payment_status, $duration, $id]);
         
         // Auto-upsert to customer_charter (MySQL-compatible)
         $actor = $_SESSION['username'] ?? 'system';
@@ -277,8 +281,9 @@ if ($action === 'update_charter' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$routeCheck->fetchColumn()) {
                 $routeName = $pickup_point . ' - ' . $drop_point;
                 $durDays = max(1, round((strtotime($end_date) - strtotime($start_date)) / 86400) + 1);
+                $serviceType = $duration !== '' ? $duration : ($durDays . ' Hari');
                 $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price) VALUES (?, ?, ?, ?, ?, ?)")
-                     ->execute([$routeName, $pickup_point, $drop_point, $durDays . ' Hari', $price, $bop_price]);
+                     ->execute([$routeName, $pickup_point, $drop_point, $serviceType, $price, $bop_price]);
             }
         } catch (Throwable $e) {
             // Non-fatal, continue

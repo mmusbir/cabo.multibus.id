@@ -2046,6 +2046,8 @@
           if (pickupInput) pickupInput.value = d.pickup_point || '';
           const dropInput = document.getElementById('charter_drop_point');
           if (dropInput) dropInput.value = d.drop_point || '';
+          const routeDurationSelect = document.getElementById('charter_route_duration');
+          if (routeDurationSelect) routeDurationSelect.value = d.duration || '';
 
           // Isi tanggal & picu kalkulasi durasi otomatis
           const startInput = document.getElementById('charter_start_date');
