@@ -2137,7 +2137,7 @@
         btn.onclick = function (e) {
           e.preventDefault();
           const id = this.getAttribute('data-id');
-          customConfirm('Tandai BOP sebagai LUNAS SEMUA?', async () => {
+          customConfirm('Tandai carteran ini sebagai selesai?', async () => {
             try {
               const res = await fetch('admin.php?action=toggle_bop&id=' + id);
               const js = await parseAdminApiResponse(res);
@@ -2147,7 +2147,7 @@
             } catch (err) {
               customAlert('Kesalahan koneksi.');
             }
-          }, 'Konfirmasi Pembayaran', 'success');
+          }, 'Konfirmasi Selesai', 'success');
         };
       });
 

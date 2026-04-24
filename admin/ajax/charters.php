@@ -260,6 +260,9 @@ if (empty($rows)) {
       </div>
     </div>';
         echo '    <div style="display: flex; gap: 8px;">';
+        if ($bopStatus !== 'done') {
+            echo '      <button class="btn bop-done-btn" data-id="' . intval($r['id']) . '" title="Carteran Selesai" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-circle-check"></i></button>';
+        }
         echo '      <button class="btn copy-charter-btn" data-id="' . intval($r['id']) . '" title="Salin Detail" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-copy"></i></button>';
         echo '      <button class="btn edit-charter-btn" data-id="' . intval($r['id']) . '" title="Edit Charter" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-pen-to-square"></i></button>';
         echo '      <button class="btn delete-charter-btn" data-id="' . intval($r['id']) . '" data-name="' . charter_h($r['name']) . '" title="Hapus" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-trash"></i></button>';
