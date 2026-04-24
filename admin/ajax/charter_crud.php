@@ -9,6 +9,13 @@ require_once __DIR__ . '/../../config/activity_log.php';
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 $actor = activity_log_current_actor();
 
+// Ensure duration column exists (Auto-migration)
+try {
+    $conn->exec("ALTER TABLE charters ADD COLUMN IF NOT EXISTS duration VARCHAR(50)");
+} catch (Throwable $e) {
+    // Ignore if already exists or fails
+}
+
 function charter_parse_currency_input(string $value): float
 {
     $normalized = preg_replace('/[^0-9,.-]/', '', $value);
