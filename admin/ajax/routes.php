@@ -40,7 +40,7 @@ try {
 
     ob_start();
     if (empty($rows)) {
-        $cols = ($type === 'carter') ? 8 : 7;
+        $cols = ($type === 'carter') ? 9 : 7;
         echo '<tr><td colspan="' . $cols . '" class="customers-table-empty">Data tidak ditemukan</td></tr>';
     } else {
         foreach ($rows as $r) {
@@ -63,7 +63,9 @@ try {
             
             if ($type === 'carter') {
                 $bop_val = 'Rp ' . number_format($r['bop_price'] ?? 0, 0, ',', '.');
+                $notes = htmlspecialchars($r['notes'] ?? '-');
                 echo '  <td class="customers-table-phone">' . $bop_val . '</td>';
+                echo '  <td>' . $notes . '</td>';
             }
             
             echo '  <td>';
