@@ -48,15 +48,33 @@ try {
     $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', start_date) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
     $dashboard['revenue_luggage_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM luggages WHERE payment_status = 'Lunas' AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
 
-    // Revenue trend per day (last 7 days), only counting paid bookings
-    $revTrendStmt = $conn->query("SELECT tanggal, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY tanggal ORDER BY tanggal ASC");
+    // Revenue trend per day (last 7 days), combining all 3 modules
     $revTrendMap = [];
-    if ($revTrendStmt) {
-        while ($row = $revTrendStmt->fetch(PDO::FETCH_ASSOC)) {
-            $dateKey = !empty($row['tanggal']) ? date('Y-m-d', strtotime((string) $row['tanggal'])) : '';
-            if ($dateKey !== '') {
-                $revTrendMap[$dateKey] = (float) ($row['revenue'] ?? 0);
-            }
+    
+    // 1. Bookings
+    $stmt1 = $conn->query("SELECT tanggal AS dt, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY dt");
+    if ($stmt1) {
+        while ($row = $stmt1->fetch(PDO::FETCH_ASSOC)) {
+            $dateKey = !empty($row['dt']) ? date('Y-m-d', strtotime((string) $row['dt'])) : '';
+            if ($dateKey !== '') $revTrendMap[$dateKey] = ($revTrendMap[$dateKey] ?? 0) + (float) ($row['revenue'] ?? 0);
+        }
+    }
+
+    // 2. Charters
+    $stmt2 = $conn->query("SELECT start_date AS dt, COALESCE(SUM(COALESCE(price, 0)), 0) AS revenue FROM charters WHERE start_date BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY dt");
+    if ($stmt2) {
+        while ($row = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+            $dateKey = !empty($row['dt']) ? date('Y-m-d', strtotime((string) $row['dt'])) : '';
+            if ($dateKey !== '') $revTrendMap[$dateKey] = ($revTrendMap[$dateKey] ?? 0) + (float) ($row['revenue'] ?? 0);
+        }
+    }
+
+    // 3. Luggages
+    $stmt3 = $conn->query("SELECT DATE(created_at) AS dt, COALESCE(SUM(COALESCE(price, 0)), 0) AS revenue FROM luggages WHERE payment_status = 'Lunas' AND created_at >= (CURRENT_DATE - INTERVAL '6 days') GROUP BY dt");
+    if ($stmt3) {
+        while ($row = $stmt3->fetch(PDO::FETCH_ASSOC)) {
+            $dateKey = !empty($row['dt']) ? date('Y-m-d', strtotime((string) $row['dt'])) : '';
+            if ($dateKey !== '') $revTrendMap[$dateKey] = ($revTrendMap[$dateKey] ?? 0) + (float) ($row['revenue'] ?? 0);
         }
     }
 
@@ -67,15 +85,33 @@ try {
         $dashboard['trend_dates'][] = date('d M', strtotime($dateKey));
     }
 
-    // Revenue trend per month (current year)
-    $monthlyTrendStmt = $conn->query("SELECT DATE_TRUNC('month', tanggal) AS bulan, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_PART('year', tanggal) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan ORDER BY bulan ASC");
+    // Revenue trend per month (current year), combining all 3 modules
     $monthlyTrendMap = [];
-    if ($monthlyTrendStmt) {
-        while ($row = $monthlyTrendStmt->fetch(PDO::FETCH_ASSOC)) {
+    
+    // 1. Bookings
+    $monthlyBookingsStmt = $conn->query("SELECT DATE_TRUNC('month', tanggal) AS bulan, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_PART('year', tanggal) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan");
+    if ($monthlyBookingsStmt) {
+        while ($row = $monthlyBookingsStmt->fetch(PDO::FETCH_ASSOC)) {
             $monthKey = !empty($row['bulan']) ? date('Y-m', strtotime((string) $row['bulan'])) : '';
-            if ($monthKey !== '') {
-                $monthlyTrendMap[$monthKey] = (float) ($row['revenue'] ?? 0);
-            }
+            if ($monthKey !== '') $monthlyTrendMap[$monthKey] = ($monthlyTrendMap[$monthKey] ?? 0) + (float) ($row['revenue'] ?? 0);
+        }
+    }
+
+    // 2. Charters
+    $monthlyChartersStmt = $conn->query("SELECT DATE_TRUNC('month', start_date) AS bulan, COALESCE(SUM(COALESCE(price, 0)), 0) AS revenue FROM charters WHERE DATE_PART('year', start_date) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan");
+    if ($monthlyChartersStmt) {
+        while ($row = $monthlyChartersStmt->fetch(PDO::FETCH_ASSOC)) {
+            $monthKey = !empty($row['bulan']) ? date('Y-m', strtotime((string) $row['bulan'])) : '';
+            if ($monthKey !== '') $monthlyTrendMap[$monthKey] = ($monthlyTrendMap[$monthKey] ?? 0) + (float) ($row['revenue'] ?? 0);
+        }
+    }
+
+    // 3. Luggages
+    $monthlyLuggagesStmt = $conn->query("SELECT DATE_TRUNC('month', created_at) AS bulan, COALESCE(SUM(COALESCE(price, 0)), 0) AS revenue FROM luggages WHERE payment_status = 'Lunas' AND DATE_PART('year', created_at) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan");
+    if ($monthlyLuggagesStmt) {
+        while ($row = $monthlyLuggagesStmt->fetch(PDO::FETCH_ASSOC)) {
+            $monthKey = !empty($row['bulan']) ? date('Y-m', strtotime((string) $row['bulan'])) : '';
+            if ($monthKey !== '') $monthlyTrendMap[$monthKey] = ($monthlyTrendMap[$monthKey] ?? 0) + (float) ($row['revenue'] ?? 0);
         }
     }
 
