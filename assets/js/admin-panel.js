@@ -2164,7 +2164,7 @@
           const layanan = card.dataset.duration_service || '-';
           const pickup = card.dataset.pickup || '-';
           const drop = card.dataset.drop || '-';
-          const vehicle = card.dataset.layanan || '-';
+          const vehicle = card.dataset.vehicle || '-';
           const driver = card.dataset.driver || '-';
           const priceRaw = parseFloat(card.dataset.price || '0');
           
@@ -2178,7 +2178,7 @@
           const startDate = formatDate(startDateRaw);
           const endDate = formatDate(endDateRaw);
           let dateStr = startDate;
-          if (startDate && endDate && startDate !== endDate) {
+          if (startDate && endDate) {
              dateStr = `${startDate} - ${endDate}`;
           } else if (!startDate && endDate) {
              dateStr = endDate;
