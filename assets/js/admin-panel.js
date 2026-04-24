@@ -2154,14 +2154,61 @@
       document.querySelectorAll('.copy-charter-btn').forEach(btn => {
         btn.onclick = function (e) {
           e.preventDefault();
-          const card = this.closest('.admin-card-compact');
+          const card = this.closest('.admin-bs-card');
           if (!card) return;
-          const name = card.querySelector('.ac-title')?.innerText || '';
-          const phone = card.querySelector('.ac-stat:nth-child(2) span')?.innerText || '';
-          const route = card.querySelector('.ac-stat:nth-child(3) span')?.innerText || '';
-          const date = card.querySelector('.ac-stat:nth-child(1) span')?.innerText || '';
           
-          const text = `DETAIL CARTER\nNama: ${name}\nHP: ${phone}\nRute: ${route}\nTanggal: ${date}`;
+          const name = card.dataset.name || '-';
+          const startDateRaw = card.dataset.start || '';
+          const endDateRaw = card.dataset.end || '';
+          const depTimeRaw = card.dataset.deptime || '';
+          const layanan = card.dataset.duration_service || '-';
+          const pickup = card.dataset.pickup || '-';
+          const drop = card.dataset.drop || '-';
+          const vehicle = card.dataset.layanan || '-';
+          const driver = card.dataset.driver || '-';
+          const priceRaw = parseFloat(card.dataset.price || '0');
+          
+          const formatDate = (dateStr) => {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+          };
+          
+          const startDate = formatDate(startDateRaw);
+          const endDate = formatDate(endDateRaw);
+          let dateStr = startDate;
+          if (startDate && endDate && startDate !== endDate) {
+             dateStr = `${startDate} - ${endDate}`;
+          } else if (!startDate && endDate) {
+             dateStr = endDate;
+          }
+          
+          let timeStr = depTimeRaw;
+          if (depTimeRaw) {
+            const [h, m] = depTimeRaw.split(':');
+            let hour = parseInt(h, 10);
+            let period = 'AM';
+            let wording = 'Pagi';
+            
+            if (hour >= 12) {
+              period = 'PM';
+              if (hour < 15) wording = 'Siang';
+              else if (hour < 18) wording = 'Sore';
+              else wording = 'Malam';
+              if (hour > 12) hour -= 12;
+            } else {
+               if (hour === 0) hour = 12;
+               if (hour >= 10 && hour < 12) wording = 'Siang';
+               else if (hour < 4) wording = 'Malam';
+            }
+            timeStr = `${hour.toString().padStart(2, '0')}:${m} ${period} (${wording})`;
+          }
+          
+          const priceStr = 'Rp ' + priceRaw.toLocaleString('id-ID');
+          
+          const text = `Detail Carter\nNama: ${name}\nTanggal: ${dateStr}\nJam: ${timeStr}\nLayanan: ${layanan}\nJemput: ${pickup}\nTujuan: ${drop}\nKendaraan: ${vehicle}\nDriver: ${driver}\nHarga: ${priceStr}`;
+          
           if (navigator.clipboard) {
             navigator.clipboard.writeText(text).then(() => customAlert('Detail carter disalin!'));
           } else {
