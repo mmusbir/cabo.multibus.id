@@ -219,7 +219,7 @@ if ($action === 'get_charter') {
         echo json_encode(['success' => false, 'error' => 'Invalid ID']);
         exit;
     }
-    $stmt = $conn->prepare("SELECT * FROM charters WHERE id = ?");
+        $stmt = $conn->prepare("SELECT id, \"name\", company_name, phone, start_date, end_date, departure_time, pickup_point, drop_point, unit_id, driver_name, price, layanan, bop_price, down_payment, payment_status, duration FROM charters WHERE id = ?");
     $stmt->execute([$id]);
     $result = $stmt->fetch();
     if ($result) {

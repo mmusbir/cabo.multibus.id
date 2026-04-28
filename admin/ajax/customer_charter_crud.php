@@ -78,7 +78,7 @@ if ($subAction === 'get') {
         exit;
     }
     try {
-        $stmt = $conn->prepare("SELECT * FROM customer_charter WHERE id=? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, nama, perusahaan, no_hp, alamat FROM customer_charter WHERE id=? LIMIT 1");
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {

@@ -329,7 +329,9 @@
         }
         if (id === 'luggage_services' && typeof window.loadLuggageServices === 'function') window.loadLuggageServices();
         if (id === 'luggage' && typeof window.loadLuggageData === 'function') window.loadLuggageData();
-        if (id === 'units') { /* Units loaded via PHP, no AJAX list load needed yet */ }
+        if (id === 'units') {
+          ajaxListLoad('units', { page: 1, per_page: parseInt(document.getElementById('units_per_page')?.value || '25', 10), search: document.getElementById('filter_unit_input')?.value || '' });
+        }
         markAdminShellReady();
       }
       window.showSectionById = showSection;

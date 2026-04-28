@@ -5,21 +5,21 @@ unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
 
 $charterCreateUnits = [];
 try {
-  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas FROM units ORDER BY nopol")->fetchAll();
+  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas, tahun, warna FROM units ORDER BY nopol LIMIT 100")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterCreateUnits = [];
 }
 
 $charterCreateDrivers = [];
 try {
-  $charterCreateDrivers = $conn->query("SELECT nama FROM drivers ORDER BY nama")->fetchAll();
+  $charterCreateDrivers = $conn->query("SELECT id, nama FROM drivers ORDER BY nama LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterCreateDrivers = [];
 }
 
 $charterCreateRoutes = [];
 try {
-  $charterCreateRoutes = $conn->query("SELECT name, origin, destination, duration, rental_price, bop_price FROM master_carter ORDER BY name")->fetchAll();
+  $charterCreateRoutes = $conn->query("SELECT id, name, origin, destination, duration, rental_price, bop_price FROM master_carter ORDER BY name LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterCreateRoutes = [];
 }
@@ -27,7 +27,7 @@ try {
 // Load existing customers from customer_charter for autocomplete
 $charterExistingCustomers = [];
 try {
-  $charterExistingCustomers = $conn->query("SELECT id, nama, no_hp, perusahaan FROM customer_charter ORDER BY nama")->fetchAll();
+  $charterExistingCustomers = $conn->query("SELECT id, nama, no_hp, perusahaan FROM customer_charter ORDER BY nama LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterExistingCustomers = [];
 }

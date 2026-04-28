@@ -55,6 +55,11 @@ try {
 
     // Set timezone to UTC+8 (WITA)
     $conn->exec("SET timezone = 'Asia/Makassar'");
+    // Enable simple query profiling: use custom PDOStatement class
+    require_once __DIR__ . '/../helpers/perf.php';
+    require_once __DIR__ . '/../helpers/db_profiler.php';
+    // Attach our ProfilingStatement so execute() is timed and slow queries logged
+    $conn->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('ProfilingStatement', array()));
 } catch (PDOException $e) {
     if (empty($env_url)) {
         $keys_env = array_keys($_ENV);

@@ -29,7 +29,13 @@ try {
     $stmtc->execute($params);
     $total = intval($stmtc->fetch()['cnt']);
 
-    $stmt = $conn->prepare("SELECT * FROM $table $where ORDER BY name LIMIT ? OFFSET ?");
+    // Select explicit columns depending on table to avoid SELECT * and unnecessary payload
+    if ($table === 'master_carter') {
+        $cols = 'id, name, origin, destination, duration, rental_price, bop_price, notes';
+    } else {
+        $cols = 'id, name, origin, destination, distance_km, duration_minutes';
+    }
+    $stmt = $conn->prepare("SELECT " . $cols . " FROM $table $where ORDER BY name LIMIT ? OFFSET ?");
     foreach ($params as $i => $v) {
         $stmt->bindValue($i + 1, $v);
     }

@@ -12,7 +12,7 @@ $offset = ($page - 1) * $per_page;
 $resCount = $conn->query("SELECT COUNT(*) AS cnt FROM luggage_services");
 $total = ($resCount && $countRow = $resCount->fetch(PDO::FETCH_ASSOC)) ? intval($countRow['cnt'] ?? 0) : 0;
 
-$stmt = $conn->prepare("SELECT * FROM luggage_services ORDER BY name ASC LIMIT ? OFFSET ?");
+$stmt = $conn->prepare("SELECT id, name, price FROM luggage_services ORDER BY name ASC LIMIT ? OFFSET ?");
 $stmt->bindValue(1, $per_page, PDO::PARAM_INT);
 $stmt->bindValue(2, $offset, PDO::PARAM_INT);
 $stmt->execute();

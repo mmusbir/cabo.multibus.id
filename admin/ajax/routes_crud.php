@@ -11,10 +11,10 @@ try {
 
     if ($subAction === 'get') {
         $id = intval($_GET['id'] ?? 0);
-        if ($type === 'carter') {
-            $stmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+            if ($type === 'carter') {
+                $stmt = $conn->prepare("SELECT id, name, origin, destination, duration, rental_price, bop_price, notes FROM master_carter WHERE id=? LIMIT 1");
         } else {
-            $stmt = $conn->prepare("SELECT * FROM routes WHERE id=? LIMIT 1");
+            $stmt = $conn->prepare("SELECT id, name, origin, destination, distance_km, duration_minutes, created_at FROM routes WHERE id=? LIMIT 1");
         }
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);

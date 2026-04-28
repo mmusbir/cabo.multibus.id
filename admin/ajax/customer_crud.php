@@ -14,7 +14,7 @@ try {
 
     if ($subAction === 'get') {
         $id = intval($_GET['id'] ?? 0);
-        $stmt = $conn->prepare("SELECT * FROM customers WHERE id=? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, name, phone, pickup_point, address FROM customers WHERE id=? LIMIT 1");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         echo json_encode(['success' => true, 'data' => $data], JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE);

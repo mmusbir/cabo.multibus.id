@@ -4,16 +4,8 @@
 require_once __DIR__ . '/../config/activity_log.php';
 require_once __DIR__ . '/../helpers/cache.php';
 
-// --- Ambil data unit kendaraan dari database ---
+// --- Units list will be loaded via AJAX to avoid heavy initial queries ---
 $units = [];
-if (isset($conn)) {
-  $res = $conn->query("SELECT * FROM units ORDER BY id DESC");
-  if ($res) {
-    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
-      $units[] = $row;
-    }
-  }
-}
 
 // --- Proses tambah unit kendaraan ---
 if (isset($_POST['save_unit'])) {
@@ -94,7 +86,7 @@ if (isset($_POST['delete_unit'])) {
 $edit_unit = [];
 if (isset($_GET['edit_unit'])) {
   $edit_id = intval($_GET['edit_unit']);
-  $stmt = $conn->prepare("SELECT * FROM units WHERE id=? LIMIT 1");
+  $stmt = $conn->prepare("SELECT id, nopol, merek, type, category, tahun, kapasitas, status, warna, layout FROM units WHERE id=? LIMIT 1");
   $stmt->execute([$edit_id]);
   if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $edit_unit = $row;

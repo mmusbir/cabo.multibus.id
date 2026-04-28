@@ -179,7 +179,7 @@ function renderAdminSectionFragmentFile($file) {
     if (isset($conn) && isset($_GET['edit_customer'])) {
       $editId = intval($_GET['edit_customer']);
       if ($editId > 0) {
-        $editStmt = $conn->prepare("SELECT * FROM customers WHERE id=? LIMIT 1");
+        $editStmt = $conn->prepare("SELECT id, name, phone, pickup_point, address FROM customers WHERE id=? LIMIT 1");
         $editStmt->execute([$editId]);
         $fragmentData['edit_customer'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
       }
@@ -191,7 +191,7 @@ function renderAdminSectionFragmentFile($file) {
     if (isset($conn) && isset($_GET['edit_carter'])) {
       $editId = intval($_GET['edit_carter']);
       if ($editId > 0) {
-        $editStmt = $conn->prepare("SELECT * FROM master_carter WHERE id=? LIMIT 1");
+        $editStmt = $conn->prepare("SELECT id, name, origin, destination, duration, rental_price, bop_price, notes FROM master_carter WHERE id=? LIMIT 1");
         $editStmt->execute([$editId]);
         $fragmentData['edit_carter'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
       }
@@ -204,7 +204,7 @@ function renderAdminSectionFragmentFile($file) {
     if (isset($conn) && isset($_GET['edit_customer_bagasi'])) {
       $editId = intval($_GET['edit_customer_bagasi']);
       if ($editId > 0) {
-        $editStmt = $conn->prepare("SELECT * FROM customer_bagasi WHERE id=? LIMIT 1");
+        $editStmt = $conn->prepare("SELECT id, nama, no_hp, alamat, tipe FROM customer_bagasi WHERE id=? LIMIT 1");
         $editStmt->execute([$editId]);
         $fragmentData['edit_customer_bagasi'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
       }
@@ -215,13 +215,14 @@ function renderAdminSectionFragmentFile($file) {
     $fragmentData['routes'] = [];
     $fragmentData['units'] = [];
 
-    if (isset($conn)) {
+      if (isset($conn)) {
       $routeStmt = $conn->query("SELECT id, name FROM routes ORDER BY id");
       if ($routeStmt) {
         $fragmentData['routes'] = $routeStmt->fetchAll(PDO::FETCH_ASSOC);
       }
 
-      $unitStmt = $conn->query("SELECT * FROM units ORDER BY id DESC");
+      // Load only essential unit fields for the small selector; larger unit lists are loaded via AJAX
+      $unitStmt = $conn->query("SELECT id, nopol, merek, kapasitas FROM units ORDER BY id DESC LIMIT 50");
       if ($unitStmt) {
         $fragmentData['units'] = $unitStmt->fetchAll(PDO::FETCH_ASSOC);
       }
@@ -232,8 +233,9 @@ function renderAdminSectionFragmentFile($file) {
     $fragmentData['units'] = [];
     $fragmentData['edit_unit'] = [];
 
-    if (isset($conn)) {
-      $unitStmt = $conn->query("SELECT * FROM units ORDER BY id DESC");
+      if (isset($conn)) {
+      // Keep a small cached set for selectors; full units list is provided via admin AJAX pagination
+      $unitStmt = $conn->query("SELECT id, nopol, merek, kapasitas FROM units ORDER BY id DESC LIMIT 50");
       if ($unitStmt) {
         $fragmentData['units'] = $unitStmt->fetchAll(PDO::FETCH_ASSOC);
       }
@@ -241,7 +243,7 @@ function renderAdminSectionFragmentFile($file) {
       if (isset($_GET['edit_unit'])) {
         $editId = intval($_GET['edit_unit']);
         if ($editId > 0) {
-          $editStmt = $conn->prepare("SELECT * FROM units WHERE id=? LIMIT 1");
+          $editStmt = $conn->prepare("SELECT id, nopol, merek, kapasitas, tahun, warna FROM units WHERE id=? LIMIT 1");
           $editStmt->execute([$editId]);
           $fragmentData['edit_unit'] = $editStmt->fetch(PDO::FETCH_ASSOC) ?: [];
         }
@@ -424,6 +426,10 @@ if ($isActionRequest) {
     
     $router->get('routesPage', function () use ($ajax_dir) {
       include $ajax_dir . 'routes.php';
+    });
+
+    $router->get('unitsPage', function () use ($ajax_dir) {
+      include $ajax_dir . 'units.php';
     });
     
     $router->get('bookingsPage', function () use ($ajax_dir) {
