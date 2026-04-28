@@ -174,6 +174,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     </style>
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { 
+      (window.vaq = window.vaq || []).push(arguments); 
+    };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="app-login bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col items-center justify-center px-6 py-8 md:py-10 bg-industrial-grid">
     <button class="theme-toggle-btn login-theme-toggle" type="button" data-theme-toggle aria-label="Ubah tema">
