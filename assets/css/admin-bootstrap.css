@@ -7672,6 +7672,45 @@ body.admin-bootstrap-page .view-booking-title {
     font-size: 1.55rem;
 }
 
+/* Enhanced Bottom Navbar for Mobile (iPhone sizes) */
+@media (max-width: 500px) {
+    body.admin-bootstrap-page .kinetic-bottom-nav {
+        width: min(calc(100vw - 0.6rem), 23rem);
+        bottom: calc(0.5rem + env(safe-area-inset-bottom));
+        padding: 0.65rem;
+        border-radius: 1.5rem;
+        gap: 0.45rem;
+        height: auto;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn {
+        padding: 0.75rem 0.32rem;
+        gap: 0.32rem;
+        min-height: 5.5rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .fa-icon {
+        font-size: 1.45rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .nav-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        line-height: 1.1;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn::after {
+        width: 0.35rem;
+        height: 0.35rem;
+        margin-top: 0.12rem;
+    }
+
+    body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn.active::after {
+        transform: scale(1.1);
+    }
+}
+
 body.admin-bootstrap-page .view-booking-stats {
     display: flex;
     align-items: center;
