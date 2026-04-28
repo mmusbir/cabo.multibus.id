@@ -2,6 +2,7 @@
 // includes/units_logic.php
 
 require_once __DIR__ . '/../config/activity_log.php';
+require_once __DIR__ . '/../helpers/cache.php';
 
 // --- Ambil data unit kendaraan dari database ---
 $units = [];
@@ -29,6 +30,11 @@ if (isset($_POST['save_unit'])) {
     $stmt->execute([$nopol, $merek, $type, $category, $tahun, $kapasitas, $status]);
     if ($stmt->rowCount() > 0) {
       activity_log_write($conn, 'settings', 'unit', $conn->lastInsertId(), 'create', 'Unit kendaraan ditambahkan: ' . $nopol, $merek . ' ' . $type, $actor);
+      // Invalidate units cache and schedules cache (layout/capacity may affect schedules)
+      if (function_exists('cache_delete')) {
+        cache_delete('getUnits');
+        cache_delete_prefix('getSchedules|');
+      }
     }
     header('Location: admin.php#units');
     exit;
@@ -53,6 +59,10 @@ if (isset($_POST['update_unit'])) {
     $stmt = $conn->prepare("UPDATE units SET nopol=?, merek=?, type=?, category=?, tahun=?, kapasitas=?, status=? WHERE id=?");
     $stmt->execute([$nopol, $merek, $type, $category, $tahun, $kapasitas, $status, $unit_id]);
     activity_log_write($conn, 'settings', 'unit', $unit_id, 'update', 'Unit kendaraan diperbarui: ' . $nopol, 'Sebelumnya: ' . ($oldNopol ?: '-'), $actor);
+    if (function_exists('cache_delete')) {
+      cache_delete('getUnits');
+      cache_delete_prefix('getSchedules|');
+    }
     header('Location: admin.php#units');
     exit;
   }
@@ -70,6 +80,10 @@ if (isset($_POST['delete_unit'])) {
     $stmt->execute([$unit_id]);
     if ($stmt->rowCount() > 0) {
       activity_log_write($conn, 'settings', 'unit', $unit_id, 'delete', 'Unit kendaraan dihapus: ' . ($nopol ?: ('ID ' . $unit_id)), '', $actor);
+      if (function_exists('cache_delete')) {
+        cache_delete('getUnits');
+        cache_delete_prefix('getSchedules|');
+      }
     }
     header('Location: admin.php#units');
     exit;

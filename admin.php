@@ -43,6 +43,7 @@ require_once 'config/auth_config.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
 require_once 'Router.php';
+require_once 'helpers/cache.php';
 
 // Check Auth immediately BEFORE any HTML output
 $auth = null;
@@ -730,7 +731,11 @@ if (isset($_POST['save_route'])) {
           activity_log_write($conn, 'settings', 'master_carter', $conn->lastInsertId(), 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
         }
       }
-    }
+      }
+      // Invalidate charter routes cache
+      if (function_exists('cache_delete')) {
+        cache_delete('getCharterRoutes');
+      }
     header('Location: admin.php#routes_carter');
     exit;
   } else {
@@ -746,6 +751,10 @@ if (isset($_POST['save_route'])) {
         $stmt = $conn->prepare("UPDATE routes SET name=?, origin=?, destination=? WHERE id=?");
         $stmt->execute([$name, $origin, $destination, $route_id]);
         activity_log_write($conn, 'settings', 'route', $route_id, 'update', 'Rute diperbarui: ' . $name, 'Sebelumnya: ' . ($oldName ?: '-'), $actor);
+        if (function_exists('cache_delete')) {
+          cache_delete('getRoutes');
+          cache_delete_prefix('getSchedules|' . $name . '|');
+        }
         
         if ($oldName && $oldName !== $name) {
           $conn->prepare("UPDATE bookings SET rute=? WHERE rute=?")->execute([$name, $oldName]);
@@ -756,6 +765,9 @@ if (isset($_POST['save_route'])) {
         $stmt->execute([$name, $origin, $destination]);
         if ($stmt->rowCount() > 0) {
           activity_log_write($conn, 'settings', 'route', $conn->lastInsertId(), 'create', 'Rute ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
+          if (function_exists('cache_delete')) {
+            cache_delete('getRoutes');
+          }
         }
       }
     }
@@ -773,6 +785,10 @@ if (isset($_GET['delete_route'])) {
   $stmt->execute([$id]);
   if ($stmt->rowCount() > 0) {
     activity_log_write($conn, 'settings', 'route', $id, 'delete', 'Rute dihapus: ' . ($routeName ?: ('ID ' . $id)), '', $actor);
+    if (function_exists('cache_delete')) {
+      cache_delete('getRoutes');
+      cache_delete_prefix('getSchedules|' . $routeName . '|');
+    }
   }
   header('Location: admin.php#routes');
   exit;
@@ -787,6 +803,9 @@ if (isset($_GET['delete_carter'])) {
   $stmt->execute([$id]);
   if ($stmt->rowCount() > 0) {
     activity_log_write($conn, 'settings', 'master_carter', $id, 'delete', 'Master carter dihapus: ' . ($routeName ?: ('ID ' . $id)), '', $actor);
+    if (function_exists('cache_delete')) {
+      cache_delete('getCharterRoutes');
+    }
   }
   header('Location: admin.php#routes_carter');
   exit;
@@ -810,10 +829,18 @@ if (isset($_POST['save_schedule'])) {
       $stmt = $conn->prepare("UPDATE schedules SET rute=?, dow=?, jam=?, units=?, seats=?, unit_id=? WHERE id=?");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id, $schedule_id]);
       activity_log_write($conn, 'settings', 'schedule', $schedule_id, 'update', 'Jadwal diperbarui: ' . $rute . ' @ ' . $jam, 'Sebelumnya: ' . ($oldSchedule['rute'] ?? '-') . ' @ ' . ($oldSchedule['jam'] ?? '-'), $actor);
+      if (function_exists('cache_delete')) {
+        cache_delete_prefix('getSchedules|' . $rute . '|');
+        cache_delete_prefix('getRoutesByDate|');
+      }
     } else {
       $stmt = $conn->prepare("INSERT INTO schedules (rute,dow,jam,units,seats,unit_id) VALUES (?,?,?,?,?,?) ON CONFLICT (rute, dow, jam) DO UPDATE SET units=EXCLUDED.units, seats=EXCLUDED.seats, unit_id=EXCLUDED.unit_id");
       $stmt->execute([$rute, $dow, $jam, $units, $seats, $unit_id]);
       activity_log_write($conn, 'settings', 'schedule', $conn->lastInsertId(), 'create', 'Jadwal disimpan: ' . $rute . ' @ ' . $jam, 'Unit: ' . $units . ' | Seat: ' . $seats, $actor);
+      if (function_exists('cache_delete')) {
+        cache_delete_prefix('getSchedules|' . $rute . '|');
+        cache_delete_prefix('getRoutesByDate|');
+      }
     }
   }
   header('Location: admin.php#schedules');
@@ -829,6 +856,10 @@ if (isset($_GET['delete_schedule'])) {
   $stmt->execute([$id]);
   if ($stmt->rowCount() > 0) {
     activity_log_write($conn, 'settings', 'schedule', $id, 'delete', 'Jadwal dihapus: ' . (($scheduleInfo['rute'] ?? 'Jadwal') . ' @ ' . ($scheduleInfo['jam'] ?? '-')), '', $actor);
+    if (function_exists('cache_delete')) {
+      cache_delete_prefix('getSchedules|' . ($scheduleInfo['rute'] ?? '') . '|');
+      cache_delete_prefix('getRoutesByDate|');
+    }
   }
   header('Location: admin.php#schedules');
   exit;
@@ -898,6 +929,16 @@ if (isset($_GET['cancel_booking'])) {
         $admin_user
       );
       $result['success'] = true;
+      if (function_exists('cache_delete')) {
+        $r = $bookingInfo['rute'] ?? '';
+        $t = $bookingInfo['tanggal'] ?? '';
+        $j = $bookingInfo['jam'] ?? '';
+        $u = (int) ($bookingInfo['unit'] ?? 1);
+        if ($r && $t) {
+          cache_delete('getSchedules|' . $r . '|' . $t);
+          cache_delete('getBookedSeatsDetail|' . $r . '|' . $t . '|' . $j . '|' . $u);
+        }
+      }
     } else {
       $result['error'] = 'nothing_changed';
     }
@@ -986,6 +1027,11 @@ if (isset($_GET['mark_all_paid'])) {
     }
   } else {
     $result['error'] = 'invalid_params';
+  }
+  // Invalidate related caches for this departure
+  if (function_exists('cache_delete') && $rute && $tanggal) {
+    cache_delete('getSchedules|' . $rute . '|' . $tanggal);
+    cache_delete('getBookedSeatsDetail|' . $rute . '|' . $tanggal . '|' . $jam . '|' . $unit);
   }
   header('Content-Type: application/json');
   echo json_encode($result);
@@ -1105,6 +1151,18 @@ if (isset($_POST['save_driver'])) {
       $stmt->execute([$nama, $phone, $unit_id]);
       if ($stmt->rowCount() > 0) {
         activity_log_write($conn, 'settings', 'driver', $conn->lastInsertId(), 'create', 'Driver ditambahkan: ' . $nama, $phone, $actor);
+          if (function_exists('cache_delete')) cache_delete('getDrivers');
+      }
+    }
+    // Invalidate related caches for this booking
+    if (function_exists('cache_delete')) {
+      $r = $oldBooking['rute'] ?? '';
+      $t = $oldBooking['tanggal'] ?? '';
+      $j = $oldBooking['jam'] ?? '';
+      $u = (int) ($oldBooking['unit'] ?? $unit);
+      if ($r && $t) {
+        cache_delete('getSchedules|' . $r . '|' . $t);
+        cache_delete('getBookedSeatsDetail|' . $r . '|' . $t . '|' . $j . '|' . $u);
       }
     }
   }
@@ -1122,6 +1180,7 @@ if (isset($_GET['delete_driver'])) {
     $stmt->execute([$id]);
     if ($stmt->rowCount() > 0) {
       activity_log_write($conn, 'settings', 'driver', $id, 'delete', 'Driver dihapus: ' . ($driverName ?: ('ID ' . $id)), '', $actor);
+      if (function_exists('cache_delete')) cache_delete('getDrivers');
     }
   }
   header('Location: admin.php#drivers');
@@ -1151,11 +1210,16 @@ if (isset($_POST['save_segment'])) {
       $stmt = $conn->prepare("UPDATE segments SET route_id=?, rute=?, origin=?, destination=?, pickup_time=?, harga=? WHERE id=?");
       $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga, $id]);
       activity_log_write($conn, 'settings', 'segment', $id, 'update', 'Segment diperbarui: ' . $rute, 'Sebelumnya: ' . ($oldRoute ?: '-'), $actor);
+      if (function_exists('cache_delete')) {
+        cache_delete_prefix('getSegments|');
+        cache_delete('getSegmentPrice|' . $id);
+      }
     } else {
       $stmt = $conn->prepare("INSERT INTO segments (route_id, rute, origin, destination, pickup_time, harga) VALUES (?,?,?,?,?,?)");
       $stmt->execute([$route_id, $rute, $origin, $destination, $pickup_time, $harga]);
       if ($stmt->rowCount() > 0) {
         activity_log_write($conn, 'settings', 'segment', $conn->lastInsertId(), 'create', 'Segment ditambahkan: ' . $rute, $pickup_time !== '' ? ('Pickup ' . $pickup_time) : '', $actor);
+        if (function_exists('cache_delete')) cache_delete_prefix('getSegments|');
       }
     }
   }
@@ -1173,6 +1237,10 @@ if (isset($_GET['delete_segment'])) {
     $stmt->execute([$id]);
     if ($stmt->rowCount() > 0) {
       activity_log_write($conn, 'settings', 'segment', $id, 'delete', 'Segment dihapus: ' . ($segmentName ?: ('ID ' . $id)), '', $actor);
+      if (function_exists('cache_delete')) {
+        cache_delete_prefix('getSegments|');
+        cache_delete('getSegmentPrice|' . $id);
+      }
     }
   }
   header('Location: admin.php#segments');

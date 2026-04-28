@@ -5,6 +5,7 @@
 
 global $conn;
 require_once __DIR__ . '/../../config/activity_log.php';
+require_once __DIR__ . '/../../helpers/cache.php';
 
 $subAction = $_POST['subAction'] ?? '';
 $id = intval($_POST['id'] ?? 0);
@@ -51,6 +52,8 @@ if ($subAction === 'save') {
             $stmtMap->execute([$rute_id, $currentId, $price]);
         }
 
+        // Invalidate luggage services cache
+        if (function_exists('cache_delete')) cache_delete('getLuggageServices');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -72,6 +75,7 @@ if ($subAction === 'delete') {
         $stmt->execute([$id]);
         if ($stmt->rowCount() > 0) {
             activity_log_write($conn, 'settings', 'luggage_service', $id, 'delete', 'Layanan bagasi dihapus: ' . ($serviceName ?: ('ID ' . $id)), '', $actor);
+            if (function_exists('cache_delete')) cache_delete('getLuggageServices');
         }
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
@@ -89,6 +93,7 @@ if ($subAction === 'saveMapping') {
         $stmt = $conn->prepare("INSERT INTO harga_bagasi (rute_id, layanan_id, harga) VALUES (?, ?, ?) ON CONFLICT (rute_id, layanan_id) DO UPDATE SET harga = EXCLUDED.harga");
         $stmt->execute([$rute_id, $layanan_id, $harga]);
         activity_log_write($conn, 'settings', 'harga_bagasi', $rute_id . '_' . $layanan_id, 'upsert', 'Mapping harga diperbarui', 'Rute: ' . $rute_id . ', Layanan: ' . $layanan_id . ', Harga: ' . $harga, $actor);
+        if (function_exists('cache_delete')) cache_delete('getLuggageServices');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -105,6 +110,7 @@ if ($subAction === 'deleteMapping') {
         $stmt = $conn->prepare("DELETE FROM harga_bagasi WHERE rute_id = ? AND layanan_id = ?");
         $stmt->execute([$rute_id, $layanan_id]);
         activity_log_write($conn, 'settings', 'harga_bagasi', $rute_id . '_' . $layanan_id, 'delete', 'Mapping harga dihapus', '', $actor);
+        if (function_exists('cache_delete')) cache_delete('getLuggageServices');
         echo json_encode(['success' => true]);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);

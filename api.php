@@ -44,6 +44,7 @@ require_once 'config/db.php';
 require_once 'config/activity_log.php';
 require_once 'config/perf_log.php';
 require_once 'middleware/auth.php';
+require_once 'helpers/cache.php';
 
 function apiRequireAdminUser(): array
 {
@@ -282,6 +283,10 @@ function processBookingUpdate(PDO $conn, array $data, array $auth): array
         'booking_id' => $id,
         'seat' => $seat,
         'message' => 'Booking berhasil diperbarui',
+        'rute' => $current['rute'] ?? '',
+        'tanggal' => $current['tanggal'] ?? '',
+        'jam' => $current['jam'] ?? '',
+        'unit' => (int) ($current['unit'] ?? 1),
     ];
 }
 
@@ -312,6 +317,10 @@ function processBookingCancel(PDO $conn, array $data, array $auth): array
     return [
         'booking_id' => (int) $current['id'],
         'message' => 'Booking berhasil dibatalkan',
+        'rute' => $current['rute'] ?? '',
+        'tanggal' => $current['tanggal'] ?? '',
+        'jam' => $current['jam'] ?? '',
+        'unit' => (int) ($current['unit'] ?? 1),
     ];
 }
 
@@ -433,6 +442,10 @@ function processBookingCreate(PDO $conn, array $data, array $auth): array
         return [
             'added' => count($seats),
             'booking_ids' => $bookingIds,
+            'rute' => $rute,
+            'tanggal' => $tanggal,
+            'jam' => $jam,
+            'unit' => $unit,
         ];
     } catch (Exception $ex) {
         if ($conn->inTransaction()) {
@@ -460,25 +473,47 @@ $router = new Router();
 // ============================================
 
 $router->get('getRoutes', function () use ($conn) {
+    $cacheKey = 'getRoutes';
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['routes' => $cached]);
+    }
     $res = $conn->query("SELECT name FROM routes ORDER BY id");
     $routes = [];
     while ($r = $res->fetch()) {
         $routes[] = $r['name'];
     }
+    cache_set($cacheKey, $routes, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['routes' => $routes]);
 });
 
 $router->get('getCharterRoutes', function () use ($conn) {
+    $cacheKey = 'getCharterRoutes';
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['routes' => $cached]);
+    }
     $res = $conn->query("SELECT id, name, origin, destination, duration, rental_price FROM master_carter ORDER BY name");
     $routes = [];
     while ($r = $res->fetch()) {
         $routes[] = $r;
     }
+    cache_set($cacheKey, $routes, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['routes' => $routes]);
 });
 
 $router->get('getSegments', function () use ($conn) {
     $routeName = $_GET['route_name'] ?? '';
+    $cacheKey = 'getSegments|' . $routeName;
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['segments' => $cached]);
+    }
     if ($routeName) {
         $stmt = $conn->prepare("SELECT s.id, s.rute, s.harga FROM segments s JOIN routes r ON s.route_id = r.id WHERE r.name=? ORDER BY s.rute");
         $stmt->execute([$routeName]);
@@ -489,6 +524,8 @@ $router->get('getSegments', function () use ($conn) {
     while ($r = $stmt->fetch()) {
         $segments[] = $r;
     }
+    cache_set($cacheKey, $segments, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['segments' => $segments]);
 });
 
@@ -497,16 +534,31 @@ $router->get('getSegmentPrice', function () use ($conn) {
     if ($id <= 0) {
         apiError('Invalid segment ID', 400);
     }
+    $cacheKey = 'getSegmentPrice|' . $id;
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(120, null, $cacheKey);
+        apiSuccess(['price' => $cached]);
+    }
     $stmt = $conn->prepare("SELECT harga FROM segments WHERE id=? LIMIT 1");
     $stmt->execute([$id]);
     $res = $stmt->fetch();
-    apiSuccess(['price' => $res ? floatval($res['harga']) : 0]);
+    $price = $res ? floatval($res['harga']) : 0;
+    cache_set($cacheKey, $price, 120);
+    set_edge_cache_headers(120, null, $cacheKey);
+    apiSuccess(['price' => $price]);
 });
 
 $router->get('getRoutesByDate', function () use ($conn) {
     $tanggal = $_GET['tanggal'] ?? '';
     if (!isValidDate($tanggal)) {
         apiError('invalid_date', 400);
+    }
+    $cacheKey = 'getRoutesByDate|' . $tanggal;
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(60, null, $cacheKey);
+        apiSuccess(['routes' => $cached]);
     }
     $dow = (int) date('w', strtotime($tanggal));
     $stmt = $conn->prepare("SELECT DISTINCT rute FROM schedules WHERE dow = ? ORDER BY rute");
@@ -515,6 +567,8 @@ $router->get('getRoutesByDate', function () use ($conn) {
     while ($r = $stmt->fetch()) {
         $routes[] = $r['rute'];
     }
+    cache_set($cacheKey, $routes, 60);
+    set_edge_cache_headers(60, null, $cacheKey);
     apiSuccess(['routes' => $routes]);
 });
 
@@ -524,6 +578,12 @@ $router->get('getSchedules', function () use ($conn) {
     $tanggal = $_GET['tanggal'] ?? '';
     if (!$rute || !isValidDate($tanggal)) {
         apiError('invalid_params', 400);
+    }
+    $cacheKey = 'getSchedules|' . $rute . '|' . $tanggal;
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(15, null, $cacheKey);
+        apiSuccess(['schedules' => $cached]);
     }
     $dow = (int) date('w', strtotime($tanggal));
     $stmt = $conn->prepare("
@@ -560,6 +620,8 @@ $router->get('getSchedules', function () use ($conn) {
         'tanggal' => $tanggal,
         'count' => count($schedules),
     ], 100);
+    cache_set($cacheKey, $schedules, 15);
+    set_edge_cache_headers(15, null, $cacheKey);
     apiSuccess(['schedules' => $schedules]);
 });
 
@@ -611,7 +673,13 @@ $router->post('updateBookedSeat', function () use ($conn) {
     if (empty($data)) {
         apiError('invalid_json', 400);
     }
-    apiSuccess(processBookingUpdate($conn, $data, $auth));
+    $res = processBookingUpdate($conn, $data, $auth);
+    // Invalidate caches related to this booking
+    if (!empty($res['rute']) && !empty($res['tanggal'])) {
+        cache_delete('getSchedules|' . $res['rute'] . '|' . $res['tanggal']);
+        cache_delete('getBookedSeatsDetail|' . $res['rute'] . '|' . $res['tanggal'] . '|' . ($res['jam'] ?? '') . '|' . ($res['unit'] ?? 1));
+    }
+    apiSuccess($res);
 });
 
 $router->post('cancelBookedSeat', function () use ($conn) {
@@ -620,7 +688,12 @@ $router->post('cancelBookedSeat', function () use ($conn) {
     if (empty($data)) {
         apiError('invalid_json', 400);
     }
-    apiSuccess(processBookingCancel($conn, $data, $auth));
+    $res = processBookingCancel($conn, $data, $auth);
+    if (!empty($res['rute']) && !empty($res['tanggal'])) {
+        cache_delete('getSchedules|' . $res['rute'] . '|' . $res['tanggal']);
+        cache_delete('getBookedSeatsDetail|' . $res['rute'] . '|' . $res['tanggal'] . '|' . ($res['jam'] ?? '') . '|' . ($res['unit'] ?? 1));
+    }
+    apiSuccess($res);
 });
 
 $router->get('searchCustomers', function () use ($conn) {
@@ -666,29 +739,53 @@ $router->get('searchCustomers', function () use ($conn) {
 });
 
 $router->get('getUnits', function () use ($conn) {
+    $cacheKey = 'getUnits';
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['units' => $cached]);
+    }
     $res = $conn->query("SELECT id, nopol, merek, type, kapasitas FROM units WHERE status='Aktif' ORDER BY nopol");
     $units = [];
     while ($r = $res->fetch()) {
         $units[] = $r;
     }
+    cache_set($cacheKey, $units, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['units' => $units]);
 });
 
 $router->get('getDrivers', function () use ($conn) {
+    $cacheKey = 'getDrivers';
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['drivers' => $cached]);
+    }
     $res = $conn->query("SELECT id, nama, phone FROM drivers ORDER BY nama");
     $drivers = [];
     while ($r = $res->fetch()) {
         $drivers[] = $r;
     }
+    cache_set($cacheKey, $drivers, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['drivers' => $drivers]);
 });
 
 $router->get('getLuggageServices', function () use ($conn) {
+    $cacheKey = 'getLuggageServices';
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        set_edge_cache_headers(300, null, $cacheKey);
+        apiSuccess(['services' => $cached]);
+    }
     $res = $conn->query("SELECT id, name, price FROM luggage_services ORDER BY price ASC");
     $services = [];
     while ($r = $res->fetch()) {
         $services[] = $r;
     }
+    cache_set($cacheKey, $services, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['services' => $services]);
 });
 
@@ -717,8 +814,11 @@ $router->post('addCharterRoute', function () use ($conn) {
     $name = $origin . ' - ' . $destination;
     $stmt = $conn->prepare("INSERT INTO master_carter (name, origin, destination, duration, rental_price, bop_price, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$name, $origin, $destination, $duration, $rental_price, $bop_price, $notes]);
-    activity_log_write($conn, 'settings', 'master_carter', $conn->lastInsertId(), 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
-    apiSuccess(['message' => 'Charter route added', 'route_id' => $conn->lastInsertId()], 201);
+    $newId = $conn->lastInsertId();
+    activity_log_write($conn, 'settings', 'master_carter', $newId, 'create', 'Master carter ditambahkan: ' . $name, $origin . ' -> ' . $destination, $actor);
+    // Invalidate charter routes cache
+    cache_delete('getCharterRoutes');
+    apiSuccess(['message' => 'Charter route added', 'route_id' => $newId], 201);
 });
 
 $router->post('submitCharter', function () use ($conn) {
@@ -810,7 +910,12 @@ $router->post('submitBooking', function () use ($conn) {
     if (empty($data)) {
         apiError('invalid_json', 400);
     }
-    apiSuccess(processBookingCreate($conn, $data, $auth), 201);
+    $res = processBookingCreate($conn, $data, $auth);
+    if (!empty($res['rute']) && !empty($res['tanggal'])) {
+        cache_delete('getSchedules|' . $res['rute'] . '|' . $res['tanggal']);
+        cache_delete('getBookedSeatsDetail|' . $res['rute'] . '|' . $res['tanggal'] . '|' . ($res['jam'] ?? '') . '|' . ($res['unit'] ?? 1));
+    }
+    apiSuccess($res, 201);
 });
 
 // Dispatch the request
