@@ -2,7 +2,9 @@
 RewriteEngine On
 
 # Legacy charter create URL now lives inside /admin as a panel section.
-RewriteRule ^admin_charter_create\.php$ admin.php?open=charter-create [R=302,L,QSA]
+# Use 301 permanent redirect (cached by browser) instead of 302 temporary
+# This reduces redirect overhead on repeat visits
+RewriteRule ^admin_charter_create\.php$ admin.php?open=charter-create [R=301,L,QSA]
 </IfModule>
 
 # ==================== PERFORMANCE: Browser Cache Headers ====================

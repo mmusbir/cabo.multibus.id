@@ -13,6 +13,18 @@
   <meta property="og:description" content="Pilih jadwal, kursi, dan buat booking penumpang Cahaya Bone dengan tampilan booking yang cepat dan rapi.">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="shortcut icon" href="assets/images/favicon.svg">
+  <!-- Preload critical font resources (woff2 format) -->
+  <link rel="preload" href="assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Preload critical stylesheets -->
+  <link rel="preload" href="assets/lib/fonts/fonts.css" as="style">
+  <link rel="preload" href="assets/css/fontawesome-custom.min.css" as="style">
+  <link rel="preload" href="assets/css/style.css" as="style">
+  <!-- Prefetch deferred stylesheets -->
+  <link rel="prefetch" href="assets/lib/datepicker/css/datepicker.min.css">
+  <link rel="prefetch" href="assets/lib/datepicker/css/datepicker-bs5.min.css">
+  <link rel="prefetch" href="assets/css/seat-layout.css">
+  <link rel="prefetch" href="assets/css/theme-toggle.css">
   <script>
     (function () {
       try {
@@ -24,15 +36,19 @@
       } catch (err) {}
     })();
   </script>
-  <!--Google Fonts -->
+  <!--Google Fonts (Critical) -->
   <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
-  <link rel="stylesheet" href="assets/lib/fontawesome/css/all.min.css?v=1">
-  <!-- Vanilla Datepicker CSS -->
-  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.min.css?v=1">
-  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker-bs5.min.css?v=1">
+  <!-- FontAwesome Icons (Critical, 1.5 KiB) -->
+  <link rel="stylesheet" href="assets/css/fontawesome-custom.min.css?v=1">
+  <!-- Vanilla Datepicker CSS (Deferred - interactive feature) -->
+  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.min.css?v=1" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker-bs5.min.css?v=1" media="print" onload="this.media='all'">
+  <!-- Main Styles (Critical above-fold) -->
   <link rel="stylesheet" href="assets/css/style.css?v=3">
-  <link rel="stylesheet" href="assets/css/seat-layout.css">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13">
+  <!-- Seat Layout Styles (Deferred - specific feature) -->
+  <link rel="stylesheet" href="assets/css/seat-layout.css" media="print" onload="this.media='all'">
+  <!-- Theme Toggle (Deferred) -->
+  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13" media="print" onload="this.media='all'">
   <style>
     * {
       box-sizing: border-box;
