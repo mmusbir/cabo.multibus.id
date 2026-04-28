@@ -1907,12 +1907,12 @@ flush();
       </form>
     </div>
   </div>
-  <script src="assets/js/admin-panel.js?v=14"></script>
+  <script src="assets/js/admin-panel.js?v=14" defer></script>
   <style>
     /* Responsive styles moved to includes/navbar.php */
   </style>
-  <script src="assets/js/theme-toggle.js?v=13"></script>
-  <script src="assets/lib/bootstrap/js/bootstrap.bundle.min.js?v=1"></script>
+  <script src="assets/js/theme-toggle.js?v=13" defer></script>
+  <script src="assets/lib/bootstrap/js/bootstrap.bundle.min.js?v=1" defer></script>
 </body>
 
 </html>
