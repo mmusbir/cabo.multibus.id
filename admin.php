@@ -1585,6 +1585,13 @@ include 'includes/units_logic.php';
     }
   </style>
 
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { 
+      (window.vaq = window.vaq || []).push(arguments); 
+    };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <?php
 // Early flush: send <head> to browser so it can start downloading CSS/JS
