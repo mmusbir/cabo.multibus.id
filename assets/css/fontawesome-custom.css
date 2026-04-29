@@ -74,3 +74,5 @@
 .fa-bus-simple::before { content: "\f671"; }
 .fa-wallet::before { content: "\f555"; }
 .fa-clock-rotate-left::before { content: "\f1da"; }
+.fa-bars::before { content: "\f0c9"; }
+.fa-chart-column::before { content: "\e0e3"; }
