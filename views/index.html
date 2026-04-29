@@ -1553,16 +1553,7 @@
       height: 19px;
     }
 
-    /* Minimal top strip */
-    .wrap::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.08);
-      pointer-events: none;
-      z-index: -1;
-    }
+
 
     @media (max-width: 768px) {
       .wrap {
@@ -1714,8 +1705,8 @@
 
     @media (max-width: 991.98px) {
       body {
-        background: #111319;
-        color: #e2e2eb;
+        background: #f8fafc;
+        color: #0f172a;
         font-family: 'Space Grotesk', sans-serif;
       }
 
@@ -2148,8 +2139,8 @@
 
     @media (min-width: 992px) {
       body {
-        background: #111319;
-        color: #e2e2eb;
+        background: #f8fafc;
+        color: #0f172a;
         font-family: 'Space Grotesk', sans-serif;
       }
 
@@ -2537,8 +2528,8 @@
         gap: 0.24rem;
         padding: 0.8rem 0.9rem;
         border-radius: 0.85rem;
-        background: #111319;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .seat-counter-label {
@@ -2546,14 +2537,14 @@
         font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.54);
+        color: #475569;
       }
 
       .seat-counter-value {
         font-family: 'DM Mono', monospace;
         font-size: 1rem;
         font-weight: 700;
-        color: #f1ebe6;
+        color: #0f172a;
       }
 
       .seat-counter-chip--selected .seat-counter-value {
@@ -2569,9 +2560,9 @@
       .search-container-modern input,
       #card-passenger .control-select,
       #card-passenger select {
-        background: #111319 !important;
-        border: 1px solid rgba(88, 66, 55, 0.14) !important;
-        color: #e2e2eb !important;
+        background: #ffffff !important;
+        border: 1px solid rgba(203, 213, 225, 0.6) !important;
+        color: #0f172a !important;
         border-radius: 0.75rem !important;
         box-shadow: none;
         min-height: 3.15rem;
@@ -2637,11 +2628,11 @@
 
       .payment-label {
         min-height: 5.15rem;
-        background: #111319;
-        border: 1px solid rgba(88, 66, 55, 0.14);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         gap: 0.5rem;
-        color: rgba(224, 192, 177, 0.72);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        color: #475569;
+        box-shadow: none;
       }
 
       .payment-option input:checked + .payment-label {
@@ -2834,7 +2825,7 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-size: 1.15rem;
         font-weight: 800;
-        color: #e2e2eb;
+        color: #0f172a;
       }
 
       .modal-subtitle {
@@ -2851,28 +2842,28 @@
         width: 2.25rem;
         height: 2.25rem;
         padding: 0;
-        background: #111319;
-        color: rgba(224, 192, 177, 0.72);
+        background: #f8fafc;
+        color: #475569;
         box-shadow: none;
-        border: 1px solid rgba(88, 66, 55, 0.16);
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .modal-body,
       .confirm-popup-msg {
-        color: rgba(224, 192, 177, 0.8);
+        color: #475569;
       }
 
       #detailContent {
         padding: 1rem 1.05rem;
         border-radius: 0.9rem;
-        background: #111319;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #f8fafc;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         display: grid;
         gap: 0.8rem;
       }
 
       #detailContent p {
-        color: rgba(224, 192, 177, 0.8);
+        color: #475569;
       }
 
       #detailContent .text-primary-container,
@@ -2881,8 +2872,8 @@
       }
 
       .rekap-item-card {
-        background: #111319;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         box-shadow: none;
         border-radius: 0.95rem;
         padding: 1rem 1rem 0.95rem;
@@ -2891,8 +2882,8 @@
       .rekap-total-bar {
         padding: 1rem 1.1rem;
         border-radius: 0.9rem;
-        background: #111319;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #f8fafc;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .rekap-total-label {
@@ -2905,7 +2896,7 @@
       }
 
       .rekap-total-amount {
-        color: #e2e2eb;
+        color: #0f172a;
       }
 
       .detail-modal-actions,
@@ -3189,8 +3180,8 @@
 
     #card-passenger select:disabled,
     #card-passenger select option {
-      color: #f1ebe6;
-      background: #111319;
+      color: #0f172a;
+      background: #ffffff;
     }
 
     .layout {
