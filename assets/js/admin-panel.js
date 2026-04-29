@@ -350,7 +350,13 @@
         showSection('dashboard');
       }
       window.addEventListener('hashchange', updateSectionFromHash);
-      updateSectionFromHash();
+      // Schedule initial section loading during idle time to reduce main-thread work
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(function () { updateSectionFromHash(); }, { timeout: 250 });
+      } else {
+        // Fallback to a small timeout so interactive rendering can complete
+        setTimeout(updateSectionFromHash, 50);
+      }
       // Top nav click
       document.querySelectorAll('.nav a[data-target]').forEach(function (a) {
         a.onclick = function (e) {
