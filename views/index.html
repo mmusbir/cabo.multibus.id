@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id" class="dark" data-default-theme="dark">
+<html lang="id">
 
 <head>
   <meta charset="utf-8">
@@ -13,42 +13,39 @@
   <meta property="og:description" content="Pilih jadwal, kursi, dan buat booking penumpang Cahaya Bone dengan tampilan booking yang cepat dan rapi.">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="shortcut icon" href="assets/images/favicon.svg">
-  <!-- Preload critical font resources (woff2 format) -->
-  <link rel="preload" href="assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf" as="font" type="font/ttf" crossorigin>
+  <!-- Preload: font utama halaman booking (Space Grotesk 400, Plus Jakarta Sans 800, FA Solid) -->
+  <link rel="preload" href="assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <!-- Preload critical stylesheets -->
-  <link rel="preload" href="assets/lib/fonts/fonts.css" as="style">
   <link rel="preload" href="assets/css/fontawesome-custom.min.css" as="style">
   <link rel="preload" href="assets/css/style.css" as="style">
-  <!-- Prefetch deferred stylesheets -->
-  <link rel="prefetch" href="assets/lib/datepicker/css/datepicker.min.css">
-  <link rel="prefetch" href="assets/lib/datepicker/css/datepicker-bs5.min.css">
-  <link rel="prefetch" href="assets/css/seat-layout.css">
-  <link rel="prefetch" href="assets/css/theme-toggle.css">
-  <script>
-    (function () {
-      try {
-        var storedTheme = localStorage.getItem('siteTheme');
-        var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        document.documentElement.classList.toggle('light', theme === 'light');
-      } catch (err) {}
-    })();
-  </script>
-  <!--Google Fonts (Critical) -->
-  <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
-  <!-- FontAwesome Icons (Critical, 1.5 KiB) -->
+  <!-- Non-critical stylesheets preloaded with onload swap -->
+  <!-- Theme persisted via admin panel; removed theme toggle from public index -->
+  <!-- Inline @font-face: hilangkan hop fonts.css → browser langsung tahu font yang dibutuhkan -->
+  <style>
+    /* Space Grotesk — font body utama halaman booking */
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf') format('truetype'); }
+    /* Plus Jakarta Sans — label pembayaran & elemen bold */
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf') format('truetype'); }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf') format('truetype'); }
+  </style>
+  <!-- FontAwesome Icons (Critical) -->
   <link rel="stylesheet" href="assets/css/fontawesome-custom.min.css?v=1">
   <!-- Vanilla Datepicker CSS (Deferred - interactive feature) -->
-  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.min.css?v=1" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker-bs5.min.css?v=1" media="print" onload="this.media='all'">
+  <link rel="preload" href="assets/lib/datepicker/css/datepicker.min.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.min.css?v=1"></noscript>
+  <link rel="preload" href="assets/lib/datepicker/css/datepicker-bs5.min.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="assets/lib/datepicker/css/datepicker-bs5.min.css?v=1"></noscript>
   <!-- Main Styles (Critical above-fold) -->
   <link rel="stylesheet" href="assets/css/style.css?v=3">
   <!-- Seat Layout Styles (Deferred - specific feature) -->
-  <link rel="stylesheet" href="assets/css/seat-layout.css" media="print" onload="this.media='all'">
-  <!-- Theme Toggle (Deferred) -->
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13" media="print" onload="this.media='all'">
+  <link rel="preload" href="assets/css/seat-layout.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="assets/css/seat-layout.css"></noscript>
+  <!-- Theme toggle removed on this page -->
   <style>
     * {
       box-sizing: border-box;
@@ -3472,9 +3469,7 @@
     </div>
     <div class="desktop-terminal-topbar-right">
       <div class="desktop-terminal-topbar-links">
-        <button class="desktop-terminal-settings theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-          <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
-        </button>
+        <!-- theme toggle removed -->
         <a class="desktop-terminal-settings" href="admin.php" aria-label="Admin panel">
           <i class="fa-solid fa-gear fa-icon"></i>
         </a>
@@ -3511,9 +3506,7 @@
       <div class="mobile-slate-topbar-operator">{{USER_NAME}}</div>
     </div>
     <div class="flex-center-gap">
-      <button class="mobile-slate-topbar-action theme-toggle-btn" type="button" data-theme-toggle aria-label="Ubah tema">
-        <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
-      </button>
+      <!-- theme toggle removed -->
       <div class="profile-dropdown">
         <button class="mobile-slate-topbar-avatar profile-trigger" id="mobileProfileTrigger" type="button" aria-haspopup="true" aria-expanded="false">
           {{USER_INITIAL}}
@@ -3890,7 +3883,6 @@
     <script src="assets/lib/datepicker/js/datepicker.min.js?v=1"></script>
     <script src="assets/lib/datepicker/js/locales/id.js?v=1"></script>
     <script src="assets/js/index-page.js?v=1"></script>
-    <script src="assets/js/theme-toggle.js?v=13"></script>
     <!-- Change Password Modal -->
     <div class="admin-modal-overlay-bg" id="changePasswordModal">
       <div class="admin-modal-card-box">
