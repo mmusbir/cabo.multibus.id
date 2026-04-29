@@ -22,6 +22,10 @@ if (file_exists(__DIR__ . '/../.env')) {
 // Database configuration prioritized from DATABASE_URL then .env
 $env_url = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? getenv('DATABASE_URL');
 
+// Hardcode application timezone here to avoid repeated DB timezone queries
+// Use Asia/Makassar (WITA)
+if (!defined('TIMEZONE')) define('TIMEZONE', 'Asia/Makassar');
+
 if ($env_url) {
     $db_parts = parse_url($env_url);
     $db_host = $db_parts['host'] ?? 'localhost';
@@ -53,8 +57,8 @@ try {
         PDO::ATTR_EMULATE_PREPARES   => true,
     ]);
 
-    // Set timezone to UTC+8 (WITA)
-    $conn->exec("SET timezone = 'Asia/Makassar'");
+    // Set timezone to the application TIMEZONE constant (avoid querying pg_timezone_names)
+    $conn->exec("SET timezone = '" . TIMEZONE . "'");
     // Enable simple query profiling: use custom PDOStatement class
     require_once __DIR__ . '/../helpers/perf.php';
     require_once __DIR__ . '/../helpers/db_profiler.php';
@@ -69,8 +73,8 @@ try {
     die('Database connection failed: ' . $e->getMessage() . '<br><br><b>Debug URL:</b> URL DITEMUKAN (TIDAK DITAMPILKAN ALASAN KEAMANAN)');
 }
 
-// Set timezone for PHP
-date_default_timezone_set('Asia/Kuala_Lumpur');
+// Set timezone for PHP to the same application timezone
+date_default_timezone_set(TIMEZONE);
 
 // Include PDO compatibility helpers
 require_once __DIR__ . '/pdo_compat.php';
