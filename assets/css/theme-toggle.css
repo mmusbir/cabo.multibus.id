@@ -139,7 +139,6 @@ html[data-theme="light"] .app-index .rekap-total-bar {
   background: #ffffff !important;
   color: #0f172a !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
 }
 
 html[data-theme="light"] .app-index .mobile-slate-control-icon,
