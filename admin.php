@@ -1539,35 +1539,61 @@ include 'includes/units_logic.php';
   <meta property="og:description" content="Admin Panel Cahaya Bone untuk mengelola dashboard, booking, carter, bagasi, laporan, dan pengaturan operasional.">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="shortcut icon" href="assets/images/favicon.svg">
-  <!-- Preload critical font resources (woff2 format) -->
+  <!-- Preload: font utama admin panel (Inter 400, Plus Jakarta Sans 600, Space Grotesk 400, FA Solid) -->
   <link rel="preload" href="assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <!-- Preload critical stylesheets -->
-  <link rel="preload" href="assets/lib/fonts/fonts.css" as="style">
-  <link rel="preload" href="assets/lib/bootstrap/css/bootstrap.min.css" as="style">
-  <link rel="preload" href="assets/css/fontawesome-custom.min.css" as="style">
-  <!-- Prefetch deferred stylesheets -->
-  <link rel="prefetch" href="assets/css/admin-bootstrap.css">
-  <link rel="prefetch" href="assets/css/theme-toggle.css">
+  <!-- Theme init: cegah FOUC sebelum render -->
   <script>
     (function () {
       try {
         var storedTheme = localStorage.getItem('siteTheme');
         var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light';
-
         document.documentElement.setAttribute('data-theme', theme);
         document.documentElement.classList.toggle('dark', theme === 'dark');
         document.documentElement.classList.toggle('light', theme === 'light');
       } catch (err) {}
     })();
   </script>
+  <!-- Inline @font-face: hilangkan hop fonts.css → browser langsung tahu semua font yang dibutuhkan -->
+  <style>
+    /* Inter — font konten utama admin */
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf') format('truetype'); }
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fMZg.ttf') format('truetype'); }
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYMZg.ttf') format('truetype'); }
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYMZg.ttf') format('truetype'); }
+    /* Plus Jakarta Sans — judul & label */
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_qU7NSg.ttf') format('truetype'); }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_m07NSg.ttf') format('truetype'); }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf') format('truetype'); }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf') format('truetype'); }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf') format('truetype'); }
+    /* Space Grotesk — elemen UI */
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 300; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj62UUsj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf') format('truetype'); }
+    @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf') format('truetype'); }
+    /* DM Mono — font monospace untuk kode/angka */
+    @font-face { font-family: 'DM Mono'; font-style: normal; font-weight: 400; font-display: optional; src: url('assets/lib/fonts/aFTU7PB1QTsUX8KYhh0.ttf') format('truetype'); }
+    @font-face { font-family: 'DM Mono'; font-style: normal; font-weight: 500; font-display: optional; src: url('assets/lib/fonts/aFTR7PB1QTsUX8KYvumzIYQ.ttf') format('truetype'); }
+  </style>
+  <!-- Inline critical styles for bottom modal menu-grid to reduce render delay -->
+  <style>
+    body.admin-bootstrap-page #bottomMoreModal .menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;padding:.45rem 0 1rem}
+    body.admin-bootstrap-page #bottomMoreModal .menu-section-header{padding:1rem .25rem .35rem}
+    body.admin-bootstrap-page #bottomMoreModal .nav-btn{width:100%;min-height:5.9rem;padding:.9rem .55rem;margin:0!important;border-radius:1rem;background:#f8fafc;border:1px solid #e2e8f0}
+    body.admin-bootstrap-page #bottomMoreModal .nav-btn:hover{background:#fff;border-color:#bfdbfe}
+    body.admin-bootstrap-page #bottomMoreModal .nav-btn-close{color:#dc3545}
+  </style>
   <!-- Critical Stylesheets -->
-  <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
   <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css?v=1">
   <link rel="stylesheet" href="assets/css/fontawesome-custom.min.css?v=1">
-  <!-- Deferred Stylesheets -->
-  <link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=73" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="assets/css/theme-toggle.css?v=23" media="print" onload="this.media='all'">
+  <!-- Non-critical stylesheets preloaded with onload swap -->
+  <link rel="preload" href="assets/css/admin-bootstrap.css?v=73" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="assets/css/admin-bootstrap.css?v=73"></noscript>
+  <link rel="preload" href="assets/css/theme-toggle.css?v=23" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="assets/css/theme-toggle.css?v=23"></noscript>
   <style>
     /* Critical: ensure shell loader is always hidden on ready */
     .admin-shell-ready .admin-shell-loader,

@@ -357,6 +357,19 @@
         // Fallback to a small timeout so interactive rendering can complete
         setTimeout(updateSectionFromHash, 50);
       }
+        // Lazy-load non-critical font weights during idle time to avoid blocking LCP
+        function loadNonCriticalFonts() {
+          try {
+            if (document.fonts && typeof FontFace === 'function') {
+              var f1 = new FontFace('DM Mono', 'url(assets/lib/fonts/aFTU7PB1QTsUX8KYhh0.ttf) format("truetype")', { weight: '400' });
+              var f2 = new FontFace('DM Mono', 'url(assets/lib/fonts/aFTR7PB1QTsUX8KYvumzIYQ.ttf) format("truetype")', { weight: '500' });
+              Promise.all([f1.load(), f2.load()]).then(function (loaded) {
+                loaded.forEach(function (ff) { document.fonts.add(ff); });
+              }).catch(function () { /* ignore */ });
+            }
+          } catch (err) {}
+        }
+        if (typeof requestIdleCallback === 'function') requestIdleCallback(loadNonCriticalFonts, { timeout: 2000 }); else setTimeout(loadNonCriticalFonts, 2000);
       // Top nav click
       document.querySelectorAll('.nav a[data-target]').forEach(function (a) {
         a.onclick = function (e) {
