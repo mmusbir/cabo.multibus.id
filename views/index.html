@@ -203,49 +203,7 @@
       color: rgba(71, 85, 105, 0.45);
       opacity: 0.6;
     }
-    /* ===== Surgical light-mode overrides for remaining dark components ===== */
-    /* Target only booking/index page components so admin remains unaffected */
-    .toprow,
-    .card,
-    .carter-section,
-    .search-container-modern,
-    .modal-content-box,
-    .modal-rekap-box,
-    .rekap-sticky-bar,
-    .confirm-popup-box {
-      background: var(--neu-bg, #f8fafc) !important;
-      border: 1px solid rgba(203,213,225,0.6) !important;
-      color: var(--text-primary, #0f172a) !important;
-      box-shadow: var(--neu-shadow-sm, 0 6px 18px rgba(15,23,42,0.06)) !important;
-    }
-
-    .rekap-toast,
-    .confirm-popup-yes,
-    .confirm-popup-no {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      box-shadow: 0 6px 18px rgba(15,23,42,0.06) !important;
-    }
-
-    .form-input,
-    .control-select,
-    .nav-btn,
-    .nav-btn .nav-icon,
-    .form-submit-btn,
-    .btn-booking-modern {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      border: 1px solid rgba(203,213,225,0.6) !important;
-      box-shadow: none !important;
-    }
-
-    /* Reduce dark overlays used for neu-morphism */
-    .card::before,
-    .card::after,
-    .toprow::before,
-    .toprow::after {
-      display: none !important;
-    }
+    
 
     .datepicker-cell.prev,
     .datepicker-cell.next {
@@ -1393,14 +1351,6 @@
       --text-primary: #0f172a;
       --text-muted: #334155;
       --glass-blur: blur(20px);
-      /* Force neu-morphism variables to light-theme equivalents for public page */
-      --neu-bg: #e9edf3;
-      --neu-text: #0f172a;
-      --neu-text-dark: #334155;
-      --neu-shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.06);
-      --neu-shadow-outset: 0 10px 22px rgba(15, 23, 42, 0.06);
-      --neu-dark-shadow: rgba(163, 177, 198, 0.16);
-      --neu-light-shadow: #ffffff;
     }
 
     body {
