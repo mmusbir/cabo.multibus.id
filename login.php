@@ -73,38 +73,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta property="og:description" content="Masuk ke Admin Panel Cahaya Bone untuk mengelola booking, carter, bagasi, laporan, dan pengaturan operasional.">
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
     <link rel="shortcut icon" href="assets/images/favicon.svg">
-    <!-- Preload critical font resources (woff2 format) -->
-    <link rel="preload" href="assets/lib/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf" as="font" type="font/ttf" crossorigin>
+    <!-- Preload: hanya font yang dipakai di halaman login (Plus Jakarta Sans 700 & 800, Space Grotesk 400) -->
+    <link rel="preload" href="assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="assets/lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- Preload critical stylesheets -->
-    <link rel="preload" href="assets/lib/fonts/fonts.css" as="style">
-    <link rel="preload" href="assets/css/fontawesome-custom.min.css" as="style">
-    <!-- Prefetch deferred stylesheets -->
-    <link rel="prefetch" href="assets/css/theme-toggle.css">
-    <link rel="prefetch" href="assets/css/login.css">
-    <script>
-        (function () {
-            try {
-                var storedTheme = localStorage.getItem('siteTheme');
-                var theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light';
-
-                document.documentElement.setAttribute('data-theme', theme);
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-                document.documentElement.classList.toggle('light', theme === 'light');
-            } catch (err) {}
-        })();
-    </script>
+    <!-- Inline @font-face: hilangkan hop fonts.css → browser langsung tahu font yang dibutuhkan -->
+    <style>
+        /* Plus Jakarta Sans — weight yang dipakai di login (label, brand title, button) */
+        @font-face {
+            font-family: 'Plus Jakarta Sans';
+            font-style: normal;
+            font-weight: 600;
+            font-display: swap;
+            src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Plus Jakarta Sans';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'Plus Jakarta Sans';
+            font-style: normal;
+            font-weight: 800;
+            font-display: swap;
+            src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf') format('truetype');
+        }
+        /* Space Grotesk — font body halaman login */
+        @font-face {
+            font-family: 'Space Grotesk';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf') format('truetype');
+        }
+    </style>
     <!-- Critical Stylesheets -->
-    <link rel="stylesheet" href="assets/lib/fonts/fonts.css?v=1">
     <link rel="stylesheet" href="assets/css/fontawesome-custom.min.css?v=1">
-    <!-- Deferred Stylesheets -->
-    <link rel="stylesheet" href="assets/css/theme-toggle.css?v=13" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="assets/css/login.css?v=1" media="print" onload="this.media='all'">
+    <!-- Non-critical stylesheets loaded with preload-onload swap -->
+    <link rel="preload" href="assets/css/login.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/login.css?v=1"></noscript>
 </head>
 <body class="app-login bg-industrial-grid">
-    <button class="theme-toggle-btn login-theme-toggle" type="button" data-theme-toggle aria-label="Ubah tema">
-        <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
-    </button>
+    
     <div class="login-wrapper">
         <header class="login-header">
             <div class="login-brand-container">
@@ -144,6 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </main>
     </div>
 
-    <script src="assets/js/theme-toggle.js" defer></script>
+    
 </body>
 </html>
