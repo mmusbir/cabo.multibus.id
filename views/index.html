@@ -46,15 +46,6 @@
   <link rel="preload" href="assets/css/seat-layout.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="assets/css/seat-layout.css"></noscript>
   <!-- Theme toggle removed on this page -->
-  <script>
-    (function(){
-      try {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
-        document.documentElement.setAttribute('data-theme','light');
-      } catch (e) {}
-    })();
-  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -211,6 +202,49 @@
     .datepicker-cell.disabled {
       color: rgba(71, 85, 105, 0.45);
       opacity: 0.6;
+    }
+    /* ===== Surgical light-mode overrides for remaining dark components ===== */
+    /* Target only booking/index page components so admin remains unaffected */
+    .toprow,
+    .card,
+    .carter-section,
+    .search-container-modern,
+    .modal-content-box,
+    .modal-rekap-box,
+    .rekap-sticky-bar,
+    .confirm-popup-box {
+      background: var(--neu-bg, #f8fafc) !important;
+      border: 1px solid rgba(203,213,225,0.6) !important;
+      color: var(--text-primary, #0f172a) !important;
+      box-shadow: var(--neu-shadow-sm, 0 6px 18px rgba(15,23,42,0.06)) !important;
+    }
+
+    .rekap-toast,
+    .confirm-popup-yes,
+    .confirm-popup-no {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      box-shadow: 0 6px 18px rgba(15,23,42,0.06) !important;
+    }
+
+    .form-input,
+    .control-select,
+    .nav-btn,
+    .nav-btn .nav-icon,
+    .form-submit-btn,
+    .btn-booking-modern {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1px solid rgba(203,213,225,0.6) !important;
+      box-shadow: none !important;
+    }
+
+    /* Reduce dark overlays used for neu-morphism */
+    .card::before,
+    .card::after,
+    .toprow::before,
+    .toprow::after {
+      display: none !important;
     }
 
     .datepicker-cell.prev,
