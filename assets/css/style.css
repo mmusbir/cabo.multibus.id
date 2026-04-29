@@ -1,12 +1,13 @@
 /* ===== NEUMORPHISM VARIABLES ===== */
 :root {
-    --neu-bg: #e0e5ec;
+    /* Light-safe defaults for public pages. Admin dark overrides live in theme-toggle.css */
+    --neu-bg: #f8fafc;
     --neu-light-shadow: #ffffff;
-    --neu-dark-shadow: #a3b1c6;
+    --neu-dark-shadow: rgba(15,23,42,0.06);
     --neu-primary: #158303;
     --neu-primary-dark: #0d6e02;
-    --neu-text: #4a5568;
-    --neu-text-dark: #2d3748;
+    --neu-text: #475569;
+    --neu-text-dark: #0f172a;
     --neu-radius: 25px;
     --neu-radius-lg: 30px;
     --neu-shadow-inset: inset 6px 6px 12px var(--neu-dark-shadow), inset -6px -6px 12px var(--neu-light-shadow);
