@@ -80,7 +80,7 @@ body.admin-bootstrap-page .muted {
     color: #334155;
     padding: 2px 8px;
     border-radius: 6px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 12px;
     font-weight: 600;
 }
@@ -1274,7 +1274,7 @@ body.admin-bootstrap-page .admin-modal-copy-textarea {
     resize: vertical;
     line-height: 1.55;
     white-space: pre-wrap;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 body.admin-bootstrap-page .admin-modal-icon-row {
@@ -1704,6 +1704,12 @@ body.admin-bootstrap-page .admin-bs-card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1rem;
+}
+
+@media (min-width: 992px) {
+    body.admin-bootstrap-page #luggage_standalone_tbody {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
 }
 
 body.admin-bootstrap-page .bookings-header-row {
@@ -2446,7 +2452,7 @@ body.admin-bootstrap-page .view-seat-card .sb-val.name {
 }
 
 body.admin-bootstrap-page .view-seat-card .sb-val.phone {
-    font-family: "Courier New", monospace;
+    font-family: 'Space Grotesk', sans-serif;
     letter-spacing: -0.02em;
 }
 
@@ -2778,7 +2784,7 @@ body.admin-bootstrap-page .kinetic-command-bookings,
 body.admin-bootstrap-page .kinetic-command-bookings button,
 body.admin-bootstrap-page .kinetic-command-bookings input,
 body.admin-bootstrap-page .kinetic-command-bookings select {
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 body.admin-bootstrap-page .kinetic-command-bookings .fa-icon {
@@ -2813,7 +2819,7 @@ body.admin-bootstrap-page .kinetic-trip-stat-label,
 body.admin-bootstrap-page .kinetic-trip-id,
 body.admin-bootstrap-page .kinetic-summary-tag,
 body.admin-bootstrap-page .kinetic-summary-meta {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     letter-spacing: 0.14em;
     text-transform: uppercase;
 }
@@ -2826,7 +2832,7 @@ body.admin-bootstrap-page .kinetic-command-kicker {
 }
 
 body.admin-bootstrap-page .kinetic-command-title {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2rem, 2.8vw, 2.65rem);
     line-height: 1.05;
     font-weight: 800;
@@ -2881,7 +2887,7 @@ body.admin-bootstrap-page .kinetic-metric-value-row {
 
 body.admin-bootstrap-page .kinetic-metric-value-row strong {
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.5rem;
     font-weight: 800;
 }
@@ -2928,7 +2934,7 @@ body.admin-bootstrap-page .kinetic-command-tabs .toggle-slider {
 
 body.admin-bootstrap-page .kinetic-command-tabs .toggle-btn {
     color: #95a0b1;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -2958,7 +2964,7 @@ body.admin-bootstrap-page .booking-filter-controls {
 body.admin-bootstrap-page .booking-history-note {
     margin-top: 0.45rem;
     color: #8f99aa;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.86rem;
     line-height: 1.45;
 }
@@ -2980,7 +2986,7 @@ body.admin-bootstrap-page .booking-scope-chip {
     color: #aeb9ca;
     padding: 0.7rem 0.95rem;
     min-height: 2.75rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -3005,7 +3011,7 @@ body.admin-bootstrap-page .booking-date-filter {
 
 body.admin-bootstrap-page .booking-date-filter .small {
     color: #8f99aa;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -3020,7 +3026,7 @@ body.admin-bootstrap-page .booking-date-filter .booking-date-filter-placeholder 
     top: 50%;
     transform: translateY(-50%);
     color: #8f99aa;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.88rem;
     line-height: 1.2;
     pointer-events: none;
@@ -3086,7 +3092,7 @@ body.admin-bootstrap-page .kinetic-command-add-btn {
     background: #f97316;
     color: #341100;
     text-decoration: none;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.76rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -3140,7 +3146,7 @@ body.admin-bootstrap-page .kinetic-command-toolbar-meta {
 
 body.admin-bootstrap-page .kinetic-command-toolbar-meta .small {
     color: #8f99aa;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -3255,7 +3261,7 @@ body.admin-bootstrap-page .kinetic-command-refresh {
     color: #c3cad8;
     padding: 0.72rem 1rem;
     min-height: 2.95rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.76rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -3314,7 +3320,7 @@ body.admin-bootstrap-page .kinetic-status-chip {
     gap: 0.45rem;
     padding: 0.45rem 0.7rem;
     border-radius: 999px;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -3349,7 +3355,7 @@ body.admin-bootstrap-page .kinetic-status-chip[data-state='scheduled'] {
 body.admin-bootstrap-page .kinetic-status-chip[data-state='scheduled'] .kinetic-status-dot { background: #94a3b8; }
 
 body.admin-bootstrap-page .kinetic-summary-headline {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1rem;
     font-weight: 800;
     color: #f8fafc;
@@ -3419,7 +3425,7 @@ body.admin-bootstrap-page .kinetic-trip-time {
 
 body.admin-bootstrap-page .kinetic-trip-date {
     color: #f97316;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.66rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -3429,7 +3435,7 @@ body.admin-bootstrap-page .kinetic-trip-date {
 
 body.admin-bootstrap-page .kinetic-trip-hour {
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.65rem;
     line-height: 1;
     font-weight: 800;
@@ -3467,7 +3473,7 @@ body.admin-bootstrap-page .kinetic-trip-state {
     gap: 0.45rem;
     padding: 0.24rem 0.48rem;
     border-radius: 0.5rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.56rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -3960,7 +3966,7 @@ body.admin-bootstrap-page .kinetic-trip-id {
 body.admin-bootstrap-page .kinetic-trip-title {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1rem;
     font-weight: 800;
     line-height: 1.2;
@@ -4009,7 +4015,7 @@ body.admin-bootstrap-page .kinetic-trip-action {
     border: 1px solid rgba(167, 139, 125, 0.18);
     background: transparent;
     color: #c3cad8;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.64rem;
     font-weight: 800;
     letter-spacing: 0.06em;
@@ -4399,7 +4405,7 @@ body.admin-bootstrap-page .kinetic-command-bookings .admin-grid-message {
         gap: 0.5rem;
         margin: 0;
         color: #f8fafc;
-        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1.05rem;
         font-weight: 800;
     }
@@ -4589,7 +4595,7 @@ body.admin-bootstrap-page .kinetic-mobile-topbar .kinetic-brand-icon {
 }
 
 body.admin-bootstrap-page .kinetic-brand-text {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.45rem;
     font-weight: 800;
     letter-spacing: -0.04em;
@@ -4606,7 +4612,7 @@ body.admin-bootstrap-page .kinetic-primary-nav {
 
 body.admin-bootstrap-page .kinetic-primary-nav a {
     color: rgba(224, 192, 177, 0.7);
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -4684,7 +4690,7 @@ body.admin-bootstrap-page .kinetic-profile-avatar {
     background: #1e1f26;
     border: 1px solid rgba(249, 115, 22, 0.24);
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.9rem;
     font-weight: 800;
 }
@@ -4719,7 +4725,7 @@ body.admin-bootstrap-page .kinetic-profile-meta {
 
 body.admin-bootstrap-page .kinetic-profile-name {
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.88rem;
     font-weight: 700;
 }
@@ -4832,7 +4838,7 @@ body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .fa-icon {
 }
 
 body.admin-bootstrap-page .kinetic-bottom-nav .nav-btn .nav-label {
-    font-family: 'Inter', 'SF Pro Display', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.56rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -4904,7 +4910,7 @@ body.admin-bootstrap-page #bottomMoreModal .menu-section-header {
     padding: 0.95rem 0.3rem 0.45rem;
     color: #64748b;
     border-top: 1px solid rgba(148, 163, 184, 0.16);
-    font-family: 'Inter', 'SF Pro Display', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -4938,7 +4944,7 @@ body.admin-bootstrap-page #bottomMoreModal .nav-btn .fa-icon {
 }
 
 body.admin-bootstrap-page #bottomMoreModal .nav-btn .nav-label {
-    font-family: 'Inter', 'SF Pro Display', 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.54rem;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -5018,10 +5024,10 @@ body.admin-bootstrap-page #bottomMoreModal .nav-btn-close {
 
 /* --- Kinetic Dashboard --- */
 body.admin-bootstrap-page .kinetic-admin-dashboard {
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    padding: 0;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
 }
 
 body.admin-bootstrap-page .kinetic-dash-shell {
@@ -5042,7 +5048,7 @@ body.admin-bootstrap-page .kinetic-stat-card p,
 body.admin-bootstrap-page .kinetic-insight-card h3,
 body.admin-bootstrap-page .kinetic-dash-date,
 body.admin-bootstrap-page .kinetic-dash-chip {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.12em;
 }
@@ -5057,7 +5063,7 @@ body.admin-bootstrap-page .kinetic-dash-kicker {
 body.admin-bootstrap-page .kinetic-dash-title {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2.2rem, 4vw, 3.2rem);
     line-height: 1;
     font-weight: 800;
@@ -5080,7 +5086,7 @@ body.admin-bootstrap-page .kinetic-dash-export {
     border: 1px solid rgba(88, 66, 55, 0.22);
     background: #282a30;
     color: #e2e2eb;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -5176,7 +5182,7 @@ body.admin-bootstrap-page .kinetic-dash-panel-head {
 body.admin-bootstrap-page .kinetic-dash-panel-head h2 {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
 }
@@ -5185,7 +5191,7 @@ body.admin-bootstrap-page .kinetic-dash-panel-link {
     border: 0;
     background: transparent;
     color: #f97316;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -5628,7 +5634,7 @@ body.admin-bootstrap-page .kinetic-sidebar-brand {
 
 body.admin-bootstrap-page .kinetic-brand-text {
     font-size: 1.05rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     background: linear-gradient(135deg, #f97316, #fb923c);
     -webkit-background-clip: text;
     background-clip: text;
@@ -5716,7 +5722,7 @@ body.admin-bootstrap-page .kinetic-sidebar-links-footer a {
 }
 
 body.admin-bootstrap-page .kinetic-sidebar-primary a {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -5784,7 +5790,7 @@ body.admin-bootstrap-page .kinetic-sidebar-section-title {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -5845,7 +5851,7 @@ body.admin-bootstrap-page .kinetic-sidebar-action-link {
     border-radius: 0.9rem;
     background: #f97316;
     color: #341100;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -5944,7 +5950,7 @@ body.admin-bootstrap-page .kinetic-command-mode-chip {
     background: #111319;
     border: 1px solid rgba(148, 163, 184, 0.14);
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.76rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -5998,7 +6004,7 @@ body.admin-bootstrap-page .view-booking-list-head {
 body.admin-bootstrap-page .view-booking-kicker {
     margin: 0 0 0.3rem;
     color: #f97316;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.14em;
@@ -6008,7 +6014,7 @@ body.admin-bootstrap-page .view-booking-kicker {
 body.admin-bootstrap-page .view-booking-title {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 2rem;
     line-height: 1;
     font-weight: 800;
@@ -6025,7 +6031,7 @@ body.admin-bootstrap-page .view-booking-cta {
     border-radius: 0.9rem;
     background: #f97316;
     color: #341100;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -6123,7 +6129,7 @@ body.admin-bootstrap-page .booking-detail-status {
     gap: 0.35rem;
     padding: 0.26rem 0.6rem;
     border-radius: 0.5rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -6155,7 +6161,7 @@ body.admin-bootstrap-page .booking-detail-status.tone-ontrip {
 body.admin-bootstrap-page .booking-detail-name {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.2rem;
     font-weight: 800;
     line-height: 1.15;
@@ -6218,7 +6224,7 @@ body.admin-bootstrap-page .booking-detail-side-block {
 
 body.admin-bootstrap-page .booking-detail-side-label {
     color: #7c8798;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -6431,7 +6437,7 @@ body.admin-bootstrap-page .booking-detail-page-kicker,
 body.admin-bootstrap-page .booking-detail-filter-label {
     display: inline-block;
     color: #f97316;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.14em;
@@ -6441,7 +6447,7 @@ body.admin-bootstrap-page .booking-detail-filter-label {
 body.admin-bootstrap-page .booking-detail-page-title {
     margin: 0.3rem 0 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(1.85rem, 2.3vw, 2.5rem);
     font-weight: 800;
     letter-spacing: -0.05em;
@@ -6464,7 +6470,7 @@ body.admin-bootstrap-page .booking-detail-page-cta {
     border-radius: 0.9rem;
     background: #f97316;
     color: #341100;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.76rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -6494,7 +6500,7 @@ body.admin-bootstrap-page .booking-detail-static-chip {
     background: #282a30;
     border: 1px solid rgba(88, 66, 55, 0.18);
     color: #c5cfdd;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.8rem;
     font-weight: 600;
     transition: 0.2s ease;
@@ -6542,7 +6548,7 @@ body.admin-bootstrap-page .booking-detail-filter-btn {
     padding: 0.8rem 1rem;
     border-radius: 0.9rem;
     border: 1px solid rgba(88, 66, 55, 0.18);
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.74rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -6588,7 +6594,7 @@ body.admin-bootstrap-page .charter-filter-chip {
     background: #191b22;
     border: 1px solid rgba(88, 66, 55, 0.18);
     color: #c5cfdd;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -6713,7 +6719,7 @@ body.admin-bootstrap-page .charter-command-top-copy {
 
 body.admin-bootstrap-page .charter-command-code {
     color: #ffb690;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -6731,7 +6737,7 @@ body.admin-bootstrap-page .charter-command-pill {
     justify-content: center;
     padding: 0.24rem 0.6rem;
     border-radius: 0.45rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -6756,7 +6762,7 @@ body.admin-bootstrap-page .charter-command-state {
     gap: 0.45rem;
     padding: 0.55rem 0.8rem;
     border-radius: 0.65rem;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -6788,7 +6794,7 @@ body.admin-bootstrap-page .charter-command-main {
 body.admin-bootstrap-page .charter-command-name {
     margin: 0;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1.45rem;
     font-weight: 800;
     line-height: 1.15;
@@ -6832,7 +6838,7 @@ body.admin-bootstrap-page .charter-command-route-stop {
 
 body.admin-bootstrap-page .charter-command-label {
     color: #7c8798;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -6933,7 +6939,7 @@ body.admin-bootstrap-page .charter-command-action {
     border: 1px solid rgba(167, 139, 125, 0.18);
     background: transparent;
     color: #d7dde7;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.06em;
@@ -7515,7 +7521,7 @@ body.admin-bootstrap-page .booking-detail-page-ghost {
     border: 1px solid rgba(88, 66, 55, 0.18);
     background: #282a30;
     color: #e2e8f0;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -7551,7 +7557,7 @@ body.admin-bootstrap-page .booking-detail-context-kicker {
 body.admin-bootstrap-page .booking-detail-context-title {
     margin-top: 0.2rem;
     color: #f8fafc;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 1rem;
     font-weight: 800;
     letter-spacing: -0.03em;

@@ -62,7 +62,7 @@
     transition: background-color 0.15s ease, color 0.15s ease;
     color: var(--neu-text-dark);
     position: relative;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 /* Seat Hover Effect */

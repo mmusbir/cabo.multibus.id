@@ -81,21 +81,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         /* Plus Jakarta Sans — weight yang dipakai di login (label, brand title, button) */
         @font-face {
-            font-family: 'Plus Jakarta Sans';
+            font-family: 'Space Grotesk', sans-serif;
             font-style: normal;
             font-weight: 600;
             font-display: swap;
             src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf') format('truetype');
         }
         @font-face {
-            font-family: 'Plus Jakarta Sans';
+            font-family: 'Space Grotesk', sans-serif;
             font-style: normal;
             font-weight: 700;
             font-display: swap;
             src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf') format('truetype');
         }
         @font-face {
-            font-family: 'Plus Jakarta Sans';
+            font-family: 'Space Grotesk', sans-serif;
             font-style: normal;
             font-weight: 800;
             font-display: swap;

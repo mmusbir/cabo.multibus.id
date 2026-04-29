@@ -16,20 +16,32 @@
       </a>
     </div>
 
-    <div class="kinetic-command-toolbar-actions">
+<?php
+  $bookingFilterDrivers = [];
+  if (isset($conn)) {
+    $bookingFilterDrivers = $conn->query("SELECT id, nama FROM drivers ORDER BY nama ASC")->fetchAll(PDO::FETCH_ASSOC);
+  }
+?>
       <div id="bookingFilterControls" class="booking-filter-controls">
         <div class="booking-scope-toggle" role="tablist" aria-label="Mode daftar booking">
           <button type="button" class="booking-scope-chip active" data-booking-scope="active">Aktif</button>
           <button type="button" class="booking-scope-chip" data-booking-scope="history">History</button>
         </div>
         <label class="booking-date-filter" for="booking_date_filter">
-          <input type="date" id="booking_date_filter" class="form-control kinetic-command-select" aria-label="Filter tanggal keberangkatan" title="Filter tanggal keberangkatan">
-          <span class="booking-date-filter-placeholder">Filter tanggal keberangkatan</span>
+          <input type="date" id="booking_date_filter" class="form-control kinetic-command-select" aria-label="Tanggal" title="Tanggal">
+          <span class="booking-date-filter-placeholder">Tanggal</span>
         </label>
         <select id="booking_payment_filter" class="form-control kinetic-command-select booking-payment-filter" aria-label="Filter status pembayaran">
           <option value="">Semua Pembayaran</option>
           <option value="paid">Lunas</option>
           <option value="unpaid">Belum Lunas</option>
+        </select>
+        <select id="booking_driver_filter" class="form-control kinetic-command-select booking-payment-filter" aria-label="Filter driver">
+          <option value="">Semua Driver</option>
+          <option value="none">Belum Ada Driver</option>
+          <?php foreach($bookingFilterDrivers as $driver): ?>
+            <option value="<?= htmlspecialchars($driver['id']) ?>"><?= htmlspecialchars($driver['nama']) ?></option>
+          <?php endforeach; ?>
         </select>
         <button type="button" id="bookingDateReset" class="kinetic-command-refresh booking-filter-reset">
           <i class="fa-solid fa-xmark fa-icon"></i>
@@ -117,6 +129,7 @@
           scope: 'active',
           tanggal: '',
           payment: '',
+          driver: '',
         },
         charters: {
           scope: 'active',
@@ -129,7 +142,7 @@
         window.bookingDashboardState.filters = {};
       }
       if (!window.bookingDashboardState.filters.bookings) {
-        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '', payment: '' };
+        window.bookingDashboardState.filters.bookings = { scope: 'active', tanggal: '', payment: '', driver: '' };
       }
       return window.bookingDashboardState.filters.bookings;
     }
@@ -153,6 +166,7 @@
       const filterControls = document.getElementById('bookingFilterControls');
       const dateInput = document.getElementById('booking_date_filter');
       const paymentInput = document.getElementById('booking_payment_filter');
+      const driverInput = document.getElementById('booking_driver_filter');
       const pageTitle = document.getElementById('bookingPageTitle');
       const mobileListTitle = document.getElementById('bookingMobileListTitle');
       const historyNote = document.getElementById('bookingHistoryNote');
@@ -176,6 +190,9 @@
       }
       if (paymentInput) {
         paymentInput.value = filters.payment || '';
+      }
+      if (driverInput) {
+        driverInput.value = filters.driver || '';
       }
       if (bookingsMode && pageTitle) {
         pageTitle.textContent = filters.scope === 'history' ? 'History Booking Bulan Ini' : 'Data Keberangkatan';
@@ -209,6 +226,11 @@
         params.payment = filters.payment;
       } else {
         delete params.payment;
+      }
+      if (filters.driver) {
+        params.driver = filters.driver;
+      } else {
+        delete params.driver;
       }
       return params;
     }
@@ -620,18 +642,37 @@
         });
       }
 
+      const driverFilter = document.getElementById('booking_driver_filter');
+      if (driverFilter) {
+        driverFilter.addEventListener('change', () => {
+          const filters = getBookingFilters();
+          filters.driver = driverFilter.value;
+          const currentMode = window.bookingDashboardState.active || 'bookings';
+          ajaxListLoad(currentMode, getBookingListQueryParams({
+            page: 1,
+            per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
+            search: document.getElementById('search_name_input')?.value || ''
+          }));
+        });
+      }
+
       if (bookingDateReset) {
         bookingDateReset.addEventListener('click', () => {
           const filters = getBookingFilters();
           filters.tanggal = '';
           filters.payment = '';
-          if (bookingDateInput) bookingDateInput.value = '';
-          if (bookingPaymentInput) bookingPaymentInput.value = '';
+          filters.driver = '';
+          const bdi = document.getElementById('booking_date_filter');
+          const bpi = document.getElementById('booking_payment_filter');
+          const bdf = document.getElementById('booking_driver_filter');
+          if (bdi) bdi.value = '';
+          if (bpi) bpi.value = '';
+          if (bdf) bdf.value = '';
           syncBookingFilterUi();
           ajaxListLoad('bookings', getBookingListQueryParams({
             page: 1,
             per_page: parseInt(document.getElementById('bookings_per_page')?.value || '25', 10),
-            search: ''
+            search: document.getElementById('search_name_input')?.value || ''
           }));
         });
       }

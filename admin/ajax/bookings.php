@@ -14,6 +14,7 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $scope = isset($_GET['scope']) ? trim((string) $_GET['scope']) : 'active';
 $tanggalFilter = isset($_GET['tanggal']) ? trim((string) $_GET['tanggal']) : '';
 $paymentFilter = isset($_GET['payment']) ? trim((string) $_GET['payment']) : '';
+$driverFilter = isset($_GET['driver']) ? trim((string) $_GET['driver']) : '';
 
 $currentMonthStart = date('Y-m-01');
 $currentMonthEnd = date('Y-m-t');
@@ -42,8 +43,29 @@ if ($tanggalFilter !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalFilter)
     $params[] = $tanggalFilter;
 }
 
+$searchCondition = "";
 if ($search !== '') {
     $like = '%' . $search . '%';
+    $searchCondition = " AND (
+        b.rute LIKE ?
+        OR COALESCE(d.nama, '') LIKE ?
+        OR b.name LIKE ?
+        OR b.phone LIKE ?
+        OR CAST(b.tanggal AS TEXT) LIKE ?
+        OR CAST(b.jam AS TEXT) LIKE ?
+      ) ";
+    $params = array_merge($params, [$like, $like, $like, $like, $like, $like]);
+}
+
+$driverCondition = "";
+if ($driverFilter === 'none') {
+    $driverCondition = " AND ta.driver_id IS NULL ";
+} elseif ($driverFilter !== '') {
+    $driverCondition = " AND ta.driver_id = ? ";
+    $params[] = $driverFilter;
+}
+
+if ($search !== '' || $driverFilter !== '') {
     $baseFrom = "
     FROM bookings b
     LEFT JOIN trip_assignments ta
@@ -53,16 +75,9 @@ if ($search !== '') {
      AND ta.unit = b.unit
     LEFT JOIN drivers d ON d.id = ta.driver_id
     $bookingWhere
-      AND (
-        b.rute LIKE ?
-        OR COALESCE(d.nama, '') LIKE ?
-        OR b.name LIKE ?
-        OR b.phone LIKE ?
-        OR CAST(b.tanggal AS TEXT) LIKE ?
-        OR CAST(b.jam AS TEXT) LIKE ?
-      )
+      $searchCondition
+      $driverCondition
     ";
-    $params = array_merge($params, [$like, $like, $like, $like, $like, $like]);
     $countSql = "SELECT COUNT(*) AS cnt FROM (
         SELECT b.rute, b.tanggal, b.jam, b.unit
         $baseFrom

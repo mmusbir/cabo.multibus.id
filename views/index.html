@@ -15,7 +15,7 @@
   <link rel="shortcut icon" href="assets/images/favicon.svg">
   <!-- Preload: font utama halaman booking (Space Grotesk 400, Plus Jakarta Sans 800, FA Solid) -->
   <link rel="preload" href="assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf" as="font" type="font/ttf" crossorigin>
+
   <link rel="preload" href="assets/lib/fontawesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <!-- Preload critical stylesheets -->
   <link rel="preload" href="assets/css/fontawesome-custom.min.css" as="style">
@@ -29,9 +29,7 @@
     @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf') format('truetype'); }
     @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf') format('truetype'); }
     @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf') format('truetype'); }
-    /* Plus Jakarta Sans — label pembayaran & elemen bold */
-    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf') format('truetype'); }
-    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('assets/lib/fonts/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf') format('truetype'); }
+
   </style>
   <!-- FontAwesome Icons (Critical) -->
   <link rel="stylesheet" href="assets/css/fontawesome-custom.min.css?v=1">
@@ -207,7 +205,7 @@
 
     .datepicker-cell.prev,
     .datepicker-cell.next {
-      color: rgba(224, 192, 177, 0.42);
+      color: rgba(148, 163, 184, 0.55);
       opacity: 0.7;
     }
 
@@ -248,8 +246,8 @@
 
     #tanggal::placeholder {
       text-align: center;
-      color: rgba(224, 226, 235, 0.82);
-      -webkit-text-fill-color: rgba(224, 226, 235, 0.82);
+      color: rgba(100, 116, 139, 0.55);
+      -webkit-text-fill-color: rgba(100, 116, 139, 0.55);
     }
 
     #tanggal:focus {
@@ -436,7 +434,7 @@
 
     #search_name:empty::before {
       content: attr(data-placeholder);
-      color: rgba(224, 192, 177, 0.68);
+      color: rgba(100, 116, 139, 0.5);
       pointer-events: none;
     }
 
@@ -569,7 +567,7 @@
     }
 
     .payment-label .payment-title {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.08em;
@@ -579,7 +577,7 @@
     .payment-label .payment-caption {
       font-size: 0.62rem;
       line-height: 1.1;
-      color: rgba(224, 192, 177, 0.46);
+      color: rgba(100, 116, 139, 0.55);
     }
 
     /* Booking Button */
@@ -766,7 +764,7 @@
       margin: 0;
       font-size: 12px;
       font-weight: 600;
-      color: rgba(224, 192, 177, 0.56);
+      color: #94a3b8;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
@@ -979,21 +977,21 @@
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(224, 192, 177, 0.68);
+      color: #64748b;
     }
 
     .detail-edit-field-hint {
       font-size: 0.64rem;
-      color: rgba(224, 192, 177, 0.54);
+      color: #94a3b8;
       line-height: 1.2;
     }
 
     .detail-edit-input,
     .detail-edit-select {
       width: 100%;
-      border: 1px solid rgba(148, 163, 184, 0.12);
-      background: rgba(12, 14, 20, 0.58);
-      color: #f8fafc;
+      border: 1px solid rgba(203, 213, 225, 0.6);
+      background: #f8fafc;
+      color: #0f172a;
       border-radius: 14px;
       padding: 9px 11px;
       font-family: inherit;
@@ -1356,7 +1354,7 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       min-height: 100vh;
       margin: 0;
       color: var(--text-primary);
@@ -1728,8 +1726,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 1rem 1rem 0.9rem;
-        border-bottom: 1px solid rgba(88, 66, 55, 0.12);
-        background: rgba(17, 19, 25, 0.96);
+        border-bottom: 1px solid rgba(203, 213, 225, 0.6);
+        background: rgba(255, 255, 255, 0.96);
         backdrop-filter: blur(12px);
       }
 
@@ -1742,14 +1740,14 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        background: #1e1f26;
-        border: 1px solid rgba(88, 66, 55, 0.18);
+        background: #f8fafc;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         color: #f97316;
         font-weight: 800;
       }
 
       .mobile-slate-topbar-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1.05rem;
         font-weight: 800;
         letter-spacing: -0.03em;
@@ -1795,8 +1793,8 @@
         gap: 0.8rem;
         padding: 0.85rem 0.9rem;
         border-radius: 0.8rem;
-        background: #191b22;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .mobile-slate-control-icon {
@@ -1824,12 +1822,12 @@
       }
 
       .mobile-slate-control-label {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.65);
+        color: #64748b;
       }
 
       .mobile-slate-control-input,
@@ -1839,8 +1837,8 @@
         padding: 0;
         border: 0;
         background: transparent;
-        color: #e2e2eb;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #1e293b;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 16px;
         font-weight: 800;
         letter-spacing: -0.02em;
@@ -1854,8 +1852,8 @@
         margin-bottom: 0.9rem;
         padding: 0.9rem;
         border-radius: 0.85rem;
-        background: #191b22;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #f8fafc;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         box-shadow: none;
       }
 
@@ -1878,19 +1876,19 @@
         align-items: center;
         gap: 0.45rem;
         margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1rem;
         font-weight: 800;
-        color: #e2e2eb;
+        color: #1e293b;
       }
 
       .seat-head-meta {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.6rem;
         font-weight: 800;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.54);
+        color: #64748b;
       }
 
       .mobile-slate-section-title .fa-icon,
@@ -1905,7 +1903,7 @@
         min-width: 1.95rem;
         padding: 0;
         border-radius: 999px;
-        border: 1px solid rgba(88, 66, 55, 0.14);
+        border: 1px solid rgba(203, 213, 225, 0.6);
         background: #1e1f26;
         display: inline-flex;
         align-items: center;
@@ -1921,8 +1919,8 @@
         display: block;
         padding: 0.9rem;
         border-radius: 0.8rem;
-        background: rgba(12, 14, 20, 0.6);
-        border: 1px solid rgba(88, 66, 55, 0.1);
+        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(203, 213, 225, 0.4);
       }
 
       #seat-counters {
@@ -1931,7 +1929,7 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.55rem;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
       }
 
       .seat-counter-chip {
@@ -1939,8 +1937,8 @@
         gap: 0.22rem;
         padding: 0.7rem 0.75rem;
         border-radius: 0.8rem;
-        background: rgba(17, 19, 25, 0.78);
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .seat-counter-label {
@@ -1948,14 +1946,14 @@
         font-weight: 800;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.52);
+        color: #475569;
       }
 
       .seat-counter-value {
-        font-family: 'DM Mono', monospace;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.95rem;
         font-weight: 700;
-        color: #f1ebe6;
+        color: #334155;
       }
 
       .seat-counter-chip--selected .seat-counter-value {
@@ -1969,8 +1967,8 @@
       }
 
       .legend .item {
-        color: rgba(224, 192, 177, 0.72);
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #64748b;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.1em;
@@ -1986,9 +1984,9 @@
       .search-container-modern input,
       #card-passenger .control-select,
       #card-passenger select {
-        background: #282a30 !important;
-        border: 1px solid rgba(88, 66, 55, 0.12) !important;
-        color: #e2e2eb !important;
+        background: #f8fafc !important;
+        border: 1px solid rgba(203, 213, 225, 0.6) !important;
+        color: #1e293b !important;
         border-radius: 0.8rem !important;
         min-height: 2.8rem;
         padding: 0.75rem 0.85rem !important;
@@ -2010,7 +2008,7 @@
       #card-passenger .carter-section-title {
         font-size: 0.66rem;
         letter-spacing: 0.12em;
-        color: rgba(224, 192, 177, 0.8);
+        color: #64748b;
       }
 
       .payment-selector-modern {
@@ -2021,8 +2019,8 @@
       .payment-label {
         min-height: 4.45rem;
         padding: 0.65rem 0.35rem;
-        background: #282a30;
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .payment-badge {
@@ -2045,7 +2043,7 @@
       }
 
       #msg {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.78rem;
       }
 
@@ -2060,8 +2058,8 @@
         gap: 1rem;
         padding: 1rem;
         border-radius: 1rem;
-        background: rgba(51, 52, 59, 0.92);
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(203, 213, 225, 0.6);
         backdrop-filter: blur(14px);
       }
 
@@ -2083,20 +2081,20 @@
       }
 
       .rekap-bar-label {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.58rem;
         font-weight: 800;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.62);
+        color: #64748b;
       }
 
       .rekap-bar-count,
       .rekap-bar-total {
-        font-family: 'DM Mono', monospace;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1.05rem;
         font-weight: 700;
-        color: #e2e2eb;
+        color: #0f172a;
       }
 
       .rekap-bar-count {
@@ -2106,14 +2104,14 @@
       .rekap-bar-divider {
         width: 1px;
         align-self: stretch;
-        background: rgba(88, 66, 55, 0.3);
+        background: rgba(203, 213, 225, 0.6);
       }
 
       .rekap-bar-btn {
         flex: 1 1 0;
         min-height: 2.9rem;
         border-radius: 0.85rem;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.7rem;
         font-weight: 800;
         letter-spacing: 0.14em;
@@ -2121,9 +2119,9 @@
       }
 
       .rekap-bar-btn-secondary {
-        background: #282a30;
-        color: rgba(224, 192, 177, 0.88);
-        border: 1px solid rgba(88, 66, 55, 0.12);
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .rekap-bar-btn-primary {
@@ -2160,7 +2158,7 @@
 
     .desktop-terminal-brand,
     .desktop-terminal-mark {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-weight: 800;
       text-transform: uppercase;
       color: #f97316;
@@ -2237,9 +2235,9 @@
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      background: #1e1f26;
+      background: #f8fafc;
       border: 1px solid rgba(249, 115, 22, 0.12);
-      color: #e2e2eb;
+      color: #334155;
       text-decoration: none;
     }
 
@@ -2288,9 +2286,9 @@
         min-height: 5.45rem;
         padding: 1rem 1.05rem;
         border-radius: 1rem;
-        background: #191b22;
-        border: 1px solid rgba(88, 66, 55, 0.16);
-        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
       }
 
@@ -2324,12 +2322,12 @@
       }
 
       .mobile-slate-control-label {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.6rem;
         font-weight: 800;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.65);
+        color: #64748b;
       }
 
       .mobile-slate-control-input {
@@ -2338,7 +2336,7 @@
         border: 0;
         background: transparent;
         box-shadow: none !important;
-        color: #e2e2eb;
+        color: #1e293b;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.98rem;
         font-weight: 700;
@@ -2352,8 +2350,8 @@
         grid-column: span 7;
         padding: 1.6rem;
         border-radius: 1rem;
-        background: #282a30;
-        border: 1px solid rgba(88, 66, 55, 0.16);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         box-shadow: none;
         position: sticky;
         top: 5.25rem;
@@ -2365,8 +2363,8 @@
         gap: 1rem;
         padding: 1.45rem;
         border-radius: 1rem;
-        background: #282a30;
-        border: 1px solid rgba(88, 66, 55, 0.16);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
         box-shadow: none;
         align-self: start;
       }
@@ -2390,19 +2388,19 @@
         align-items: center;
         gap: 0.55rem;
         margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1.1rem;
         font-weight: 800;
-        color: #e2e2eb;
+        color: #1e293b;
       }
 
       .seat-head-meta {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.56);
+        color: #64748b;
       }
 
       .mobile-slate-section-title .fa-icon {
@@ -2441,8 +2439,8 @@
         margin: 0 auto;
         padding: 1.5rem;
         border-radius: 1.45rem;
-        background: rgba(12, 14, 20, 0.6);
-        border: 1px solid rgba(128, 128, 128, 0.1);
+        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(203, 213, 225, 0.4);
       }
 
       .layout {
@@ -2463,9 +2461,9 @@
       .layout-row .seat {
         min-height: 3.35rem;
         border-radius: 0.7rem;
-        background: #33343b;
-        border-color: transparent;
-        color: #e2e2eb;
+        background: #f1f5f9;
+        border-color: rgba(203, 213, 225, 0.5);
+        color: #334155;
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
         letter-spacing: 0.01em;
@@ -2489,9 +2487,9 @@
       .layout-row .driver {
         min-height: 3.5rem;
         border-radius: 0.8rem;
-        background: #191b22;
-        border: 1px dashed rgba(88, 66, 55, 0.28);
-        color: rgba(224, 192, 177, 0.4);
+        background: #f8fafc;
+        border: 1px dashed rgba(203, 213, 225, 0.8);
+        color: #94a3b8;
       }
 
       .layout-row .empty-cell::before {
@@ -2506,12 +2504,12 @@
       }
 
       .legend .item {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.72);
+        color: #64748b;
       }
 
       #seat-counters {
@@ -2520,7 +2518,7 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0.75rem;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
       }
 
       .seat-counter-chip {
@@ -2541,7 +2539,7 @@
       }
 
       .seat-counter-value {
-        font-family: 'DM Mono', monospace;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1rem;
         font-weight: 700;
         color: #0f172a;
@@ -2584,12 +2582,12 @@
 
       #card-passenger .input-label {
         margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.64rem;
         font-weight: 800;
         letter-spacing: 0.17em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.82);
+        color: #334155;
       }
 
       .booking-field {
@@ -2609,7 +2607,7 @@
         top: 50%;
         left: 0.95rem;
         transform: translateY(-50%);
-        color: rgba(224, 192, 177, 0.5);
+        color: #94a3b8;
         pointer-events: none;
       }
 
@@ -2636,11 +2634,11 @@
       }
 
       .payment-option input:checked + .payment-label {
-        background: linear-gradient(180deg, rgba(22, 163, 74, 0.18), rgba(17, 19, 25, 0.96));
-        border-color: rgba(34, 197, 94, 0.62);
-        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-        transform: translateY(-1px);
-        color: #ecfdf5;
+        background: rgba(22, 163, 74, 0.08);
+        border-color: rgba(34, 197, 94, 0.6);
+        box-shadow: none;
+        transform: none;
+        color: #16a34a;
       }
 
       .payment-badge {
@@ -2650,22 +2648,22 @@
       }
 
       .payment-label .payment-title {
-        color: rgba(224, 192, 177, 0.88);
+        color: #334155;
         line-height: 1.15;
       }
 
       .payment-label .payment-caption {
-        color: rgba(224, 192, 177, 0.58);
+        color: #64748b;
         line-height: 1.2;
       }
 
 
       .payment-option input:checked + .payment-label .payment-title {
-        color: #86efac;
+        color: #15803d;
       }
 
       .payment-option input:checked + .payment-label .payment-caption {
-        color: rgba(220, 252, 231, 0.82);
+        color: #166534;
       }
 
       .payment-option input:checked + .payment-label .payment-badge {
@@ -2690,10 +2688,10 @@
         justify-content: space-between;
         gap: 1.5rem;
         padding: 0.95rem 1.35rem;
-        background: linear-gradient(180deg, rgba(18, 20, 27, 0.92), rgba(12, 14, 20, 0.97));
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(14px);
-        box-shadow: 0 -14px 32px rgba(0, 0, 0, 0.22);
+        background: #f8fafc;
+        border-top: 1px solid rgba(203, 213, 225, 0.6);
+        backdrop-filter: none;
+        box-shadow: none;
       }
 
       .rekap-bar-metrics,
@@ -2710,12 +2708,12 @@
       }
 
       .rekap-bar-label {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.6rem;
         font-weight: 800;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.6);
+        color: #64748b;
       }
 
       .rekap-bar-count,
@@ -2723,7 +2721,7 @@
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1.32rem;
         font-weight: 800;
-        color: #e2e2eb;
+        color: #0f172a;
       }
 
       .rekap-bar-count {
@@ -2733,14 +2731,14 @@
       .rekap-bar-divider {
         width: 1px;
         height: 2.75rem;
-        background: rgba(88, 66, 55, 0.28);
+        background: rgba(203, 213, 225, 0.6);
       }
 
       .rekap-bar-btn {
         min-height: 3rem;
         padding: 0 1.2rem;
         border-radius: 0.9rem;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.72rem;
         font-weight: 800;
         letter-spacing: 0.14em;
@@ -2753,16 +2751,16 @@
       }
 
       .rekap-bar-btn-secondary {
-        background: #191b22;
-        color: rgba(224, 192, 177, 0.84);
-        border: 1px solid rgba(88, 66, 55, 0.16);
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .rekap-bar-btn-secondary:hover {
-        color: #f1ebe6;
-        border-color: rgba(249, 115, 22, 0.22);
-        background: #20222b;
-        transform: translateY(-1px);
+        color: #0f172a;
+        border-color: rgba(249, 115, 22, 0.4);
+        background: #ffffff;
+        transform: none;
       }
 
       .rekap-bar-btn-primary {
@@ -2802,9 +2800,9 @@
         width: min(100%, 34rem);
         padding: 1.35rem;
         border-radius: 1rem;
-        background: #191b22;
-        border: 1px solid rgba(88, 66, 55, 0.16);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.6);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
       }
 
       .modal-rekap-box {
@@ -2822,7 +2820,7 @@
 
       .modal-title,
       .confirm-popup-title {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 1.15rem;
         font-weight: 800;
         color: #0f172a;
@@ -2830,12 +2828,12 @@
 
       .modal-subtitle {
         margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.54);
+        color: #94a3b8;
       }
 
       .modal-close-btn {
@@ -2868,7 +2866,7 @@
 
       #detailContent .text-primary-container,
       #detailContent .text-on-surface {
-        color: #e2e2eb !important;
+        color: #334155 !important;
       }
 
       .rekap-item-card {
@@ -2887,12 +2885,12 @@
       }
 
       .rekap-total-label {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.62rem;
         font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.62);
+        color: #64748b;
       }
 
       .rekap-total-amount {
@@ -2916,7 +2914,7 @@
       .confirm-popup-btn {
         min-height: 2.9rem;
         border-radius: 0.8rem;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.72rem;
         font-weight: 800;
         letter-spacing: 0.12em;
@@ -2930,9 +2928,9 @@
 
       .detail-copy-btn,
       .confirm-popup-no {
-        background: #111319;
-        color: rgba(224, 192, 177, 0.88);
-        border: 1px solid rgba(88, 66, 55, 0.16);
+        background: #f8fafc;
+        color: #475569;
+        border: 1px solid rgba(203, 213, 225, 0.6);
       }
 
       .detail-copy-btn {
@@ -3022,7 +3020,7 @@
       top: 50%;
       left: 0.9rem;
       transform: translateY(-50%);
-      color: rgba(224, 192, 177, 0.45);
+      color: #94a3b8;
       pointer-events: none;
       z-index: 2;
       transition: opacity 0.18s ease;
@@ -3040,7 +3038,7 @@
     .mobile-slate-control-card select,
     .mobile-slate-control-card input,
     .mobile-slate-control-input {
-      color: #f1ebe6;
+      color: #1e293b;
     }
 
     .mobile-slate-control-card select:disabled,
@@ -3049,13 +3047,13 @@
     .mobile-slate-control-input:disabled,
     .mobile-slate-control-input[readonly] {
       opacity: 1;
-      color: rgba(224, 226, 235, 0.76);
-      -webkit-text-fill-color: rgba(224, 226, 235, 0.76);
+      color: rgba(71, 85, 105, 0.55);
+      -webkit-text-fill-color: rgba(71, 85, 105, 0.55);
     }
 
     .mobile-slate-control-card select option {
-      color: #e2e2eb;
-      background: #191b22;
+      color: #1e293b;
+      background: #ffffff;
     }
 
     #search_name,
@@ -3103,18 +3101,10 @@
       margin-bottom: 4px;
       font-weight: 500;
     }
-      border: 1px solid rgba(88, 66, 55, 0.18);
-      border-radius: 0.9rem;
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
-      overflow-y: auto;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
     #sugList > div {
       padding: 0.78rem 0.95rem;
       border-bottom: 0;
-      color: rgba(241, 235, 230, 0.92);
+      color: #334155;
       font-size: 0.86rem;
       line-height: 1.35;
       transition: background 0.18s ease, color 0.18s ease;
@@ -3152,7 +3142,7 @@
 
     .booking-suggestion-name {
       display: block;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 0.9rem;
       font-weight: 700;
       color: inherit;
@@ -3168,7 +3158,7 @@
     .booking-suggestion-meta {
       display: block;
       font-size: 0.7rem;
-      color: rgba(224, 192, 177, 0.72);
+      color: #94a3b8;
       white-space: nowrap;
       overflow: visible;
       text-overflow: unset;
@@ -3278,12 +3268,12 @@
 
       #card-passenger .input-label {
         margin: 0;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.63rem;
         font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(224, 192, 177, 0.74);
+        color: #64748b;
       }
 
       .mobile-slate-control-card:focus-within,
@@ -3295,7 +3285,7 @@
         max-width: none;
         padding: 1rem 0.9rem 1.05rem;
         border-radius: 1rem;
-        background: rgba(12, 14, 20, 0.6);
+        background: rgba(248, 250, 252, 0.9);
       }
 
       .layout {
@@ -3416,24 +3406,24 @@
     .profile-dropdown { position: relative; }
     .profile-menu {
       position: absolute; top: calc(100% + 0.75rem); right: 0; width: 220px;
-      background: rgba(25, 27, 34, 0.98) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px;
-      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.5); padding: 0.7rem; display: none; z-index: 1000;
+      background: rgba(255, 255, 255, 0.98) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(203, 213, 225, 0.5); border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12); padding: 0.7rem; display: none; z-index: 1000;
       animation: profileFadeIn 0.2s ease-out;
     }
     @keyframes profileFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .profile-menu.show { display: block; }
-    .profile-meta { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 0.5rem; text-align: left; }
-    .profile-name { font-weight: 800; font-size: 0.95rem; color: #f1ebe6; margin-bottom: 0.1rem; }
-    .profile-role { font-size: 0.65rem; font-weight: 700; color: rgba(224, 192, 177, 0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+    .profile-meta { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(203, 213, 225, 0.5); margin-bottom: 0.5rem; text-align: left; }
+    .profile-name { font-weight: 800; font-size: 0.95rem; color: #1e293b; margin-bottom: 0.1rem; }
+    .profile-role { font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; }
     .profile-menu a {
       display: flex; align-items: center; gap: 0.9rem; padding: 0.8rem 1rem; border-radius: 12px;
-      color: rgba(241, 235, 230, 0.82) !important; text-decoration: none !important; font-size: 0.88rem; font-weight: 600;
+      color: #475569 !important; text-decoration: none !important; font-size: 0.88rem; font-weight: 600;
     }
-    .profile-menu a:hover { background: rgba(249, 115, 22, 0.1) !important; color: #f97316 !important; }
+    .profile-menu a:hover { background: rgba(249, 115, 22, 0.08) !important; color: #f97316 !important; }
     .profile-menu .fa-icon { color: #f97316; font-size: 1.2rem; }
-    .menu-divider-line { height: 1px; background: rgba(255, 255, 255, 0.06); margin: 0.5rem 0; }
-    .logout-link:hover { background: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
+    .menu-divider-line { height: 1px; background: rgba(203, 213, 225, 0.5); margin: 0.5rem 0; }
+    .logout-link:hover { background: rgba(239, 68, 68, 0.06) !important; color: #ef4444 !important; }
     .logout-link:hover .fa-icon { color: #ef4444 !important; }
     .profile-trigger { cursor: pointer; border: 1px solid rgba(249, 115, 22, 0.18) !important; font-family: inherit; font-weight: 800; }
     
