@@ -46,6 +46,15 @@
   <link rel="preload" href="assets/css/seat-layout.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="assets/css/seat-layout.css"></noscript>
   <!-- Theme toggle removed on this page -->
+  <script>
+    (function(){
+      try {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        document.documentElement.setAttribute('data-theme','light');
+      } catch (e) {}
+    })();
+  </script>
   <style>
     * {
       box-sizing: border-box;
