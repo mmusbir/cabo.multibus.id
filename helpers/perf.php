@@ -14,6 +14,19 @@ function log_slow_query_entry($sql, $params, $duration_ms) {
     @file_put_contents($file, json_encode($entry, JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
 
+function log_timezone_query_entry($sql, $params, $duration_ms = null) {
+    $dir = __DIR__ . '/../logs';
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    $file = $dir . '/timezone_queries.log';
+    $entry = [
+        'time' => date('c'),
+        'duration_ms' => $duration_ms,
+        'sql' => $sql,
+        'params' => $params
+    ];
+    @file_put_contents($file, json_encode($entry, JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND | LOCK_EX);
+}
+
 function explain_query_json($conn, $sql) {
     try {
         $stmt = $conn->query("EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) " . $sql);

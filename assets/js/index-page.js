@@ -1,4 +1,4 @@
-﻿      /* ================== CONFIG ================== */
+      /* ================== CONFIG ================== */
       const API_URL = './api.php';
 
       /* ================== ELEMENTS ================== */
@@ -34,7 +34,7 @@
       /* ================== HELPERS ================== */
       function setMsg(msg, isSuccess = false) {
         msgEl.textContent = msg;
-        msgEl.style.color = isSuccess ? '#ffb690' : '#ffb4ab';
+        msgEl.style.color = isSuccess ? '#158303' : '#dc2626';
       }
 
       function isValidDate(d) {
