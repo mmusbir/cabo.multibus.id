@@ -2111,8 +2111,8 @@
           });
 
           // Unit kendaraan
-          const uSelect = document.querySelector('#charter-create select[name="unit_id"]');
-          if (uSelect) uSelect.value = d.unit_id || '';
+          const uSelect = document.getElementById('charter_unit_select') || document.querySelector('#charter-create select[name="unit_id"]');
+          if (uSelect) uSelect.value = String(d.unit_id || '');
 
           // Driver
           const drSelect = document.querySelector('#charter-create select[name="driver_name"]');

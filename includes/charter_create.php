@@ -5,7 +5,8 @@ unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
 
 $charterCreateUnits = [];
 try {
-  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas, tahun, warna FROM units ORDER BY nopol LIMIT 100")->fetchAll(PDO::FETCH_ASSOC);
+  // Ambil semua unit (termasuk yang status non-aktif agar admin bisa pilih)
+  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas, tahun, warna, status FROM units ORDER BY status DESC, nopol LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterCreateUnits = [];
 }
@@ -262,13 +263,17 @@ $charterCreateForm = array_merge([
 
             <div class="mb-3">
               <label class="admin-bs-input-label">Unit Kendaraan</label>
-              <select name="unit_id" class="form-select modern-input" required>
+              <select name="unit_id" id="charter_unit_select" class="form-select modern-input" required>
                 <option value="">Pilih Unit</option>
-                <?php foreach ($charterCreateUnits as $unit): ?>
-                  <option value="<?php echo (int) $unit['id']; ?>" <?php echo (string) $charterCreateForm['unit_id'] === (string) $unit['id'] ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars(($unit['nopol'] ?? '-') . ' - ' . ($unit['merek'] ?? 'Unit')); ?>
-                  </option>
-                <?php endforeach; ?>
+                <?php if (empty($charterCreateUnits)): ?>
+                  <option value="" disabled>-- Belum ada unit terdaftar --</option>
+                <?php else: ?>
+                  <?php foreach ($charterCreateUnits as $unit): ?>
+                    <option value="<?php echo (int) $unit['id']; ?>" <?php echo (string) $charterCreateForm['unit_id'] === (string) $unit['id'] ? 'selected' : ''; ?>>
+                      <?php echo htmlspecialchars(($unit['nopol'] ?? '-') . ' - ' . ($unit['merek'] ?? 'Unit') . (!empty($unit['status']) && $unit['status'] !== 'Aktif' ? ' [' . htmlspecialchars($unit['status']) . ']' : '')); ?>
+                    </option>
+                  <?php endforeach; ?>
+                <?php endif; ?>
               </select>
             </div>
 
