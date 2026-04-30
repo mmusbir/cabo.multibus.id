@@ -422,7 +422,7 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
         if (!rute || !dateStr) return;
 
-        fetch(API_URL + '?action=getSchedules&rute=' + encodeURIComponent(rute) + '&tanggal=' + encodeURIComponent(dateStr) + '&_=' + new Date().getTime())
+        fetch(API_URL + '?action=getSchedules&rute=' + encodeURIComponent(rute) + '&tanggal=' + encodeURIComponent(dateStr))
           .then(r => r.json()).then(js => {
             if (!js || !js.success) {
               console.warn('getSchedules failed', js);
@@ -1205,6 +1205,50 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
         renderSeatLayout();
         if (jamEl.options.length > 1) {
           jamChanged();
+        }
+        // Auto-load today's routes on page load for faster first experience
+        const todayRouteKey = '_cachedTodayRoutes';
+        const todayCacheTs = '_cachedTodayRoutesTs';
+        const todayCachedLocal = sessionStorage.getItem(todayRouteKey);
+        const todayCacheAge = parseInt(sessionStorage.getItem(todayCacheTs) || '0', 10);
+        const todayStr2 = today.toISOString().split('T')[0];
+
+        function applyTodayRoutes(routes) {
+          if (!Array.isArray(routes) || routes.length === 0) return;
+          routeEl.innerHTML = '<option value="" disabled selected>Pilih Rute</option>';
+          routes.forEach(rt => {
+            const opt = document.createElement('option');
+            opt.value = rt; opt.textContent = rt;
+            routeEl.appendChild(opt);
+          });
+          routeEl.disabled = false;
+          // Auto-select first route and load schedule
+          if (routes.length === 1) {
+            routeEl.value = routes[0];
+            fillTimes(routes[0], todayStr2);
+            loadSegments(routes[0]);
+          }
+        }
+
+        if (todayCachedLocal && (Date.now() - todayCacheAge) < 300000) {
+          try {
+            applyTodayRoutes(JSON.parse(todayCachedLocal));
+          } catch (e) {}
+        } else {
+          // Pre-fill today's date on form
+          if (!tanggalEl.value) {
+            tanggalEl.value = todayStr2;
+          }
+          fetch(API_URL + '?action=getRoutesByDate&tanggal=' + encodeURIComponent(todayStr2))
+            .then(r => r.json())
+            .then(js => {
+              if (js && js.success && js.routes) {
+                sessionStorage.setItem(todayRouteKey, JSON.stringify(js.routes));
+                sessionStorage.setItem(todayCacheTs, Date.now());
+                applyTodayRoutes(js.routes);
+              }
+            })
+            .catch(() => {});
         }
       })();
       /* ================== LOAD SEGMENTS ================== */
