@@ -327,9 +327,22 @@ try {
 
 // ==================== PERFORMANCE INDEXES ====================
 try {
+  // For admin booking list group by & filters
   $conn->exec("CREATE INDEX IF NOT EXISTS idx_bookings_trip_date_active ON bookings (tanggal, jam, rute, unit) WHERE status <> 'canceled'");
   $conn->exec("CREATE INDEX IF NOT EXISTS idx_bookings_trip_route_active ON bookings (rute, tanggal, jam, unit, seat) WHERE status <> 'canceled'");
+  
+  // For driver & assignment lookups in admin booking page
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_trip_assignments_composite ON trip_assignments (rute, tanggal, jam, unit, driver_id)");
+  
+  // For charter list past/future partition
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_charters_start_date ON charters (start_date)");
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_charters_bop_status ON charters (bop_status)");
   $conn->exec("CREATE INDEX IF NOT EXISTS idx_charters_start_created ON charters (start_date, created_at DESC)");
+  
+  // For luggage list active vs history queries
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_luggages_status_payment ON luggages (status, payment_status, created_at DESC)");
+  $conn->exec("CREATE INDEX IF NOT EXISTS idx_luggages_created_at ON luggages (created_at)");
+
 } catch (PDOException $e) {
   // Silent fail
 }

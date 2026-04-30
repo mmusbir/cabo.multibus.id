@@ -16,7 +16,7 @@ $scope = isset($_GET['scope']) ? $_GET['scope'] : 'active';
 if ($scope === 'history') {
     $baseWhere = "(l.status IN ('active', 'done') AND l.payment_status = 'Lunas')";
 } else {
-    $baseWhere = "(l.status = 'pending' OR l.payment_status != 'Lunas' OR CAST(l.created_at AS DATE) = CURRENT_DATE)";
+    $baseWhere = "(l.status = 'pending' OR l.payment_status != 'Lunas' OR (l.created_at >= CURRENT_DATE AND l.created_at < CURRENT_DATE + INTERVAL '1 day'))";
 }
 
 if ($search !== '') {
