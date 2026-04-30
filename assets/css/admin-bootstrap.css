@@ -3109,7 +3109,14 @@ body.admin-bootstrap-page .kinetic-command-add-btn .fa-icon,
 body.admin-bootstrap-page .kinetic-command-refresh .fa-icon,
 body.admin-bootstrap-page .kinetic-mobile-icon-btn .fa-icon,
 body.admin-bootstrap-page .kinetic-icon-btn .fa-icon,
+body.admin-bootstrap-page .theme-toggle-btn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
 body.admin-bootstrap-page .theme-toggle-btn .fa-icon {
+    color: #334155 !important;
     transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -3119,6 +3126,7 @@ body.admin-bootstrap-page .kinetic-mobile-icon-btn:hover .fa-icon,
 body.admin-bootstrap-page .kinetic-icon-btn:hover .fa-icon,
 body.admin-bootstrap-page .theme-toggle-btn:hover .fa-icon {
     transform: translateY(-1px);
+    color: #f97316 !important;
 }
 
 body.admin-bootstrap-page .kinetic-command-search {

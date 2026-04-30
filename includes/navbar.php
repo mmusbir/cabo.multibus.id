@@ -99,7 +99,7 @@
           <i class="fa-solid fa-sun fa-icon" data-theme-icon></i>
         </button>
         <button class="kinetic-icon-btn" id="moreMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu admin">
-          <i class="fa-solid fa-table-cells-large fa-icon"></i>
+          <i class="fa-solid fa-bars fa-icon"></i>
         </button>
         <div class="profile-dropdown kinetic-profile-dropdown">
           <button class="profile-btn kinetic-profile-btn" id="profileMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Buka menu profil">
