@@ -8935,3 +8935,27 @@ body.admin-bootstrap-page #charters_tbody {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== FORCED VISIBILITY FIX FOR THEME TOGGLE AND BURGER NAV BUTTON ===== */
+body.admin-bootstrap-page .theme-toggle-btn,
+body.admin-bootstrap-page #moreMenuBtn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+    color: #0f172a !important;
+}
+body.admin-bootstrap-page .theme-toggle-btn .fa-icon,
+body.admin-bootstrap-page #moreMenuBtn .fa-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #0f172a !important;
+    font-size: 1.25rem !important;
+}
+@media (max-width: 991px) {
+    body.admin-bootstrap-page .theme-toggle-btn,
+    body.admin-bootstrap-page #moreMenuBtn {
+        display: inline-flex !important;
+    }
+}
