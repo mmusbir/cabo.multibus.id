@@ -6,7 +6,8 @@ unset($_SESSION['charter_create_errors'], $_SESSION['charter_create_old']);
 $charterCreateUnits = [];
 try {
   // Ambil semua unit (termasuk yang status non-aktif agar admin bisa pilih)
-  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas, tahun, warna, status FROM units ORDER BY status DESC, nopol LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
+  // Fix: Hapus 'tahun' dan 'warna' karena kolom tidak ada di database PostgreSQL Supabase yang menyebabkan silent exception
+  $charterCreateUnits = $conn->query("SELECT id, nopol, merek, kapasitas, status FROM units ORDER BY status DESC, nopol LIMIT 200")->fetchAll(PDO::FETCH_ASSOC);
 } catch (Throwable $e) {
   $charterCreateUnits = [];
 }
