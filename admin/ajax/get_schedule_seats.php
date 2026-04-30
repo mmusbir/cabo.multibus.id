@@ -17,9 +17,9 @@ if (empty($rute) || empty($tanggal) || empty($jam)) {
 
 // 1. Get Layout from Unit
 $dow = date('w', strtotime($tanggal));
-$stmt = $conn->prepare("SELECT s.unit_id, u.layout FROM schedules s LEFT JOIN units u ON s.unit_id = u.id WHERE s.rute = ? AND s.dow = ? AND CAST(s.jam AS TEXT) LIKE ? LIMIT 1");
-$jam_like = $jam . '%';
-$stmt->execute([$rute, $dow, $jam_like]);
+$jamTime = $jam . ':00'; // ensure HH:MM:SS format for exact TIME comparison
+$stmt = $conn->prepare("SELECT s.unit_id, u.layout FROM schedules s LEFT JOIN units u ON s.unit_id = u.id WHERE s.rute = ? AND s.dow = ? AND s.jam = ?::time LIMIT 1");
+$stmt->execute([$rute, $dow, $jamTime]);
 $sData = $stmt->fetch();
 
 $layout = [];
@@ -29,8 +29,8 @@ if ($sData && !empty($sData['layout'])) {
 
 // 2. Get Occupied Seats
 $occupied = [];
-$stmt = $conn->prepare("SELECT seat FROM bookings WHERE rute=? AND tanggal=? AND CAST(jam AS TEXT) LIKE ? AND unit=? AND status!='canceled'");
-$stmt->execute([$rute, $tanggal, $jam_like, $unit]);
+$stmt = $conn->prepare("SELECT seat FROM bookings WHERE rute=? AND tanggal=? AND jam=?::time AND unit=? AND status!='canceled'");
+$stmt->execute([$rute, $tanggal, $jamTime, $unit]);
 while ($row = $stmt->fetch()) {
     $occupied[] = (string) $row['seat'];
 }

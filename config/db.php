@@ -47,8 +47,9 @@ if ($env_url) {
     $ssl_mode = ($_ENV['DB_SSL'] ?? ($db_host === 'localhost' || $db_host === '127.0.0.1' ? 'disable' : 'require'));
 }
 
-// Build DSN with dynamic sslmode
-$dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name};sslmode={$ssl_mode}";
+// Build DSN with dynamic sslmode and timezone baked in (avoids per-session SET timezone query)
+$tzEncoded = urlencode('Asia/Makassar');
+$dsn = "pgsql:host={$db_host};port={$db_port};dbname={$db_name};sslmode={$ssl_mode};options='--timezone=Asia/Makassar'";
 
 try {
     $conn = new PDO($dsn, $db_user, $db_pass, [

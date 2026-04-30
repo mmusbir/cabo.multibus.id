@@ -557,7 +557,7 @@ $router->get('getRoutesByDate', function () use ($conn) {
     $cacheKey = 'getRoutesByDate|' . $tanggal;
     $cached = cache_get($cacheKey);
     if ($cached !== null) {
-        set_edge_cache_headers(60, null, $cacheKey);
+        set_edge_cache_headers(300, null, $cacheKey);
         apiSuccess(['routes' => $cached]);
     }
     $dow = (int) date('w', strtotime($tanggal));
@@ -567,8 +567,8 @@ $router->get('getRoutesByDate', function () use ($conn) {
     while ($r = $stmt->fetch()) {
         $routes[] = $r['rute'];
     }
-    cache_set($cacheKey, $routes, 60);
-    set_edge_cache_headers(60, null, $cacheKey);
+    cache_set($cacheKey, $routes, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['routes' => $routes]);
 });
 
@@ -582,7 +582,7 @@ $router->get('getSchedules', function () use ($conn) {
     $cacheKey = 'getSchedules|' . $rute . '|' . $tanggal;
     $cached = cache_get($cacheKey);
     if ($cached !== null) {
-        set_edge_cache_headers(15, null, $cacheKey);
+        set_edge_cache_headers(300, null, $cacheKey);
         apiSuccess(['schedules' => $cached]);
     }
     $dow = (int) date('w', strtotime($tanggal));
@@ -620,8 +620,8 @@ $router->get('getSchedules', function () use ($conn) {
         'tanggal' => $tanggal,
         'count' => count($schedules),
     ], 100);
-    cache_set($cacheKey, $schedules, 15);
-    set_edge_cache_headers(15, null, $cacheKey);
+    cache_set($cacheKey, $schedules, 300);
+    set_edge_cache_headers(300, null, $cacheKey);
     apiSuccess(['schedules' => $schedules]);
 });
 
