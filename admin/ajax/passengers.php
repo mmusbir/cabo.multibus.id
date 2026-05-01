@@ -290,9 +290,6 @@ try {
                 <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
               <?php endif; ?>
               <div class="seat-actions booking-detail-actions">
-                <button type="button" class="btn-action-icon info booking-detail-toggle" title="Lihat detail">
-                  <i class="fa-solid fa-chevron-down fa-icon"></i>
-                </button>
                 <button
                   type="button"
                   class="edit-booking-btn btn-action-icon edit"
@@ -324,22 +321,22 @@ try {
               </div>
             </div>
           </div>
-          <div class="booking-detail-extra">
-            <div class="booking-detail-extra-item">
-              <span class="booking-detail-extra-label">No. HP</span>
-              <strong class="booking-detail-extra-value"><?php echo h($p['phone'] ?? '-'); ?></strong>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color);">
+            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
+              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">No. HP</span>
+              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($p['phone'] ?? '-'); ?></strong>
             </div>
-            <div class="booking-detail-extra-item">
-              <span class="booking-detail-extra-label">Alamat / Titik Jemput</span>
-              <strong class="booking-detail-extra-value"><?php echo h($pickupText); ?></strong>
+            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
+              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Alamat / Titik Jemput</span>
+              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($pickupText); ?></strong>
             </div>
-            <div class="booking-detail-extra-item">
-              <span class="booking-detail-extra-label">Status Bayar</span>
-              <strong class="booking-detail-extra-value"><?php echo h($payStatus); ?></strong>
+            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
+              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Status Bayar</span>
+              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($payStatus); ?></strong>
             </div>
-            <div class="booking-detail-extra-item">
-              <span class="booking-detail-extra-label">Google Maps</span>
-              <strong class="booking-detail-extra-value"><?php echo h($p['gmaps'] ?? '-'); ?></strong>
+            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
+              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Google Maps</span>
+              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($p['gmaps'] ?? '-'); ?></strong>
             </div>
           </div>
         </div>
