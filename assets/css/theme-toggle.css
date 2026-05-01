@@ -1016,13 +1016,24 @@ html[data-theme="light"] body.admin-bootstrap-page .booking-detail-toolbar-btn.s
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card {
-  background: #ffffff !important;
-  border-color: rgba(148, 163, 184, 0.16) !important;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 24px -5px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  backdrop-filter: blur(10px);
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 36px -10px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255,255,255,1) !important;
+  border-color: rgba(249, 115, 22, 0.2) !important;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-name {
   color: #0f172a !important;
+  background: linear-gradient(90deg, #0f172a, #334155);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 html[data-theme="light"] body.admin-bootstrap-page .booking-detail-code {
