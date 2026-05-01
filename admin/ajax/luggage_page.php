@@ -62,11 +62,9 @@ if (empty($rows)) {
             $stateClass = 'danger';
             $noteText = 'Pengiriman dibatalkan';
             $noteClass = 'danger';
-        } elseif ($payment === 'Lunas') {
-            $statusLabel = 'LOADING';
-            $stateClass = 'loading';
-            $noteText = 'Pembayaran sudah masuk';
-            $noteClass = '';
+        } elseif ($status === 'done') {
+            $statusLabel = 'SELESAI';
+            $stateClass = 'success';
         }
 
         $serviceName = $l['service_name'] ?: '-';
@@ -114,18 +112,18 @@ if (empty($rows)) {
         echo '      <span style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:-4px;">Total Biaya</span>';
         echo '      Rp ' . number_format($l['price'], 0, ',', '.');
         echo '    </div>';
-        echo '    <div class="d-flex gap-1">';
+        echo '    <div class="d-flex gap-1 flex-wrap justify-content-end">';
         if ($status !== 'done' && $status !== 'canceled') {
-            echo '      <button class="kinetic-icon-btn luggage-action" style="color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.05);" data-action="markLuggageDone" data-id="' . intval($l['id']) . '" title="Tandai Sudah Diambil (Selesai)"><i class="fa-solid fa-box-open"></i></button>';
+            echo '      <button class="kinetic-trip-action success luggage-action" data-action="markLuggageDone" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-box-open fa-icon"></i>Selesai</button>';
         }
         if ($status === 'pending') {
-            echo '      <button class="kinetic-icon-btn luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><i class="fa-solid fa-pen-to-square"></i></button>';
+            echo '      <button class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-pen-to-square fa-icon"></i>Input</button>';
         }
         if ($payment !== 'Lunas') {
-            echo '      <button class="kinetic-icon-btn success luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" title="Tandai lunas"><i class="fa-solid fa-check-double"></i></button>';
+            echo '      <button class="kinetic-trip-action primary luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-check-double fa-icon"></i>Lunas</button>';
         }
-        echo '      <button class="kinetic-icon-btn primary luggage-action" data-action="trackBagasi" data-resi="' . htmlspecialchars($l['kode_resi']) . '" title="Track Status"><i class="fa-solid fa-truck-fast"></i></button>';
-        echo '      <button class="kinetic-icon-btn danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" title="Batalkan"><i class="fa-solid fa-trash"></i></button>';
+        echo '      <button class="kinetic-trip-action luggage-action" data-action="trackBagasi" data-resi="' . htmlspecialchars($l['kode_resi']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-truck-fast fa-icon"></i>Lacak</button>';
+        echo '      <button class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px; background: #fee2e2; color: #b91c1c; border-color: #fca5a5;"><i class="fa-solid fa-xmark fa-icon"></i>Batal</button>';
         echo '    </div>';
         echo '  </div>';
         echo '</div>';
