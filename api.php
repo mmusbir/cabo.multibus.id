@@ -57,36 +57,7 @@ function apiRequireAdminUser(): array
 }
 
 $apiAuthUser = apiRequireAdminUser();
-
-// Create lazy tables
-$conn->exec("CREATE TABLE IF NOT EXISTS bookings (
-    id SERIAL PRIMARY KEY,
-    rute VARCHAR(100) NOT NULL,
-    tanggal DATE NOT NULL,
-    jam TIME NOT NULL,
-    unit INT DEFAULT 1,
-    seat VARCHAR(20) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    pickup_point VARCHAR(255),
-    pembayaran VARCHAR(50) DEFAULT 'Belum Lunas',
-    status VARCHAR(20) DEFAULT 'active',
-    segment_id INT DEFAULT 0,
-    price NUMERIC(15,2) DEFAULT 0,
-    discount NUMERIC(15,2) DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
-)");
-$conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_user_id INT NULL");
-$conn->exec("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS created_by_username VARCHAR(255) NULL");
-
-$conn->exec("CREATE TABLE IF NOT EXISTS customers (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL UNIQUE,
-    address TEXT,
-    pickup_point VARCHAR(255),
-    created_at TIMESTAMP DEFAULT NOW()
-)");
+global $conn;
 
 // Helper functions
 function apiResponse($data = [], $success = true, $statusCode = 200)
@@ -452,6 +423,7 @@ function processBookingCreate(PDO $conn, array $data, array $auth): array
             $conn->rollBack();
         }
         apiError('exception', 500, ['detail' => $ex->getMessage()]);
+        return [];
     }
 }
 
@@ -634,35 +606,46 @@ $router->get('getBookedSeatsDetail', function () use ($conn) {
     if (!$rute || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal) || !preg_match('/^\d{2}:\d{2}$/', $jam)) {
         apiError('invalid_params', 400);
     }
+    $cacheKey = 'getBookedSeatsDetail|' . $rute . '|' . $tanggal . '|' . $jam . '|' . $unit;
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        perf_finish('api.getBookedSeatsDetail[cache]', $perfStartedAt, [
+            'rute' => $rute, 'tanggal' => $tanggal, 'jam' => $jam, 'unit' => $unit,
+        ], 80);
+        apiSuccess(['details' => $cached]);
+    }
     $stmt = $conn->prepare("
         SELECT b.id, b.seat, b.name, b.phone, b.pembayaran,
                b.pickup_point, b.segment_id, b.price, b.discount, s.rute AS segment_name
-        FROM bookings b 
-        LEFT JOIN segments s ON b.segment_id = s.id 
-        WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=? 
+        FROM bookings b
+        LEFT JOIN segments s ON b.segment_id = s.id
+        WHERE b.rute=? AND b.tanggal=? AND b.jam=? AND b.unit=?
         AND b.status!='canceled'
     ");
     $stmt->execute([$rute, $tanggal, $jam, $unit]);
     $details = [];
     while ($r = $stmt->fetch()) {
         $details[(string) $r['seat']] = [
-            'id' => (int) ($r['id'] ?? 0),
-            'name' => $r['name'],
-            'phone' => $r['phone'],
-            'pembayaran' => $r['pembayaran'],
+            'id'           => (int) ($r['id'] ?? 0),
+            'name'         => $r['name'],
+            'phone'        => $r['phone'],
+            'pembayaran'   => $r['pembayaran'],
             'pickup_point' => $r['pickup_point'],
-            'segment_id' => (int) ($r['segment_id'] ?? 0),
+            'segment_id'   => (int) ($r['segment_id'] ?? 0),
             'segment_name' => $r['segment_name'],
-            'price' => floatval($r['price']),
-            'discount' => floatval($r['discount'])
+            'price'        => floatval($r['price']),
+            'discount'     => floatval($r['discount']),
         ];
     }
+    // Cache with a short TTL (30s) — short enough to stay live, long enough to cover
+    // rapid unit/date switches and repeated loads within the same session.
+    cache_set($cacheKey, $details, 30);
     perf_finish('api.getBookedSeatsDetail', $perfStartedAt, [
-        'rute' => $rute,
+        'rute'   => $rute,
         'tanggal' => $tanggal,
-        'jam' => $jam,
-        'unit' => $unit,
-        'count' => count($details),
+        'jam'    => $jam,
+        'unit'   => $unit,
+        'count'  => count($details),
     ], 80);
     apiSuccess(['details' => $details]);
 });

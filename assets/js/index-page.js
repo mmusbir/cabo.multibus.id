@@ -414,7 +414,6 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
       /* ================== FILL TIMES ================== */
       function fillTimes(rute, dateStr) {
-        // Reset downstream
         jamEl.innerHTML = '<option value="" disabled selected>Sedang memuat...</option>';
         jamEl.disabled = true;
         unitEl.innerHTML = '<option value="" disabled selected>Pilih Unit</option>';
@@ -422,22 +421,21 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
 
         if (!rute || !dateStr) return;
 
+        // Prefetch layout container while waiting
+        layoutEl.innerHTML = '<div class="admin-empty-state"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p>Memuat jadwal...</p></div>';
+
         fetch(API_URL + '?action=getSchedules&rute=' + encodeURIComponent(rute) + '&tanggal=' + encodeURIComponent(dateStr))
           .then(r => r.json()).then(js => {
-            if (!js || !js.success) {
-              console.warn('getSchedules failed', js);
+            if (!js || !js.success || js.schedules.length === 0) {
               setMsg('Tidak ada jadwal');
               jamEl.innerHTML = '<option value="" disabled selected>Tidak ada jadwal</option>';
+              layoutEl.innerHTML = '';
               return;
             }
-            jamEl.innerHTML = '<option value="" disabled selected>Pilih Jam</option>';
-            if (js.schedules.length > 0) {
-              CURRENT_SEATS = js.schedules[0].seats || 8;
-              CURRENT_LAYOUT = js.schedules[0].layout || [];
-            } else {
-              CURRENT_SEATS = 8;
-              CURRENT_LAYOUT = [];
-            }
+            
+            jamEl.innerHTML = '';
+            // Don't inject disabled generic "Pilih Jam" if we have data because we auto-select the first one anyway
+            
             js.schedules.forEach((s, idx) => {
               const opt = document.createElement('option');
               opt.value = s.jam;
@@ -451,25 +449,30 @@ ${paymentInfo.label.padEnd(16, ' ')}: ${paymentInfo.value}`;
                 CURRENT_LAYOUT = s.layout || [];
               }
             });
-            jamEl.disabled = false; // Enable time selection
-
-            if (jamEl.options.length > 1) { jamEl.selectedIndex = 1; jamChanged(); }
+            jamEl.disabled = false;
+            
+            // Auto-trigger seat loading immediately via jamChanged
+            jamChanged();
+            
           }).catch(err => {
-            console.error('fillTimes error', err);
-            setMsg('Gagal memuat jadwal');
-            jamEl.innerHTML = '<option value="" disabled selected>Gagal memuat jadwal</option>';
+             // on error
+             setMsg('Gagal memuat jadwal');
+             jamEl.innerHTML = '<option value="" disabled selected>Gagal memuat jadwal</option>';
+             layoutEl.innerHTML = '';
           });
       }
 
       function jamChanged() {
-        const units = Number(jamEl.selectedOptions[0]?.dataset?.units || 1);
-        CURRENT_SEATS = Number(jamEl.selectedOptions[0]?.dataset?.seats || 8);
+        if (!jamEl.selectedOptions[0]) return;
+        const units = Number(jamEl.selectedOptions[0].dataset.units || 1);
+        CURRENT_SEATS = Number(jamEl.selectedOptions[0].dataset.seats || 8);
         try {
-          CURRENT_LAYOUT = JSON.parse(jamEl.selectedOptions[0]?.dataset?.layout || '[]');
+          CURRENT_LAYOUT = JSON.parse(jamEl.selectedOptions[0].dataset.layout || '[]');
         } catch (e) {
           CURRENT_LAYOUT = [];
         }
         TOTAL_SEATS = CURRENT_SEATS;
+        
         unitEl.innerHTML = '';
         for (let i = 1; i <= Math.max(1, units); i++) {
           const o = document.createElement('option');
