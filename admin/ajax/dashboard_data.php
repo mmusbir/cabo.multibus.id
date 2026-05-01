@@ -43,8 +43,8 @@ try {
     }
 
     $dashboard['live_fleet'] = (int) ($conn->query("SELECT COUNT(DISTINCT (tanggal::text || '|' || jam::text || '|' || unit::text)) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
-    $dashboard['revenue_booking_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_TRUNC('month', tanggal) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
+    $dashboard['revenue_today'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND tanggal = CURRENT_DATE")->fetchColumn() ?? 0);
+    $dashboard['revenue_booking_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) FROM bookings WHERE status != 'canceled' AND DATE_TRUNC('month', tanggal) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
     $dashboard['revenue_charter_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM charters WHERE DATE_TRUNC('month', start_date) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
     $dashboard['revenue_luggage_month'] = (float) ($conn->query("SELECT COALESCE(SUM(COALESCE(price, 0)), 0) FROM luggages WHERE payment_status = 'Lunas' AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")->fetchColumn() ?? 0);
 
@@ -52,7 +52,7 @@ try {
     $revTrendMap = [];
     
     // 1. Bookings
-    $stmt1 = $conn->query("SELECT tanggal AS dt, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY dt");
+    $stmt1 = $conn->query("SELECT tanggal AS dt, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND tanggal BETWEEN (CURRENT_DATE - INTERVAL '6 days') AND CURRENT_DATE GROUP BY dt");
     if ($stmt1) {
         while ($row = $stmt1->fetch(PDO::FETCH_ASSOC)) {
             $dateKey = !empty($row['dt']) ? date('Y-m-d', strtotime((string) $row['dt'])) : '';
@@ -89,7 +89,7 @@ try {
     $monthlyTrendMap = [];
     
     // 1. Bookings
-    $monthlyBookingsStmt = $conn->query("SELECT DATE_TRUNC('month', tanggal) AS bulan, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND pembayaran IN ('Lunas', 'Redbus', 'Traveloka') AND DATE_PART('year', tanggal) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan");
+    $monthlyBookingsStmt = $conn->query("SELECT DATE_TRUNC('month', tanggal) AS bulan, COALESCE(SUM(COALESCE(price, 0) - COALESCE(discount, 0)), 0) AS revenue FROM bookings WHERE status != 'canceled' AND DATE_PART('year', tanggal) = DATE_PART('year', CURRENT_DATE) GROUP BY bulan");
     if ($monthlyBookingsStmt) {
         while ($row = $monthlyBookingsStmt->fetch(PDO::FETCH_ASSOC)) {
             $monthKey = !empty($row['bulan']) ? date('Y-m', strtotime((string) $row['bulan'])) : '';
