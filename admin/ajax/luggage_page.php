@@ -83,15 +83,28 @@ if (empty($rows)) {
         echo '  </div>';
         
         echo '  <div class="luggage-main-content">';
-        echo '    <div class="d-flex align-items-center gap-2 mb-2">';
+        echo '    <div class="d-flex align-items-center gap-2 mb-3">';
         echo '      <div class="kinetic-trip-time" style="margin:0; padding:4px 8px; border-radius:8px;">';
         echo '        <span class="kinetic-trip-date" style="font-size:11px;">' . htmlspecialchars($tripDate) . '</span>';
         echo '        <span class="kinetic-trip-hour" style="font-size:12px;">' . htmlspecialchars($tripHour) . '</span>';
         echo '      </div>';
-        echo '      <h4 class="kinetic-trip-title" style="margin:0; font-size:15px;">' . htmlspecialchars($l['sender_name']) . '</h4>';
         echo '    </div>';
         
-        echo '    <div class="kinetic-trip-subtitle" style="margin-bottom:8px;"><i class="fa-solid fa-arrow-right-long fa-icon" style="font-size:12px; margin-right:5px; color:var(--neu-primary);"></i>' . htmlspecialchars($l['receiver_name']) . '</div>';
+        echo '    <div class="row g-2 mb-3">';
+        echo '      <div class="col-6">';
+        echo '        <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Pengirim</div>';
+        echo '        <div style="font-size:13px; font-weight:700; color:var(--text-main);">' . htmlspecialchars($l['sender_name']) . '</div>';
+        echo '        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;"><i class="fa-solid fa-phone" style="margin-right:4px;"></i>' . htmlspecialchars($l['sender_phone']) . '</div>';
+        echo '        <div style="font-size:11px; color:var(--text-muted); margin-top:2px; line-height:1.2;">' . htmlspecialchars($l['sender_address'] ?: '-') . '</div>';
+        echo '      </div>';
+        echo '      <div class="col-6" style="border-left: 1px dashed var(--border-color); padding-left: 12px;">';
+        echo '        <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Penerima</div>';
+        echo '        <div style="font-size:13px; font-weight:700; color:var(--text-main);">' . htmlspecialchars($l['receiver_name']) . '</div>';
+        echo '        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;"><i class="fa-solid fa-phone" style="margin-right:4px;"></i>' . htmlspecialchars($l['receiver_phone']) . '</div>';
+        echo '        <div style="font-size:11px; color:var(--text-muted); margin-top:2px; line-height:1.2;">' . htmlspecialchars($l['receiver_address'] ?: '-') . '</div>';
+        echo '      </div>';
+        echo '    </div>';
+        
         echo '    <div class="small mb-1"><i class="fa-solid fa-cube fa-icon" style="margin-right:8px;"></i>' . htmlspecialchars($serviceName) . ' (' . intval($l['quantity']) . ' Koli)</div>';
         echo '    <div class="small mb-2"><i class="fa-solid fa-location-dot fa-icon" style="margin-right:8px;"></i>' . htmlspecialchars($l['notes'] ?: 'Tidak ada catatan tambahan') . '</div>';
         echo '  </div>';
@@ -102,6 +115,9 @@ if (empty($rows)) {
         echo '      Rp ' . number_format($l['price'], 0, ',', '.');
         echo '    </div>';
         echo '    <div class="d-flex gap-1">';
+        if ($status !== 'done' && $status !== 'canceled') {
+            echo '      <button class="kinetic-icon-btn luggage-action" style="color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.05);" data-action="markLuggageDone" data-id="' . intval($l['id']) . '" title="Tandai Sudah Diambil (Selesai)"><i class="fa-solid fa-box-open"></i></button>';
+        }
         if ($status === 'pending') {
             echo '      <button class="kinetic-icon-btn luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" title="Input bagasi"><i class="fa-solid fa-pen-to-square"></i></button>';
         }

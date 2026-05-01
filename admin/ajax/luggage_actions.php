@@ -171,6 +171,33 @@ if ($action === 'inputLuggage') {
     exit;
 }
 
+if ($action === 'markLuggageDone') {
+    $infoStmt = $conn->prepare("SELECT sender_name, receiver_name FROM luggages WHERE id = ? LIMIT 1");
+    $infoStmt->execute([$id]);
+    $luggageInfo = $infoStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+    $stmt = $conn->prepare("UPDATE luggages SET status = 'done' WHERE id = ?");
+    try {
+        $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            activity_log_write($conn, 'luggage', 'luggage', $id, 'complete', 'Bagasi telah diambil oleh penerima (Selesai)', ($luggageInfo['sender_name'] ?? 'Pengirim') . ' -> ' . ($luggageInfo['receiver_name'] ?? 'Penerima'), $actor);
+        }
+        
+        // Log ke tracking bagasi
+        $infoStmt = $conn->prepare("SELECT kode_resi FROM luggages WHERE id = ? LIMIT 1");
+        $infoStmt->execute([$id]);
+        $kode_resi = $infoStmt->fetchColumn();
+        if ($kode_resi) {
+            $stmtLog = $conn->prepare("INSERT INTO bagasi_logs (kode_resi, status, notes, created_by_username) VALUES (?, ?, ?, ?)");
+            $stmtLog->execute([$kode_resi, 'Selesai', 'Diambil oleh penerima', $actor]);
+        }
+        
+        echo json_encode(['success' => true, 'message' => 'Bagasi ditandai sudah diambil (Selesai)']);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 if ($action === 'cancelLuggage') {
     $infoStmt = $conn->prepare("SELECT sender_name, receiver_name FROM luggages WHERE id = ? LIMIT 1");
     $infoStmt->execute([$id]);

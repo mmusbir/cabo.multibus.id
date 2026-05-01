@@ -1,1 +1,0 @@
-<?php require 'config/db.php'; \='SELECT tablename, indexname FROM pg_indexes WHERE schemaname=''public'' AND tablename IN (''bookings'',''charters'',''luggages'');'; foreach(\->query(\) as \) print_r(\); ?>
