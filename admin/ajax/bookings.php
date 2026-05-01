@@ -30,9 +30,6 @@ if ($paymentFilter === 'paid') {
 }
 
 if ($scope === 'history') {
-    $bookingWhere .= " AND b.tanggal BETWEEN ? AND ? ";
-    $params[] = $currentMonthStart;
-    $params[] = $currentMonthEnd;
     $bookingWhere .= " AND (b.tanggal < CURRENT_DATE OR (b.tanggal = CURRENT_DATE AND b.jam < CURRENT_TIME)) ";
 } else {
     $bookingWhere .= " AND b.tanggal >= CURRENT_DATE ";
