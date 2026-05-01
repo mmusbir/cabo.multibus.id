@@ -242,108 +242,130 @@ try {
           data-payment-label="<?php echo h($payStatus); ?>"
           data-phone="<?php echo h($p['phone'] ?? ''); ?>"
           data-pickup="<?php echo h($pickupText); ?>">
-          <div class="booking-detail-line"></div>
-          <div class="booking-detail-main">
-            <div class="booking-detail-copy">
-              <div class="booking-detail-meta-row">
-                <span class="booking-detail-code mono-font"><?php echo h($bookingCode); ?></span>
-                <span class="booking-detail-status tone-<?php echo h($statusTone); ?>">
-                  <span class="booking-detail-dot"></span>
-                  <?php echo h($statusLabel); ?>
-                </span>
-              </div>
-              <div class="seat-badge-num">Kursi <?php echo h($p['seat'] ?? '-'); ?></div>
-              <h3 class="booking-detail-name sb-val name"><?php echo h($p['name'] ?? '-'); ?></h3>
-              <div class="booking-detail-route">
-                <i class="fa-solid fa-location-dot fa-icon"></i>
-                <span class="font-medium"><?php echo h($pickupText); ?></span>
-                <?php if ($routeDestination !== ''): ?>
-                  <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
-                  <span class="font-medium"><?php echo h($routeDestination); ?></span>
-                <?php else: ?>
-                  <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
-                  <span class="font-medium"><?php echo h($rute); ?></span>
-                <?php endif; ?>
-              </div>
-              <?php if ($segmentLabel !== ''): ?>
-                <div class="booking-detail-segment">
-                  <i class="fa-solid fa-shuffle fa-icon"></i>
-                  <span>Segment: <strong><?php echo h($segmentLabel); ?></strong></span>
-                </div>
-              <?php endif; ?>
-              <div class="booking-detail-hidden sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
-              <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
-              <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
-              <div class="booking-detail-hidden sb-val pay"><?php echo h($payStatus); ?></div>
-            </div>
 
-            <div class="booking-detail-side">
-              <div class="booking-detail-side-block">
-                <span class="booking-detail-side-label">Departure Time</span>
-                <span class="booking-detail-side-value mono-font"><?php echo h($tglIndo . ' ' . $jamIndo); ?></span>
-              </div>
-              <div class="booking-detail-side-block">
-                <span class="booking-detail-side-label">Pembayaran</span>
-                <span class="booking-detail-side-value">Rp <?php echo number_format($priceValue, 0, ',', '.'); ?></span>
-              </div>
+          <!-- Left accent bar -->
+          <div class="booking-detail-line"></div>
+
+          <!-- Card Header: Seat badge + Name + Status -->
+          <div class="booking-detail-header">
+            <div class="booking-detail-header-left">
+              <div class="booking-detail-seat-badge">Kursi <?php echo h($p['seat'] ?? '-'); ?></div>
+              <h3 class="booking-detail-name"><?php echo h($p['name'] ?? '-'); ?></h3>
+            </div>
+            <div class="booking-detail-header-right">
+              <span class="booking-detail-status tone-<?php echo h($statusTone); ?>">
+                <span class="booking-detail-dot"></span>
+                <?php echo h($statusLabel); ?>
+              </span>
               <?php if ($sourceLabel !== ''): ?>
                 <div class="booking-detail-source"><?php echo h($sourceLabel); ?></div>
               <?php endif; ?>
-              <div class="seat-actions booking-detail-actions">
-                <button
-                  type="button"
-                  class="edit-booking-btn btn-action-icon edit"
-                  data-id="<?php echo h($p['id']); ?>"
-                  data-unit="<?php echo intval($unit); ?>"
-                  data-rute="<?php echo h($rute); ?>"
-                  data-tanggal="<?php echo h($tanggal); ?>"
-                  data-jam="<?php echo h($jam); ?>"
-                  data-seat="<?php echo h($p['seat'] ?? ''); ?>"
-                  data-pickup="<?php echo h($p['pickup_point'] ?? ''); ?>"
-                  data-segment-id="<?php echo h($p['segment_id'] ?? '0'); ?>"
-                  data-price="<?php echo h($p['price'] ?? '0'); ?>"
-                  data-discount="<?php echo h($p['discount'] ?? '0'); ?>"
-                  data-pembayaran="<?php echo h($payStatus); ?>"
-                  title="Edit Penumpang">
-                  <i class="fa-solid fa-pen-to-square fa-icon"></i>
-                </button>
-                <button type="button" class="copy-single copy-btn" data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
-                  <i class="fa-solid fa-copy fa-icon"></i>
-                </button>
-                <?php if (!$isPaid): ?>
-                  <button type="button" class="mark-paid-seat btn-action-icon pay" data-id="<?php echo h($p['id']); ?>" title="Mark Lunas">
-                    <i class="fa-solid fa-circle-check fa-icon"></i>
-                  </button>
-                <?php endif; ?>
-                <button type="button" class="cancel-btn btn-action-icon cancel" data-id="<?php echo h($p['id']); ?>" title="Batalkan">
-                  <i class="fa-solid fa-xmark fa-icon"></i>
-                </button>
+            </div>
+          </div>
+
+          <!-- Booking code + Route -->
+          <div class="booking-detail-meta-strip">
+            <span class="booking-detail-code mono-font"><?php echo h($bookingCode); ?></span>
+            <div class="booking-detail-route">
+              <i class="fa-solid fa-location-dot fa-icon"></i>
+              <span><?php echo h($pickupText); ?></span>
+              <?php if ($routeDestination !== ''): ?>
+                <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
+                <span><?php echo h($routeDestination); ?></span>
+              <?php else: ?>
+                <i class="booking-detail-arrow fa-solid fa-arrow-right fa-icon"></i>
+                <span><?php echo h($rute); ?></span>
+              <?php endif; ?>
+            </div>
+            <?php if ($segmentLabel !== ''): ?>
+              <div class="booking-detail-segment">
+                <i class="fa-solid fa-shuffle fa-icon"></i>
+                <span>Segment: <strong><?php echo h($segmentLabel); ?></strong></span>
+              </div>
+            <?php endif; ?>
+          </div>
+
+          <!-- Info chips: Phone + Pickup + GMaps -->
+          <div class="booking-detail-chips">
+            <div class="booking-detail-chip">
+              <i class="fa-solid fa-phone fa-icon"></i>
+              <div class="booking-detail-chip-body">
+                <span class="booking-detail-chip-label">No. HP</span>
+                <span class="booking-detail-chip-value"><?php echo h($p['phone'] ?? '-'); ?></span>
               </div>
             </div>
+            <div class="booking-detail-chip">
+              <i class="fa-solid fa-map-marker-alt fa-icon"></i>
+              <div class="booking-detail-chip-body">
+                <span class="booking-detail-chip-label">Titik Jemput</span>
+                <span class="booking-detail-chip-value"><?php echo h($pickupText); ?></span>
+              </div>
+            </div>
+            <?php
+              $gmapsVal = trim((string) ($p['gmaps'] ?? ''));
+              if ($gmapsVal !== '' && $gmapsVal !== '-'):
+            ?>
+            <div class="booking-detail-chip">
+              <i class="fa-solid fa-map fa-icon"></i>
+              <div class="booking-detail-chip-body">
+                <span class="booking-detail-chip-label">Google Maps</span>
+                <span class="booking-detail-chip-value gmap-truncate"><?php echo h($gmapsVal); ?></span>
+              </div>
+            </div>
+            <?php endif; ?>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color);">
-            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
-              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">No. HP</span>
-              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($p['phone'] ?? '-'); ?></strong>
+
+          <!-- Footer: Price + Actions -->
+          <div class="booking-detail-footer">
+            <div class="booking-detail-price-block">
+              <span class="booking-detail-price-label">Pembayaran</span>
+              <span class="booking-detail-price-value">Rp <?php echo number_format($priceValue, 0, ',', '.'); ?></span>
             </div>
-            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
-              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Alamat / Titik Jemput</span>
-              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($pickupText); ?></strong>
-            </div>
-            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
-              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Status Bayar</span>
-              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($payStatus); ?></strong>
-            </div>
-            <div class="booking-detail-extra-item" style="display: flex; flex-direction: column; gap: 4px;">
-              <span class="booking-detail-extra-label" style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Google Maps</span>
-              <strong class="booking-detail-extra-value" style="font-size: 13px; color: var(--text-main); font-weight: 600;"><?php echo h($p['gmaps'] ?? '-'); ?></strong>
+            <div class="booking-detail-footer-actions seat-actions">
+              <?php if (!$isPaid): ?>
+                <button type="button" class="mark-paid-seat btn-action-icon pay"
+                  data-id="<?php echo h($p['id']); ?>" title="Tandai Lunas">
+                  <i class="fa-solid fa-circle-check fa-icon"></i>
+                </button>
+              <?php endif; ?>
+              <button
+                type="button"
+                class="edit-booking-btn btn-action-icon edit"
+                data-id="<?php echo h($p['id']); ?>"
+                data-unit="<?php echo intval($unit); ?>"
+                data-rute="<?php echo h($rute); ?>"
+                data-tanggal="<?php echo h($tanggal); ?>"
+                data-jam="<?php echo h($jam); ?>"
+                data-seat="<?php echo h($p['seat'] ?? ''); ?>"
+                data-pickup="<?php echo h($p['pickup_point'] ?? ''); ?>"
+                data-segment-id="<?php echo h($p['segment_id'] ?? '0'); ?>"
+                data-price="<?php echo h($p['price'] ?? '0'); ?>"
+                data-discount="<?php echo h($p['discount'] ?? '0'); ?>"
+                data-pembayaran="<?php echo h($payStatus); ?>"
+                title="Edit Penumpang">
+                <i class="fa-solid fa-pen-to-square fa-icon"></i>
+              </button>
+              <button type="button" class="copy-single copy-btn"
+                data-seat="<?php echo h($p['seat'] ?? ''); ?>" title="Copy Detail">
+                <i class="fa-solid fa-copy fa-icon"></i>
+              </button>
+              <button type="button" class="cancel-btn btn-action-icon cancel"
+                data-id="<?php echo h($p['id']); ?>" title="Batalkan">
+                <i class="fa-solid fa-xmark fa-icon"></i>
+              </button>
             </div>
           </div>
+
+          <!-- Hidden values for sort/copy JS -->
+          <div class="booking-detail-hidden sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
+          <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
+          <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
+          <div class="booking-detail-hidden sb-val pay"><?php echo h($payStatus); ?></div>
         </div>
       <?php endforeach; ?>
     <?php endif; ?>
-  </div>
-</div>
+  </div><!-- /.booking-detail-grid -->
+</div><!-- /.view-booking-list-shell -->
 
 <div id="passengerSummary" class="summary-footer admin-bs-panel" data-paid="<?php echo $totalPaid; ?>" data-unpaid="<?php echo $totalUnpaid; ?>">
   <div class="summary-grid">

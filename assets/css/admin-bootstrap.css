@@ -6350,7 +6350,200 @@ body.admin-bootstrap-page .booking-detail-extra-value {
     word-break: break-word;
 }
 
-@media (max-width: 991.98px) {
+
+/* ── Booking Detail Card — Status tones ──────────────────────── */
+body.admin-bootstrap-page .booking-detail-status.tone-ready,
+body.admin-bootstrap-page .booking-detail-status.tone-confirmed {
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+}
+
+body.admin-bootstrap-page .booking-detail-status.tone-warning,
+body.admin-bootstrap-page .booking-detail-status.tone-pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+}
+
+body.admin-bootstrap-page .booking-detail-status.tone-ontrip {
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+}
+
+/* ── Card Header ─────────────────────────────────────────────── */
+body.admin-bootstrap-page .booking-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1.2rem 1.5rem 0.75rem 1.7rem;
+}
+
+body.admin-bootstrap-page .booking-detail-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .booking-detail-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+body.admin-bootstrap-page .booking-detail-seat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    color: #fb923c;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+/* ── Meta Strip (booking code + route) ────────────────────────── */
+body.admin-bootstrap-page .booking-detail-meta-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0 1.5rem 0.85rem 1.7rem;
+}
+
+/* ── Info Chips Row ───────────────────────────────────────────── */
+body.admin-bootstrap-page .booking-detail-chips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.55rem;
+    padding: 0.85rem 1.5rem 0.85rem 1.7rem;
+    border-top: 1px dashed rgba(88, 66, 55, 0.16);
+    border-bottom: 1px dashed rgba(88, 66, 55, 0.16);
+}
+
+body.admin-bootstrap-page .booking-detail-chip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(88, 66, 55, 0.12);
+}
+
+body.admin-bootstrap-page .booking-detail-chip > .fa-icon {
+    font-size: 0.85rem;
+    color: #7c8798;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+
+body.admin-bootstrap-page .booking-detail-chip-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+body.admin-bootstrap-page .booking-detail-chip-label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #7c8798;
+}
+
+body.admin-bootstrap-page .booking-detail-chip-value {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+body.admin-bootstrap-page .booking-detail-chip-value.gmap-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #60a5fa;
+}
+
+/* ── Card Footer: Price + Actions ─────────────────────────────── */
+body.admin-bootstrap-page .booking-detail-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1.5rem 1rem 1.7rem;
+}
+
+body.admin-bootstrap-page .booking-detail-price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+body.admin-bootstrap-page .booking-detail-price-label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #7c8798;
+}
+
+body.admin-bootstrap-page .booking-detail-price-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #f8fafc;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+body.admin-bootstrap-page .booking-detail-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    body.admin-bootstrap-page .booking-detail-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.admin-bootstrap-page .booking-detail-header-right {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    body.admin-bootstrap-page .booking-detail-chips {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    body.admin-bootstrap-page .booking-detail-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.admin-bootstrap-page .booking-detail-footer-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    body.admin-bootstrap-page .booking-detail-footer-actions .copy-btn,
+    body.admin-bootstrap-page .booking-detail-footer-actions .btn-action-icon {
+        flex: 1 1 0;
+        width: auto;
+    }
+
     body.admin-bootstrap-page .booking-detail-main {
         flex-direction: column;
     }
@@ -6363,9 +6556,7 @@ body.admin-bootstrap-page .booking-detail-extra-value {
     body.admin-bootstrap-page .booking-detail-source {
         align-self: flex-start;
     }
-}
 
-@media (max-width: 767.98px) {
     body.admin-bootstrap-page .view-booking-list-head {
         flex-direction: column;
         align-items: stretch;
@@ -6393,6 +6584,8 @@ body.admin-bootstrap-page .booking-detail-extra-value {
         width: auto;
     }
 }
+
+
 
 /* Unified admin canvas so every admin page uses the same background base. */
 body.admin-bootstrap-page,

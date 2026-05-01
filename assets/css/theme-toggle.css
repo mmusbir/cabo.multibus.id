@@ -1071,8 +1071,111 @@ html[data-theme="light"] body.admin-bootstrap-page .view-trip-meta-label {
   color: #64748b !important;
 }
 
+/* --- New booking detail card components — light mode --- */
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-seat-badge {
+  background: #fff7ed !important;
+  border-color: rgba(249, 115, 22, 0.18) !important;
+  color: #c2410c !important;
+}
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-chips {
+  border-color: rgba(148, 163, 184, 0.16) !important;
+}
 
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-chip {
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-chip > .fa-icon {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-chip-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-chip-value {
+  color: #1e293b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-price-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-price-value {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer {
+  border-top: 1px dashed rgba(148, 163, 184, 0.2) !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-meta-strip {
+  color: #475569 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-route {
+  color: #475569 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-route .fa-icon {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-route .booking-detail-arrow {
+  color: #f97316 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-segment {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-segment strong {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-status.tone-ready,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-status.tone-confirmed {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #047857 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-status.tone-warning,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-status.tone-pending {
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #b45309 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-actions .copy-btn,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-actions .btn-action-icon,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer-actions .copy-btn,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer-actions .btn-action-icon {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+  color: #475569 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer-actions .btn-action-icon.pay,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.pay {
+  background: #ecfdf5 !important;
+  border-color: rgba(16, 185, 129, 0.15) !important;
+  color: #047857 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer-actions .btn-action-icon.edit,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.edit {
+  background: #eff6ff !important;
+  border-color: rgba(59, 130, 246, 0.15) !important;
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-footer-actions .btn-action-icon.cancel,
+html[data-theme="light"] body.admin-bootstrap-page .booking-detail-actions .btn-action-icon.cancel {
+  background: #fff1f2 !important;
+  border-color: rgba(220, 53, 69, 0.15) !important;
+  color: #dc3545 !important;
+}
 
 
 
