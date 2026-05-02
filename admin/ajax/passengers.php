@@ -357,10 +357,12 @@ try {
           </div>
 
           <!-- Hidden values for sort/copy JS -->
+          <div class="booking-detail-hidden sb-val name"><?php echo h(mb_strtoupper(trim((string) ($p['name'] ?? '')), 'UTF-8')); ?></div>
           <div class="booking-detail-hidden sb-val phone"><?php echo h($p['phone'] ?? '-'); ?></div>
           <div class="booking-detail-hidden sb-val pickup"><?php echo h($pickupText); ?></div>
           <div class="booking-detail-hidden sb-val gmaps"><?php echo h($p['gmaps'] ?? '-'); ?></div>
           <div class="booking-detail-hidden sb-val pay"><?php echo h($payStatus); ?></div>
+          <div class="booking-detail-hidden seat-badge-num">Kursi <?php echo h($p['seat'] ?? '-'); ?></div>
         </div>
       <?php endforeach; ?>
     <?php endif; ?>

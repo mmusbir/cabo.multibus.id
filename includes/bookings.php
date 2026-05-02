@@ -381,15 +381,15 @@
     function buildBookingTripCopyText(root, meta) {
       const occupied = [];
       root.querySelectorAll('.seat-block').forEach(block => {
-        const name = block.querySelector('.sb-val.name')?.innerText.trim() || '';
+        const name = block.querySelector('.sb-val.name')?.textContent.trim() || '';
         if (!name) return;
         occupied.push({
-          seat: block.querySelector('.seat-badge-num')?.innerText.replace('Kursi ', '').trim() || '',
+          seat: block.querySelector('.seat-badge-num')?.textContent.replace('Kursi ', '').trim() || '',
           name,
-          phone: block.querySelector('.sb-val.phone')?.innerText.trim() || '',
-          pickup: block.querySelector('.sb-val.pickup')?.innerText.trim() || '',
-          gmaps: block.querySelector('.sb-val.gmaps')?.innerText.trim() || '',
-          pay: block.querySelector('.sb-val.pay')?.innerText.trim() || ''
+          phone: block.querySelector('.sb-val.phone')?.textContent.trim() || '',
+          pickup: block.querySelector('.sb-val.pickup')?.textContent.trim() || '',
+          gmaps: block.querySelector('.sb-val.gmaps')?.textContent.trim() || '',
+          pay: block.querySelector('.sb-val.pay')?.textContent.trim() || ''
         });
       });
 
