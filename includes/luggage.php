@@ -130,10 +130,16 @@
               return;
             }
 
-            // Other actions (Input, Bayar, Batal)
-            if (action === 'inputLuggage' || action === 'markLuggagePaid' || action === 'cancelLuggage') {
-              const confirmMsg = action === 'cancelLuggage' ? 'Batalkan bagasi ini?' : (action === 'markLuggagePaid' ? 'Tandai lunas?' : 'Input bagasi?');
-              const confirmTitle = action === 'cancelLuggage' ? 'Batalkan' : (action === 'markLuggagePaid' ? 'Bayar' : 'Input');
+            // Other actions (Input, Selesai, Bayar, Batal)
+            if (action === 'inputLuggage' || action === 'markLuggagePaid' || action === 'cancelLuggage' || action === 'markLuggageDone') {
+              const confirmMsg = action === 'cancelLuggage' ? 'Batalkan bagasi ini?' :
+                                 action === 'markLuggagePaid' ? 'Tandai pembayaran lunas?' :
+                                 action === 'markLuggageDone' ? 'Tandai bagasi sudah selesai/diambil? Item akan masuk ke History.' :
+                                 'Input bagasi?';
+              const confirmTitle = action === 'cancelLuggage' ? 'Batalkan' :
+                                   action === 'markLuggagePaid' ? 'Bayar' :
+                                   action === 'markLuggageDone' ? 'Selesai' :
+                                   'Input';
               const confirmType = action === 'cancelLuggage' ? 'danger' : 'success';
 
               customConfirm(confirmMsg, async () => {

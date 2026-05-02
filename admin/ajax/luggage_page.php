@@ -14,9 +14,10 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $scope = isset($_GET['scope']) ? $_GET['scope'] : 'active';
 
 if ($scope === 'history') {
-    $baseWhere = "(l.status IN ('active', 'done') AND l.payment_status = 'Lunas')";
+    $baseWhere = "l.status IN ('done', 'canceled')";
 } else {
-    $baseWhere = "(l.status = 'pending' OR l.payment_status != 'Lunas' OR (l.created_at >= CURRENT_DATE AND l.created_at < CURRENT_DATE + INTERVAL '1 day'))";
+    // Aktif: hanya tampilkan yang belum selesai (pending atau active)
+    $baseWhere = "l.status IN ('pending', 'active')";
 }
 
 if ($search !== '') {
@@ -113,17 +114,23 @@ if (empty($rows)) {
         echo '      Rp ' . number_format($l['price'], 0, ',', '.');
         echo '    </div>';
         echo '    <div class="d-flex gap-1 flex-wrap justify-content-end">';
-        if ($status !== 'done' && $status !== 'canceled') {
-            echo '      <button class="kinetic-trip-action success luggage-action" data-action="markLuggageDone" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-box-open fa-icon"></i>Selesai</button>';
+        if ($scope !== 'history') {
+            // Tab Aktif: tampilkan tombol aksi
+            if ($status === 'active') {
+                echo '      <button class="kinetic-trip-action success luggage-action" data-action="markLuggageDone" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-box-open fa-icon"></i>Selesai</button>';
+            }
+            if ($status === 'pending') {
+                echo '      <button class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-pen-to-square fa-icon"></i>Input</button>';
+            }
+            if ($payment !== 'Lunas') {
+                echo '      <button class="kinetic-trip-action primary luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-check-double fa-icon"></i>Lunas</button>';
+            }
+            echo '      <button class="kinetic-trip-action luggage-action" data-action="trackBagasi" data-resi="' . htmlspecialchars($l['kode_resi']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-truck-fast fa-icon"></i>Lacak</button>';
+            echo '      <button class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px; background: #fee2e2; color: #b91c1c; border-color: #fca5a5;"><i class="fa-solid fa-xmark fa-icon"></i>Batal</button>';
+        } else {
+            // Tab History: hanya tombol Lacak
+            echo '      <button class="kinetic-trip-action luggage-action" data-action="trackBagasi" data-resi="' . htmlspecialchars($l['kode_resi']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-truck-fast fa-icon"></i>Lacak</button>';
         }
-        if ($status === 'pending') {
-            echo '      <button class="kinetic-trip-action luggage-action" data-action="inputLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-pen-to-square fa-icon"></i>Input</button>';
-        }
-        if ($payment !== 'Lunas') {
-            echo '      <button class="kinetic-trip-action primary luggage-action" data-action="markLuggagePaid" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-check-double fa-icon"></i>Lunas</button>';
-        }
-        echo '      <button class="kinetic-trip-action luggage-action" data-action="trackBagasi" data-resi="' . htmlspecialchars($l['kode_resi']) . '" style="padding: 4px 10px; font-size: 11px;"><i class="fa-solid fa-truck-fast fa-icon"></i>Lacak</button>';
-        echo '      <button class="kinetic-trip-action danger luggage-action" data-action="cancelLuggage" data-id="' . intval($l['id']) . '" style="padding: 4px 10px; font-size: 11px; background: #fee2e2; color: #b91c1c; border-color: #fca5a5;"><i class="fa-solid fa-xmark fa-icon"></i>Batal</button>';
         echo '    </div>';
         echo '  </div>';
         echo '</div>';
