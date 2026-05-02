@@ -109,6 +109,7 @@ switch ($action) {
     case 'cancelLuggage':
     case 'inputLuggage':
     case 'inputLuggageRaw':
+    case 'markLuggageDone':
     case 'updateLuggageSimple':
         include __DIR__ . '/ajax/luggage_actions.php';
         break;

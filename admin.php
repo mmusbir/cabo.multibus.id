@@ -627,6 +627,10 @@ if ($isActionRequest) {
       include $ajax_dir . 'luggage_actions.php';
     });
     
+    $router->post('markLuggageDone', function () use ($ajax_dir) {
+      include $ajax_dir . 'luggage_actions.php';
+    });
+    
     $router->get('getTrackingLogs', function () use ($ajax_dir) {
       include $ajax_dir . 'luggage_actions.php';
     });
