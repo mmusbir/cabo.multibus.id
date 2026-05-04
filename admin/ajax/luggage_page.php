@@ -14,10 +14,11 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $scope = isset($_GET['scope']) ? $_GET['scope'] : 'active';
 
 if ($scope === 'history') {
-    $baseWhere = "l.status IN ('done', 'canceled')";
+    // History: status done/canceled/finished, ATAU active+Lunas (data lama sebelum fitur markDone)
+    $baseWhere = "(l.status IN ('done', 'canceled', 'finished') OR (l.status = 'active' AND l.payment_status = 'Lunas'))";
 } else {
-    // Aktif: hanya tampilkan yang belum selesai (pending atau active)
-    $baseWhere = "l.status IN ('pending', 'active')";
+    // Aktif: pending atau active yang belum lunas
+    $baseWhere = "(l.status = 'pending' OR (l.status = 'active' AND l.payment_status != 'Lunas'))";
 }
 
 if ($search !== '') {
